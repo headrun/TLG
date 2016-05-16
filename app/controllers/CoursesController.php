@@ -13,47 +13,142 @@ class CoursesController extends \BaseController {
 		//
 	}
 
-	public function addCourses(){
+//	public function addCourses(){
+//		
+//		$currentPage  =  "COURSES";
+//		$mainMenu     =  "COURSES_MAIN";
+//		
+//		$inputs = Input::all();
+//		if (isset($inputs['courseName'])) {
+//		
+//			$courses = new Courses();
+//			if(!$courses->validate()){
+//				return Redirect::back()->withInput()->withErrors($courses->errors());
+//			}
+//			else{
+//				
+//				$courseExistence = Courses::checkWhetherCourseAdded(Session::get('franchiseId'), $inputs['masterCourse']);
+//				if($courseExistence == 0){
+//					
+//					if (Courses::addCourse($inputs)) {
+//							
+//						Session::flash('msg', "Course added successfully.");
+//							
+//					} else {
+//							
+//						Session::flash('warning', "Sorry, Course Could not be added at the moment.");
+//					
+//					}
+//					
+//				}elseif($courseExistence > 0){
+//					Session::flash('error', "Sorry, Course already added to your franchise.");
+//				}
+//				
+//				
+//				return Redirect::to('/courses/add');
+//			}
+//		}
+//		
+//		$courseList = CoursesMaster::getCoursesList();
+//		$courses    = Courses::getFranchiseCourses(Session::get('franchiseId'));
+//		return View::make('pages.courses.addCourse', compact('courseList', 'courses','currentPage','mainMenu'));
+//	
+//	}
+        public function addCourses(){
 		
 		$currentPage  =  "COURSES";
 		$mainMenu     =  "COURSES_MAIN";
 		
 		$inputs = Input::all();
-		if (isset($inputs['courseName'])) {
+               // var_dump($inputs); die();
+		if (isset($inputs['courseName']) || isset($inputs['masterCourseList'])) {
 		
 			$courses = new Courses();
-			if(!$courses->validate()){
-				return Redirect::back()->withInput()->withErrors($courses->errors());
-			}
-			else{
-				
-				$courseExistence = Courses::checkWhetherCourseAdded(Session::get('franchiseId'), $inputs['masterCourse']);
-				if($courseExistence == 0){
-					
-					if (Courses::addCourse($inputs)) {
+                        if(isset($inputs['masterCourseList'])){
+                            $inputs['masterCourse'] = $inputs['masterCourseList'];
+                            $courseName = json_decode(CoursesMaster::select('slug','course_name')->where("id", "=", $inputs['masterCourseList'])->get());
+                           // var_dump($courseName); die();
+                            $inputs['courseName'] = $courseName[0]->course_name; 
+                            $inputs['slug'] = $courseName[0]->slug; 
+                            $addCourse=Courses::addCourse($inputs);
+                           if ($addCourse) {
 							
 						Session::flash('msg', "Course added successfully.");
 							
-					} else {
+                            } else {
 							
 						Session::flash('warning', "Sorry, Course Could not be added at the moment.");
 					
-					}
-					
-				}elseif($courseExistence > 0){
-					Session::flash('error', "Sorry, Course already added to your franchise.");
-				}
-				
-				
-				return Redirect::to('/courses/add');
-			}
-		}
+                            }
+                                         return Redirect::to('/courses/name_list');
+                        }
+                        
+                     }
 		
 		$courseList = CoursesMaster::getCoursesList();
 		$courses    = Courses::getFranchiseCourses(Session::get('franchiseId'));
 		return View::make('pages.courses.addCourse', compact('courseList', 'courses','currentPage','mainMenu'));
 	
 	}
+
+        public function courseNameList() {
+            $currentPage  =  "COURSES";
+            $mainMenu     =  "COURSES_MAIN";
+            $courseList = CoursesMaster::getCoursesList();
+            $courses    = Courses::getFranchiseCourses(Session::get('franchiseId'));
+            return View::make('pages.courses.course-name-list', compact('currentPage','mainMenu','courseList','courses'));
+        }
+        
+        
+	public function viewCourses(){
+		$currentPage  =  "COURSES";
+		$mainMenu     =  "COURSES_MAIN";
+		$eligibleForAction = array();
+		$allCourse = CoursesMaster::getAllCourses();
+		for ($i=0; $i < count($allCourse) ; $i++) { 
+			$Master_course_id = $allCourse[$i]['id'];
+			$getCoursesCount = Courses::where('master_course_id', '=', $Master_course_id)->get();
+			if(count($getCoursesCount) == 0){
+				array_push($eligibleForAction, $Master_course_id);
+			}
+		}
+		//return $eligibleForAction;
+		return View::make('pages.courses.courses', compact('currentPage','mainMenu', 'allCourse', 'eligibleForAction'));	
+	}
+
+
+	public function deleteCoursesMaster(){
+		$inputs = Input::all();
+		$sendDataToDelete = CoursesMaster::deleteCoursesMaster($inputs);
+		if($sendDataToDelete){
+			return Response::json(array('status'=>'success', $sendDataToDelete));
+		}else{
+			return Response::json(array('status'=>'failure'));
+		}
+	}
+
+	public function updateCoursesMaster(){
+		$inputs = Input::all();
+		//return Response::json(array('status'=>'success', Session::get('userId')));
+		$sendDataToDelete = CoursesMaster::updateCoursesMaster($inputs);
+		if($sendDataToDelete){
+			return Response::json(array('status'=>'success', $sendDataToDelete));
+		}else{
+			return Response::json(array('status'=>'failure'));
+		}
+	}
+
+	public function InsertNewCoursesMaster(){
+		$inputs = Input::all();
+		//return Response::json(array('status'=>'success', Session::get('userId')));
+		$sendDataToDelete = CoursesMaster::InsertNewCoursesMaster($inputs);
+		if($sendDataToDelete){
+			return Response::json(array('status'=>'success', $sendDataToDelete));
+		}else{
+			return Response::json(array('status'=>'failure'));
+		}
+	}
+
 
 	/**
 	 * Show the form for creating a new resource.

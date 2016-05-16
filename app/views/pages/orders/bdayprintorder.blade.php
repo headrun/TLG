@@ -33,6 +33,9 @@
 		
 		
 		}
+                @media print {
+                    #Header, #Footer { display: none !important; }
+                }   
 	
 	</style>
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -40,8 +43,10 @@
 		$(document).ready(function (){
 			
 			printme();
+                        //window.close();
 			$("#printBtn").click(function (){
-				printme();
+            			printme();
+                               // window.close();
 		
 			});
 		
@@ -61,7 +66,7 @@
 
             //Print Page
             window.print();
-
+            
             //Restore orignal HTML
             document.body.innerHTML = oldPage;
 			   
@@ -174,8 +179,11 @@
 						
 										
 						<tr>
-							<td >Amount Pending :</td>
-                                                        <td style="text-align:right">{{$birthday_data->remaining_due_amount}} </td>
+							<td >Amount Pending <?php if(isset($payment_due_data->membership_id)){?>
+                                                                                    (includes {{$payment_due_data->description}} cost of RS {{$payment_due_data->membership_amount}}):  
+                                                                            <?php } ?>
+                                                        </td>
+                                                        <td style="text-align:right">{{$birthday_data->remaining_due_amount}}  </td>
 							
 						</tr>
                                                 						<tr>
@@ -191,7 +199,7 @@
 					
 					</table>
                                         <h6>Tax Amount: {{$order_data->tax_amount}}</h6>
-					<h5>Total Advance Amount paid with Tax is {{$order_data->amount+$order_data->tax_amount}}</h5>
+					<h5>Total  Amount paid with Tax is {{$order_data->amount+$order_data->tax_amount}}</h5>
 					
 					<div class="row datarow">
 					  <div class="col-md-3 title">Payment Mode</div>
@@ -216,7 +224,10 @@
 					
 					<br clear="all"/>
 					
-					<p>Welcome. Thanks for Celebrating B'day in  The Little Gym.  Regards, Team TLG</p>	
+					<p>Welcome. Thanks for Celebrating B'day in  The Little Gym.  Regards, Team TLG</p>
+				    <hr/>
+					<p>Terms & Conditions:</p>
+					<br/>
 				</div>
 			
 			
