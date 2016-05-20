@@ -51,8 +51,6 @@ var studentName   = "{{$student->student_name}}";
 var studentId     = "{{$student->id}}";
 var studentGender = "{{$student->student_gender}}";
 var studentAge    = "{{date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->y;}}";
-var isEligibleTwenty = "{{$discountEligibility['eligibleForTwenty']}}";
-var isEligibleFifty = "{{$discountEligibility['eligibleForFifty']}}";
 
 var ageYear  = '<?php echo date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->y;?>';
 var ageMonth = '<?php echo date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->m;?>';
@@ -221,7 +219,7 @@ $("#addEnrollment").click(function(){
                  if($("input[name='enrollmentClassesSelect']:checked").val()!='custom'){
                     selectedNoOfClass=parseInt($("input[name='enrollmentClassesSelect']:checked").val());
                     DiscountPercentage=parseFloat($("input[name='enrollmentClassesSelect']:checked").attr('discountpercentage'));
-                    var position=parseInt($("input[name='enrollmentClassesSelect']:checked").attr('position'));
+                    //var position=parseInt($("input[name='enrollmentClassesSelect']:checked").attr('position'));
                     //DiscountAmount=parseInt($('#discountAmount'+position).val());
                   }else{
                     selectedNoOfClass=parseInt($('#customEnrollmemtNoofClass').val());
@@ -251,627 +249,35 @@ $("#addEnrollment").click(function(){
 });
 
 $("#paymentOptions").hide();
-$("#paymentType").hide();
-$("#singlePayAmountDiv").hide();
-$("#biPayAmountDiv").hide();
-$("#singlePayDiv").hide();
-$("#bipayDiv").hide();
-$("#multipayDiv").hide();
+//$("#paymentType").hide();
+//$("#singlePayAmountDiv").hide();
+//$("#biPayAmountDiv").hide();
+//$("#singlePayDiv").hide();
+//$("#bipayDiv").hide();
+//$("#multipayDiv").hide();
 
 $("#enrollmentOptions").click(function (){
-                $('#enrollNow').addClass('disabled');
-	//if($("#enrollmentOptions").val() == "enrollandpay" ){
-                if((firstselectedNoOfClass+secondselectedNoOfClass+thirdselectedNoOfClass)===selectedNoOfClass){
-		$("#selectedSessions").val(selectedNoOfClass);
-                
-                
-                // working out for singlepay
-                 
-                 
-                totalCostForpay=(firstselectedNoOfClass*batch1ClassCost)+(secondselectedNoOfClass*batch2ClassCost)+(thirdselectedNoOfClass*batch3ClassCost);
-                //console.log(totalCostForpay);
-                $("#singlePayDiv").show();
-                $("#singlePayAmount").val(totalCostForpay);
-                $("#singlePayAmountDiv").show();
-                $("#paymentType").show();
-                $("#paymentOptions").show(); 
+        <?php if(!$customermembership){?>
+		$("#membershipAmount").val("2000");
+		$("#membershipAmounttotals").val("2000");
+	<?php }?>
             
-                // working out for bipay
-                
-                if(selectedNoOfClass > 5){
-                    var totalCostForBipay=totalCostForpay;
-                    var totalnoofclasses=firstselectedNoOfClass+secondselectedNoOfClass+thirdselectedNoOfClass;
-                    //** working out for Even or odd Number of classes **//
-                    if(totalnoofclasses%2==0){
-                        var firstInstallmentsessionNo=totalnoofclasses/2;
-                        var secondInstallmentsessionNo=totalnoofclasses/2;
-                    }else if(totalnoofclasses%2!=0){
-                        var firstInstallmentsessionNo=parseInt(totalnoofclasses/2);
-                        var secondInstallmentsessionNo=parseInt(totalnoofclasses/2)+1;
-                        
-                    }
-                    //** working out for different seasons and for diffrent cases **//
-                    if(firstselectedNoOfClass!=0 &&secondselectedNoOfClass==0 && thirdselectedNoOfClass==0){
-                            //** working out for 1 batch **//
-                            bipay[1]=firstInstallmentsessionNo*batch1ClassCost;
-                            bipay[2]=secondInstallmentsessionNo*batch1ClassCost;
-                            
-                        }else if(firstselectedNoOfClass!=0 && secondselectedNoOfClass!=0 && thirdselectedNoOfClass==0){
-                            //**  working out for 2 batches**//
-                            if(firstselectedNoOfClass==firstInstallmentsessionNo){
-                                bipay[1]=firstInstallmentsessionNo*batch1ClassCost;
-                                bipay[2]=secondInstallmentsessionNo*batch2ClassCost;
-                            }else if(firstselectedNoOfClass<firstInstallmentsessionNo ){
-                                bipay[1]=(firstselectedNoOfClass*batch1ClassCost)+((firstInstallmentsessionNo-firstselectedNoOfClass)*batch2ClassCost);
-                                bipay[2]=secondInstallmentsessionNo*batch2ClassCost;
-                            }else if(firstselectedNoOfClass>firstInstallmentsessionNo){
-                                bipay[1]=(firstInstallmentsessionNo*batch1ClassCost);
-                                bipay[2]=secondselectedNoOfClass*batch2ClassCost+((firstselectedNoOfClass-firstInstallmentsessionNo)*batch1ClassCost);
-                            }
-                            $("input[name='bipaybatch1availablesession']").val(firstselectedNoOfClass);
-                            $("input[name='bipaybatch2availablesession']").val(secondselectedNoOfClass);
-                    
-                        }else if(firstselectedNoOfClass!=0 && secondselectedNoOfClass!=0 && thirdselectedNoOfClass!=0){
-                            //** working out for 3 batches **//
-                            if(firstselectedNoOfClass < firstInstallmentsessionNo){
-                                 // ** checking B1 + B2 lies in first Installment **//
-                                 if((firstselectedNoOfClass+secondselectedNoOfClass)==firstInstallmentsessionNo){
-                                     bipay[1]=(firstselectedNoOfClass*batch1ClassCost)+(secondselectedNoOfClass*batch2ClassCost);
-                                     bipay[2]=(thirdselectedNoOfClass*batch3ClassCost);
-                                 }else
-                                 // ** checking B1 + B2 lies in second Installment **//
-                                 if((firstselectedNoOfClass+secondselectedNoOfClass)>firstInstallmentsessionNo){
-                                     bipay[1]=((firstselectedNoOfClass*batch1ClassCost)+((firstInstallmentsessionNo-firstselectedNoOfClass)*batch2ClassCost));
-                                     bipay[2]=((secondInstallmentsessionNo-thirdselectedNoOfClass)*batch2ClassCost)+(thirdselectedNoOfClass*batch3ClassCost);       
-                                 }else
-                                 // ** checking B1 + B2 lies in first Installment **//
-                                 if((firstselectedNoOfClass+secondselectedNoOfClass)<firstInstallmentsessionNo){
-                                     bipay[1]=(firstselectedNoOfClass*batch1ClassCost)+(secondselectedNoOfClass*batch2ClassCost)+((firstInstallmentsessionNo-(firstselectedNoOfClass+secondselectedNoOfClass))*batch3ClassCost);
-                                     bipay[2]=(secondInstallmentsessionNo*batch3ClassCost);
-                                }
-                            
-                            }else if(firstselectedNoOfClass > firstInstallmentsessionNo){
-                                //** if B1 > first installment and B2 and B3 lies in  2nd installment **//
-                                  bipay[1]=firstInstallmentsessionNo*batch1ClassCost;
-                                  bipay[2]=(secondselectedNoOfClass*batch2ClassCost)+(thirdselectedNoOfClass*batch3ClassCost)+((secondInstallmentsessionNo-(secondselectedNoOfClass+thirdselectedNoOfClass))*batch1ClassCost);
-                                                                   
-                            }else if((firstselectedNoOfClass)==firstInstallmentsessionNo){
-                                //** if B1==first installment and B2 and B3 lies in  2nd installment **//
-                                bipay[1]=(firstselectedNoOfClass*batch1ClassCost);
-                                bipay[2]=(secondselectedNoOfClass*batch2ClassCost)+(thirdselectedNoOfClass*batch3ClassCost);
-                            }
-                                $("input[name='bipaybatch1availablesession']").val(firstselectedNoOfClass);
-                                $("input[name='bipaybatch2availablesession']").val(secondselectedNoOfClass);
-                                $("input[name='bipaybatch3availablesession']").val(thirdselectedNoOfClass);
-                        }
-                    
-                   /*     
-                    if(totalCostForBipay%2===0){
-                        bipay[1]=totalCostForBipay/2;
-                        bipay[2]=totalCostForBipay/2;
-                    }else{
-                        bipay[1]=parseInt(totalCostForBipay/2);
-                        bipay[2]=(parseInt(totalCostForBipay/2))+1;
-                    }
-                    */
-                    $("#biPayAmountDiv").show();
-                    $("#bipayDiv").show();
-                    $("#bipayDivInputs").empty();
-                    var bipaystring = "";
-                    
-                    for(var i=1;i<bipay.length;i++){
-                        bipaystring += '<input id="bipayAmount'+i+'" name="bipayAmount'+i+'" readonly value="'+bipay[i]+'" style="float:left;width:60px;" class="form-control input-sm md-input"/>';
-                    }
-                    //console.log(bipaystring);
-                    $("#bipayDivInputs").append(bipaystring);
-		    $("#biPayRadio").prop('disabled',false);
-		    $("#biPayRadio").removeClass('disabled');
-		    $("#biPayRadiolabel").removeClass('disabled');
-                    
-                    
-                }else{
-
-					$("#biPayAmountDiv").show();
-					
-					$("#bipayDiv").show();
-					$("#bipayDivInputs").empty();
-
-					//singlePayRadio biPayRadio multiPayRadio
-					
-					$("#biPayRadio").attr('disabled','true');
-					$("#biPayRadio").addClass('disabled');
-					$("#biPayRadiolabel").addClass('disabled');
-		}
-                //console.log(bipay);
-                
-                // working for multipay
-                //
-                
-                if(selectedNoOfClass > 20){
-                $("#multipayDiv").show();
-                $("#multipayDivInputs").empty();
-                var round=0;
-                var modulus=0;
-                var multipayamt={};
-                var firstselectedNoOfClassCost=0;
-                if(selectedNoOfClass==40){
-                    multipay[0]=10;
-                    multipay[1]=10;
-                    multipay[2]=10;
-                    multipay[3]=10;
-                    
-                    
-                }else if(selectedNoOfClass > 30 && selectedNoOfClass < 40 ){
-                    modulus=selectedNoOfClass%30;
-                    multipay[0]=modulus;
-                    multipay[1]=10;
-                    multipay[2]=10;
-                    multipay[3]=10;
-                }else if(selectedNoOfClass > 20 && selectedNoOfClass < 30){
-                    modulus=selectedNoOfClass%20;
-                    multipay[0]=modulus;
-                    multipay[1]=10;
-                    multipay[2]=10;
-                }else if(selectedNoOfClass == 30 ){
-                    multipay[0]=10;
-                    multipay[1]=10;
-                    multipay[2]=10;
-                }
-                
-                    if(firstselectedNoOfClass== 40 && secondselectedNoOfClass==0 && thirdselectedNoOfClass==0){
-                        //** working for only 1 batch **//
-                        multipayamt[0]=multipay[0]*batch1ClassCost;
-                        multipayamt[1]=multipay[1]*batch1ClassCost;
-                        multipayamt[2]=multipay[2]*batch1ClassCost;
-                        multipayamt[3]=multipay[3]*batch1ClassCost;
-                        
-                    }else if(firstselectedNoOfClass!=0 && secondselectedNoOfClass==0 && thirdselectedNoOfClass==0){
-                        //**working out for 1 batch **//
-                        multipayamt[0]=multipay[0]*batch1ClassCost;
-                        multipayamt[1]=multipay[1]*batch1ClassCost;
-                        multipayamt[2]=multipay[2]*batch1ClassCost;
-                        if(typeof multipay[3]!=='undefined'){
-                                 multipayamt[3]=multipay[3]*batch1ClassCost;
-                        }
-                        
-                    }else if(secondselectedNoOfClass!=0 && firstselectedNoOfClass!=0 && thirdselectedNoOfClass==0){
-                        //** working for 2 batches **//
-                        var totalClassesSelected=firstselectedNoOfClass+secondselectedNoOfClass;
-                        if(firstselectedNoOfClass < multipay[0]){
-                            //** batch change lies in first multipay **//
-                            firstselectedNoOfClassCost=firstselectedNoOfClass*batch1ClassCost;
-                            multipayamt[0]=(multipay[0]-firstselectedNoOfClass)*batch2ClassCost;
-                            multipayamt[0]=multipayamt[0]+firstselectedNoOfClassCost;
-                            multipayamt[1]=multipay[1]*batch2ClassCost;
-                            multipayamt[2]=multipay[2]*batch2ClassCost;
-                            if(typeof multipay[3]!=='undefined'){
-                                 multipayamt[3]=multipay[3]*batch2ClassCost;
-                            }
-                        }else if(firstselectedNoOfClass > multipay[0] &&  firstselectedNoOfClass < (multipay[0]+multipay[1]) ){
-                            var temp=firstselectedNoOfClass;
-                            temp=temp-multipay[0];
-                            firstselectedNoOfClassCost=temp*batch1ClassCost;
-                            multipayamt[0]=multipay[0]*batch1ClassCost;
-                            multipayamt[1]=((multipay[1]-temp)*batch2ClassCost)+firstselectedNoOfClassCost;
-                            multipayamt[2]=multipay[2]*batch2ClassCost;
-                            if(typeof multipay[3]!=='undefined'){
-                            multipayamt[3]=multipay[3]*batch2ClassCost;
-                            }
-                        }else if(firstselectedNoOfClass > (multipay[0]+multipay[1]) && firstselectedNoOfClass < (multipay[0]+multipay[1]+multipay[2])){
-                            var temp=firstselectedNoOfClass;
-                            temp=temp-(multipay[0]+multipay[1]);
-                            firstselectedNoOfClassCost=temp*batch1ClassCost;
-                            multipayamt[0]=multipay[0]*batch1ClassCost;
-                            multipayamt[1]=multipay[1]*batch1ClassCost;
-                            multipayamt[2]=((multipay[2]-temp)*batch2ClassCost)+firstselectedNoOfClassCost;
-                            if(typeof multipay[3]!=='undefined'){
-                            multipayamt[3]=multipay[3]*batch2ClassCost;
-                            }
-                        }else if(firstselectedNoOfClass > (multipay[0]+multipay[1]+multipay[2]) && firstselectedNoOfClass < (multipay[0]+multipay[1]+multipay[2]+multipay[3]) ){
-                            var temp =firstselectedNoOfClass;
-                            temp=temp-(multipay[0]+multipay[1]+multipay[2]); 
-                            firstselectedNoOfClassCost=temp*batch1ClassCost;
-                            multipayamt[0]=multipay[0]*batch1ClassCost;
-                            multipayamt[1]=multipay[1]*batch1ClassCost;
-                            multipayamt[2]=multipay[2]*batch1ClassCost;
-                            multipayamt[3]=firstselectedNoOfClassCost+((multipay[3]-temp)*batch2ClassCost);
-                        }else if(firstselectedNoOfClass==multipay[0]){
-                            //** when b1 == pay1 **//
-                            multipayamt[0]=multipay[0]*batch1ClassCost;
-                            multipayamt[1]=multipay[1]*batch2ClassCost;
-                            multipayamt[2]=multipay[2]*batch2ClassCost;
-                            if(typeof multipay[3]!=='undefined'){
-                                 multipayamt[3]=multipay[3]*batch2ClassCost;
-                            }
-                        }else if((firstselectedNoOfClass)==(multipay[0]+multipay[1])){
-                            //** when b1=pay1+pay2 **//
-                           
-                            multipayamt[0]=multipay[0]*batch1ClassCost;
-                            multipayamt[1]=multipay[1]*batch1ClassCost;
-                            multipayamt[2]=multipay[2]*batch2ClassCost;
-                            if(typeof multipay[3]!=='undefined'){
-                                 multipayamt[3]=multipay[3]*batch2ClassCost;
-                            }
-                        }else if(firstselectedNoOfClass==(multipay[0]+multipay[1]+multipay[2])){
-                            //** when b1=pay1+pay2+pay3 **//
-                            multipayamt[0]=multipay[0]*batch1ClassCost;
-                            multipayamt[1]=multipay[1]*batch1ClassCost;
-                            multipayamt[2]=multipay[2]*batch1ClassCost;
-                            if(typeof multipay[3]!=='undefined'){
-                                 multipayamt[3]=multipay[3]*batch2ClassCost;
-                            }
-                        }
-                        
-                        
-                    }else if(secondselectedNoOfClass!=0 && firstselectedNoOfClass!=0 && thirdselectedNoOfClass!=0){
-                        //** working out for 3 batches **//
-                        var totalClassesSelected=firstselectedNoOfClass+secondselectedNoOfClass+thirdselectedNoOfClass;
-                        if(firstselectedNoOfClass < multipay[0]){
-                            if((firstselectedNoOfClass+secondselectedNoOfClass) < multipay[0]){
-                                //** working on first batch change lies in first payment **//
-                                var thirdbatchFirstpaymentAmount=(multipay[0]-(firstselectedNoOfClass+secondselectedNoOfClass))*batch3ClassCost;
-                                multipayamt[0]=(firstselectedNoOfClass*batch1ClassCost)+(secondselectedNoOfClass*batch2ClassCost)+thirdbatchFirstpaymentAmount;
-                                multipayamt[1]=multipay[1]*batch3ClassCost;
-                                multipayamt[2]=multipay[2]*batch3ClassCost;
-                                if(typeof multipay[3]!=='undefined'){
-                                    multipayamt[3]=multipay[3]*batch3ClassCost;
-                                }
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass)== multipay[0]){
-                                //** working on firstbatch+secondbatch=firstmultipay *//
-                                multipayamt[0]=(firstselectedNoOfClass*batch1ClassCost)+(secondselectedNoOfClass*batch2ClassCost);
-                                multipayamt[1]=multipay[1]*batch3ClassCost;
-                                multipayamt[2]=multipay[2]*batch3ClassCost;
-                                if(typeof multipay[3]!=='undefined'){
-                                    multipayamt[3]=multipay[3]*batch3ClassCost;
-                                }
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass) < (multipay[0]+multipay[1])){
-                                //** working on firstbatch+secondbatch < 2nd multipay **//
-                                multipayamt[0]=(firstselectedNoOfClass*batch1ClassCost)+((multipay[0]-firstselectedNoOfClass)*batch2ClassCost);
-                                multipayamt[1]=((secondselectedNoOfClass-(multipay[0]-firstselectedNoOfClass))*batch2ClassCost)+((multipay[1]-(secondselectedNoOfClass-(multipay[0]-firstselectedNoOfClass)))*batch3ClassCost);
-                                multipayamt[2]=multipay[2]*batch3ClassCost;
-                                if(typeof multipay[3]!=='undefined'){
-                                    multipayamt[3]=multipay[3]*batch3ClassCost;
-                                }
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass)== (multipay[0]+multipay[1])){
-                                //** working on firstbatch+secondbatch == 2nd multipay **//
-                                multipayamt[0]=(firstselectedNoOfClass*batch1ClassCost)+((multipay[0]-firstselectedNoOfClass)*batch2ClassCost);
-                                multipayamt[1]=multipay[1]*batch2ClassCost;
-                                multipayamt[2]=multipay[2]*batch3ClassCost;
-                                if(typeof multipay[3]!=='undefined'){
-                                    multipayamt[3]=multipay[3]*batch3ClassCost;
-                                }
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass) < (multipay[0]+multipay[1]+multipay[2])){
-                                //** working on firstbatch+secondbatch < 3nd multipay **//
-                                multipayamt[0]=(firstselectedNoOfClass*batch1ClassCost)+((multipay[0]-firstselectedNoOfClass)*batch2ClassCost);
-                                multipayamt[1]=multipay[1]*batch2ClassCost;
-                                multipayamt[2]=(((firstselectedNoOfClass+secondselectedNoOfClass)-(multipay[0]+multipay[1]))*batch2ClassCost)+((multipay[2]-((firstselectedNoOfClass+secondselectedNoOfClass)-(multipay[0]+multipay[1])))*batch3ClassCost);
-                                if(typeof multipay[3]!=='undefined'){
-                                    multipayamt[3]=multipay[3]*batch3ClassCost;
-                                }
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass) == (multipay[0]+multipay[1]+multipay[2])){
-                                //** working on firstbatch+secondbatch = 3nd multipay **//
-                                multipayamt[0]=(firstselectedNoOfClass*batch1ClassCost)+((multipay[0]-firstselectedNoOfClass)*batch2ClassCost);
-                                multipayamt[1]=multipay[1]*batch2ClassCost;
-                                multipayamt[2]=multipay[2]*batch2ClassCost;
-                                 if(typeof multipay[3]!=='undefined'){
-                                     multipayamt[3]=multipay[3]*batch3ClassCost;
-                                 } 
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass)<(multipay[0]+multipay[1]+multipay[2]+multipay[3])){
-                                //** working on firstbatch+secondbatch < 4th multipay **//
-                                multipayamt[0]=(firstselectedNoOfClass*batch1ClassCost)+((multipay[0]-firstselectedNoOfClass)*batch2ClassCost);
-                                multipayamt[1]=multipay[1]*batch2ClassCost;
-                                multipayamt[2]=multipay[2]*batch2ClassCost;
-                                if(typeof multipay[3]!=='undefined'){
-                                     multipayamt[3]=((multipay[3]-thirdselectedNoOfClass)*batch2ClassCost)+(thirdselectedNoOfClass*batch3ClassCost);
-                                }
-                            } 
-                        }else if(firstselectedNoOfClass == multipay[0]){
-                                    //** first batch== multipay1**//
-                            if((firstselectedNoOfClass+secondselectedNoOfClass) < (multipay[0]+multipay[1])){
-                                //** first batch change lies in 2nd pay **//
-                                multipayamt[0]=multipay[0]*batch1ClassCost;
-                                multipayamt[1]=(secondselectedNoOfClass*batch2ClassCost)+((multipay[1]-secondselectedNoOfClass)*batch3ClassCost);
-                                multipayamt[2]=multipay[2]*batch3ClassCost;
-                                if(typeof multipay[3]!=='undefined'){
-                                     multipayamt[3]=(multipay[3]*batch3ClassCost);
-                                }
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass)==(multipay[0]+multipay[1])){
-                                //** first batch+ sec batch == 1stpay+2nd pay **//
-                                multipayamt[0]=multipay[0]*batch1ClassCost;
-                                multipayamt[1]=multipay[1]*batch2ClassCost;
-                                multipayamt[2]=multipay[2]*batch3ClassCost;
-                                if(typeof multipay[3]!=='undefined'){
-                                     multipayamt[3]=(multipay[3]*batch3ClassCost);
-                                }
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass) < (multipay[0]+multipay[1]+multipay[2])){
-                                //** first batch+sec batch < 1+2+3 payments change lies in 3rd pay **//
-                                multipayamt[0]=multipay[0]*batch1ClassCost;
-                                multipayamt[1]=multipay[1]*batch2ClassCost;
-                                multipayamt[2]=((secondselectedNoOfClass-multipay[1])*batch2ClassCost)+((multipay[2]-(secondselectedNoOfClass-multipay[1]))*batch3ClassCost);
-                                if(typeof multipay[3]!=='undefined'){
-                                     multipayamt[3]=(multipay[3]*batch3ClassCost);
-                                }
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass)==(multipay[0]+multipay[1]+multipay[2])){
-                                //** first batch + sec btach == 1st+2nd+3rd pay **//
-                                multipayamt[0]=multipay[0]*batch1ClassCost;
-                                multipayamt[1]=multipay[1]*batch2ClassCost;
-                                multipayamt[2]=multipay[2]*batch2ClassCost;
-                                if(typeof multipay[3]!=='undefined'){
-                                     multipayamt[3]=(multipay[3]*batch3ClassCost);
-                                }
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass)<(multipay[0]+multipay[1]+multipay[2]+multipay[3])){
-                                //** first batch+sec batch  3rd pay **//
-                                multipayamt[0]=multipay[0]*batch1ClassCost;
-                                multipayamt[1]=multipay[1]*batch2ClassCost;
-                                multipayamt[2]=multipay[2]*batch2ClassCost;
-                                 if(typeof multipay[3]!=='undefined'){
-                                     multipayamt[3]=((secondselectedNoOfClass-(multipay[1]+multipay[2]))*batch2ClassCost)+(thirdselectedNoOfClass*batch3ClassCost);
-                                }
-                            }
-                        }else if(firstselectedNoOfClass > multipay[0] && firstselectedNoOfClass <  (multipay[0]+multipay[1])){
-                            if((firstselectedNoOfClass+secondselectedNoOfClass) < (multipay[0]+multipay[1]) ){
-                                multipayamt[0]=multipay[0]*batch1ClassCost;
-                                multipayamt[1]=(secondselectedNoOfClass*batch2ClassCost)+((firstselectedNoOfClass-multipay[0])*batch1ClassCost);
-                                multipayamt[2]=(multipay[1]-((firstselectedNoOfClass-multipay[0])+secondselectedNoOfClass))*batch3ClassCost;
-                                if(typeof multipay[3]!=='undefined'){
-                                 multipayamt[3]=(multipay[3]*batch3ClassCost);
-                                }
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass)==(multipay[0]+multipay[1])){
-                                multipayamt[0]=multipay[0]*batch1ClassCost;
-                                multipayamt[1]=(secondselectedNoOfClass*batch2ClassCost)+((multipay[1]-secondselectedNoOfClass)*batch1ClassCost);
-                                multipayamt[2]=multipay[2]*batch3ClassCost;
-                                if(typeof multipay[3]!=='undefined'){
-                                 multipayamt[3]=(multipay[3]*batch3ClassCost);
-                                }
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass) < (multipay[0]+multipay[1]+multipay[2])){
-                                multipayamt[0]=multipay[0]*batch1ClassCost;
-                                multipayamt[1]=(secondselectedNoOfClass-multipay[0])*batch1ClassCost+((multipay[1]-(secondselectedNoOfClass-multipay[0]))*batch2ClassCost);
-                                multipayamt[2]=((thirdselectedNoOfClass-multipay[3])*batch3ClassCost)+(multipay[2]-(thirdselectedNoOfClass-multipay[3])*batch2ClassCost);
-                                if(typeof multipay[3]!=='undefined'){
-                                 multipayamt[3]=(multipay[3]*batch3ClassCost);
-                                }
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass) == (multipay[0]+multipay[1]+multipay[2])){
-                                multipayamt[0]=multipay[0]*batch1ClassCost;
-                                multipayamt[1]=((firstselectedNoOfClass-multipay[0])*batch1ClassCost)+((secondselectedNoOfClass-multipay[2])*batch2ClassCost);
-                                multipayamt[2]=multipay[2]*batch2ClassCost;
-                                if(typeof multipay[3]!=='undefined'){
-                                  multipayamt[3]=multipay[3]*batch3ClassCost;
-                                }
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass) < (multipay[0]+multipay[1]+multipay[2]+multipay[3])){
-                                multipayamt[0]=multipay[0]*batch1ClassCost;
-                                multipayamt[1]=((firstselectedNoOfClass-multipay[0])*batch1ClassCost)+(((multipay[1]+multipay[0])-firstselectedNoOfClass)*batch2ClassCost);
-                                multipayamt[2]=multipay[2]*batch2ClassCost;
-                                if(typeof multipay[3]!=='undefined'){
-                                multipayamt[3]=((multipay[3]-thirdselectedNoOfClass)*batch2ClassCost)+((multipay[3]-(multipay[3]-thirdselectedNoOfClass))*batch3ClassCost);
-                                }
-                            }   
-                        }else if(firstselectedNoOfClass == (multipay[0]+multipay[1])){
-                            if((firstselectedNoOfClass+secondselectedNoOfClass) < (multipay[0]+multipay[1]+multipay[2])){
-                                multipayamt[0]=multipay[0]*batch1ClassCost;
-                                multipayamt[1]=multipay[1]*batch1ClassCost;
-                                multipayamt[2]=(secondselectedNoOfClass*batch2ClassCost)+((multipay[2]-secondselectedNoOfClass)*batch3ClassCost);
-                                if(typeof multipay[3]!=='undefined'){
-                                    multipayamt[3]=multipay[3]*batch3ClassCost;
-                                }
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass)==(multipay[0]+multipay[1]+multipay[2])){
-                                multipayamt[0]=multipay[0]*batch1ClassCost;
-                                multipayamt[1]=multipay[1]*batch1ClassCost;
-                                multipayamt[2]=multipay[2]*batch2ClassCost;
-                                if(typeof multipay[3]!=='undefined'){
-                                    multipayamt[3]=multipay[3]*batch3ClassCost;
-                                }
-                            }else if((firstselectedNoOfClass+secondselectedNoOfClass) > (multipay[0]+multipay[1]+multipay[2])){
-                                multipayamt[0]=multipay[0]*batch1ClassCost;
-                                multipayamt[1]=multipay[1]*batch1ClassCost;
-                                multipayamt[2]=multipay[2]*batch2ClassCost;
-                                if(typeof multipay[3]!=='undefined'){
-                                    multipayamt[3]=((multipay[3]-thirdselectedNoOfClass)*batch2ClassCost)+(thirdselectedNoOfClass*batch3ClassCost);
-                                }
-                            }
-                        }else if(firstselectedNoOfClass == (multipay[0]+multipay[1]+multipay[2])){
-                            if((firstselectedNoOfClass+secondselectedNoOfClass) > (multipay[0]+multipay[1]+multipay[2])){
-                                multipayamt[0]=multipay[0]*batch1ClassCost;
-                                multipayamt[1]=multipay[1]*batch1ClassCost;
-                                multipayamt[2]=multipay[2]*batch1ClassCost;
-                                if(typeof multipay[3]!=='undefined'){
-                                    multipayamt[3]=((secondselectedNoOfClass)*batch2ClassCost)+(thirdselectedNoOfClass*batch3ClassCost);
-                                }
-                            }
-                        }
-                        
-                    }
-                
-                
-                
-                
-                var multipaystring = "";
-                for(var i=0;i<multipay.length;i++){
-                    multipaystring += '<input id="multipayAmount'+(i+1)+'" name="multipayAmount'+multipay[i]+'" readonly value="'+multipayamt[i]+'"  style="float:left;width:60px;" class="form-control input-sm md-input"/>';
-                }
-                //console.log(multipaystring);
-                
-                /*
-					var m = 1;
-					
-					$.each(payments.multipay.pays, function (index, item) {
-						if(item.amount != "undefined"){
-						 multipaystring += '<input id="multipayAmount'+m+'" name="multipayAmount'+m+'" readonly value="'+item.amount+'"  style="float:left;width:60px;" class="form-control input-sm md-input"/>'; 
-						 m++;             
-						}
-		            });
-                    */
-					$("#multipayDivInputs").append(multipaystring);
-					$("#multiPayRadio").prop('disabled',false);
-					$("#multiPayRadio").removeClass('disabled');
-					$("#multiPayRadiolabel").removeClass('disabled');
-                }else{
-                                        
-					$("#multipayDiv").show();
-					$("#multipayDivInputs").empty();
-					$("#multiPayRadio").attr('disabled','true');
-					$("#multiPayRadio").addClass('disabled');
-					$("#multiPayRadiolabel").addClass('disabled');
-                }
-
-
-
-                
-                
                 $('#enrollNow').addClass('disabled');
+                totalCostForpay=(firstselectedNoOfClass*batch1ClassCost)+(secondselectedNoOfClass*batch2ClassCost)+(thirdselectedNoOfClass*batch3ClassCost);
+                $('#selectedPaymentMethod').html('Amount:');
+                $("#finalPaymentDiv").show();
+		$("#singlePayAmountDiv").show();
+		$("#singlePayAmount").val(totalCostForpay);
+		$("#totalAmountToPay").val(totalCostForpay);
+		$("#totalAmountToPaytotals").val(totalCostForpay);
                 
-
-
-					
-					
-					
-				
+                calculateFinalAmount();
+                
+                $("#paymentType").show();
                 
                 
-                /*
-		$.ajax({
-	        type: "POST",
-	        url: "{{URL::to('/quick/getPaymentTypes')}}",
-	        data: {'availableSession': selectedNoOfClass,'batchId':$('#batchCbx').val(),},
-	        dataType:"json",
-	        success: function (response)
-	        {
-	      		//console.log(response);
-				var payments = response.payments;
-
-				//console.log(payments.multipay.eligible);
-
-				$("#singlePayDiv").show();
-				$("#singlePayAmount").val(response.payments.singlepay);
-				$("#singlePayAmountDiv").show();
-
-				
-				$("#paymentType").show();
-				$("#paymentOptions").show(); 
-             */
-                                /*
-				if(payments.bipay.eligible == "YES"){
-
-
-					$("#biPayAmountDiv").show();
-					
-					$("#bipayDiv").show();
-					$("#bipayDivInputs").empty();
-					var bipaystring = "";
-					var i = 1;
-					$.each(payments.bipay.pays, function (index, item) {
-
-						if(item.amount != "undefined"){
-			      		  bipaystring += '<input id="bipayAmount'+i+'" name="bipayAmount'+i+'" readonly value="'+item.amount+'" style="float:left;width:60px;" class="form-control input-sm md-input"/>';   
-			      		  i++;     
-						}       
-		                        });
-					$("#bipayDivInputs").append(bipaystring);
-					$("#biPayRadio").prop('disabled',false)
-					$("#biPayRadio").removeClass('disabled')
-					$("#biPayRadiolabel").removeClass('disabled')
-
-				}else{
-
-					$("#biPayAmountDiv").show();
-					
-					$("#bipayDiv").show();
-					$("#bipayDivInputs").empty();
-
-					//singlePayRadio biPayRadio multiPayRadio
-					
-					$("#biPayRadio").attr('disabled','true')
-					$("#biPayRadio").addClass('disabled')
-					$("#biPayRadiolabel").addClass('disabled')
-				}
-                                */
-                /*                
-                                if(payments.modifiedbipay.elligible == "YES"){
-
-
-					$("#biPayAmountDiv").show();
-					
-					$("#bipayDiv").show();
-					$("#bipayDivInputs").empty();
-					var bipaystring = "";
-					var i = 1;
-					$.each(payments.modifiedbipay.pays, function (index, item) {
-
-						if(item.amount != "undefined"){
-			      		  bipaystring += '<input id="bipayAmount'+i+'" name="bipayAmount'+i+'" readonly value="'+item.amount+'" style="float:left;width:60px;" class="form-control input-sm md-input"/>';   
-			      		  i++;     
-						}       
-		                        });
-					$("#bipayDivInputs").append(bipaystring);
-					$("#biPayRadio").prop('disabled',false)
-					$("#biPayRadio").removeClass('disabled')
-					$("#biPayRadiolabel").removeClass('disabled')
-
-				}else{
-
-					$("#biPayAmountDiv").show();
-					
-					$("#bipayDiv").show();
-					$("#bipayDivInputs").empty();
-
-					//singlePayRadio biPayRadio multiPayRadio
-					
-					$("#biPayRadio").attr('disabled','true')
-					$("#biPayRadio").addClass('disabled')
-					$("#biPayRadiolabel").addClass('disabled')
-				}
-
-
-				
-				if(payments.multipay.eligible === "YES"){
-
-					$("#multipayDiv").show();
-					$("#multipayDivInputs").empty();
-					var m = 1;
-					var multipaystring = "";
-					$.each(payments.multipay.pays, function (index, item) {
-						if(item.amount != "undefined"){
-						 multipaystring += '<input id="multipayAmount'+m+'" name="multipayAmount'+m+'" readonly value="'+item.amount+'"  style="float:left;width:60px;" class="form-control input-sm md-input"/>'; 
-						 m++;             
-						}
-		            });
-					$("#multipayDivInputs").append(multipaystring);
-					$("#multiPayRadio").prop('disabled',false);
-					$("#multiPayRadio").removeClass('disabled');
-					$("#multiPayRadiolabel").removeClass('disabled');
-
-
-				}else{
-
-					$("#multipayDiv").show();
-					$("#multipayDivInputs").empty();
-					$("#multiPayRadio").attr('disabled','true');
-					$("#multiPayRadio").addClass('disabled');
-					$("#multiPayRadiolabel").addClass('disabled');
-				}
-                                
-	      	    $('#enrollNow').addClass('disabled');	
-	        }
+	//if($("#enrollmentOptions").val() == "enrollandpay" ){
                 
-	    });
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		
-		
-	}
 	
 });
 
@@ -883,6 +289,64 @@ $('#cardDetailsDiv3').hide();
 $('#chequeDetailsDiv3').hide();
 $('#cardDetailsDiv4').hide();
 $('#chequeDetailsDiv4').hide();
+
+
+
+
+
+
+
+$("#finalPaymentDiv").hide();
+
+
+function calculateFinalAmount(){
+        
+        var second_child_discount_amt=0;
+	var second_class_discount_amt=0;
+        var finalAmount = (parseFloat($("#totalAmountToPay").val()));
+	
+                          
+                                    var percentAmount = parseFloat($("#totalAmountToPaytotals").val()*DiscountPercentage/100);
+                                    $('#discount').html('<p>Discount:'+DiscountPercentage+"%</p>");
+                            
+                        
+                                $("#discountTextBox").val("-"+percentAmount);
+                                
+                        	finalAmount = parseFloat(finalAmount-percentAmount);
+                                
+                                <?php if($discount_second_child_elligible){ ?>
+                                    
+                                    $('#second_child_discount').html('<p>Sibling Consideration:'+{{$discount_second_child}}+'%</p>');
+                                    $('#second_child_discount_to_form').val({{$discount_second_child}});
+                                    second_child_discount_amt=parseFloat(finalAmount*{{$discount_second_child}}/100);
+                                    $('#second_child_amount').val('-'+second_child_discount_amt);
+                                    finalAmount=parseFloat(finalAmount-second_child_discount_amt);
+                                <?php } ?>
+                                  
+                                <?php if($discount_second_class_elligible){ ?>
+                                    
+                                    $('#second_class_discount').html('<p>Multi Classes:'+{{$discount_second_class}}+'%</p>');
+                                    $('#second_class_discount_to_form').val({{$discount_second_class}});
+                                    second_class_discount_amt=parseFloat(finalAmount*{{$discount_second_class}}/100);
+                                    $('#second_class_amount').val('-'+second_class_discount_amt);
+                                    finalAmount=parseFloat(finalAmount-second_class_discount_amt);
+                                <?php } ?>
+                                
+                                <?php if(!$customermembership){?>
+                                    var finalAmount = finalAmount+parseFloat($("#membershipAmount").val());
+                                <?php }?>
+                        	$("#subtotal").val(Math.round(finalAmount*100)/100);
+                                var tax =(finalAmount*14.5/100);
+                                tax=Math.round(tax*100)/100;
+                                
+                                $("#taxAmount").val(tax);
+                                finalAmount=finalAmount-tax;
+                                finalAmount=Math.round(finalAmount*100)/100;
+                        	$("#grandTotal").val(finalAmount);
+                                $('#discountPercentage').val(DiscountPercentage);
+        
+}
+
 $("input[name='paymentTypeRadio']").change(function (){
 
 	var selectedPaymentType = $("input[type='radio'][name='paymentTypeRadio']:checked").val();
@@ -928,209 +392,21 @@ $("input[name='paymentTypeRadio']").change(function (){
 	}
 	
 });
-
-
-
-
-
-
-$("#finalPaymentDiv").hide();
-
-$("input[name='paymentOptionsRadio']").change(function (){
-
-	//console.log("payment types");
-	$("#finalPaymentDiv").show();
-
-	var selected = $("input[type='radio'][name='paymentOptionsRadio']:checked").val();
-	
-	if(selected == "singlepay"){
-		//console.log(availableSessionCount);
-		
-		$("#singlePayAmountDiv").show();
-		$("#singlePayAmount").val(totalCostForpay);
-		$("#totalAmountToPay").val(totalCostForpay);
-		$("#totalAmountToPaytotals").val(totalCostForpay);
-			
-	}else if(selected == "bipay"){
-		$("#biPayAmountDiv").show();
-		$("#totalAmountToPay").val($("#bipayAmount1").val());
-		$("#totalAmountToPaytotals").val($("#bipayAmount1").val());
-	}
-	else if(selected == "multipay"){
-		$("#biPayAmountDiv").show();
-		$("#totalAmountToPay").val($("#multipayAmount1").val());
-		$("#totalAmountToPaytotals").val($("#multipayAmount1").val());
-	}
-
-	$("#selectedPaymentMethod").html(selected);
-
-	<?php if(!$customermembership){?>
-		$("#membershipAmount").val("2000");
-		$("#membershipAmounttotals").val("2000");
-	<?php }?>
-
-
-/* if(isEligibleTwenty == 'YES'){
-
-		
-		percentAmount = ($("#totalEnrollmentAmount").val()*20/100);
-
-		if(percentAmount < parseInt($("#totalAmountToPaytotals").val())){
-			//applyDiscountOnLastPayment();
-
-			$("#discountPercentage").val('20');
-			$("#discountText").html("20% discount applied");
-			
-		}else{
-
-			$("#discountTextBox").val('0');
-		}
-		
-		
-	}
-
-	if(isEligibleFifty == 'YES'){
-		percentAmount = ($("#totalEnrollmentAmount").val()*50/100);
-
-		if(percentAmount < parseInt($("#totalAmountToPaytotals").val())){
-			$("#discountPercentage").val('50');
-			$("#discountText").html("50% discount applied");
-		}else{
-
-			$("#discountTextBox").val('0');
-		}
-	} */
-	calculateFinalAmount();
-	
-
-	$("#paymentType").show();
-	
-	
-});
-//
-//$(document).on('change', "#discountPercentage", function() {
-//
-//	calculateFinalAmount()
-//	
-//});
-
-
-
-function calculateFinalAmount(){
-        var second_child_discount_amt=0;
-	var second_class_discount_amt=0;
-        <?php if(!$customermembership){?>
-	var finalAmount = (parseFloat($("#totalAmountToPay").val())+parseFloat($("#membershipAmount").val()));
-	<?php }else{?>
-	var finalAmount = (parseFloat($("#totalAmountToPay").val()));
-	<?php }?>
-	//console.log(finalAmount);
-        //var discountPercentage  =  parseInt($("input[name='enrollmentClassesSelect']:checked").attr('discountpercentage'));
-                            
-                            if(DiscountAmount==0){
-                                    var percentAmount = parseFloat($("#totalAmountToPaytotals").val()*DiscountPercentage/100);
-                                    $('#discount').html('<p>Discount:'+DiscountPercentage+"%</p>");
-                            }
-//                            else{
-//                                    var percentAmount=DiscountAmount;
-//                                    $('#discount').html("<p>Discount:Amount</p>");
-//                            }
-                        
-                                $("#discountTextBox").val("-"+percentAmount);
-                                
-                        	finalAmount = parseFloat(finalAmount-percentAmount);
-                                //lol
-                                <?php if($discount_second_child_elligible){ ?>
-                                    
-                                    $('#second_child_discount').html('<p>Sibling Consideration:'+{{$discount_second_child}}+'%</p>');
-                                    second_child_discount_amt=parseFloat(finalAmount*{{$discount_second_child}}/100);
-                                    $('#second_child_amount').val('-'+second_child_discount_amt);
-                                    finalAmount=parseFloat(finalAmount-second_child_discount_amt);
-                                <?php } ?>
-                                  
-                                <?php if($discount_second_class_elligible){ ?>
-                                    
-                                    $('#second_class_discount').html('<p>Multi Classes:'+{{$discount_second_class}}+'%</p>');
-                                    second_class_discount_amt=parseFloat(finalAmount*{{$discount_second_class}}/100);
-                                    $('#second_class_amount').val('-'+second_class_discount_amt);
-                                    finalAmount=parseFloat(finalAmount-second_class_discount_amt);
-                                <?php } ?>
-                                    
-                        	$("#subtotal").val(Math.round(finalAmount*100)/100);
-                                var tax =(finalAmount*14.5/100);
-                                tax=Math.round(tax*100)/100;
-                              
-                                $("#taxAmount").val(tax);
-                                finalAmount=finalAmount-tax;
-                                finalAmount=Math.round(finalAmount*100)/100;
-                        	$("#grandTotal").val(finalAmount);
-                                
-                                $('#discountPercentage').val(DiscountPercentage);
-                               
-        /*
-            $.ajax({
-			type: "POST",
-			url: "{{URL::to('/quick/discount/getdiscount')}}",
-                        data: {'studentId':studentId,'seasonId':$('#SeasonsCbx').val()},
-			dataType: 'json',
-			success: function(response){
-                            console.log(response.status);
-                            console.log(response.discount);
-                            
-                              
-                        }
-             }) ;
-
-	*/
-	/* var percentAmount = 0;
-	$("#discountPercentage").val('0');
-	$("#discountText").html("No discount applied");
-	console.log($("#totalAmountToPaytotals").val());
-	if(isEligibleTwenty == 'YES'){
-
-		
-		percentAmount = ($("#totalEnrollmentAmount").val()*20/100);
-
-		if(percentAmount < parseInt($("#totalAmountToPaytotals").val())){
-			//applyDiscountOnLastPayment();
-
-			$("#discountPercentage").val('20');
-			$("#discountText").html("20% discount applied");
-			$("#discountTextBox").val("-"+percentAmount);
-		}else{
-
-			$("#discountTextBox").val('0');
-		}
-		
-		
-	}
-
-	if(isEligibleFifty == 'YES'){
-		percentAmount = ($("#totalEnrollmentAmount").val()*50/100);
-
-		if(percentAmount < parseInt($("#totalAmountToPaytotals").val())){
-			$("#discountPercentage").val('50');
-			$("#discountText").html("50% discount applied");
-			$("#discountTextBox").val("-"+percentAmount);
-		}else{
-
-			$("#discountTextBox").val('0');
-		}
-	} */
-
-	
-	
-	
-}
-
-
 function applyDiscountOnLastPayment(){
 
 	var selectedOption = $("input[type='radio'][name='paymentOptionsRadio']:checked").val();
 }
 
 
-
+$('#CustomerType').change(function(){
+    if($('#CustomerType').val()=='OldCustomer'){
+        $('#Order-date').css("display","block");
+        //console.log($('#OrderDate').val());
+    }
+    if($('#CustomerType').val()=='NewCustomer'){
+        $('#Order-date').css("display","none");
+    }
+});
 
 $(document).on('change', "#membershipType", function() {
 	//console.log($(this).val());
@@ -1220,6 +496,7 @@ function prepareGetClasses(){
                     $("#messageStudentEnrollmentDiv").html('');
                     $("#availableSessions").html(firstselectedNoOfClass);
                     $("#totalAmount").html((firstselectedNoOfClass*batch1ClassCost));
+                    
                     $("#amountPerSesssion").html(batch1ClassCost);
 	            $("#totalEnrollmentAmount").val(firstselectedNoOfClass*batch1ClassCost);
 	            $("#sessionsTable").show();
@@ -1414,9 +691,9 @@ $.ajax({
 
 function getEligibleClasses(){
     var yearAndMonth= (parseInt(ageYear*12)+parseInt(ageMonth));
-          console.log(ageYear);
-          console.log(ageMonth);
-          console.log(yearAndMonth);
+          //console.log(ageYear);
+          //console.log(ageMonth);
+          //console.log(yearAndMonth);
 	$.ajax({
         type: "POST",
         url: "{{URL::to('/quick/eligibleClassess')}}",
@@ -1587,10 +864,7 @@ function getBatchesBasedOnClasses(selector, from,seasonId){
 var availableSessionCount = 0;
 var eachClassCost=0;
 function getSessionsForClasses(){
-
-	
-
-		$.ajax({
+            $.ajax({
 	        type: "POST",
 	        url: "{{URL::to('/quick/getBatcheSchedules')}}",
 	        data: {'batchId': $('#batchCbx').val(), "enrollmentStartDate":$('#enrollmentStartDate').val(), "enrollmentEndDate":$('#enrollmentEndDate').val(),'seasonId':$('#SeasonsCbx').val()},
@@ -1661,110 +935,6 @@ function enrollnow(){
 }
 
 
-$('#addIntrovisitForm').validator().on('submit', function (e) {
-  if (e.isDefaultPrevented()) {
-    // handle the invalid form...
-  } else {
-    // everything looks good!
-    //alert("introvisit");
-    e.preventDefault();
-	  $.ajax({
-	        type: "POST",
-	        url: "{{URL::to('/quick/addIntroVisit')}}",
-	        data:$("#addIntrovisitForm").serialize(),
-	        //data: {'classId': $("#eligibleClassesCbx").val(), 'batchId':$("#batchCbx").val(), "studentId":studentId},
-	        dataType:"json",
-	        success: function (response)
-	        {
-	        	if(response.status == "success"){
-	            	$("#formBody").hide();
-					$("#introVisitAddMessage").html('<p class="uk-alert uk-alert-success">Introductory visit was added successfully. Please wait till this page reloads</p>');
-					setTimeout(function(){
-					   window.location.reload(1);
-					}, 5000);
-	        	}else{
-	            	
-					$("#formBody").hide();
-	        		$("#introVisitAddMessage").html('<p class="uk-alert uk-alert-danger">Sorry! Introductory visit could not be enrolled.</p>');
-	        	}     	   
-	        }
-	    }); 
-  }
-
-
-//event.preventDefault();
-
-	
-	
-
-	
-});
-
-
-
-
-$(".ivEdit").click(function (){
-
-
-	var ivId = $(this).data('ivid');
-	var ivStatus = $(this).data('ivstatus');
-	$("#iveditSelect").data('iveditid',ivId);
-
-
-	$("#ivEditForm").show();
-	
-	$("#iveditSelect").val(ivStatus);
-
-	$("#introvisitEditDiv").show();
-	$("#saveIntroVisitBtn").show();
-	$("#editIntrovisitModal").modal('show');
-
-
-	
-	
-	
-});
-
-
-
-$("#saveIntroVisitBtn").click(function (){
-	saveIv();
-	
-});
-
-function saveIv(){
-
-
-	//var ivid = $("#iveditSelect").data('iveditid');
-	//var ivstatus = $("#iveditSelect").val();
-
-	$.ajax({
-        type: "POST",
-        url: "{{URL::to('/quick/editIntrovisit')}}",
-        data:{'status':ivstatus,'id':ivid, "customerCommentTxtarea":$("#ivcustomerCommentTxtarea").val(),'reschedule-date':$('#reschedule-date').val(),},
-        //data: {'classId': $("#eligibleClassesCbx").val(), 'batchId':$("#batchCbx").val(), "studentId":studentId},
-        dataType:"json",
-        success: function (response)
-        {
-            
-        	if(response.status == "success"){
-
-        		$("#ivEditForm").hide();
-            	$("#introvisitEditDiv").hide();
-            	$("#saveIntroVisitBtn").hide();
-				$("#introVisitEditMessage").html('<p class="uk-alert uk-alert-success">Introductory visit was added successfully. Please wait till this page reloads</p>');
-				setTimeout(function(){
-				   window.location.reload(1);
-				}, 5000);
-				
-        	}else{
-        		$("#ivEditForm").hide();
-				$("#introvisitEditDiv").hide();
-        		$("#introVisitEditMessage").html('<p class="uk-alert uk-alert-danger">Sorry! Introductory visit could not be enrolled.</p>');
-        	}     	   
-        }
-    }); 
-}
 function ReceivePendingDue(pendingId,pendingAmount,discount){
   $('#pending_id').val(pendingId);
   $('#pending_amt').val(pendingAmount);
@@ -1897,247 +1067,6 @@ $('#receivepayment').click(function(){
        
 });
 
-
-$('#CustomerType').change(function(){
-    if($('#singlePayRadio').prop('checked') == true){
-                if($('#CustomerType').val()=='OldCustomer'){
-                 $('#Order-date').css("display","block");
-                 //console.log($('#OrderDate').val());
-                }
-                if($('#CustomerType').val()=='NewCustomer'){
-                 $('#Order-date').css("display","none");
-                }
-    }
-    if($('#biPayRadio').prop('checked') == true){
-                if($('#CustomerType').val()=='NewCustomer'){
-                
-                 $('#Order-date').css("display","none");
-                 $('#Order-date2').css('display','none');
-                 $('#Order-date3').css('display','none');
-                 $('#Order-date4').css('display','none');
-                }
-                if($('#CustomerType').val()=='OldCustomer'){
-                    $('#Order-date').css('display','block');
-                    $.ajax({
-			type: "POST",
-			url: "{{URL::to('/quick/checkBiPayOrderDate')}}",
-                        data: {'bipayamount1':$('#bipayAmount1').val(),'bipayamount2':$('#bipayAmount2').val(),
-                               'startdate':$('#enrollmentStartDate').val(),'batchid':$('#batchCbx').val(),
-                               'enddate':$('#enrollmentEndDate').val(),'seasonid':$('#SeasonsCbx').val(),},
-			dataType: 'json',
-			success: function(response){
-                            //console.log(response);
-                            if(response.status=='true'){
-                                //console.log(response);
-                             
-                            $('#Order-date2').css('display','block');
-                            $('.Order-Date2').css('display','block');
-                            $('#paymentType2').css('display','block');
-                           }
-                           if(response.status=='false'){
-                               $('#Order-date2').css('display','none');
-                               $('.Order-Date2').css('display','none');
-                               $('#paymentType2').css('display','none');
-                            
-                           }
-                        }
-                    });
-                }
-    }
-    if($('#multiPayRadio').prop('checked') == true){
-                   
-                if($('#CustomerType').val()=='NewCustomer'){
-                 $('#Order-date').css("display","none");
-                 $('#Order-date2').css('display','none');
-                 $('#Order-date3').css('display','none');
-                 $('#Order-date4').css('display','none');
-               
-                }
-                if($('#CustomerType').val()=='OldCustomer'){
-                    $('#Order-date').css('display','block');
-                    $.ajax({
-			type: "POST",
-			url: "{{URL::to('/quick/checkmultiPayOrderDate')}}",
-                        data: {'multipayAmount1':$('#multipayAmount1').val(),'multipayAmount2':$('#multipayAmount2').val(),
-                               'multipayAmount3':$('#multipayAmount3').val(),'multipayAmount4':$('#multipayAmount4').val(),
-                               'startdate':$('#enrollmentStartDate').val(),'batchid':$('#batchCbx').val(),
-                               'enddate':$('#enrollmentEndDate').val(),'seasonid':$('#SeasonsCbx').val(),},
-			dataType: 'json',
-			success: function(response){
-                            console.log('multipay ajax');
-                            console.log(response);
-                            
-                            if(response.status=='two'){
-                                 $('#Order-date2').css('display','block');
-                                 $('.Order-Date2').css('display','block');
-                                 $('#paymentType2').css('display','block');
-                                 
-                            }
-                            if(response.status=='three'){
-                                 $('#Order-date2').css('display','block');
-                                 $('#Order-date3').css('display','block');
-                                 $('.Order-Date2').css('display','block');
-                                 $('#paymentType2').css('display','block');
-                                 $('.Order-Date3').css('display','block');
-                                 $('#paymentType3').css('display','block');
-                     
-                            }
-                            if(response.status=='four'){
-                                 $('#Order-date2').css('display','block');
-                                 $('#Order-date3').css('display','block');
-                                 $('#Order-date4').css('display','block');
-                                 $('.Order-Date2').css('display','block');
-                                 $('#paymentType2').css('display','block');
-                                 $('.Order-Date3').css('display','block');
-                                 $('#paymentType3').css('display','block');
-                                 $('.Order-Date4').css('display','block');
-                                 $('#paymentType4').css('display','block')
-                            }
-                            
-                        }
-                    });
-                }
-    }
-});
-
-
-
-$("input[name='paymentTypeRadioOldCustomer2']").change(function (){
-    var selectedPaymentType2 = $("input[type='radio'][name='paymentTypeRadioOldCustomer2']:checked").val();
-    if(selectedPaymentType2 == "card"){
-		$("#chequeDetailsDiv2").hide();
-		$("#cardDetailsDiv2").show();
-
-
-		$("#cardType2").attr("required",true);
-		$("#card4digits2").attr("required",true);
-		$("#cardBankName2").attr("required",true);
-		$("#cardRecieptNumber2").attr("required",true);
-
-
-		$("#chequeBankName2").attr("required",false);
-		$("#chequeNumber2").attr("required",false);
-
-	}else if(selectedPaymentType2 == "cheque"){
-		$("#chequeDetailsDiv2").show();
-		$("#cardDetailsDiv2").hide();
-
-		$("#cardType2").attr("required",false);
-		$("#card4digits2").attr("required",false);
-		$("#cardBankName2").attr("required",false);
-		$("#cardRecieptNumber2").attr("required",false);
-
-
-		$("#chequeBankName2").attr("required",true);
-		$("#chequeNumber2").attr("required",true);
-	}
-	else if(selectedPaymentType2 == "cash"){
-		$("#chequeDetailsDiv2").hide();
-		$("#cardDetailsDiv2").hide();
-
-		$("#cardType2").attr("required",false);
-		$("#card4digits2").attr("required",false);
-		$("#cardBankName2").attr("required",false);
-		$("#cardRecieptNumber2").attr("required",false);
-
-
-		$("#chequeBankName2").attr("required",false);
-		$("#chequeNumber2").attr("required",false);
-	}
-});
-
-
-$("input[name='paymentTypeRadioOldCustomer3']").change(function (){
-    var selectedPaymentType3 = $("input[type='radio'][name='paymentTypeRadioOldCustomer3']:checked").val();
-    if(selectedPaymentType3 == "card"){
-		$("#chequeDetailsDiv3").hide();
-		$("#cardDetailsDiv3").show();
-
-
-		$("#cardType3").attr("required",true);
-		$("#card4digits3").attr("required",true);
-		$("#cardBankName3").attr("required",true);
-		$("#cardRecieptNumber3").attr("required",true);
-
-
-		$("#chequeBankName3").attr("required",false);
-		$("#chequeNumber3").attr("required",false);
-
-	}else if(selectedPaymentType3 == "cheque"){
-		$("#chequeDetailsDiv3").show();
-		$("#cardDetailsDiv3").hide();
-
-		$("#cardType3").attr("required",false);
-		$("#card4digits3").attr("required",false);
-		$("#cardBankName3").attr("required",false);
-		$("#cardRecieptNumber3").attr("required",false);
-
-
-		$("#chequeBankName3").attr("required",true);
-		$("#chequeNumber3").attr("required",true);
-	}
-	else if(selectedPaymentType3 == "cash"){
-		$("#chequeDetailsDiv3").hide();
-		$("#cardDetailsDiv3").hide();
-
-		$("#cardType3").attr("required",false);
-		$("#card4digits3").attr("required",false);
-		$("#cardBankName3").attr("required",false);
-		$("#cardRecieptNumber3").attr("required",false);
-
-
-		$("#chequeBankName3").attr("required",false);
-		$("#chequeNumber3").attr("required",false);
-	}
-});
-
-
-$("input[name='paymentTypeRadioOldCustomer4']").change(function (){
-    var selectedPaymentType4 = $("input[type='radio'][name='paymentTypeRadioOldCustomer4']:checked").val();
-    if(selectedPaymentType4 == "card"){
-		$("#chequeDetailsDiv4").hide();
-		$("#cardDetailsDiv4").show();
-
-
-		$("#cardType4").attr("required",true);
-		$("#card4digits4").attr("required",true);
-		$("#cardBankName4").attr("required",true);
-		$("#cardRecieptNumber4").attr("required",true);
-
-
-		$("#chequeBankName4").attr("required",false);
-		$("#chequeNumber4").attr("required",false);
-
-	}else if(selectedPaymentType4 == "cheque"){
-		$("#chequeDetailsDiv4").show();
-		$("#cardDetailsDiv4").hide();
-
-		$("#cardType4").attr("required",false);
-		$("#card4digits4").attr("required",false);
-		$("#cardBankName4").attr("required",false);
-		$("#cardRecieptNumber4").attr("required",false);
-
-
-		$("#chequeBankName4").attr("required",true);
-		$("#chequeNumber4").attr("required",true);
-	}
-	else if(selectedPaymentType4 == "cash"){
-		$("#chequeDetailsDiv4").hide();
-		$("#cardDetailsDiv4").hide();
-
-		$("#cardType4").attr("required",false);
-		$("#card4digits4").attr("required",false);
-		$("#cardBankName4").attr("required",false);
-		$("#cardRecieptNumber4").attr("required",false);
-
-
-		$("#chequeBankName4").attr("required",false);
-		$("#chequeNumber4").attr("required",false);
-	}
-});
-
-
-
 $('#singlePayRadio').change(function(){
    // console.log('changed');
    $('#CustomerType').val("NewCustomer"); 
@@ -2146,47 +1075,7 @@ $('#singlePayRadio').change(function(){
    $('#Order-date2').css('display','none');
    $('#Order-date3').css('display','none');
 });
-$('#biPayRadio').change(function(){
-   // console.log('changed');
-     $('#CustomerType').val("NewCustomer");
-     $('#Order-date').css('display','none');
-   $('#Order-date1').css('display','none');
-   $('#Order-date2').css('display','none');
-   $('#Order-date3').css('display','none');
-});
-$('#multiPayRadio').change(function(){
-   // console.log('changed');
-     $('#CustomerType').val("NewCustomer");
-    $('#Order-date').css('display','none');
-   $('#Order-date1').css('display','none');
-   $('#Order-date2').css('display','none');
-   $('#Order-date3').css('display','none');
-});
 
-
-// for introvisit
-
-//$(document).ready(function(){
-//    $.ajax({
-//			type: "POST",
-//			url: "{{URL::to('/quick/season/getSeasonsForEnrollment')}}",
-//                        data: {},
-//			dataType: 'json',
-//			success: function(response){
-//                           // console.log(response.season_data);
-//                            
-//                            $(".SeasonsCbx").empty("");      	  
-//                            string = '';
-//                            for(var i=0;i<response.season_data.length;i++){
-//                                string += '<option value='+response.season_data[i]['id']+'>'+response.season_data[i]['season_name']+'</option>';
-//                            }
-//                            
-//                            $('.SeasonsCbx').append(string); 
-//                            getEligibleClasses();
-//                           // console.log(string);
-//                        }
-//             })  ;
-//});
 $('#SeasonsCbx').change(function(){
     $.ajax({
 			type: "POST",
@@ -2262,7 +1151,7 @@ $.ajax({
                             url: "{{URL::to('/quick/insertEstimateDetails')}}",
                             data: {'customer_id':{{$student->customer_id}},'student_id':studentId,'season_id':$('#SeasonsCbx').val(),
                                    'batch_id':$('#batchCbx').val(),'class_id':$('#eligibleClassesCbx').val(),
-                                   'enroll_start_date':response.enrollment_start_date,'enroll_end_date':response.enrollment_end_date,
+                                   'enroll_start_date':response.enrollment_start_date,'enroll_end_date':response.batch_Schedule_data[selectedNoOfClass-1]['schedule_date'],
                                     'total_selected_classes':selectedNoOfClass,'no_of_available_classes':response.classCount,
                                     'no_of_opted_classes':selectedNoOfClass,'batch_amount':response.classAmount,'estimate_master_no':estimate_master_no},
                             dataType: 'json',
@@ -2491,7 +1380,7 @@ $.ajax({
                             data: {'customer_id':{{$student->customer_id}},'student_id':studentId,'season_id':$('#SeasonsCbx3').val(),
                                    'batch_id':$('#batchCbx3').val(),'class_id':$('#eligibleClassesCbx3').val(),
                                    'enroll_start_date':response.enrollment_start_date,'enroll_end_date':response.enrollment_end_date,
-                                    'total_selected_classes':selectedNoOfClass,'no_of_available_classes':selectedNoOfClass,
+                                    'total_selected_classes':selectedNoOfClass,'no_of_available_classes':response.classCount,
                                     'no_of_opted_classes':thirdselectedNoOfClass,'batch_amount':response.classAmount,'estimate_master_no':estimate_master_no},
                             dataType: 'json',
                             success: function(response){
@@ -3364,14 +2253,7 @@ $('#receivecardRecieptNumber').change(function(){
 									<td><span id="totalAmount"></span></td>
 									<td>
 										<button type="button" class="btn btn-sm btn-primary"
-											id="enrollmentOptions">View payment options</button> <!-- <button type="button" class="btn btn-sm btn-primary" id="enrollNow" >Enroll now</button>
-		       							<button type="button" class="btn btn-sm btn-success" id="enrollAndPay">Enroll and pay</button> -->
-										<!-- <select id="enrollmentOptions" class="input-sm md-input" style='padding:0px; font-weight:bold;color: #727272;'>
-	                                		<option value="enroll">Enroll</option>
-	                                		<option value="enrollandpay">Enroll And Pay</option>
-	                                		
-	                                		
-	                                	</select> -->
+											id="enrollmentOptions">View payment options</button> 
 									</td>
 								</tr>
 							</tbody>
@@ -3529,6 +2411,8 @@ $('#receivecardRecieptNumber').change(function(){
                                                                             <td><input style="font-weight: bold" type="text"
 											name="second_child_amount" id="second_child_amount" readonly value="0"
 											class="form-control input-sm md-input" />
+                                                                                <input type = "hidden" id = "second_child_discount_to_form" name = "second_child_discount_to_form">
+
 											
                                                                             </td>
                                                                         </tr>
@@ -3537,6 +2421,7 @@ $('#receivecardRecieptNumber').change(function(){
                                                                             <td><input style="font-weight: bold" type="text"
 											name="second_class_amount" id="second_class_amount" readonly value="0"
 											class="form-control input-sm md-input" />
+                                                                                <input type = "hidden" id = "second_class_discount_to_form" name = "second_class_discount_to_form">
 											
                                                                             </td>
                                                                         </tr>

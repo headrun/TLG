@@ -150,7 +150,7 @@ Route::group(array('prefix' => 'quick'), function() {
 	 * Classes related Ajax calls
 	 * --------------------------------------------------------------------------------------------------------------------------------------
 	 */
-        
+        Route::any('getClassesByCourseId', "ClassesController@getClassesByCourseId");
 	Route::any('classesbymaster', "ClassesController@classesbymaster");	
 	Route::any('classesbyCourse', "ClassesController@classesbyCourse");
 	Route::any('eligibleClassess', "ClassesController@eligibleClassess");

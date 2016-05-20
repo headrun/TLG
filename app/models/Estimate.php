@@ -22,7 +22,7 @@ class Estimate extends \Eloquent {
 		$InsertEstimatedData->no_of_availbale_classes = $data['no_of_available_classes'];
 		$InsertEstimatedData->no_of_opted_classes = $data['no_of_opted_classes'];
 		$InsertEstimatedData->number_of_classes_used = 0;
-		$InsertEstimatedData->batch_amount = $data['batch_amount'];
+		$InsertEstimatedData->base_price = $data['batch_amount'];
 		$InsertEstimatedData->class_use_status = '';
 		$InsertEstimatedData->is_cancelled = 0;
                 $InsertEstimatedData->created_at = date("Y-m-d H:i:s");

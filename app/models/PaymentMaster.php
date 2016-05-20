@@ -6,6 +6,8 @@ class PaymentMaster extends \Eloquent {
         
   public static function createPaymentMaster($inputs){
       $paymentmaster=new PaymentMaster();
+      $paymentmaster->customer_id=$inputs->customer_id;
+      $paymentmaster->student_id=$inputs->student_id;
       $paymentmaster->payment_no=(PaymentMaster::max('payment_no'))+1;
       $paymentmaster->payment_due_id=$inputs->id;
       $paymentmaster->created_by=Session::get('userId');
@@ -14,6 +16,8 @@ class PaymentMaster extends \Eloquent {
   }
   public static function createPaymentMasterWithSamePaymentNo($inputs,$payment_no){
       $paymentmaster=new PaymentMaster();
+      $paymentmaster->customer_id=$inputs->customer_id;
+      $paymentmaster->student_id=$inputs->student_id;
       $paymentmaster->payment_no=$payment_no;
       $paymentmaster->payment_due_id=$inputs->id;
       $paymentmaster->created_by=Session::get('userId');

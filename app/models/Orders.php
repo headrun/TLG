@@ -27,17 +27,17 @@ class Orders extends \Eloquent {
 		$order = new Orders();
 		
 		$order->customer_id     = $input['customer_id'];
-                if(isset($input['seasonId'])){
-                          $order->season_id       = $input['seasonId'];
-                }
+//                if(isset($input['seasonId'])){
+//                          $order->season_id       = $input['seasonId'];
+//                }
               
 		if(isset($input['student_id'])){
 			$order->student_id      = $input['student_id'];
 		}
 		
-		if(isset($input['student_classes_id'])){
-			$order->student_classes_id     = $input['student_classes_id'];
-		}
+//		if(isset($input['student_classes_id'])){
+//			$order->student_classes_id     = $input['student_classes_id'];
+//		}
                 if(isset($input['payment_no'])){
                         $order->payment_no= $input['payment_no'];
                 }

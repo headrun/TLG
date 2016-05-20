@@ -22,13 +22,36 @@ class PaymentDues extends \Eloquent {
 		$paymentDues->customer_id          = $inputs['customer_id'];
 		$paymentDues->batch_id             = $inputs['batch_id'];
 		$paymentDues->class_id             = $inputs['class_id'];
-                $paymentDues->student_class_id     =$inputs['student_class_id'];
+                $paymentDues->student_class_id     = $inputs['student_class_id'];
+                if(isset($inputs['membership_id'])){
+                    $paymentDues->membership_id=$inputs['membership_id'];
+                    $paymentDues->membership_type_id=$inputs['membership_type_id'];
+                    $paymentDues->membership_amount=$inputs['membership_amount'];
+                }
 		$paymentDues->payment_due_amount   = $inputs['payment_due_amount'];
-		$paymentDues->payment_type         = $inputs['payment_type'];
+                if(isset($inputs['payment_due_amount_after_discount'])){
+                $paymentDues->payment_due_amount_after_discount   = $inputs['payment_due_amount_after_discount'];
+                }
+		$paymentDues->payment_type         = 'singlepay';
                 $paymentDues->payment_due_for      = 'enrollment';
 		$paymentDues->payment_status       = $inputs['payment_status'];
 		$paymentDues->selected_sessions    = $inputs['selected_sessions'];
-                if(isset($inputs['each_class_cost'])){
+                if(isset($inputs['payment_batch_amount'])){
+                    $paymentDues->payment_batch_amount=$inputs['payment_batch_amount'];
+                }
+                if(isset($inputs['discount_multipleclasses_amount'])){
+                $paymentDues->discount_multipleclasses_amount    = $inputs['discount_multipleclasses_amount'];
+                }
+                if(isset($inputs['discount_sibling_amount'])){
+                $paymentDues->discount_sibling_amount    = $inputs['discount_sibling_amount'];
+                }
+                if(isset($inputs['discount_sibling_applied'])){
+                 $paymentDues->discount_sibling_applied=$inputs['discount_sibling_applied'];
+                }
+                if(isset($inputs['discount_multipleclasses_applied'])){
+                 $paymentDues->discount_multipleclasses_applied=$inputs['discount_multipleclasses_applied'];
+                }
+               if(isset($inputs['each_class_cost'])){
                   $paymentDues->each_class_amount=$inputs['each_class_cost'];
                 }
                 if(isset($inputs['selected_order_sessions'])){

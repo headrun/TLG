@@ -503,7 +503,7 @@ class BatchesController extends \BaseController {
              $base_price=ClassBasePrice::where('base_price_no','=',$base_price_no[0]['base_price_no'])->get();
              $base_price=$base_price[0]['base_price'];
             if($batchClassesCount){
-                return Response::json(array('status'=>'success','classCount'=>$batchClassesCount,'lastdate'=>$date->toDateString(),'classAmount'=>$base_price,'enrollment_end_date'=>$batchClassesData[count($batchClassesData)-1]['schedule_date'],'enrollment_start_date'=>$batchClassesData[0]['schedule_date']));
+                return Response::json(array('status'=>'success','classCount'=>$batchClassesCount,'lastdate'=>$date->toDateString(),'classAmount'=>$base_price,'enrollment_end_date'=>$batchClassesData[count($batchClassesData)-1]['schedule_date'],'enrollment_start_date'=>$batchClassesData[0]['schedule_date'],'batch_Schedule_data'=>$batchClassesData));
             }else{
                 return Response::json(array('status'=>'failure'));
             }
