@@ -909,7 +909,7 @@ function enrollnow(){
         success: function (response)
         {
             console.log(response);
-                /*
+                
         	if(response.status == "success"){
                         
                 
@@ -928,7 +928,7 @@ function enrollnow(){
         	}else{ 
                         //$("#messageStudentEnrollmentDiv").hide();
         		$("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-danger">Sorry! Student could not be enrolled.</p>');
-        	} */    	   
+        	}    	   
         }
     }); 
 	

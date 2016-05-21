@@ -245,7 +245,7 @@ class StudentsController extends \BaseController {
         
         public function enrollKid2(){
 		$inputs = Input::all();
-                $final_payment_no;
+                $final_payment_master_no;
 		//return Response::json(array('status'=>'success','inputs'=>$inputs));
                 $getEstimateDetails =  Estimate::where('estimate_master_no', '=', $inputs['estimate_master_no'])
 										->where('is_cancelled', '!=', '1')
@@ -253,6 +253,15 @@ class StudentsController extends \BaseController {
 										->get();
                 //** checking if it is a one batch **//
                 if(count($getEstimateDetails) == 1){
+                    
+                    $batch_data=  BatchSchedule::where('batch_id','=',$getEstimateDetails[0]['batch_id'])
+                                                 ->where('schedule_date','>=',$getEstimateDetails[0]['enroll_start_date'])
+                                                 ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                 ->where('season_id','=',$getEstimateDetails[0]['season_id'])
+                                                 ->where('holiday','!=',1)  
+                                                 ->take($getEstimateDetails[0]['no_of_opted_classes'])
+                                                 ->get();
+                    
                     $studentClasses['classId']               = $getEstimateDetails[0]['class_id'];
                     $studentClasses['batchId']               = $getEstimateDetails[0]['batch_id'];
                     $studentClasses['studentId']             = $getEstimateDetails[0]['student_id'];
@@ -349,18 +358,44 @@ class StudentsController extends \BaseController {
                     
                     $update_payment_due = PaymentDues::find($sendPaymentDetailsToInsert->id);
                     $update_payment_due->payment_no=$sendPaymentMasterDetailsToInsert->payment_no;
+                    $final_payment_master_no=$sendPaymentMasterDetailsToInsert->payment_no;
                     $update_payment_due->save();
 
                     $updatePaymentMasterTable = PaymentMaster::find($sendPaymentMasterDetailsToInsert->id);
                     $updatePaymentMasterTable->order_id = $sendOrderDetailsToInsert->id;
                     $updatePaymentMasterTable->save();
                 
+                    //** working on the payment_followups **//
+                    
+                    if(count($batch_data) >= 5){
+                        $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
+                        //creating logs/followup for first payment
+                        $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
+                        $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
+                        $customer_log_data['franchisee_id']=Session::get('franchiseId');
+                        $customer_log_data['paymentfollowup_id']=$payment_followup_data1->id;
+                        $customer_log_data['followup_type']='PAYMENT';
+                        $customer_log_data['followup_status']='REMINDER_CALL';
+                        $customer_log_data['comment_type']='VERYINTERESTED';
+                        $customer_log_data['reminderDate']=$batch_data[count($batch_data)-2]['schedule_date'];
+                        Comments::addSinglePayComment($customer_log_data);
+                    }
 		
 
 		
             	                
 		//** checking if it is a 2 batch **//
 		}elseif (count($getEstimateDetails) == 2) {
+                        for($i=0;$i<2;$i++){
+                         $batch_data[$i]=BatchSchedule::where('batch_id','=',$getEstimateDetails[$i]['batch_id'])
+                                                 ->where('schedule_date','>=',$getEstimateDetails[$i]['enroll_start_date'])
+                                                 ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                 ->where('season_id','=',$getEstimateDetails[$i]['season_id'])
+                                                 ->where('holiday','!=',1)  
+                                                 ->take($getEstimateDetails[$i]['no_of_opted_classes'])
+                                                 ->get();
+                    
+                        }
 			
 				
                             for ($i=0; $i<2 ; $i++) { 
@@ -442,6 +477,7 @@ class StudentsController extends \BaseController {
                                         //updating payment_dues
                                 	$update_payment_due1 = PaymentDues::find($sendPaymentDetailsToInsert->id);
                                         $update_payment_due1->payment_no=$sendPaymentMasterDetailsToInsert2['payment_no'];
+                                        $final_payment_master_no=$sendPaymentMasterDetailsToInsert2['payment_no'];
                                         $update_payment_due1->save();
                                         
                                         //updating order_id to payment_master for 1st batch
@@ -488,10 +524,47 @@ class StudentsController extends \BaseController {
                                     $sendOrderDetailsToInsert = Orders::createOrder($order);
                                 }
 		            }
+                            
+                            
+                    //** working on the payment_followups **//
+                    
+                    if((count($batch_data[0]) + count($batch_data[1])) >= 5){
+                        $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
+                        //creating logs/followup for first payment
+                        $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
+                        $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
+                        $customer_log_data['franchisee_id']=Session::get('franchiseId');
+                        $customer_log_data['paymentfollowup_id']=$payment_followup_data1->id;
+                        $customer_log_data['followup_type']='PAYMENT';
+                        $customer_log_data['followup_status']='REMINDER_CALL';
+                        $customer_log_data['comment_type']='VERYINTERESTED';
+                        if(count($batch_data[1])>=3){
+                        $customer_log_data['reminderDate']=$batch_data[1][count($batch_data[1])-2]['schedule_date'];
+                        }else{
+                            if(count($batch_data[1])==2){
+                                 $customer_log_data['reminderDate']=$batch_data[0][count($batch_data[0])-1]['schedule_date'];
+                            }
+                        }
+                        Comments::addSinglePayComment($customer_log_data);
+                    }
+		
+
 		            
 		//** checking if it is a 3 batch **//
                 }elseif (count($getEstimateDetails) == 3) {
-			
+                         
+                            for($i=0;$i<3;$i++){
+                                $batch_data[$i]=BatchSchedule::where('batch_id','=',$getEstimateDetails[$i]['batch_id'])
+                                                 ->where('schedule_date','>=',$getEstimateDetails[$i]['enroll_start_date'])
+                                                 ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                 ->where('season_id','=',$getEstimateDetails[$i]['season_id'])
+                                                 ->where('holiday','!=',1)  
+                                                 ->take($getEstimateDetails[$i]['no_of_opted_classes'])
+                                                 ->get();
+                            }
+                    
+                    
+                    
 				//return Response::json(array('status'=>'vasu', $inputs));
                             for ($i=0; $i<3 ; $i++) { 
                                 $studentClasses[$i]['classId']               = $getEstimateDetails[$i]['class_id'];
@@ -572,6 +645,7 @@ class StudentsController extends \BaseController {
                                 	//** updating back to paymentdues **//
                                 	$update_payment_due1 = PaymentDues::find($sendPaymentDetailsToInsert->id);
                                         $update_payment_due1->payment_no=$sendPaymentMasterDetailsToInsert2->payment_no;//$sendPaymentMasterDetailsToInsert2->payment_no;
+                                        $final_payment_master_no=$sendPaymentMasterDetailsToInsert2->payment_no;
                                         $update_payment_due1->save();
                                          
                                             //**updating payment_no to order table **// 
@@ -627,9 +701,79 @@ class StudentsController extends \BaseController {
 		                        
                                                             
 			}
-			
+			//** working on the payment_followups **//
+                    
+                    if((count($batch_data[0]) + count($batch_data[1])+ count($batch_data[2])) >= 5){
+                        $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
+                        //creating logs/followup for first payment
+                        $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
+                        $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
+                        $customer_log_data['franchisee_id']=Session::get('franchiseId');
+                        $customer_log_data['paymentfollowup_id']=$payment_followup_data1->id;
+                        $customer_log_data['followup_type']='PAYMENT';
+                        $customer_log_data['followup_status']='REMINDER_CALL';
+                        $customer_log_data['comment_type']='VERYINTERESTED';
+                        
+                        $customer_log_data['reminderDate']=$batch_data[2][count($batch_data[2])-2]['schedule_date'];
+                        if(count($batch_data[2])>=3){
+                        $customer_log_data['reminderDate']=$batch_data[2][count($batch_data[2])-2]['schedule_date'];
+                        }else{
+                            if(count($batch_data[2])==2){
+                                 $customer_log_data['reminderDate']=$batch_data[1][count($batch_data[0])-1]['schedule_date'];
+                            }
+                        }
+                        
+                        Comments::addSinglePayComment($customer_log_data);
+                    }
+                    
+                        
 		}
-                return Response::json(array('status'=>'success','inputs'=>'WORKING'));
+               // return Response::json(array("status"=>"success",'printUrl'=>''));
+                
+                if(isset($inputs['emailOption']) && $inputs['emailOption'] == 'yes'){
+                    $totalSelectedClasses = '';
+                    $totalAmountForAllBatch = '';
+                    $paymentDueDetails = PaymentDues::where('payment_no', '=', $final_payment_master_no)->get();
+                    for($i = 0; $i < count($paymentDueDetails); $i++){
+			$totalSelectedClasses = $totalSelectedClasses + $paymentDueDetails[$i]['selected_sessions'];
+			$getBatchNname[]  = Batches::where('id', '=', $paymentDueDetails[$i]['batch_id'])->get();
+			$getSeasonName[]  = Seasons::where('id', '=', $paymentDueDetails[$i]['season_id'])->get();
+			$selectedSessionsInEachBatch[] = $paymentDueDetails[$i]['selected_sessions'];
+			$classStartDate[] = $paymentDueDetails[$i]['start_order_date'];
+			$classEndDate[] = $paymentDueDetails[$i]['end_order_date'];
+			$totalAmountForEachBach[] = (int)$paymentDueDetails[$i]['payment_batch_amount'];
+			$totalAmountForAllBatch = $totalAmountForAllBatch + (int)$paymentDueDetails[$i]['payment_batch_amount'];
+                    }   
+                    $getCustomerName = Customers::select('customer_name','customer_email')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
+                    //return Response::json(array($getCustomerName));
+                    $getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
+                    $paymentMode = Orders::where('payment_no', '=', $final_payment_master_no)->get();
+                    $data = compact('totalSelectedClasses', 'getBatchNname',
+                        'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate',
+                        'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName',
+                        'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode');
+                    Mail::send('emails.account.enrollment', $data, function($msg) use ($data){
+					
+				$msg->from(Config::get('constants.EMAIL_ID'), Config::get('constants.EMAIL_NAME'));
+				$msg->to($data['getCustomerName'][0]['customer_email'], $data['getCustomerName'][0]['customer_name'])->subject('The Little Gym - Kids Enrollment Successful');
+			
+			});
+                }
+                
+                if(isset($inputs['invoicePrintOption']) && $inputs['invoicePrintOption'] == 'yes'){
+                    
+                    
+			$printUrl = url().'/orders/print/'.Crypt::encrypt($final_payment_master_no);
+		}else{
+			$printUrl = "";
+		}
+		
+                
+                if($final_payment_master_no){
+			return Response::json(array("status"=>"success", "printUrl"=>$printUrl));
+		}else{
+			return Response::json(array("status"=>"failed"));
+            	}
 	}
         
         public function enrollKid(){

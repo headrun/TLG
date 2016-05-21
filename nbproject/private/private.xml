@@ -5,7 +5,6 @@
         <group>
             <file>file:/C:/wamp/www/TLG/app/routes.php</file>
             <file>file:/C:/wamp/www/TLG/app/controllers/BatchesController.php</file>
-            <file>file:/C:/wamp/www/TLG/app/views/pages/classes/add_new_class_franchise.blade.php</file>
             <file>file:/C:/wamp/www/TLG/app/controllers/EstimateController.php</file>
             <file>file:/C:/wamp/www/TLG/app/views/pages/students/details.blade.php</file>
             <file>file:/C:/wamp/www/TLG/app/models/Estimate.php</file>

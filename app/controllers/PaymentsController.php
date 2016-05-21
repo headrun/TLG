@@ -247,32 +247,33 @@ class PaymentsController extends \BaseController {
 	
 	
 	
-	public function printOrder($orderid){
-		
-		$id = Crypt::decrypt($orderid);
-		
-		$orders = Orders::with('Customers', 'Students', 'StudentClasses')->where('id', '=', $id)->get();
-		$orders = $orders['0'];
-		$paymentDues = PaymentDues::where('id', '=', $orders->payment_dues_id)->get();
-		$batchDetails = Batches::where('id', '=', $orders->StudentClasses->batch_id)->get();
-		$class = Classes::where('id', '=', $orders->StudentClasses->class_id)
-                                  ->where('franchisee_id', '=', Session::get('franchiseId'))->first();
-		$customerMembership = CustomerMembership::getCustomerMembership($orders->customer_id);
-	
-	
-	
-	
-/* 	echo "<pre>";
-	 print_r($paymentDues);
-	exit(); */  
-	
-	$data = compact('orders','class', 'paymentDues', 'batchDetails','customerMembership');
-		
-		//$data = compact('orders','class');
-		
+	public function printOrder($id){
+		$totalSelectedClasses = '';
+		$totalAmountForAllBatch = '';
+		$payment_no = Crypt::decrypt($id);
+		$paymentDueDetails = PaymentDues::where('payment_no', '=', $payment_no)->get();
+		for($i = 0; $i < count($paymentDueDetails); $i++){
+			$totalSelectedClasses = $totalSelectedClasses + $paymentDueDetails[$i]['selected_sessions'];
+			$getBatchNname[]  = Batches::where('id', '=', $paymentDueDetails[$i]['batch_id'])->get();
+			$getSeasonName[]  = Seasons::where('id', '=', $paymentDueDetails[$i]['season_id'])->get();
+			$selectedSessionsInEachBatch[] = $paymentDueDetails[$i]['selected_sessions'];
+			$classStartDate[] = $paymentDueDetails[$i]['start_order_date'];
+			$classEndDate[] = $paymentDueDetails[$i]['end_order_date'];
+			$totalAmountForEachBach[] = (int)$paymentDueDetails[$i]['payment_batch_amount'];
+			$totalAmountForAllBatch = $totalAmountForAllBatch + (int)$paymentDueDetails[$i]['payment_batch_amount'];
+		}
+		$getCustomerName = Customers::select('customer_name')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
+		$getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
+		$paymentMode = Orders::where('payment_no', '=', $payment_no)->get();
+
+
+		//return $paymentMode[0]['membership_type'];
+                $data = compact('totalSelectedClasses', 'getBatchNname',
+		 'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate',
+		  'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName',
+		   'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode');
 		return View::make('pages.orders.printorder', $data);
-		
-		
+		//return $discounts_amount;	
 	}
 	
 	

@@ -141,7 +141,7 @@ class Comments extends \Eloquent {
             $comments->comment_type=$inputs['comment_type'];
             $comments->created_by=Session::get('userId');
             $comments->created_at= date('Y-m-d H:i:s');
-            $comments->log_text="Brushup call for the kid";
+            $comments->log_text="Payment call for the kid";
             $comments->paymentfollowup_id=$inputs['paymentfollowup_id'];
             $comments->reminder_date=$inputs['reminderDate'];
             $comments->save();
