@@ -117,7 +117,11 @@ class Classes extends \Eloquent {
 
 
         static function InsertNewClassFromFranchise($data){
-        
+        	
+        	if (classes::where('course_id', '=', $data['Course_id'])->where('class_name', '=', $data['className'])->exists()) {
+        		return "exist";
+        	}else{
+
         	$insert = new classes();
         	$insert->class_name = $data['className'];
         	$getSlug = ClassesMaster::select('slug','id')->where('class_name', '=', $data['className'])->get();
@@ -131,6 +135,7 @@ class Classes extends \Eloquent {
         	$insert->updated_by = Session::get('userId');
         	$insert->save();
         	return $insert;
+        }
 
         }
 

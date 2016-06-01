@@ -69,7 +69,9 @@ class Orders extends \Eloquent {
                     $order->payment_mode    = $input['payment_mode'];
                 }
                 
-		
+		if(isset($input['tax_amount'])){
+                    $order->tax_amount  =$input['tax_amount'];
+                 }
 		
 		$order->amount          = $input['amount'];
 		$order->order_status    = $input['order_status'];

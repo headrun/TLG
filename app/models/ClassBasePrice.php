@@ -10,7 +10,9 @@ class ClassBasePrice extends \Eloquent {
     
     public static function insertBasePrice($inputs){
         $base_price=new ClassBasePrice();
-        $base_price->base_price_no=(ClassBasePrice::max('base_price_no')+1);
+        $temp=ClassBasePrice::where('franchise_id','=',Session::get('franchiseId'))->max('base_price_no');
+        $temp=$temp+1;
+        $base_price->base_price_no=$temp;
         $base_price->base_price=$inputs['base_price'];
         $base_price->franchise_id=Session::get('franchiseId');
         $base_price->created_by=Session::get('userId');

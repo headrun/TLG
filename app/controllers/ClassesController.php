@@ -25,7 +25,7 @@ class ClassesController extends \BaseController {
 		$inputs = Input::all();
 		$send_details = Classes::InsertNewClassFromFranchise($inputs);
 		if($send_details){
-			return Response::json(array('status'=> 'success', $send_details));
+			return Response::json(array('status'=> 'success', 'test'=> $send_details));
 		}else{
 			return Response::json(array('status'=> 'failure', $send_details));
 		}

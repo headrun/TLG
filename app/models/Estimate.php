@@ -35,4 +35,10 @@ class Estimate extends \Eloquent {
             return Estimate::where('id', '=', $id)->update('is_cancelled','1');
         }
 
+        static function deleteBatchInestimateTable($id){
+            $deleteRow = Estimate::find($id['id']);
+            $deleteRow->is_cancelled = 1;
+            $deleteRow->save();
+            return $deleteRow;
+        }
 }

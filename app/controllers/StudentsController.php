@@ -45,6 +45,10 @@ class StudentsController extends \BaseController {
 		}
 		
 	}
+        
+        
+        
+        
 	
 	public function enrolledstudents(){
             if(Auth::check()){
@@ -155,14 +159,14 @@ class StudentsController extends \BaseController {
                         }
                         
                         if($discount_second_class_elligible){
-                            $classes_count=  StudentClasses::where('student_id','=',$student[0]['id'])
+                            $classes_count=  StudentClasses::where('student_id','=',$id)
                                              ->where('status','=','enrolled')
                                            //->whereDate('enrollment_start_date','>=',date("Y-m-d"))
                                            //->whereDate('enrollment_end_date','<=',date("Y-m-d"))
                                            //->distinct('class_id')
                                              ->count();
                             
-                            if($classes_count > 1){
+                            if($classes_count >= 1){
                                 $discount_second_class_elligible=1;
                             }else{
                                 $discount_second_class_elligible=0;
@@ -172,33 +176,97 @@ class StudentsController extends \BaseController {
                         if($discount_second_child_elligible){
                            $student_ids=  Students::where('customer_id','=',$student[0]['customer_id'])->select('id')->get()->toArray();
                            for($i=0;$i<count($student_ids);$i++){
+                               if($student_ids[$i]['id']!=$id){
                                if(StudentClasses::where('student_id','=',$student_ids[$i]['id'])->where('status','=','enrolled')->exists()){
                                  $count++;   
                                 }
+                               }
                            }
-                           
+                         //return $count;
                            //$discount_second_class_elligible=($count>1)?1:0;
-                           if($count > 1){
-                                $discount_second_class_elligible=1;
+                           if($count >= 1){
+                                $discount_second_child_elligible=1;
                             }else{
-                                $discount_second_class_elligible=0;
+                                $discount_second_child_elligible=0;
                             }
                         }
+							// Getting latest batches for showing in header of student tab
+                      $latestEnrolledData=  StudentClasses::where('student_id','=',$id)
+                                                            ->orderBy('created_at','desc')
+                                                            ->limit(2)
+                                                            ->get();
+                      for($i=0;$i<count($latestEnrolledData);$i++){
+                          $temp=  Batches::find($latestEnrolledData[$i]['batch_id']);
+                          $latestEnrolledData[$i]['batch_name']=$temp->batch_name;
+                      }
+                    $discountEnrollmentData=  Discounts::getEnrollmentDiscontByFranchiseId();    
+                    //getting the data from payment_master
+                        $payments_master_details=  PaymentMaster::where('student_id','=',$id)
+                                                                  ->where('order_id','<>','0')
+                                                                  ->distinct('payment_no')
+                                                                  ->select('payment_no')
+                                                                  ->get();
                         
-                        $discountEnrollmentData=  Discounts::getEnrollmentDiscontByFranchiseId();
+                       
+                        for($i=0; $i<count($payments_master_details); $i++){
+                          $payment_made_data[$i]=  PaymentDues::where('student_id','=',$id)
+                                                                ->where('payment_no','=',$payments_master_details[$i]['payment_no'])
+                                                                ->get();
+                          
+                          for($j=0;$j<count($payment_made_data[$i]);$j++){
+                              $temp=  Batches::where('id','=',$payment_made_data[$i][$j]['batch_id'])
+                                              ->select('batch_name')
+                                              ->get();
+                              $temp2= User::find($payment_made_data[$i][$j]['created_by']);
+                              $payment_made_data[$i][$j]['receivedname']=$temp2->first_name.$temp2->last_name;
+                              
+                              $payment_made_data[$i][$j]['class_name']=$temp[0]['batch_name'];
+                              
+                          }
+                          $payments_master_details[$i]['encrypted_payment_no']=url().'/orders/print/'.Crypt::encrypt($payments_master_details[$i]['payment_no']);
+                        }
                         
+                        $AttendanceYeardata=DB::select("SELECT EXTRACT(year from enrollment_start_date) as year FROM student_classes WHERE student_id = $id GROUP BY year");   
                         
+                         //return $student[0]['id'];
 			$dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 
-                                                                'discountEnrollmentData',
+                                                                'discountEnrollmentData','latestEnrolledData',
                                                                 'discount_second_class_elligible','discount_second_child_elligible','discount_second_child','discount_second_class',
 								'studentEnrollments','customermembership','paymentDues',
-								'scheduledIntroVisits', 'introvisit', 'discountEligibility','paidAmountdata','order_due_data');
+								'scheduledIntroVisits', 'introvisit', 'discountEligibility','paidAmountdata','order_due_data',
+                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata');
 			return View::make('pages.students.details',compact($dataToView));
 		}else{
 			return Redirect::to("/");
 		}
 	}
 	
+
+	public function getAttendanceForStudent(){
+		$inputs = Input::all();
+		$sendDetails = Attendance::getAttendanceForStudent($inputs);
+		if($sendDetails){
+			return Response::json(array('status'=> "success", 'data'=> $sendDetails));
+		}else{
+			return Response::json(array('status'=> "failure",));
+		}
+	}
+	public function getBatchNameByYear(){
+		$inputs = Input::all();
+		$sendDetails = StudentClasses::select('batch_id')->where('enrollment_start_date', 'like', '%'.$inputs["year"].'%')
+									  ->where('student_id', '=', $inputs['studentId'])->distinct()->get();
+
+		for ($i=0; $i < count($sendDetails); $i++) { 
+			$name[] = Batches::where('id', '=', $sendDetails[$i]['batch_id'])->get();
+		}
+		if($name){
+			return Response::json(array('status'=> "success", $name));
+		}else{
+			return Response::json(array('status'=> "failure",));
+		}
+	}
+
+
 	
 	public function saveKids() {
 		
@@ -242,6 +310,172 @@ class StudentsController extends \BaseController {
 		
 		
 	}
+        
+        
+        public function enrollOldCustomer(){
+        	$inputs = Input::all();
+            //return $inputs;
+                $oldStudentId = $inputs['oldCustomerStudentId'];
+        // There are no multiple batches, all classes are selected in one batch
+        // *****
+        // Inserting data to student_classes table
+        //    
+            $studentClasses['classId'] = $inputs['ClassesCbxForOld'];
+            $studentClasses['batchId'] = $inputs['BatchesCbx'];
+            $studentClasses['studentId'] = $inputs['oldCustomerStudentId'];
+            $studentClasses['selected_sessions'] = $inputs['NoOfClassesForOld1'];
+            $studentClasses['seasonId'] = $inputs['SeasonsCbxForOld'];
+            $studentClasses['enrollment_start_date'] = $inputs['enrollmentStartDateForOld'];
+            $studentClasses['enrollment_end_date'] = $inputs['enrollmentEndDateForOld'];
+            $insertDataToStudentClassTable = StudentClasses::addStudentClass($studentClasses);
+            
+        // Inserting data to payments_dues table    
+            
+            $paymentDuesInput['student_id']        = $insertDataToStudentClassTable['student_id'];
+            $paymentDuesInput['customer_id']       = $inputs['oldCustomerId'];
+            $paymentDuesInput['batch_id']          = $insertDataToStudentClassTable['batch_id'];
+            $paymentDuesInput['class_id']          = $insertDataToStudentClassTable['class_id'];
+            $paymentDuesInput['franchisee_id']    = Session::get('franchiseId');
+            $paymentDuesInput['selected_sessions'] = $insertDataToStudentClassTable['selected_sessions'];
+            $paymentDuesInput['seasonId']          = $insertDataToStudentClassTable['season_id'];
+            $paymentDuesInput['student_class_id']  = $insertDataToStudentClassTable['id'];
+            $paymentDuesInput['each_class_cost']   = $inputs['EachClassAmountForOld'];
+            
+            
+            if($inputs['MembershipTypeForOld']!=''){
+                //                   adding record to membership table
+                    $customerMembershipInput['customer_id']		=	$inputs['oldCustomerId'];
+                    $customerMembershipInput['membership_type_id']=	$inputs['MembershipTypeForOld'];
+                    $customerMembershipDetails=CustomerMembership::addMembership($customerMembershipInput);
+                    $paymentDuesInput['membership_id']		=	$customerMembershipDetails->id;
+                    $paymentDuesInput['membership_type_id']         =	$customerMembershipDetails->membership_type_id;
+                    $paymentDuesInput['membership_amount']          =	$inputs['MembershipAmountForOld'];
+            }
+            
+            
+            $paymentDuesInput['discount_applied']       = $inputs['DiscountPercentageForOld'];
+            $paymentDuesInput['discount_amount']        = $inputs['DiscountAmountForOld'];
+             
+           
+            $paymentDuesInput['discount_sibling_applied'] = $inputs['SiblingPercentageForOld']; 
+            $paymentDuesInput['discount_sibling_amount']  = $inputs['SiblingAmountForOld']; 
+             
+         
+            $paymentDuesInput['discount_multipleclasses_applied'] = $inputs['MultiClassesPercentageForOld']; 
+            $paymentDuesInput['discount_multipleclasses_amount']  = $inputs['MultiClassesAmountForOld']; 
+             
+            $paymentDuesInput['discount_admin_amount']                            = $inputs['AdminRupeeForOld'];    
+            $paymentDuesInput['payment_due_amount']                     = $inputs['SubTotalForOld'];
+            $paymentDuesInput['payment_due_amount_after_discount']      = $inputs['GrandTotalForOld'];
+            $paymentDuesInput['payment_status']                         = "paid";
+            $paymentDuesInput['selected_order_sessions']                = $inputs['NoOfClassesForOld1'];
+            $paymentDuesInput['start_order_date']                       = $insertDataToStudentClassTable['enrollment_start_date'];
+            $paymentDuesInput['end_order_date']                         = $insertDataToStudentClassTable['enrollment_end_date'];
+            $paymentDuesInput['payment_batch_amount']                   = $paymentDuesInput['selected_order_sessions']*$paymentDuesInput['each_class_cost'];
+            $sendPaymentDetailsToInsert = PaymentDues::createPaymentDues($paymentDuesInput);
+            
+            // Inserting data to  Paymemt_master table
+                
+                $sendPaymentMasterDetailsToInsert = PaymentMaster::createPaymentMaster($sendPaymentDetailsToInsert);
+                
+            // Inserting data to orders table
+                
+                $order['customer_id']     = $inputs['oldCustomerId'];
+                $order['student_id']      = $insertDataToStudentClassTable['student_id'];
+                $order['student_classes_id'] = $insertDataToStudentClassTable['id'];
+                
+                if($inputs['paymentTypeRadioForOld'] == 'card'){
+                    $order['payment_mode']    =  $inputs['paymentTypeRadioForOld'];
+                    $order['card_type']    =  $inputs['cardType3'];       
+                    $order['card_last_digit']    =  $inputs['card4digits3'];       
+                    $order['bank_name']    =  $inputs['cardBankName3'];       
+                    $order['receipt_number']    =  $inputs['cardRecieptNumber3'];       
+                }
+                elseif($inputs['paymentTypeRadioForOld'] == 'cash'){
+                    $order['payment_mode']    =  $inputs['paymentTypeRadioForOld'];
+                }
+                elseif($inputs['paymentTypeRadioForOld'] == 'cheque'){
+                    $order['payment_mode']    =  $inputs['paymentTypeRadioForOld'];
+                    $order['bank_name']    =  $inputs['bankName3'];
+                    $order['cheque_number']    =  $inputs['chequeNumber3'];
+                }      
+                
+                $order['tax_amount']     = $inputs['TaxForOld'];
+                $order['payment_for']     = "enrollment";
+                $order['payment_no']   = $sendPaymentMasterDetailsToInsert['payment_no'];
+                $order['payment_dues_id']   = $sendPaymentDetailsToInsert['id'];
+                $order['amount'] = $inputs['SubTotalForOld'];
+                $order['order_status'] = "completed";
+                $order['created_at']=date("Y-m-d H:i:s");
+                    
+                $sendOrderDetailsToInsert = Orders::createOrder($order);
+                
+                // update payments_dues table with payment_no
+                
+                $update_payment_due = PaymentDues::find($sendPaymentDetailsToInsert['id']);
+                $final_payment_master_no=$update_payment_due->payment_no;
+                $update_payment_due->payment_no=$sendPaymentMasterDetailsToInsert['payment_no'];
+                $final_payment_master_no=$sendPaymentMasterDetailsToInsert['payment_no'];
+                $update_payment_due->save();
+                
+                
+                // update payment_masters table with order_id
+                
+                $updatePaymentMasterTable = PaymentMaster::find($sendPaymentMasterDetailsToInsert->id);
+                $updatePaymentMasterTable->order_id = $sendOrderDetailsToInsert->id;
+                $updatePaymentMasterTable->save();
+                
+                //Create followup records
+                
+                $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
+                //creating logs/followup for first payment
+                $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
+                $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
+                $customer_log_data['franchisee_id']=Session::get('franchiseId');
+                $customer_log_data['paymentfollowup_id']=$payment_followup_data1->id;
+                $customer_log_data['followup_type']='PAYMENT';
+                $customer_log_data['followup_status']='REMINDER_CALL';
+                $customer_log_data['comment_type']='VERYINTERESTED';
+                $class_last_day = $sendPaymentDetailsToInsert->end_order_date;
+                $customer_log_data['reminderDate']= date('Y-m-d H:i:s', strtotime('-1 day', strtotime($class_last_day)));
+                $sendCommentsToInsert = Comments::addSinglePayComment($customer_log_data);
+                
+                // checking for email invoice
+                
+                if(isset($inputs['emailOptionforoldcustomer']) && ($inputs['emailOptionforoldcustomer']=='yes')){
+                    $totalSelectedClasses = '';
+                    $totalAmountForAllBatch = '';
+                    $paymentDueDetails = PaymentDues::where('payment_no', '=', $final_payment_master_no)->get();
+                    for($i = 0; $i < count($paymentDueDetails); $i++){
+			$totalSelectedClasses = $totalSelectedClasses + $paymentDueDetails[$i]['selected_sessions'];
+			$getBatchNname[]  = Batches::where('id', '=', $paymentDueDetails[$i]['batch_id'])->get();
+			$getSeasonName[]  = Seasons::where('id', '=', $paymentDueDetails[$i]['season_id'])->get();
+			$selectedSessionsInEachBatch[] = $paymentDueDetails[$i]['selected_sessions'];
+			$classStartDate[] = $paymentDueDetails[$i]['start_order_date'];
+			$classEndDate[] = $paymentDueDetails[$i]['end_order_date'];
+			$totalAmountForEachBach[] = (int)$paymentDueDetails[$i]['payment_batch_amount'];
+			$totalAmountForAllBatch = $totalAmountForAllBatch + (int)$paymentDueDetails[$i]['payment_batch_amount'];
+                    }   
+                    $getTermsAndConditions = TermsAndConditions::where('id', '=', (TermsAndConditions::max('id')))->get();
+                    $getCustomerName = Customers::select('customer_name','customer_email')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
+                    //return Response::json(array($getCustomerName));
+                    $getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
+                    $paymentMode = Orders::where('payment_no', '=', $final_payment_master_no)->get();
+                    $data = compact('totalSelectedClasses', 'getBatchNname',
+                        'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate',
+                        'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName','getTermsAndConditions',
+                        'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode');
+                    Mail::send('emails.account.enrollment', $data, function($msg) use ($data){
+					
+				$msg->from(Config::get('constants.EMAIL_ID'), Config::get('constants.EMAIL_NAME'));
+				$msg->to($data['getCustomerName'][0]['customer_email'], $data['getCustomerName'][0]['customer_name'])->subject('The Little Gym - Kids Enrollment Successful');
+			
+			});
+                }
+                if ($sendCommentsToInsert) {
+                   return Redirect::to("/students/view/".$oldStudentId);
+                }
+        }
         
         public function enrollKid2(){
 		$inputs = Input::all();
@@ -294,21 +528,25 @@ class StudentsController extends \BaseController {
                         $paymentDuesInput['membership_type_id']         =	$customerMembershipDetails->membership_type_id;
                         $paymentDuesInput['membership_amount']          =	$inputs['membershipAmount'];
                 }
+                
                 //** checking for discounts **//
                 if(isset($inputs['discountTextBox'])){
                     $discount_amount = explode("-",$inputs['discountTextBox']);
                     $paymentDuesInput['discount_applied']       = $inputs['discountPercentage'];
                     $paymentDuesInput['discount_amount']        = $discount_amount[1];
                 }
-                if($inputs['second_child_discount_to_form']!=''){
+                if(isset($inputs['second_child_discount_to_form']) && $inputs['second_child_discount_to_form']!=''){
                     $explodedDiscountAmount=explode("-",$inputs['second_child_amount']);
                     $paymentDuesInput['discount_sibling_applied'] = $inputs['second_child_discount_to_form']; 
                     $paymentDuesInput['discount_sibling_amount']  = $explodedDiscountAmount[1];
                 }
-                if($inputs['second_class_discount_to_form']!=''){
+                if(isset($inputs['second_class_discount_to_form']) && $inputs['second_class_discount_to_form']!=''){
                     $explodedDiscountAmount=explode("-",$inputs['second_class_amount']);
                     $paymentDuesInput['discount_multipleclasses_applied'] = $inputs['second_class_discount_to_form']; 
                     $paymentDuesInput['discount_multipleclasses_amount']  = $explodedDiscountAmount[1];
+                }
+                if(isset($inputs['admin_discount_amount'])){
+                    $paymentDuesInput['discount_admin_amount']=$inputs['admin_discount_amount'];
                 }
                 
                 $paymentDuesInput['payment_due_amount']                     = $inputs['singlePayAmount'];
@@ -318,7 +556,9 @@ class StudentsController extends \BaseController {
                 $paymentDuesInput['start_order_date']                       = $insertDataToStudentClassTable['enrollment_start_date'];
                 $paymentDuesInput['end_order_date']                         = $insertDataToStudentClassTable['enrollment_end_date'];
                 $paymentDuesInput['payment_batch_amount']                   = $paymentDuesInput['selected_order_sessions']*$paymentDuesInput['each_class_cost'];
+                
                 $sendPaymentDetailsToInsert = PaymentDues::createPaymentDues($paymentDuesInput);
+                
                 /* inserting into payment Due table is completed for single pay */
                     /* Working on preparing to payment master table for single pay */
                 $sendPaymentMasterDetailsToInsert = PaymentMaster::createPaymentMaster($sendPaymentDetailsToInsert);
@@ -349,10 +589,7 @@ class StudentsController extends \BaseController {
                     $order['payment_dues_id']   = $sendPaymentDetailsToInsert['id'];
                     $order['amount'] = $inputs['singlePayAmount'];
                     $order['order_status'] = "completed";
-                    if($inputs['CustomerType']=='OldCustomer'){
-                            $order['created_at']=date('Y-m-d H:i:s', strtotime($inputs['OrderDate']));
-                    }
-                    
+                                      
                     $sendOrderDetailsToInsert = Orders::createOrder($order);
                     
                     
@@ -436,12 +673,12 @@ class StudentsController extends \BaseController {
                                     $paymentDuesInput[$i]['discount_amount']       = $discount_amount[1];
                                     $paymentDuesInput[$i]['discount_applied']      = $inputs['discountPercentage'];
                                 }
-                                if(isset($inputs['second_class_amount'])){
+                                if($inputs['second_class_discount_to_form']!=''){
                                     $discount_multipleclasses_amount                                = explode("-",$inputs['second_class_amount']);
                                     $paymentDuesInput[$i]['discount_multipleclasses_amount']        = $discount_multipleclasses_amount[1];
                                     $paymentDuesInput[$i]['discount_multipleclasses_applied']       = $inputs['second_class_discount_to_form'];
                                 }
-                                if(isset($inputs['second_child_amount'])){
+                                if($inputs['second_child_discount_to_form']!=''){
                                     $discount_sibling_amount                               = explode("-",$inputs['second_child_amount']);
                                     $paymentDuesInput[$i]['discount_sibling_amount']       = $discount_sibling_amount[1];
                                     $paymentDuesInput[$i]['discount_sibling_applied']      = $inputs['second_child_discount_to_form'];
@@ -518,9 +755,6 @@ class StudentsController extends \BaseController {
 		                    $order['payment_dues_id']   = $sendPaymentDetailsToInsert['id'];
         		            $order['amount'] = $inputs['singlePayAmount'];
                 		    $order['order_status'] = "completed";
-                        		if($inputs['CustomerType']=='OldCustomer'){
-                                            $order['created_at']=date('Y-m-d H:i:s', strtotime($inputs['OrderDate']));
-                                        }
                                     $sendOrderDetailsToInsert = Orders::createOrder($order);
                                 }
 		            }
@@ -609,16 +843,19 @@ class StudentsController extends \BaseController {
                                     $paymentDuesInput[$i]['discount_amount']            =   $discount_amount[1];
                                     $paymentDuesInput[$i]['discount_applied']           =   $inputs['discountPercentage'];
                                 }
-                                if(isset($inputs['second_class_amount'])){
+                                if($inputs['second_class_discount_to_form']!=''){
                                     $discount_multipleclasses_amount                               = explode("-",$inputs['second_class_amount']);
                                     $paymentDuesInput[$i]['discount_multipleclasses_amount']       = $discount_multipleclasses_amount[1];
                                     $paymentDuesInput[$i]['discount_multipleclasses_applied']      = $inputs['second_class_discount_to_form'];
                                 }
-                                if(isset($inputs['second_child_amount'])){
+                                if($inputs['second_child_discount_to_form']!=''){
                                     $discount_sibling_amount                               = explode("-",$inputs['second_child_amount']);
                                     $paymentDuesInput[$i]['discount_sibling_amount']       = $discount_sibling_amount[1];
                                     $paymentDuesInput[$i]['discount_sibling_applied']      = $inputs['second_child_discount_to_form'];
                                 }
+                                
+                               
+                                
                                 
                                 $paymentDuesInput[$i]['payment_due_amount_after_discount']  = $inputs['grandTotal'];
                                 $paymentDuesInput[$i]['payment_status']                     = "paid";
@@ -691,9 +928,7 @@ class StudentsController extends \BaseController {
 		                                $order['payment_dues_id']   = $sendPaymentDetailsToInsert['id'];
         		                        $order['amount'] = $inputs['singlePayAmount'];
                 		                $order['order_status'] = "completed";
-                        		        if($inputs['CustomerType']=='OldCustomer'){
-                                		    $order['created_at']=date('Y-m-d H:i:s', strtotime($inputs['OrderDate']));
-                                		}
+                        		        
 
 		                                $sendOrderDetailsToInsert = Orders::createOrder($order);
 
@@ -744,13 +979,14 @@ class StudentsController extends \BaseController {
 			$totalAmountForEachBach[] = (int)$paymentDueDetails[$i]['payment_batch_amount'];
 			$totalAmountForAllBatch = $totalAmountForAllBatch + (int)$paymentDueDetails[$i]['payment_batch_amount'];
                     }   
+                    $getTermsAndConditions = TermsAndConditions::where('id', '=', (TermsAndConditions::max('id')))->get();
                     $getCustomerName = Customers::select('customer_name','customer_email')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
                     //return Response::json(array($getCustomerName));
                     $getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
                     $paymentMode = Orders::where('payment_no', '=', $final_payment_master_no)->get();
                     $data = compact('totalSelectedClasses', 'getBatchNname',
                         'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate',
-                        'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName',
+                        'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName','getTermsAndConditions',
                         'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode');
                     Mail::send('emails.account.enrollment', $data, function($msg) use ($data){
 					

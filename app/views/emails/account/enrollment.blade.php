@@ -23,7 +23,18 @@ $class  = $orderDetailsTomail['class']; */
 		.title{
 			font-weight:bold;
 		}
-	
+		.table td {
+ 		  text-align: center;   
+		}
+                 tr td{
+		
+			border-bottom:1px #e5e5e5 dashed;
+                        
+			padding:10px;
+			height:30px;
+		
+		
+		}
 	</style>
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 	
@@ -42,33 +53,32 @@ $class  = $orderDetailsTomail['class']; */
 				
 				</div>
 
-				<p style="text-align: center;">Thank You and welcome to The Little Gym family</p>
+				<p style="text-align: center; font-size: 15px">Thank You and welcome to The Little Gym family</p>
 				<br clear="all"/>
 				<div class="col-md-7" style="margin:0px auto !important; float:left; border-bottom:2px dashed #EEEEEE;">
 				 <h4>Payment Reciept and Enrollment  Details</h4>
 				</div>
 				<div class = "col-md-4" style = "float: right">
 					<b><?php
-						$mytime = Carbon\Carbon::now();
-						echo $mytime->toDateTimeString();
+						echo $paymentDueDetails[0]['created_at'];
 					?></b>
 				</div>
 
 				<br clear="all"/>
 				<div class="col-md-11" style="margin:0px auto !important; float:none;">
 					<div class="row datarow">
-					  <div class="title">Customer Name: </div>{{$getCustomerName[0]['customer_name']}}
+					  <div class="title" style="font-weight:bold">Customer Name: </div>{{$getCustomerName[0]['customer_name']}}
 					</div>
 					<br clear="all"/>
 					<br clear="all"/>
 					<div>
 						<div class="row datarow" style="width:50%; float:left">
-						  <div class="title">Kid Name</div>
+						  <div class="title" style="font-weight:bold">Kid Name</div>
 						  <div class="col-md-4">{{$getStudentName[0]['student_name']}}</div>
 						</div>
 						
 						<div class="row datarow" style="width:50%; float:right">
-						  <div class="title">Total Enrolled Classes</div>
+						  <div class="title" style="font-weight:bold">Total Enrolled Classes</div>
 						  <div class="col-md-4">{{$totalSelectedClasses}}</div>
 						</div>
 					</div>
@@ -76,8 +86,8 @@ $class  = $orderDetailsTomail['class']; */
 					<br clear="all"/>
 					<h4>Payment details:</h4>
 					
-					<table class = "table">
-						<thead>
+                                        <table class = "table" style=" border:1px #e5e5e5 dashed;" >
+						<thead >
 							<th>Season Name</th>
 							<th>Batch Name</th>
 							<th>Selected Classes</th>
@@ -85,6 +95,7 @@ $class  = $orderDetailsTomail['class']; */
 							<th>End Date</th>
 							<th>Amount</th>
 						</thead>
+                                                
 						<tbody>
 							@for($i = 0; $i < count($paymentDueDetails); $i++)
 								<tr>
@@ -99,11 +110,11 @@ $class  = $orderDetailsTomail['class']; */
 						</tbody>
 					</table>
 					
-					
-					<table class="paymentsTable">
+					<br clear = "all"/>
+					<table class="paymentsTable" style = "margin-left: 30%">
 						<thead>
 							<tr style="font-weight:bold">
-								<td style="text-align:right; width:70%;">Classes Amount</td>
+								<td style="text-align:right; ">Classes Amount</td>
 								<td style="text-align:right">{{$paymentDueDetails[0]['payment_due_amount']}}</td>
 							</tr>
 						
@@ -117,38 +128,52 @@ $class  = $orderDetailsTomail['class']; */
 							$membershipAmount = 5000;
 						}
 						?>
-						<?php if(isset($membership)){?>
+						
+						<tr>
+							<td style="text-align:right"><strong>By Choosing {{$paymentDueDetails[0]['selected_sessions']}} Classes You are Saving ({{$paymentDueDetails[0]['discount_applied']}}%: [-{{$paymentDueDetails[0]['discount_amount']}}Rs])</strong></td>
+							<td  style="text-align:right">
+								<strong><?php $amount=$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']; echo number_format((float)$amount, 2, '.', ''); ?></strong>
+							</td>
+						</tr>
+                                                <?php if($paymentDueDetails[0]['discount_sibling_applied']!=0){ ?>
+						<tr>
+							<td style="text-align:right"><strong>By Enrolling Sibling You are Saving({{$paymentDueDetails[0]['discount_sibling_applied']}}%:[-{{$paymentDueDetails[0]['discount_sibling_amount']}}Rs])</strong></td>
+							<td  style="text-align:right">
+								<strong><?php $amount=$amount-$paymentDueDetails[0]['discount_sibling_amount'];echo number_format((float)$amount, 2, '.', '');?> </strong>
+							</td>
+						</tr>
+                                                <?php  } ?>
+                                                <?php if($paymentDueDetails[0]['discount_multipleclasses_applied']!=0){ ?>
+						<tr>
+							<td style="text-align:right"><strong>By Enrolling Multiple Classes You are Saving {{$paymentDueDetails[0]['discount_multipleclasses_applied']}} %:[-{{$paymentDueDetails[0]['discount_multipleclasses_amount']}}Rs])</strong></td>
+							<td  style="text-align:right">
+								<strong><?php $amount=$amount-$paymentDueDetails[0]['discount_multipleclasses_amount']; echo number_format((float)$amount, 2, '.', '');?></strong>
+							</td>
+						</tr>
+                                                <?php }?>
+                                                <?php if($paymentDueDetails[0]['discount_admin_amount']!=0){ ?>
+                                                <tr>
+							<td style="text-align:right"><strong>Special Discount For You(-{{$paymentDueDetails[0]['discount_admin_amount']}})</strong></td>
+							<td  style="text-align:right">
+								
+								<strong><?php $amount=$amount-$paymentDueDetails[0]['discount_admin_amount']; echo number_format((float)$amount, 2, '.', '');?></strong>
+							</td>
+						</tr>
+                                                <?php } ?>
+                                                <?php if(isset($membership)){?>
 						<tr>
 							<td style="text-align:right"><strong>{{$membership}} {{$paymentMode[0]['membership_type']}}</strong></td>
 							<td  style="text-align:right">
-								<strong>{{$membershipAmount}}</strong>
+								<strong><?php echo number_format((float)$membershipAmount, 2, '.', ''); ?></strong>
 							</td>
 						</tr>
 						<?php }?>
 						
 						<tr>
-							<td style="text-align:right"><strong>Discount: {{$paymentDueDetails[0]['discount_applied']}}</strong></td>
-							<td  style="text-align:right">
-								<strong>-{{$paymentDueDetails[0]['discount_amount']}}</strong>
-							</td>
-						</tr>
-						<tr>
-							<td style="text-align:right"><strong>Second Sibling Consideration:{{$paymentDueDetails[0]['discount_sibling_applied']}}</strong></td>
-							<td  style="text-align:right">
-								<strong>-{{$paymentDueDetails[0]['discount_sibling_amount']}}</strong>
-							</td>
-						</tr>
-						<tr>
-							<td style="text-align:right"><strong>Multiple Classes Consideration:{{$paymentDueDetails[0]['discount_multipleclasses_applied']}}</strong></td>
-							<td  style="text-align:right">
-								<strong>-{{$paymentDueDetails[0]['discount_multipleclasses_amount']}}</strong>
-							</td>
-						</tr>
-						<tr>
 							<td style="text-align:right"><strong>Subtotal</strong></td>
 							<td  style="text-align:right">
 								
-								<strong>{{$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']}}</strong>
+								<strong>{{number_format((float)($paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']-$paymentDueDetails[0]['discount_admin_amount']), 2, '.', '')}}</strong>
 							</td>
 						</tr>
 						
@@ -156,7 +181,7 @@ $class  = $orderDetailsTomail['class']; */
 							<td style="text-align:right"><strong>Service Tax</strong></td>
 							<td  style="text-align:right">
 								
-								<strong>{{ ($paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * 14.5/100 }}</strong>
+								<strong>{{number_format((float)( ($paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * 14.5/100), 2, '.', '') }}</strong>
 							</td>
 						</tr>
 						
@@ -175,30 +200,32 @@ $class  = $orderDetailsTomail['class']; */
 					
 					</table>
 					
-					
+					<br clear = "all"/>
 					
 					<div class="row datarow">
-					  <div class="col-md-3 title">Payment Mode</div>
+					  <div class="col-md-3 title" style = "font-weight: bold">Payment Mode</div>
 					  <div class="col-md-4">{{$paymentMode[0]['payment_mode']}}</div>
 					</div>
+					<br clear = "all"/>
+
 					@if($paymentMode[0]['payment_mode'] == 'cash')
 					<div class="row datarow">
-					  <div class="col-md-3 title">Payment type details</div>
+					  <div class="col-md-3 title" style = "font-weight: bold">Payment type details</div>
 					  <div class="col-md-4"></div>
 					</div>
 					@elseif($paymentMode[0]['payment_mode'] == 'card')
 					 <div class="row datarow">
-					  <div class="col-md-3 title">Payment type details</div>
+					  <div class="col-md-3 title" style="font-weight:bold">Payment type details</div>
 					  <div class="col-md-4">
 					  	<span style="font-weight: bold">Bank Name: </span><span>{{$paymentMode[0]['bank_name']}}</span><br>
-					  	<spanstyle="font-weight: bold">Card Type: </span><span>{{$paymentMode[0]['card_type']}}</span><br>
+					  	<span style="font-weight: bold">Card Type: </span><span>{{$paymentMode[0]['card_type']}}</span><br>
 					  	<span style="font-weight: bold">Card Last Digits: </span><span>{{$paymentMode[0]['card_last_digit']}}</span><br>
 					  	<span style="font-weight: bold">Reciept Number: </span><span>{{$paymentMode[0]['receipt_number']}}</span><br>
 					  </div>
 					</div>
 					@elseif($paymentMode[0]['payment_mode'] == 'cheque')
 					 <div class="row datarow">
-					  <div class="col-md-3 title">Payment type details</div>
+					  <div class="col-md-3 title" style="font-weight:bold">Payment type details</div>
 					  <div class="col-md-4">
 					  	<span style="font-weight: bold">Bank Name: </span><span>{{$paymentMode[0]['bank_name']}}</span><br>
 					  	<span style="font-weight: bold">Cheque Number: </span><span>{{$paymentMode[0]['cheque_number']}}</span><br>
@@ -209,7 +236,9 @@ $class  = $orderDetailsTomail['class']; */
 					
 					<p>Welcome. Thanks for Joining The Little Gym.  Regards, Team TLG</p>
 					<hr/>
-					<p>Terms & Conditions:</p>
+					<p style = "font-weight: bold">Terms & Conditions:</p>
+					<li>{{ $getTermsAndConditions[0]['terms_conditions']}}</li>
+
 					<br/>					
 				</div>
 			

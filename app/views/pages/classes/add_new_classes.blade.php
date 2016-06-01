@@ -145,13 +145,13 @@ $('#saveBtn').click(function(){
     			<div class="uk-width-medium-1-3">
         			<div class="parsley-row form-group">
         				<label for="title[]">Start Age(Months)<span class="req">*</span></label>
-        					<input id="ClassStartAge" required class="form-control input-sm md-input" name="startAge[]" type="number"/>
+        					<input id="ClassStartAge" required class="form-control input-sm md-input" name="startAge[]" type="text"/>
         			</div>
     			</div>
     			<div class="uk-width-medium-1-3">
         			<div class="parsley-row form-group">
         				<label for="title[]">End Age(Months)<span class="req">*</span></label>
-        					<input id="ClassEndAge" required class="form-control input-sm md-input" name="endAge[]" type="number"/>
+        					<input id="ClassEndAge" required class="form-control input-sm md-input" name="endAge[]" type="text"/>
         			</div>
     			</div>
     			<div class="uk-width-medium-1-3">    

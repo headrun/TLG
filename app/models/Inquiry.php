@@ -18,5 +18,18 @@ class Inquiry extends \Eloquent {
             return Inquiry::where('customer_id','=',$customerId)
                              ->where('franchisee_id','=',Session::get('franchiseId'))
                              ->get();
-        }
+    }
+    static function getAllInquiryforReport($inputs){
+         $inquiry['data']= Inquiry::where('franchisee_id','=',Session::get('franchiseId'))
+                               ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                               ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                               ->get();
+         for($i=0;$i<count($inquiry['data']);$i++){
+                $temp=  Customers::find($inquiry['data'][$i]['customer_id']);
+                $inquiry['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+         }
+         return $inquiry;
+            
+    }
+        
 }

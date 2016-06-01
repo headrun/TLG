@@ -70,6 +70,7 @@
 					<?php  
 						$checkChild = '';
 						$checkClass = '';
+                                                if(isset($discount_data[0])){
 						if($discount_data[0]['discount_second_child_approve'] == 1){
 							$checkChild = 'checked';
 
@@ -83,6 +84,7 @@
 						else{
 							$checkClass = '';	
 						}
+                                                }
 
 					?>
 					<div class="uk-width-medium-1-4 text-center">

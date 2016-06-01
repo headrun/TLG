@@ -23,7 +23,7 @@ class DiscountsController extends \BaseController {
         }
 	}
 
-	public function enable_or_desable(){
+	public function enable_or_disable(){
 		if (Auth::check ()) {
                 
             $currentPage = "EnableDiscounts_LI";
@@ -33,7 +33,7 @@ class DiscountsController extends \BaseController {
                            ->get();
             $viewdata=array('currentPage','mainMenu', 'discount_data');
             //$viewdata=array('currentPage','mainMenu');
-            return View::make('pages.Discounts.enable_or_desable',  compact($viewdata));
+            return View::make('pages.Discounts.enable_or_disable',  compact($viewdata));
         }
 	}
 
@@ -44,8 +44,6 @@ class DiscountsController extends \BaseController {
             for($i=0;$i<count($inputs['discount_prcnt']);$i++){
             	$inputDiscount['discount_prcnt']=$inputs['discount_prcnt'][$i];
             	$inputDiscount['no_of_class']=$inputs['no_of_class'][$i];
-            	$inputDiscount['DiscountForSecondChaild']=$inputs['DiscountForSecondChaild'];
-            	$inputDiscount['DiscountForSecondClass']=$inputs['DiscountForSecondClass'];
             	$sendDetails = Discounts::InsertMultipleDiscounts($inputDiscount);
             }
             if($sendDetails){
@@ -71,6 +69,62 @@ class DiscountsController extends \BaseController {
 	}
 
 
+	public function updateDiscounts(){
+		if(Auth::check()){
+			$inputs = Input::all();
+			$send_details = Discounts::updateDiscounts($inputs);
+
+			if($send_details){
+                return Response::json(array("status"=>'success', $send_details));     
+            }else{
+            	return Response::json(array("status"=>'failure', $send_details));
+            }
+		}
+	}
+
+
+	public function updateSecondChild_ClassDisc(){
+		if(Auth::check()){
+			$inputs = Input::all();
+			$send_details = Discounts::updateSecondChild_ClassDisc($inputs);
+
+			if($send_details){
+                return Response::json(array("status"=>'success', $send_details));     
+            }else{
+            	return Response::json(array("status"=>'failure', $send_details));
+            }
+		}
+	}
+
+
+	public function insertSecondChild_ClassDisc(){
+		if(Auth::check()){
+			$inputs = Input::all();
+			$send_details = Discounts::insertSecondChild_ClassDisc($inputs);
+
+			if($send_details){
+                return Response::json(array("status"=>'success', $send_details));     
+            }else{
+            	return Response::json(array("status"=>'failure', $send_details));
+            }
+		}
+	}
+
+
+
+
+	public function deleteDiscounts(){
+		if(Auth::check()){
+			$inputs = Input::all();
+			$send_details = Discounts::deleteDiscounts($inputs);
+
+			if($send_details){
+                return Response::json(array("status"=>'success', $send_details));     
+            }else{
+            	return Response::json(array("status"=>'failure', $send_details));
+            }
+		}
+	}
 
 
 

@@ -25,6 +25,9 @@ class StudentClasses extends \Eloquent {
 		return $this->hasMany('Orders','student_classes_id');
 	}
 	
+        public function batches(){
+            return $this->hasOne('Batches','batch_id');
+        }
 	
 	static function getAllEnrolledStudents($franchiseeId){
 		$present_date=Carbon::now();
@@ -178,8 +181,8 @@ class StudentClasses extends \Eloquent {
 		$selectedDate = date('Y-m-d', strtotime($selectedDate));
 		$studentByBatchId  =   StudentClasses::with('Students')
 								->where('batch_id', '=', $batchId)
-								->whereDate('enrollment_start_date', '<', $selectedDate)
-								->whereDate('enrollment_end_date', '>', $selectedDate)
+								->whereDate('enrollment_start_date', '<=', $selectedDate)
+								->whereDate('enrollment_end_date', '>=', $selectedDate)
 								->get();
 		//dd(DB::getQueryLog());
 		return $studentByBatchId;

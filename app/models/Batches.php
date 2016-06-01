@@ -41,9 +41,9 @@ class Batches extends \Eloquent {
 		$batch->course_id          = $input['courseId'];
 		$batch->start_date         = $input['startDate'];
 		$batch->end_date           = $input['endDate'];
-//                if(isset($input['classAmount'])){
-//                    $batch->class_amount=$input['classAmount'];
-//                }
+		if(isset($input['batchLimitCbx'])){
+                    $batch->batch_limit_no=$input['batchLimitCbx'];
+                }
 		$batch->preferred_time     = $input['preferredTime'];
 		$batch->preferred_end_time = $input['preferredEndTime'];
                 if(isset($input['location_id'])){

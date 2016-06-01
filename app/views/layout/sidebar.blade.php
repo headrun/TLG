@@ -55,7 +55,11 @@
                     <ul id="COURSES_MAIN_UL">
                        <!--  <li id="COURSES"><a href="{{url()}}/courses">Courses</a></li>
                         <li id="CLASSES"><a href="{{url()}}/classes">Classes</a></li> -->
-                        <li id="CLASSES"><a href="{{url()}}/batches">Batches</a></li>
+                        <li id="BATCHES"><a href="{{url()}}/batches">Batches</a></li>
+                        <?php if(Session::get('userType') == 'ADMIN'){?>
+                        <li id="BATCHESLIMIT"><a href="{{url()}}/batches/batcheslimit">Add/View BatchesLimit</a></li>
+                        <?php }?>
+                        
                     </ul>
                 </li>
                
@@ -123,7 +127,7 @@
 	                        <span class="menu_title">Seasons</span>
 	                    </a>
 	                    <ul id="SEASONS_MENU_MAIN_UL">
-	                        <li id="AddSeasons_LI"><a href="{{url()}}/season/add">Add Sesason</a></li>
+	                        <li id="AddSeasons_LI"><a href="{{url()}}/season/add">Add Season</a></li>
                                 <li id="ViewSeasons_LI"><a href="{{url()}}/season/viewseasons">View Seasons</a></li>
 	                    </ul>
 	                </li>
@@ -131,16 +135,24 @@
                     <li id="DISCOUNTS_MENU_MAIN">
                         <a href="#">
                             <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
-                            <span class="menu_title">Prices&Discounts</span>
+                            <span class="menu_title">Prices & Discounts</span>
                         </a>
                         <ul id="DISCOUNTS_MENU_MAIN_UL">
                             <li id="AddPrices_LI"><a href="{{url()}}/prices/add_or_view_prices">Add/View Prices</a></li>
                             <li id="AddDiscounts_LI"><a href="{{url()}}/Discounts/add_or_view_discounts">Add/View Discounts</a></li>
-                            <li id="EnableDiscounts_LI"><a href="{{url()}}/Discounts/enable_or_desable">Enable/Disable Discounts</a></li>
+                            <li id="EnableDiscounts_LI"><a href="{{url()}}/Discounts/enable_or_disable">Enable/Disable Discounts</a></li>
                         </ul>
                     </li>
-                <?php }?>
-                
+                   <li id="REPORTS_MENU_MAIN">
+                        <a href="#">
+                            <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+                            <span class="menu_title">Reports</span>
+                        </a>
+                        <ul id="REPORTS_MENU_MAIN_UL">
+                            <li id="ViewReoprt_LI"><a href="{{url()}}/reports/view_reports">Enrollment</a></li>
+                        </ul>
+                    </li>
+               <?php }?>
                 
                 
                 

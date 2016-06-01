@@ -82,6 +82,22 @@ class IntroVisit extends \Eloquent {
                                 ->count();
         }
 	
-
+        static function getAllIntrovisitforReport($inputs){
+            $introvisit['data']= Introvisit::where('franchisee_id','=',Session::get('franchiseId'))
+                               ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                               ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                               ->get();
+            for($i=0;$i<count($introvisit['data']);$i++){
+                $temp=  Customers::find($introvisit['data'][$i]['customer_id']);
+                $introvisit['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+                $temp2=  Students::find($introvisit['data'][$i]['student_id']);
+                $introvisit['data'][$i]['student_name']=$temp2->student_name;
+                if($introvisit['data'][$i]['batch_id']!=null){
+                    $temp3= Batches::find($introvisit['data'][$i]['batch_id']);
+                    $introvisit['data'][$i]['batch_name']=$temp3->batch_name;
+                }
+            }
+            return $introvisit;
+        }
 	
 }

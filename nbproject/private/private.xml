@@ -4,13 +4,17 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/wamp/www/TLG/app/routes.php</file>
+            <file>file:/C:/wamp/www/TLG/app/views/pages/reports/report_view.blade.php</file>
+            <file>file:/C:/wamp/www/TLG/app/views/pages/batches/batchview.blade.php</file>
+            <file>file:/C:/wamp/www/TLG/app/models/BatchSchedule.php</file>
             <file>file:/C:/wamp/www/TLG/app/controllers/BatchesController.php</file>
-            <file>file:/C:/wamp/www/TLG/app/controllers/EstimateController.php</file>
+            <file>file:/C:/wamp/www/TLG/app/models/StudentClasses.php</file>
+            <file>file:/C:/wamp/www/TLG/app/views/pages/batches/attendance.blade.php</file>
+            <file>file:/C:/wamp/www/TLG/app/views/pages/franchiseecalendar/calendar.blade.php</file>
             <file>file:/C:/wamp/www/TLG/app/views/pages/students/details.blade.php</file>
-            <file>file:/C:/wamp/www/TLG/app/models/Estimate.php</file>
+            <file>file:/C:/wamp/www/TLG/app/controllers/FranchiseeAdministration.php</file>
+            <file>file:/C:/wamp/www/TLG/app/controllers/DashboardController.php</file>
             <file>file:/C:/wamp/www/TLG/app/controllers/StudentsController.php</file>
-            <file>file:/C:/wamp/www/TLG/app/models/Orders.php</file>
-            <file>file:/C:/wamp/www/TLG/app/models/PaymentDues.php</file>
         </group>
     </open-files>
 </project-private>

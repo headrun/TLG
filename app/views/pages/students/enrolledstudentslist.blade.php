@@ -61,13 +61,10 @@
 		
 		
 		
-		 	<div class="md-card">
-                
-            </div>
+		
             
             
-            <div class="md-card">
-	            <div class="md-card-content large-padding">
+            
 		            <h3 class="heading_b uk-margin-bottom">Enrolled Students</h3>
 		            
 		            <?php 
@@ -81,14 +78,14 @@
 		            <div class="md-card uk-margin-medium-bottom">
 		                <div class="md-card-content">
 		                    <div class="uk-overflow-container">
-		                        <table class="uk-table" id="studentsTable">
+		                        <table class="uk-table table-striped" id="studentsTable">
 		                            <!-- <caption>Table caption</caption> -->
 		                            <thead>
 		                            <tr>
-		                                <th>Student Name</th>
-		                                <th>Student Gender</th>
-		                                <th>Student Age</th>
-		                                <th>Student DOB</th>
+		                                <th>Name</th>
+		                                <th>Gender</th>
+		                                <th>Age</th>
+		                                <th>Date Of Birth</th>
 		                                <!-- <th>Action</th> -->
 		                            </tr>
 		                            </thead>
@@ -114,8 +111,7 @@
 		                    </div>
 		                </div>
 		            </div>
-				</div>
-			</div>
+			
 		
 		
 		

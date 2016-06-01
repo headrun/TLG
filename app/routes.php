@@ -10,6 +10,8 @@ Route::any('/try', "TryController@index");
 Route::any('/courses', 'CoursesController@viewCourses');
 //Route::any('/classes', 'ClassesController@index');
 
+Route::any('/terms_conditions', 'DashboardController@terms_conditions');
+
 Route::any('/classes', 'ClassesController@add_new_classes');
 Route::any('/add_new_class_franchise', 'ClassesController@add_new_class_franchise');
 
@@ -66,8 +68,9 @@ Route::group(array('prefix' => 'batches'), function() {
 	Route::any('/', "BatchesController@index");
 	Route::any('/view/{id}', "BatchesController@view");
 	Route::any('/attendance/{id}', "BatchesController@attendance");
+        Route::any('/batcheslimit',"BatchesController@batcheslimit");
 	Route::get('logout', "VaultController@logout");
-
+        Route::any('/addbatchlimit',"BatchesController@addBatchLimit");
 });
 
 
@@ -101,9 +104,15 @@ Route::group(array('prefix'=>'prices'),function(){
 
 Route::group(array('prefix'=>'Discounts'),function(){
         Route::any('/add_or_view_discounts','DiscountsController@add_or_view_discounts');
-        Route::any('/enable_or_desable','DiscountsController@enable_or_desable');
+        Route::any('/enable_or_disable','DiscountsController@enable_or_disable');
         
 });
+
+Route::group(array('prefix'=>'reports'),function(){
+        Route::any('/view_reports','ReportsController@view_reports');
+});
+
+
 
 
 
@@ -204,6 +213,8 @@ Route::group(array('prefix' => 'quick'), function() {
 	 * Estimate related Ajax calls
 	 *  --------------------------------------------------------------------------------------------------------------------------------------
 	 */
+        
+        Route::any('deleteBatchInestimateTable','EstimateController@deleteBatchInestimateTable');
         Route::any('insertEstimateDetails','EstimateController@insertEstimateDetails');
         Route::any('insertEstimateMasterDetails','EstimateController@insertEstimateMasterDetails');
         Route::any('cancelBatchEstimate','EstimateController@cancelBatchEstimate');
@@ -221,13 +232,30 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('getBatchDetailsById','BatchesController@getBatchDetailsById');
         Route::any('editbatchByBatchId','BatchesController@editbatchByBatchId');
 	Route::any('deleteBatchById','BatchesController@deleteBatchById');
-		
-	
+	Route::any('CheckNoofStudentsinBatch','BatchesController@CheckNoofStudentsinBatch');	
+	Route::any('editBatchLimitByBatchId','BatchesController@editBatchLimitByBatchId');
+        Route::any('deleteBatchLimitById','BatchesController@deleteBatchLimitById');
+        Route::any('getBatchesForOldCustomer','BatchesController@getBatchesForOldCustomer');
+        Route::any('getbatchesbybatchidanddate','BatchesController@getbatchesbybatchidanddate');
+        
+        /**
+	 *  --------------------------------------------------------------------------------------------------------------------------------------
+	 * Reports related Ajax calls
+	 *  --------------------------------------------------------------------------------------------------------------------------------------
+	 */
+        Route::any('generatereport', "ReportsController@generatereport");
+        
+        
+        
 	/**
 	 *  --------------------------------------------------------------------------------------------------------------------------------------
 	 * Other Ajax Calls
 	 *  -------------------------------------------------------------------
 	 */
+	Route::any('/addTermsAndConditions','DashboardController@addTermsAndConditionscont');
+	Route::any('/updateSecondChild_ClassDisc','DiscountsController@updateSecondChild_ClassDisc');
+	Route::any('/deleteDiscounts','DiscountsController@deleteDiscounts');
+	Route::any('/updateDiscounts','DiscountsController@updateDiscounts');
 	Route::any('checkSlotAvailableForIntrovisit', "EventsController@checkSlotAvailableForIntrovisit");
 	Route::any('addIntroVisit', "StudentsController@addIntroVisit");	
 	Route::any('editIntrovisit', "StudentsController@editIntroVisit");
@@ -255,7 +283,10 @@ Route::group(array('prefix' => 'quick'), function() {
 	
 	Route::any('getEventById', "EventsController@getEventById");	
 	Route::any('saveEvent', "EventsController@saveEvent");
-	
+	Route::any('/getAttendanceForStudent','StudentsController@getAttendanceForStudent');
+        Route::any('/getBatchNameByYear','StudentsController@getBatchNameByYear');
+        Route::any('/enrollOldCustomer','StudentsController@enrollOldCustomer');
+        
 	Route::any('saveSchedule', function(){
 	
 		$input = Input::all();
@@ -340,9 +371,24 @@ Route::group(array('prefix' => 'quick'), function() {
         
 });
 
+Route::any('/getfullfranchiseedata','FranchiseeAdministration@getFullFranchiseeData');
 
 
 Route::get('/test', function(){
+    $id=69;
+    $AttendanceYeardata=DB::select("SELECT DISTINCT(YEAR(enrollment_start_date)) as Y FROM student_classes ORDER BY Y");
+    
+    return $AttendanceYeardata[1];
+    $student_class_data=  StudentClasses::where('student_id','=',$id)
+                                          ->whereYear('enrollment_start_date','=','2016')
+                                          ->select('batch_id')->distinct('batch_id')->orderBy('batch_id')->get();
+    
+    
+    //$batches_data=  Batches::where('')
+    
+    
+    
+    die();
     $base_price_no= Batches::find(130)->classes()->select('base_price_no')->get();
     $base_price_no=$base_price_no[0]['base_price_no'];
     echo $base_price_no;

@@ -17,7 +17,7 @@ class BatchesController extends \BaseController {
 		
 		if(Auth::check()){
 			
-			$currentPage  =  "CLASSES";
+			$currentPage  =  "BATCHES";
 			$mainMenu     =  "COURSES_MAIN";
 			
 			$inputs = Input::all();
@@ -125,7 +125,7 @@ class BatchesController extends \BaseController {
 				$inputBatch['leadInstructor'] = $leadInstructor;
 				$inputBatch['alternateInstructor'] = $alternateInstructor;
 				$inputBatch['location_id']=$inputs['seasonLocation'];
-                                //$inputBatch['classAmount']=$inputs['eachClassAmount'];
+                                 $inputBatch['batchLimitCbx']=$inputs['batchLimitCbx'];
 				
 				$newBatch = Batches::addBatches($inputBatch);
 				/*
@@ -215,8 +215,9 @@ class BatchesController extends \BaseController {
 			$courseList = Courses::getFranchiseCoursesList($franchiseeId);
 			$franchiseeCourses = Courses::getFranchiseCoursesList(Session::get('franchiseId'));
 			$Instructors = User::getInstructors();
+			            $batches_limit=  BatchLimit::where('franchisee_id','=',session::get('franchiseId'))->get();
 			
-			$dataToView = array('batches','courseList','currentPage', 'mainMenu','franchiseeCourses','mondays','Instructors');
+			$dataToView = array('batches','courseList','currentPage', 'mainMenu','franchiseeCourses','mondays','Instructors','batches_limit');
 			
 			return View::make('pages.batches.batchesfinal', compact($dataToView));
 			
@@ -237,6 +238,7 @@ class BatchesController extends \BaseController {
 			$mainMenu     =  "COURSES_MAIN";
 			$batchSchedules = BatchSchedule::getBatcheSchedulesbyCourseandClassID($id);
 			$batchSchedules = json_encode($batchSchedules['event']);
+                        
 			$dataToView = array('currentPage', 'mainMenu', 'batchSchedules');
 			return View::make('pages.batches.batchview', compact($dataToView));
 		
@@ -266,7 +268,7 @@ class BatchesController extends \BaseController {
                               $batch_data[$i]['instructor_name']='';
                           }
                           $batch_data[$i]['count']=  StudentClasses::where('batch_id','=',$batch_data[$i]['id'])
-                                                                ->count();
+                                                                     ->count();
                         }
                         
                         
@@ -364,9 +366,9 @@ class BatchesController extends \BaseController {
 				
 			$currentPage  =  "BATCHES";
 			$mainMenu     =  "COURSES_MAIN";
-			
 			$studentsInBatch = StudentClasses::with('Students')->where('batch_id', '=', $id)->count();
 			$batch  =  Batches::where('id', '=', $id)->first();
+                        
 			$attendanceArray = BatchSchedule::getAttendanceTable($id);
 			
 			$lead = Batches::with('LeadInstructors')->find($id);
@@ -488,7 +490,10 @@ class BatchesController extends \BaseController {
                                               ->where('batch_id','=',$inputs['batchId'])
                                               ->whereDate('schedule_date','>=',$inputs['preferredStartDate'])
                                               ->get();
+           // return Response::json(array(count($batchClassesData)));
             $batchClassesCount=count($batchClassesData);
+            
+            if($batchClassesCount){
             $lastEndDate=$batchClassesData[($batchClassesCount-1)]['schedule_date'];
             
             $date=  Carbon::now();
@@ -502,6 +507,7 @@ class BatchesController extends \BaseController {
              $base_price_no=Batches::find($inputs['batchId'])->classes()->select('base_price_no')->get();
              $base_price=ClassBasePrice::where('base_price_no','=',$base_price_no[0]['base_price_no'])->get();
              $base_price=$base_price[0]['base_price'];
+            }
             if($batchClassesCount){
                 return Response::json(array('status'=>'success','classCount'=>$batchClassesCount,'lastdate'=>$date->toDateString(),'classAmount'=>$base_price,'enrollment_end_date'=>$batchClassesData[count($batchClassesData)-1]['schedule_date'],'enrollment_start_date'=>$batchClassesData[0]['schedule_date'],'batch_Schedule_data'=>$batchClassesData));
             }else{
@@ -541,7 +547,7 @@ class BatchesController extends \BaseController {
             $startTime24Hours = date('H:i:s',$timestamp);
             $data=Batches::where('id','=',$inputs['batch_id'])
                     ->update(array('lead_instructor'=>$inputs['l_instructor_id'],'location_id'=>$inputs['location_id'],
-                                   'class_amount'=>$inputs['class_cost'],'preferred_time'=>$startTime24Hours,
+                                   'preferred_time'=>$startTime24Hours,
                                    'preferred_end_time'=>$endTime24Hours));
             return Response::json(array('status'=>'success','data'=>$data));
         }
@@ -567,7 +573,130 @@ class BatchesController extends \BaseController {
             return Response::json(array('status'=>'failure'));
         }
         
-	/**
+        
+        public function CheckNoofStudentsinBatch(){
+            $inputs=  Input::all();
+             //$batch_details=  Batches::where('')
+                     
+             $StudentsBatchesDetials = StudentClasses::  where('batch_id','=',$inputs['batch_id'])
+                                             ->where('season_id','=',$inputs['season_id'])
+                                             ->where('status','=','enrolled')
+                                             ->where('enrollment_end_date','>',$inputs['start_date'])
+                                             ->count();
+             $user_details=User::find(Session::get('userId'));
+             
+             
+        }
+
+//        public function batcheslimit(){
+//            if(Auth::check()){
+//                if(Session::get('userType') == 'ADMIN'){
+//                    $currentPage  =  "BATCHESLIMIT";
+//                    $mainMenu     =  "COURSES_MAIN";
+//                    $viewData= compact('currentPage','mainMenu');
+//                    return View::make('pages.batches.batcheslimit',$viewData);
+//                }else{
+//                    return Redirect::action('DashboardController@index');
+//                }
+//            }    
+//        }
+
+        /** added following methods **/
+
+       public function batcheslimit(){
+            if(Auth::check()){
+                if(Session::get('userType') == 'ADMIN'){
+                    $currentPage  =  "BATCHESLIMIT";
+                    $mainMenu     =  "COURSES_MAIN";
+                    $batchLimit   =  BatchLimit::getAllBatchesLimitbyFranchiseId();
+                    $viewData= compact('currentPage','mainMenu','batchLimit');
+                    return View::make('pages.batches.batcheslimit',$viewData);
+                }else{
+                    return Redirect::action('DashboardController@index');
+                }
+            }    
+        }
+        
+        /**
+         * This method adds batch limit to batches_limit table
+         * 
+         */
+        
+        public function addBatchLimit(){
+            if(Auth::check()){
+                if(Session::get('userType') == 'ADMIN'){
+                    $currentPage  =  "BATCHESLIMIT";
+                    $mainMenu     =  "COURSES_MAIN";
+                    
+                    $inputs = Input::all();
+                    $addBatchLimit = BatchLimit::addBatchLimit($inputs);
+                    if ($addBatchLimit) {
+                       Session::flash('msg', "Batch Limit added successfully.");
+                    } else {
+                       Session::flash('warning', "Sorry, Could not add batch limit at the moment.");
+                    }
+                    return Redirect::action('BatchesController@batcheslimit');
+                }else{
+                    return Redirect::action('DashboardController@index');
+                }
+            }    
+        }
+        
+        public function deleteBatchLimitById(){
+            $inputs['batchlimit_id']=Input::get('batchlimit_id');
+            
+            $batchLimit_delete=  BatchLimit::deleteBatchLimitById($inputs['batchlimit_id']);
+            
+            if ($batchLimit_delete) {
+                return Response::json(array('status' => 'success'));
+            } else {
+                return Response::json(array('status' => 'failure'));
+            }
+
+        }
+        
+        public function editBatchLimitByBatchId(){
+            $inputs=Input::all();
+            $data=BatchLimit::where('id','=',$inputs['batchlimit_id'])
+                    ->update(['batch_limit_receptionist'=>$inputs['batchlimit_recep'],'batch_limit_admin'=>$inputs['batchlimit_admin']]);
+            return Response::json(array('status'=>'success','data'=>$data));
+        }
+
+
+        public function getBatchesForOldCustomer(){
+           $inputs = Input::all();
+           //return Response::json(array('status' => 'success', 'batch_data'=> $inputs));
+           $batchData = Batches::where('season_id','=', $inputs['seasonId'])
+           	->where('class_id', '=', $inputs['classId'])
+           	->where('franchisee_id', '=', Session::get('franchiseId'))->get();
+           for($i=0;$i<count($batchData);$i++){
+               $timestamp = strtotime($batchData[$i]['start_date']);
+               $batchData[$i]['day']=date('l', $timestamp);
+                $startDate=new DateTime($batchData[$i]['preferred_time']);
+                $endDate=new DateTime($batchData[$i]['preferred_end_time']);
+                $batchData[$i]['preferred_time']=$startDate->format('G:i A');
+                $batchData[$i]['preferred_end_time']=$endDate->format('G:i A');
+               $temp=User::find($batchData[$i]['lead_instructor']);
+               $batchData[$i]['Leadinstructor']=$temp->first_name.$temp->last_name;
+           }
+           if ($batchData) {
+               return Response::json(array('status' => 'success', 'batch_data'=> $batchData));
+           } else {
+               return Response::json(array('status' => 'failure'));
+           }
+
+        }
+        
+        public function getbatchesbybatchidanddate(){
+            $inputs=Input::all();
+            $class_count=  BatchSchedule::whereDate('schedule_date','>=',$inputs['startdate'])
+                                  ->whereDate('schedule_date','<=',$inputs['enddate'])
+                                  ->where('batch_id','=',$inputs['batch_id'])
+                                  ->count();
+            
+            return Response::json(array('status'=>'success','class_count'=>$class_count));
+        }
+        /**
 	 * Show the form for creating a new resource.
 	 *
 	 * @return Response

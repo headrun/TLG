@@ -265,13 +265,13 @@ class PaymentsController extends \BaseController {
 		$getCustomerName = Customers::select('customer_name')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
 		$getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
 		$paymentMode = Orders::where('payment_no', '=', $payment_no)->get();
-
+		$getTermsAndConditions = TermsAndConditions::where('id', '=', (TermsAndConditions::max('id')))->get();
 
 		//return $paymentMode[0]['membership_type'];
                 $data = compact('totalSelectedClasses', 'getBatchNname',
 		 'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate',
 		  'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName',
-		   'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode');
+		   'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode', 'getTermsAndConditions');
 		return View::make('pages.orders.printorder', $data);
 		//return $discounts_amount;	
 	}

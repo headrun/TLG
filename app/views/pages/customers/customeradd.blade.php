@@ -348,7 +348,7 @@ $(document).ready(function(){
                                     <div class="uk-grid" data-uk-grid-margin>
                                             <div class="uk-width-medium-1-2">
 				                 <div class="parsley-row form-group">
-				                 	<label for="customerName">CustomerFirstName<span class="req">*</span></label>
+				                 	<label for="customerName">Customer First Name<span class="req">*</span></label>
 				                 	{{Form::text('customerName', null,array('id'=>'customerName', 'required'=>'', 'class' => 'form-control input-sm md-input'))}}
 				                 </div>
 				            </div>
@@ -368,7 +368,7 @@ $(document).ready(function(){
 				            </div>    
 				            <div class="uk-width-medium-1-2">    
 				                  <div class="parsley-row form-group">
-				                 	<label for="customerMobile">Customer Mobile<span class="req">*</span></label>
+				                 	<label for="customerMobile">Customer Mobile No<span class="req">*</span></label>
 				                 	
 				                 	{{Form::text('customerMobile', null,array('id'=>'customerMobile', 'required'=>'', "onkeypress"=>"return isNumberKey(event);", 'maxlength'=>'10',  'minlength'=>'10', 'pattern'=>'\d*',   'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
 				                 </div>

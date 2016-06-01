@@ -147,6 +147,19 @@ class FranchiseeAdministration extends \BaseController {
 		
 	}
 
+        
+        
+        
+        public function getFullFranchiseeData(){
+            if(Auth::check()){
+                $currentPage  =  "";
+                $mainMenu     =  "DASHBOARD";
+                $viewData=array('currentPage','mainMenu');
+                return View::make('pages.franchiseecalendar.calendar',compact($viewData));
+            }else{
+                return Redirect::action('DashboardController@index');
+            }
+        }
 
 	/**
 	 * Show the form for editing the specified resource.

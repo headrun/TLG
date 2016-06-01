@@ -57,9 +57,22 @@ class EstimateController extends \BaseController {
                     return Response::json(array('status'=> "success", $sendBatchId));
                 }else{
                     return Response::json(array('status'=> "failure",));
-            }
-}
-}
+	            }
+			}
+		}
+
+
+		public function deleteBatchInestimateTable(){
+            if(Auth::check()){
+                $inputs = Input::all();
+                $sendEstimateId = Estimate::deleteBatchInestimateTable($inputs);
+                if($sendEstimateId){
+                    return Response::json(array('status'=> "success", $sendEstimateId));
+                }else{
+                    return Response::json(array('status'=> "failure",));
+	            }
+			}
+		}
 
 	/**
 	 * Display a listing of the resource.

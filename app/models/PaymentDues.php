@@ -20,6 +20,7 @@ class PaymentDues extends \Eloquent {
 		$paymentDues->student_id           = $inputs['student_id'];
 		$paymentDues->season_id            = $inputs['seasonId'];
 		$paymentDues->customer_id          = $inputs['customer_id'];
+                $paymentDues->franchisee_id        = Session::get('franchiseId');
 		$paymentDues->batch_id             = $inputs['batch_id'];
 		$paymentDues->class_id             = $inputs['class_id'];
                 $paymentDues->student_class_id     = $inputs['student_class_id'];
@@ -51,7 +52,12 @@ class PaymentDues extends \Eloquent {
                 if(isset($inputs['discount_multipleclasses_applied'])){
                  $paymentDues->discount_multipleclasses_applied=$inputs['discount_multipleclasses_applied'];
                 }
-               if(isset($inputs['each_class_cost'])){
+                if(isset($inputs['discount_admin_amount'])){
+                 $paymentDues->discount_admin_amount=$inputs['discount_admin_amount'];
+                }else{
+                    $paymentDues->discount_admin_amount=0;
+                }
+                if(isset($inputs['each_class_cost'])){
                   $paymentDues->each_class_amount=$inputs['each_class_cost'];
                 }
                 if(isset($inputs['selected_order_sessions'])){
@@ -99,7 +105,8 @@ class PaymentDues extends \Eloquent {
 		$paymentDues->student_id           = $addBirthday['student_id'];
                 $paymentDues->birthday_id          = $addBirthday['id'];
 		$paymentDues->customer_id          = $addBirthday['customer_id'];
-		$paymentDues->payment_due_amount   = $addBirthday['advance_amount_paid'];
+		$paymentDues->franchisee_id        = Session::get('franchiseId');
+                $paymentDues->payment_due_amount   = $addBirthday['advance_amount_paid'];
                 if(isset($addBirthday['membership_id'])){
                     $paymentDues->membership_id=$addBirthday['membership_id'];
                 }
@@ -121,11 +128,12 @@ class PaymentDues extends \Eloquent {
 		$paymentDues->student_id           = $addBirthday['student_id'];
                 $paymentDues->birthday_id          = $addBirthday['id'];
 		$paymentDues->customer_id          = $addBirthday['customer_id'];
+                $paymentDues->franchisee_id        = Session::get('franchiseId');
                 if(isset($addBirthday['membership_id'])){
-                    $paymentDues->membership_id=$addBirthday['membership_id'];
+               //     $paymentDues->membership_id=$addBirthday['membership_id'];
                 }
                 if(isset($addBirthday['membership_amount'])){
-                    $paymentDues->membership_amount=$addBirthday['membership_amount'];
+               //     $paymentDues->membership_amount=$addBirthday['membership_amount'];
                 }
 		$paymentDues->payment_due_amount   = $addBirthday['remaining_due_amount'];
 		$paymentDues->payment_type         = 'bipay';
@@ -160,7 +168,7 @@ class PaymentDues extends \Eloquent {
                             ->where('payment_due_for','=','enrollment')
                             ->where('payment_status','=','pending')
                             ->where('student_class_id','!=','0')
-                           ->get();
+                            ->get();
     }
     static function getAllPaymentsMade($student_id){
         return PaymentDues::where('student_id','=',$student_id)
@@ -169,4 +177,134 @@ class PaymentDues extends \Eloquent {
                             ->where('student_class_id','!=','0')
                             ->get();
     }
+    
+    static function getAllBirthdayPaymentsforReport($inputs){
+        $birthdayReportDetails['data'] =PaymentDues::where('payment_due_for','=','birthday')
+                                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                    ->where('payment_status','=','paid')
+                                                    ->where('birthday_id','<>',0)
+                                                    ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                                    ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                                                    ->orderBy('id','desc')
+                                                    ->get();
+        for($i=0;$i<count($birthdayReportDetails['data']);$i++){
+            $temp=  Customers::find($birthdayReportDetails['data'][$i]['customer_id']);
+            $birthdayReportDetails['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+            $temp2=  Students::find($birthdayReportDetails['data'][$i]['student_id']);
+            $birthdayReportDetails['data'][$i]['student_name']=$temp2->student_name;
+        }
+        $birthdayReportDetails['totalAmount']=PaymentDues::where('payment_due_for','=','birthday')
+                                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                    ->where('payment_status','=','paid')
+                                                    ->where('birthday_id','<>',0)
+                                                    ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                                    ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                                                    ->sum('payment_due_amount');
+        $birthdayReportDetails['membershipAmount']=PaymentDues::where('payment_due_for','=','birthday')
+                                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                    ->where('payment_status','=','paid')
+                                                    ->where('birthday_id','<>',0)
+                                                    ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                                    ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                                                    ->sum('membership_amount');
+        return $birthdayReportDetails;
+    }
+    
+    static function getAllEnrollmentPaymentsforReport($inputs){
+        $enrollmentReportDetails['data']=PaymentDues::where('payment_due_for','=','enrollment')
+                                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                    ->where('payment_status','=','paid')
+                                                    ->where('student_class_id','<>',0)
+                                                    ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                                    ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                                                    ->orderBy('id','desc')
+                                                    ->get();
+        for($i=0;$i<count($enrollmentReportDetails['data']);$i++){
+            $temp=  Customers::find($enrollmentReportDetails['data'][$i]['customer_id']);
+            $enrollmentReportDetails['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+            $temp2=  Students::find($enrollmentReportDetails['data'][$i]['student_id']);
+            $enrollmentReportDetails['data'][$i]['student_name']=$temp2->student_name;
+            $temp3= Batches::find($enrollmentReportDetails['data'][$i]['batch_id']);
+            $enrollmentReportDetails['data'][$i]['batch_name']=$temp3->batch_name;
+        }
+        $enrollmentReportDetails['totalAmount']=PaymentDues::where('payment_due_for','=','enrollment')
+                                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                    ->where('payment_status','=','paid')
+                                                    ->where('student_class_id','<>',0)
+                                                    ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                                    ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                                                    ->sum('payment_due_amount_after_discount');
+        $enrollmentReportDetails['membershipAmount']=PaymentDues::where('payment_due_for','=','enrollment')
+                                                    ->where('payment_status','=','paid')
+                                                    ->where('birthday_id','<>',0)
+                                                    ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                                    ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                                                    ->sum('membership_amount');
+        return $enrollmentReportDetails;
+        
+    }
+    static function getAllEnrollmentBirthdayPaymentsforReport($inputs){
+        $reportData['data']=PaymentDues::whereIn('payment_due_for',array('enrollment','birthday'))
+                                 ->where('franchisee_id','=',Session::get('franchiseId'))
+                                 ->where('payment_status','=','paid')
+                                 ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                 ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                                 ->orderBy('id','desc')
+                                 ->get();
+        for($i=0;$i<count($reportData['data']);$i++){
+            $temp=  Customers::find($reportData['data'][$i]['customer_id']);
+            $reportData['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+            $temp2= Students::find($reportData['data'][$i]['student_id']);
+            $reportData['data'][$i]['student_name']=$temp2->student_name;
+            if($reportData['data'][$i]['batch_id']!=null){
+                $temp3= Batches::find($reportData['data'][$i]['batch_id']);
+                $reportData['data'][$i]['batch_name']=$temp3->batch_name;
+            }
+        }
+        $reportData['totalAmount']=PaymentDues::where('payment_due_for','=','birthday')
+                                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                    ->where('payment_status','=','paid')
+                                                    ->where('birthday_id','<>',0)
+                                                    ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                                    ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                                                    ->sum('payment_due_amount');
+        $reportData['totalAmount']+=PaymentDues::where('payment_due_for','=','enrollment')
+                                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                    ->where('payment_status','=','paid')
+                                                    ->where('student_class_id','<>',0)
+                                                    ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                                    ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                                                    ->sum('payment_due_amount_after_discount');
+        $reportData['membershipAmount']=PaymentDues::whereIn('payment_due_for',array('enrollment','birthday'))
+                                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                    ->where('payment_status','=','paid')
+                                                    ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                                    ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                                                    ->sum('membership_amount');
+        return $reportData;
+    }
+  static function getAllMembershipPaymentsforReport($inputs){
+      $membership['data']=PaymentDues::whereIn('payment_due_for',array('enrollment','birthday'))
+                                        ->where('franchisee_id','=',Session::get('franchiseId'))
+                                        ->where('payment_status','=','paid')
+                                        ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                        ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                                        ->where('membership_id','<>',0)
+                                        ->orderBy('id','desc')
+                                        ->get();
+      for($i=0;$i<count($membership['data']);$i++){
+            $temp=  Customers::find($membership['data'][$i]['customer_id']);
+            $membership['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+            $temp2=  Students::find($membership['data'][$i]['student_id']);
+            $membership['data'][$i]['student_name']=$temp2->student_name;
+        }
+        $membership['membershipAmount']=PaymentDues::whereIn('payment_due_for',array('enrollment','birthday'))
+                                        ->where('franchisee_id','=',Session::get('franchiseId'))
+                                        ->where('payment_status','=','paid')
+                                        ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                        ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                                        ->where('membership_id','<>',0)
+                                        ->sum('membership_amount');
+        return $membership;
+  }   
 }

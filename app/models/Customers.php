@@ -51,8 +51,8 @@ class Customers extends \Eloquent {
 		
 		$customer = new Customers();
 		$customer->franchisee_id  = Session::get('franchiseId');
-		$customer->customer_name  = $inputs['customerName'];
-                $customer->customer_lastname=$inputs['customerLastName'];
+		$customer->customer_name  =  ucfirst($inputs['customerName']);
+                $customer->customer_lastname=ucfirst($inputs['customerLastName']);
 		$customer->customer_email = $inputs['customerEmail'];
 		$customer->mobile_no      = $inputs['customerMobile'];	
 		$customer->building       = $inputs['building'];		
@@ -189,7 +189,7 @@ class Customers extends \Eloquent {
 	static function getCustomerByEmail($email){
 		
 		if($email != ""){
-			return Customers::where("customer_email","=",$email)->take(1)->get();
+			return Customers::where("customer_email","=",$email)->where('franchisee_id', '=', Session::get('franchiseId'))->take(1)->get();
 		}
 	}
 	

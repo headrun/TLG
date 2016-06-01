@@ -2366,13 +2366,17 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
                                 </div>
                             </div>
                             <div class="user_heading_avatar">
+                                <?php if($customer->profile_image!=''){ ?>
                                 <img src="{{url()}}/upload/profile/customer/{{$customer->profile_image}}"/>
+                                <?php }else{ ?>
+                                <img src=""/>
+                                <?php }?>
                             </div>
                             <div class="user_heading_content">
                                 <div class="row">
                                 <div class="col-md-5">
                                 <h2 class="heading_b uk-margin-bottom"><span class="uk-text-truncate">
-                                	{{$customer->customer_name}}{{$customer->customer_lastname}} 
+                                	{{$customer->customer_name}}&nbsp;{{$customer->customer_lastname}} 
                                 	<?php if($customerMembership){?>
                                 		<span class="new badge" style="background-color: #7CB342">{{$customerMembership->name}} Membership</span> 
                                 	
@@ -2398,10 +2402,10 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
                                     <table class='uk-table dataTable no-footer' id='enrolledtable'>
                                         <tbody>
                                         <tr>
-                                        <th>StudnetName&nbsp; </th>
-                                        <th>BatchName&nbsp; </th>
-                                        <th>Startdate&nbsp; </th>
-                                        <th>Enddate&nbsp; </th>
+                                        <th>Student&nbsp;Name&nbsp; </th>
+                                        <th>Batch&nbsp;Name&nbsp; </th>
+                                        <th>Start&nbsp;Date&nbsp; </th>
+                                        <th>End&nbsp;Date&nbsp; </th>
                                         </tr>
                                         <?php for($i=0;$i<count($customer_student_data);$i++){?>
                                         <tr>

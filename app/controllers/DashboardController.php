@@ -216,7 +216,28 @@ class DashboardController extends \BaseController {
 			return Redirect::to("/");
 		}
 	}
+  public function terms_conditions(){
+      $currentPage  =  "TERMS_CONDITIONS";
+      $mainMenu     =  "TERMS_CONDITIONS_MAIN";
+      $getTermsAndConditions = TermsAndConditions::all();
+      $getTermsAndConditions = $getTermsAndConditions[0];
+      //return $getTermsAndConditions;
+      $data = compact('currentPage', 'mainMenu', 'getTermsAndConditions');
+      return View::make('pages.dashboard.terms_conditions', $data);
+  }
 
+
+
+  public function addTermsAndConditionscont(){
+        $inputs = Input::all();
+        //return Response::json(array('status'=> "success", $inputs)); 
+        $sendDetails = TermsAndConditions::addTermsAndConditions($inputs);
+        if($sendDetails){
+          return Response::json(array('status'=> "success", $sendDetails));  
+        }else{
+          return Response::json(array('status'=> "failure"));        
+      }
+  }
 
 	/**
 	 * Show the form for creating a new resource.

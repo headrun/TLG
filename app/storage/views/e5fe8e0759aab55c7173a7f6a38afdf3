@@ -1,0 +1,95 @@
+<?php $__env->startSection('libraryCSS'); ?>
+	<!-- <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.min.css" media="all">
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.print.css" media="all"> -->
+<!--	<link rel="stylesheet" href="<?php echo url(); ?>/bower_components/kendo-ui/styles/kendo.common-material.min.css"/>
+        <link rel="stylesheet" href="<?php echo url(); ?>/bower_components/kendo-ui/styles/kendo.material.min.css"/>-->
+<link href="<?php echo url(); ?>/assets/fullcalendar2/fullcalendar.css" rel='stylesheet' />
+<link href="<?php echo url(); ?>/assets/fullcalendar2/fullcalendar.print.css" rel='stylesheet' />
+        
+       
+       
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('libraryJS'); ?>
+<script src="<?php echo url(); ?>/assets/fullcalendar2/lib/moment.min.js"></script>
+<!--<script src="<?php echo url(); ?>/assets/fullcalendar2/lib/jquery.min.js"></script>-->
+<script src="<?php echo url(); ?>/assets/fullcalendar2/fullcalendar.js"></script>
+<script>
+    $(document).ready(function() {
+
+    // page is now ready, initialize the calendar...
+
+    $('#calendar').fullCalendar({
+        // put your options and callbacks here
+        defaultDate: '2016-05-12',
+			editable: true,
+			eventLimit: true, // allow "more" link when too many events
+			events: [
+				{
+					title: 'All Day Event',
+					start: '2016-05-01'
+				},
+				{
+					title: 'Long Event',
+					start: '2016-05-07',
+					end: '2016-05-10'
+				},
+				{
+					id: 999,
+					title: 'Repeating Event',
+					start: '2016-05-09T16:00:00'
+				},
+				{
+					id: 999,
+					title: 'Repeating Event',
+					start: '2016-05-16T16:00:00'
+				},
+				{
+					title: 'Conference',
+					start: '2016-05-11',
+					end: '2016-05-13'
+				},
+				{
+					title: 'Meeting',
+					start: '2016-05-12T10:30:00',
+					end: '2016-05-12T12:30:00'
+				},
+				{
+					title: 'Lunch',
+					start: '2016-05-12T12:00:00'
+				},
+				{
+					title: 'Meeting',
+					start: '2016-05-12T14:30:00'
+				},
+				{
+					title: 'Happy Hour',
+					start: '2016-05-12T17:30:00'
+				},
+				{
+					title: 'Dinner',
+					start: '2016-05-12T20:00:00'
+				},
+				{
+					title: 'Birthday Party',
+					start: '2016-05-13T07:00:00'
+				},
+				{
+					title: 'Click for Google',
+					url: 'http://google.com/',
+					start: '2016-05-28'
+				}
+			]
+
+    });
+
+});
+</script>
+
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
+
+<div id='calendar'></div>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layout.master', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

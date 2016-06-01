@@ -32,7 +32,13 @@ class Attendance extends \Eloquent {
 	
 	
 	
-	
+	static function getAttendanceForStudent($data){
+		//return $data;
+		return $getAttendance = Attendance::where('student_id', '=', $data['studentId'])
+							->where('batch_id', '=', $data['batchId'])
+							->where('attendance_date', 'like', '%'.$data['year'].'%')
+							->get();
+	}
 	
 	
 	

@@ -2852,6 +2852,7 @@ TableTools.BUTTONS = {
 
 	"xls": $.extend( {}, TableTools.buttonBase, {
 		"sAction": "flash_save",
+		"sFileName": "*.xls",
 		"sCharSet": "utf16le",
 		"bBomInc": true,
 		"sButtonClass": "DTTT_button_xls",

@@ -51,11 +51,15 @@
         	success: function (response)
         	{
         		console.log(response);
-	            $('#msgDiv').html("<h5 class = 'uk-alert uk-alert-success' style = 'color: #fff; width: 90%; padding: 8px; text-align: center'>Row was Inserted Successfully. Please wait untill this page reloads.</h5>");
-                setTimeout(function(){
-	            	window.location.reload(1);
-                }, 2500);
-        	}
+                if(response.test == "exist"){
+                    $('#msgDiv').html("<h5 class = 'uk-alert uk-alert-danger' style = 'color: #fff; width: 90%; padding: 8px; text-align: center'>Class is already Exist.</h5>");   
+                }else{
+	               $('#msgDiv').html("<h5 class = 'uk-alert uk-alert-success' style = 'color: #fff; width: 90%; padding: 8px; text-align: center'>Row was Inserted Successfully. Please wait untill this page reloads.</h5>");
+                    setTimeout(function(){
+	            	  window.location.reload(1);
+                    }, 2500);
+        	    }
+           }
     	});
 	}else{
 		$('#msgDiv').html("<h5 class = 'uk-alert uk-alert-danger' style = 'color: #fff; width: 90%; padding: 8px; text-align: center'>Please Fill all required fields and save.</h5>");

@@ -105,8 +105,8 @@ print_r($orders); */
 				</div>
 				<div class = "col-md-4" style = "float: right">
 					<b><?php
-						$mytime = Carbon\Carbon::now();
-						echo $mytime->toDateTimeString();
+				
+						echo $paymentDueDetails[0]['created_at'];
 					?></b>
 				</div>
 
@@ -119,12 +119,12 @@ print_r($orders); */
 					<div>
 						<div class="" style="width:50%; float:left">
 						  <div class="title">Kid Name</div>
-						  <div class="col-md-4">{{$getStudentName[0]['student_name']}}</div>
+                                                  <div class="" >{{$getStudentName[0]['student_name']}}</div>
 						</div>
 						
 						<div class="" style="width:50%; float:right">
 						  <div class="title">Total Enrolled Classes</div>
-						  <div class="col-md-4">{{$totalSelectedClasses}}</div>
+						  <div class="">{{$totalSelectedClasses}}</div>
 						</div>
 					</div>
 					<br clear = "all" />
@@ -158,7 +158,7 @@ print_r($orders); */
 					<table class="paymentsTable">
 						<thead>
 							<tr style="font-weight:bold">
-								<td style="text-align:right; width:70%;">Classes Amount</td>
+								<td style="text-align:right; ">Classes Amount</td>
 								<td style="text-align:right">{{$paymentDueDetails[0]['payment_due_amount']}}</td>
 							</tr>
 						
@@ -172,38 +172,52 @@ print_r($orders); */
 							$membershipAmount = 5000;
 						}
 						?>
-						<?php if(isset($membership)){?>
+						
+						<tr>
+							<td style="text-align:right"><strong>By Choosing {{$paymentDueDetails[0]['selected_sessions']}} Classes You are Saving ({{$paymentDueDetails[0]['discount_applied']}}%: [-{{$paymentDueDetails[0]['discount_amount']}}Rs])</strong></td>
+							<td  style="text-align:right">
+								<strong><?php $amount=$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']; echo number_format((float)$amount, 2, '.', ''); ?></strong>
+							</td>
+						</tr>
+                                                <?php if($paymentDueDetails[0]['discount_sibling_applied']!=0){ ?>
+						<tr>
+							<td style="text-align:right"><strong>By Enrolling Sibling You are Saving({{$paymentDueDetails[0]['discount_sibling_applied']}}%:[-{{$paymentDueDetails[0]['discount_sibling_amount']}}Rs])</strong></td>
+							<td  style="text-align:right">
+								<strong><?php $amount=$amount-$paymentDueDetails[0]['discount_sibling_amount'];echo number_format((float)$amount, 2, '.', '');?> </strong>
+							</td>
+						</tr>
+                                                <?php  } ?>
+                                                <?php if($paymentDueDetails[0]['discount_multipleclasses_applied']!=0){ ?>
+						<tr>
+							<td style="text-align:right"><strong>By Enrolling Multiple Classes You are Saving {{$paymentDueDetails[0]['discount_multipleclasses_applied']}} %:[-{{$paymentDueDetails[0]['discount_multipleclasses_amount']}}Rs])</strong></td>
+							<td  style="text-align:right">
+								<strong><?php $amount=$amount-$paymentDueDetails[0]['discount_multipleclasses_amount']; echo number_format((float)$amount, 2, '.', '');?></strong>
+							</td>
+						</tr>
+                                                <?php }?>
+                                                <?php if($paymentDueDetails[0]['discount_admin_amount']!=0){ ?>
+                                                <tr>
+							<td style="text-align:right"><strong>Special Discount For You(-{{$paymentDueDetails[0]['discount_admin_amount']}})</strong></td>
+							<td  style="text-align:right">
+								
+								<strong><?php $amount=$amount-$paymentDueDetails[0]['discount_admin_amount']; echo number_format((float)$amount, 2, '.', '');?></strong>
+							</td>
+						</tr>
+                                                <?php } ?>
+                                                <?php if(isset($membership)){?>
 						<tr>
 							<td style="text-align:right"><strong>{{$membership}} {{$paymentMode[0]['membership_type']}}</strong></td>
 							<td  style="text-align:right">
-								<strong>{{$membershipAmount}}</strong>
+								<strong><?php echo number_format((float)$membershipAmount, 2, '.', ''); ?></strong>
 							</td>
 						</tr>
 						<?php }?>
 						
 						<tr>
-							<td style="text-align:right"><strong>Discount: {{$paymentDueDetails[0]['discount_applied']}}</strong></td>
-							<td  style="text-align:right">
-								<strong>-{{$paymentDueDetails[0]['discount_amount']}}</strong>
-							</td>
-						</tr>
-						<tr>
-							<td style="text-align:right"><strong>Second Sibling Consideration:{{$paymentDueDetails[0]['discount_sibling_applied']}}</strong></td>
-							<td  style="text-align:right">
-								<strong>-{{$paymentDueDetails[0]['discount_sibling_amount']}}</strong>
-							</td>
-						</tr>
-						<tr>
-							<td style="text-align:right"><strong>Multiple Classes Consideration:{{$paymentDueDetails[0]['discount_multipleclasses_applied']}}</strong></td>
-							<td  style="text-align:right">
-								<strong>-{{$paymentDueDetails[0]['discount_multipleclasses_amount']}}</strong>
-							</td>
-						</tr>
-						<tr>
 							<td style="text-align:right"><strong>Subtotal</strong></td>
 							<td  style="text-align:right">
 								
-								<strong>{{$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']}}</strong>
+								<strong>{{number_format((float)($paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']-$paymentDueDetails[0]['discount_admin_amount']), 2, '.', '')}}</strong>
 							</td>
 						</tr>
 						
@@ -211,7 +225,7 @@ print_r($orders); */
 							<td style="text-align:right"><strong>Service Tax</strong></td>
 							<td  style="text-align:right">
 								
-								<strong>{{ ($paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * 14.5/100 }}</strong>
+								<strong>{{number_format((float)( ($paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * 14.5/100), 2, '.', '') }}</strong>
 							</td>
 						</tr>
 						
@@ -264,7 +278,8 @@ print_r($orders); */
 					
 					<p>Welcome. Thanks for Joining The Little Gym.  Regards, Team TLG</p>
 					<hr/>
-					<p>Terms & Conditions:</p>
+					<p style = "font-weight: bold">Terms & Conditions:</p>
+					<li>{{ $getTermsAndConditions[0]['terms_conditions']}}</li>
 					<br/>					
 				</div>
 			

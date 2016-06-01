@@ -140,8 +140,9 @@ class SeasonsController extends \BaseController {
                                   ->whereNotIn('season_type', ['Summer Season','Winter Season'])
                                   ->orderBy('id', 'DESC')
                                   ->get();
+            $classData = Classes::where('franchisee_id', '=', Session::get('franchiseId'))->get();
             if($season_data){
-                return Response::json(array('status'=>'success','season_data'=>$season_data));
+                return Response::json(array('status'=>'success','season_data'=>$season_data,'Class_data'=> $classData));
             }else{
                 return Response::json(array('status'=>'failure'));
             }

@@ -230,10 +230,7 @@ $("#customerSubmit").click(function (event){
 			<h4>List of Members</h4>
 		
             
-            <div class="md-card">
-	            <div class="md-card-content large-padding">
-		            <h3 class="heading_b uk-margin-bottom">Customers</h3>
-		            
+                    
 		            <?php 
 		            	/*  echo "<pre>";
 		            	print_r($customers);
@@ -249,10 +246,10 @@ $("#customerSubmit").click(function (event){
 		                            <!-- <caption>Table caption</caption> -->
 		                            <thead>
 		                            <tr>
-		                                <th>Customer Name</th>
-		                                <th>Customer Email</th>
-		                                <th>Customer mobil no</th>
-		                                <th>Customer Address</th>
+		                                <th>Customer</th>
+		                                <th>Email</th>
+		                                <th>Mobile No</th>
+		                                <th>Address</th>
 		                                <!-- <th>Action</th> -->
 		                            </tr>
 		                            </thead>
@@ -276,8 +273,7 @@ $("#customerSubmit").click(function (event){
 		                    </div>
 		                </div>
 		            </div>
-				</div>
-			</div>
+		
 		
 		
 		
@@ -318,5 +314,9 @@ $("#customerSubmit").click(function (event){
 
   </div>
 </div>
- 
+ <div class="md-fab-wrapper">
+<a class="md-fab md-fab-accent" href="{{url()}}/customers/add" title="Add customers">
+<i class="material-icons">&#xE03B;</i>
+</a>
+</div>
 @stop
