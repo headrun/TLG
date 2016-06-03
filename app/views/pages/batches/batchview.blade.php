@@ -7,6 +7,9 @@
 	<link href='{{url()}}/assets/fullcalender/fullcalendar.print.css' rel='stylesheet' media='print' />
 	<link rel="stylesheet" media="all" type="text/css" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css" />
 	<link type="text/css" href="{{url()}}/assets/timepicker/jquery-ui-timepicker-addon.css" />
+        
+        <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.common-material.min.css"/>
+        <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.material.min.css"/>
 
 	<style>
 	.fc-unthemed .fc-button:after{
@@ -50,6 +53,13 @@
 <script src='{{url()}}/assets//xcalender/jquery/fullcalendar.js'></script>
 <script
 	src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
+        
+        
+        
+<script src="{{url()}}/assets/js/kendoui_custom.min.js"></script>
+<script src="{{url()}}/assets/js/pages/kendoui.min.js"></script>
+
+
 <script type="text/javascript">
 
 $(document).ready(function() {
@@ -252,8 +262,9 @@ function getbatchesStudents(batchId, dateStartEvent){
 					
 					
 				    $.each(response.result, function (index, item) {
-						
-				    	attendanceString = '<tr><td><input type="hidden" value="'+dateStartEvent+'"  name="attendanceDate_'+i+'"/><input type="hidden" value="'+batchId+'"  name="batch_'+i+'"/><input type="hidden" value="'+item.studentId+'"  name="student_'+i+'"/>'+item.studentName+'</td><td class="form-group"><input id="attendance_for_userP'+i+'" name="attendance_for_user'+i+'" value="P" type="radio" class="radio-custom" required /><label for="attendance_for_userP'+i+'" class="radio-custom-label">P</label><input id="attendance_for_userA'+i+'" name="attendance_for_user'+i+'" value="A"  type="radio" class="radio-custom" /><label for="attendance_for_userA'+i+'" class="radio-custom-label">A</label><input id="attendance_for_userEA'+i+'" name="attendance_for_user'+i+'" value="EA"  type="radio" class="radio-custom" /><label for="attendance_for_userEA'+i+'" class="radio-custom-label">EA</label></td><td></td></tr>';
+					//attendanceString = '<tr><td><input type="hidden" value="'+dateStartEvent+'"  name="attendanceDate_'+i+'"/><input type="hidden" value="'+batchId+'"  name="batch_'+i+'"/><input type="hidden" value="'+item.studentId+'"  name="student_'+i+'"/>'+item.studentName+'</td><td class="form-group"><input id="attendance_for_userP'+i+'" name="attendance_for_user'+i+'" value="P" type="radio" class="radio-custom" required /><label for="attendance_for_userP'+i+'" class="radio-custom-label">P</label><input id="attendance_for_userA'+i+'" name="attendance_for_user'+i+'" value="A"  type="radio" class="radio-custom" /><label for="attendance_for_userA'+i+'" class="radio-custom-label">A</label><input id="attendance_for_userEA'+i+'" name="attendance_for_user'+i+'" value="EA"  type="radio" class="radio-custom" /><label for="attendance_for_userEA'+i+'" class="radio-custom-label">EA</label></td><td></td></tr>';
+				    		
+				    	attendanceString = '<tr><td><input type="hidden" value="'+dateStartEvent+'"  name="attendanceDate_'+i+'"/><input type="hidden" value="'+batchId+'"  name="batch_'+i+'"/><input type="hidden" value="'+item.studentId+'"  name="student_'+i+'"/>'+item.studentName+'</td><td class="form-group"><input id="attendance_for_userP'+i+'" name="attendance_for_user'+i+'" data="eadisable"  data2='+i+' value="P" type="radio" class="radio-custom" required /><label for="attendance_for_userP'+i+'" class="radio-custom-label">P</label><input id="attendance_for_userA'+i+'" name="attendance_for_user'+i+'" value="A"  data="eadisable" data2='+i+' type="radio" class="radio-custom" /><label for="attendance_for_userA'+i+'" class="radio-custom-label">A</label><input id="attendance_for_userEA'+i+'" name="attendance_for_user'+i+'" data="eaenable" data2='+i+' value="EA"  type="radio" class="radio-custom" /><label for="attendance_for_userEA'+i+'" class="radio-custom-label">EA</label></td></tr>';
 				    	$("#attendanceTbody").append(attendanceString);
 				    	
 	                  	if(item.isAttendanceEntered == 'yes'){
@@ -265,6 +276,18 @@ function getbatchesStudents(batchId, dateStartEvent){
 						i++;  
 						
 		            });
+                                $('input[type="radio"][data="eaenable"]').change(function(){
+                                    //console.log(this.id);
+                                    var i=$(this).attr('data2');
+                                    $(this).parent().append("<div class='uk-grid'data-uk-grid-margin id='ea"+i+"'><div class='uk-width-medium-1-3'><input id='Description_user_"+i+"' required class='form-control input-sm ' name='description_user_"+i+"' style='' type='text' placeholder='Description' /></div><div class='uk-width-medium-1-3'><input type='text'  name='reminderdate_user_"+i+"' class='form-control input-sm'  style='width:100%' placeholder='ReminderDate' /><div class='uk-width-medium-1-3'></div></div></div>")
+                                    $('input[name="reminderdate_user_'+i+'"]').kendoDatePicker();
+                                    //console.log($(this).parent());
+                                });
+                                
+                                $('input[type="radio"][data="eadisable"]').change(function(){
+                                    var i=$(this).attr('data2');
+                                    $('#ea'+i).remove();
+                                });
 
 				    $("#attendanceTbody").append('<tr><td><input type="hidden" name="totalStudents" value="'+i+'"/></td><td></td></tr>');
 				    
@@ -286,6 +309,7 @@ function getbatchesStudents(batchId, dateStartEvent){
 	console.log(isExists);
 	return isExists;
 }
+
 
 $("#addAttendanceForm").validator();
 
@@ -309,7 +333,7 @@ $('#addAttendanceForm').validator().on('submit', function (e) {
   		  data:$("#addAttendanceForm").serialize(),
   		  success: function(response, textStatus, jqXHR)
   		  {
-
+                                
   				console.log(response);
   				if(response.status == "success"){
   					$("#messageAttendanceAddDiv").html('<p class="uk-alert uk-alert-success">Attendance has been added successfully.</p>');

@@ -101,6 +101,7 @@ class CoursesController extends \BaseController {
         
         
 	public function viewCourses(){
+            if(Auth::check() && Session::get('userType')=='ADMIN'){
 		$currentPage  =  "COURSES";
 		$mainMenu     =  "COURSES_MAIN";
 		$eligibleForAction = array();
@@ -114,7 +115,11 @@ class CoursesController extends \BaseController {
 		}
 		//return $eligibleForAction;
 		return View::make('pages.courses.courses', compact('currentPage','mainMenu', 'allCourse', 'eligibleForAction'));	
-	}
+            }else{
+                return Redirect::action('DashboardController@index');
+            }
+                
+            }
 
 
 	public function deleteCoursesMaster(){

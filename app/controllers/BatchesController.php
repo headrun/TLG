@@ -696,6 +696,18 @@ class BatchesController extends \BaseController {
             
             return Response::json(array('status'=>'success','class_count'=>$class_count));
         }
+        
+        public static function getBatchDatesByBatchId(){
+            if(Auth::check()){
+                $inputs=Input::all();
+                $data=BatchSchedule::getBatchDatesByBatchId($inputs);
+                if($data){
+                return Response::json(array('status'=>'success','dates'=>$data));
+                }else{
+                return Response::json(array('status'=>'failure'));
+                }
+            }
+        }
         /**
 	 * Show the form for creating a new resource.
 	 *

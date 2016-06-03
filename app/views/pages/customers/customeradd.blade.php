@@ -354,16 +354,16 @@ $(document).ready(function(){
 				            </div>
                                             <div class="uk-width-medium-1-2">
 				                 <div class="parsley-row form-group">
-				                 	<label for="customerLastName">Customer Last Name<span class="req">*</span></label>
-				                 	{{Form::text('customerLastName', null,array('id'=>'customerLastName', 'required'=>'', 'class' => 'form-control input-sm md-input'))}}
+				                 	<label for="customerLastName">Customer Last Name</label>
+				                 	{{Form::text('customerLastName', null,array('id'=>'customerLastName','class' => 'form-control input-sm md-input'))}}
 				                 </div>
 				            </div>
                                     </div>
                                     <div class="uk-grid" data-uk-grid-margin>
 			                    <div class="uk-width-medium-1-2"> 
 				                  <div class="parsley-row form-group">
-				                 	<label for="customerEmail">Customer Email<span class="req">*</span></label>
-				                 	{{Form::email('customerEmail', null,array('id'=>'customerEmail', 'required'=>'', 'class' => 'form-control input-sm md-input'))}}
+				                 	<label for="customerEmail">Customer Email</label>
+				                 	{{Form::email('customerEmail', null,array('id'=>'customerEmail', 'class' => 'form-control input-sm md-input'))}}
 				                 </div>
 				            </div>    
 				            <div class="uk-width-medium-1-2">    

@@ -441,8 +441,8 @@ class StudentsController extends \BaseController {
                 $sendCommentsToInsert = Comments::addSinglePayComment($customer_log_data);
                 
                 // checking for email invoice
-                
-                if(isset($inputs['emailOptionforoldcustomer']) && ($inputs['emailOptionforoldcustomer']=='yes')){
+                $customer_data= Customers::find($sendPaymentDetailsToInsert->customer_id);  
+                if(isset($inputs['emailOptionforoldcustomer']) && ($inputs['emailOptionforoldcustomer']=='yes') && ($customer_data->customer_email!='')){
                     $totalSelectedClasses = '';
                     $totalAmountForAllBatch = '';
                     $paymentDueDetails = PaymentDues::where('payment_no', '=', $final_payment_master_no)->get();
@@ -963,9 +963,11 @@ class StudentsController extends \BaseController {
                     
                         
 		}
+                $customer_data= Customers::find($inputs['customerId']);
+                
                // return Response::json(array("status"=>"success",'printUrl'=>''));
                 
-                if(isset($inputs['emailOption']) && $inputs['emailOption'] == 'yes'){
+                if(isset($inputs['emailOption']) && $inputs['emailOption'] == 'yes' && $customer_data->customer_email!=''){
                     $totalSelectedClasses = '';
                     $totalAmountForAllBatch = '';
                     $paymentDueDetails = PaymentDues::where('payment_no', '=', $final_payment_master_no)->get();
@@ -2058,8 +2060,10 @@ class StudentsController extends \BaseController {
 			$attendanceArray = array();
 			$i = 0;
 			foreach ($studentsByBatchId as $studentAttendance){
-				
 				$attendanceArray[$i]['studentName'] = $studentAttendance->Students->student_name;
+                                if($studentAttendance->status==='makeup'){
+                                    $attendanceArray[$i]['studentName']=$attendanceArray[$i]['studentName'].' [Makeup]';
+                                }
 				$attendanceArray[$i]['studentId']   = $studentAttendance->Students->id;
 				$studentAttendanceRecord = Attendance::getDaysAttendanceForStudent($studentAttendance->Students->id, $batchId,  $selectedDate);
 				
@@ -2087,7 +2091,7 @@ class StudentsController extends \BaseController {
 	public function addStudentAttendance(){
 		
 		$inputs = Input::all();
-			
+                //return Response::json(array("status"=>$inputs));
 		for($i =0; $i<$inputs['totalStudents'];$i++){
 			
 			$isAttendanceExists = Attendance::getDaysAttendanceForStudent($inputs['student_'.$i], $inputs['batch_'.$i], $inputs['attendanceDate_'.$i]);
@@ -2103,6 +2107,33 @@ class StudentsController extends \BaseController {
 				$attendanceData->batch_id        = $inputs['batch_'.$i];
 				$attendanceData->student_id      = $inputs['student_'.$i];
 				$attendanceData->status          = $inputs['attendance_for_user'.$i];
+                                if($inputs['attendance_for_user'.$i]==='EA'){
+                                    //** Add description for Excused Absent **// 
+                                    $attendanceData->description_ea =$inputs['description_user_'.$i];
+                                    // creating the retention id
+                                    $getcustomerdetails=Students::find($inputs['student_'.$i]);
+                                    $retentionData['customer_id']=$getcustomerdetails->customer_id;
+                                    $retentionData['student_id']=$inputs['student_'.$i];
+                                    $rdata=Retention::createRetention($retentionData);
+                                    //to create followup
+                                    
+                                    $customer_logdata['customerId']=$rdata->customer_id;
+                                    $customer_logdata['student_id']=$rdata->student_id;
+                                    $customer_logdata['followupType']='RETENTION';
+                                    $customer_logdata['commentStatus']='REMINDER_CALL';
+                                    $customer_logdata['retention_id']=$rdata->id;
+                                    $customer_logdata['commentText']=$inputs['description_user_'.$i];
+                                    $customer_logdata['commentType']='INTERESTED';       
+                                    if($inputs['reminderdate_user_'.$i]!=""){
+                                        //create followup
+                                        $customer_logdata['reminderDate']=$inputs['reminderdate_user_'.$i];
+                                    }
+                                    $customer_loag_data=  Comments::addComments($customer_logdata);
+                                    
+                                }else{
+                                    $attendanceData->description_ea ='';
+                                }
+                                
 				$attendanceData->save();
 				
 			}
@@ -2851,6 +2882,14 @@ class StudentsController extends \BaseController {
             
             return Response::json(array('status'=>'success'));
             
+        }
+        
+        public function getExcusedabsentStudentsByBatchId(){
+            $inputs=Input::all();
+            $season_data= Seasons::where('franchisee_id','=',Session::get('franchiseId'))->Orderby('id','desc')->get();
+            $classes_data= Classes::where('franchisee_id','=',Session::get('franchiseId'))->get();
+            return Response::json(array('status'=>'success','data'=>Attendance::getEAbybatchandStudentId($inputs['batch_id'],$inputs['student_id']),
+                                        'season_data'=>$season_data,'classes_data'=>$classes_data));
         }
         
 	public function store()

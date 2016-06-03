@@ -237,6 +237,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('deleteBatchLimitById','BatchesController@deleteBatchLimitById');
         Route::any('getBatchesForOldCustomer','BatchesController@getBatchesForOldCustomer');
         Route::any('getbatchesbybatchidanddate','BatchesController@getbatchesbybatchidanddate');
+        Route::any('getBatchDatesByBatchId','BatchesController@getBatchDatesByBatchId');
         
         /**
 	 *  --------------------------------------------------------------------------------------------------------------------------------------
@@ -286,6 +287,9 @@ Route::group(array('prefix' => 'quick'), function() {
 	Route::any('/getAttendanceForStudent','StudentsController@getAttendanceForStudent');
         Route::any('/getBatchNameByYear','StudentsController@getBatchNameByYear');
         Route::any('/enrollOldCustomer','StudentsController@enrollOldCustomer');
+        Route::any('/getExcusedabsentStudentsByBatchId','StudentsController@getExcusedabsentStudentsByBatchId');
+        Route::any('createMakeupClass','ClassesController@createMakeupClass');
+        
         
 	Route::any('saveSchedule', function(){
 	

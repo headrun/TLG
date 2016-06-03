@@ -181,6 +181,7 @@ class StudentClasses extends \Eloquent {
 		$selectedDate = date('Y-m-d', strtotime($selectedDate));
 		$studentByBatchId  =   StudentClasses::with('Students')
 								->where('batch_id', '=', $batchId)
+                                                                ->whereIn('status',array('enrolled','makeup'))
 								->whereDate('enrollment_start_date', '<=', $selectedDate)
 								->whereDate('enrollment_end_date', '>=', $selectedDate)
 								->get();

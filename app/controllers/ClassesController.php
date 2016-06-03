@@ -75,6 +75,7 @@ class ClassesController extends \BaseController {
 
 
 	public function add_new_classes(){
+               if(Auth::check() && Session::get('userType')=='ADMIN'){
 		$currentPage  =  "CLASSES";
 		$mainMenu     =  "CLASSES_MAIN";
 		$franchiseeCourses = CoursesMaster::getAllCourses();
@@ -83,9 +84,13 @@ class ClassesController extends \BaseController {
                 $courseName=CoursesMaster::where('id','=',$getAllClassesMasters[$i]['course_master_id'])->get();
                 $courseName=$courseName[0];
                 $getAllClassesMasters[$i]['course_master_name']=$courseName['course_name'];
-        }
+                }
 		return View::make('pages.classes.add_new_classes', compact('currentPage','mainMenu', 'franchiseeCourses', 'getAllClassesMasters'));
-	}
+               }else{
+                   return Redirect::action('DashboardController@index');
+               }
+                
+        }
 
 
 	public function add_new_class_franchise(){
@@ -432,6 +437,37 @@ class ClassesController extends \BaseController {
 //        return Response::json(array('status'=>'success','discount'=>$discount));
         }
 	
+        
+        
+        
+       public function createMakeupClass(){
+           
+           if(Auth::check()){
+               $inputs=Input::all();
+               $update_attendance=Attendance::where('batch_id','=',$inputs['ea_batch_id'])
+                                  ->where('student_id','=',$inputs['student_id'])
+                                  ->where('attendance_date','=',$inputs['eadate'])
+                                  ->where('status','=','EA')
+                                  ->update(array('makeup_class_given'=>'1'));
+               if($update_attendance){
+                    //create makeup
+                   $student_data['studentId']=$inputs['student_id'];
+                   $student_data['seasonId']=$inputs['mu_season_id'];
+                   $student_data['classId']=$inputs['mu_class_id'];
+                   $student_data['batchId']=$inputs['mu_batches_id'];
+                   $student_data['enrollment_start_date']=$inputs['mu_date'];
+                   $student_data['enrollment_end_date']=$inputs['mu_date'];
+                   $student_data['selected_sessions']='1';
+                   $student_data['status']='makeup';
+                   $created_makeup_class=StudentClasses::addStudentClass($student_data);
+                   if($created_makeup_class){
+                    return Response::json(array('status'=>'success','data'=>$inputs));
+                   }else{
+                    return Response::json(array('status'=>'failure'));   
+                   }
+               }
+           }
+       }
 
 	/**
 	 * Show the form for creating a new resource.

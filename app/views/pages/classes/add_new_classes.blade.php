@@ -108,7 +108,12 @@ $('#saveBtn').click(function(){
 @section('content')
 <div class="uk-width-medium-1-1">
 	<div class="parsley-row form-group">
-    	<div id = "msgDiv"></div>
+            <div id = "msgDiv">
+                <?php if(count($franchiseeCourses)==0){ ?>
+                <p class="uk-alert ukalert-warning">please add courses first</p>
+                <?php } ?>
+                
+            </div>
     </div>
 </div>
 
@@ -160,7 +165,7 @@ $('#saveBtn').click(function(){
 				        <select id="Gender" name="gender" class="form-control input-sm md-input" required style='padding:0px; font-weight:bold;color: #727272;'>
         					<option value = "male">Male</option>
         					<option value = "female">Female</option>
-        					<option value = "both">Both</option>
+        					<option value = "all">All</option>
         				</select>				                 	
 				    </div>
 			    </div>

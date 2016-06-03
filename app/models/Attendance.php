@@ -39,6 +39,14 @@ class Attendance extends \Eloquent {
 							->where('attendance_date', 'like', '%'.$data['year'].'%')
 							->get();
 	}
+        
+        static function getEAbybatchandStudentId($batch_id,$student_id){
+            return Attendance::where('student_id', '=', $student_id)
+                              ->where('batch_id', '=', $batch_id)
+                              ->where('status','=','EA')
+                              ->where('makeup_class_given','=',null)
+                              ->get();
+        }
 	
 	
 	

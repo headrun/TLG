@@ -62,7 +62,8 @@ $(document).ready(function(){
                         data: {},
 			dataType: 'json',
 			success: function(response){
-                            console.log(response.season_data);
+                           // console.log(response.season_data);
+                           if(response.season_data.length > 0){
                             var data="<select name='selectSeason' class='form-control input-sm md-input' id='selectSeason' class='input-sm md-input'"+
                                      "style='padding: 0px; font-weight: bold; color: #727272; width:50%; float:right'>";
                                                         var options='';
@@ -96,6 +97,9 @@ $(document).ready(function(){
 
                                         }
                                        });
+                           }else {
+                            $('#msgdiv').html("<p class='uk-alert uk-alert-success'>Please add Seasons first</p>");
+                           }
     
                         }
              });  

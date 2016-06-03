@@ -160,7 +160,7 @@ class BatchSchedule extends \Eloquent {
 	static function getAttendanceTable($batchId){
 		
 		
-		$studentsInBatch = StudentClasses::with('Students')->where('batch_id', '=', $batchId)->get(array('student_id', 'enrollment_start_date', 'enrollment_end_date'));
+		$studentsInBatch = StudentClasses::with('Students')->whereIn('status',array('enrolled','makeup'))->where('batch_id', '=', $batchId)->get(array('student_id', 'enrollment_start_date', 'enrollment_end_date'));
 		
 		
 		$studentBatchDates = array();
@@ -252,5 +252,17 @@ class BatchSchedule extends \Eloquent {
                                   ->delete();
         }
 	
-	
+        static function getBatchDatesByBatchId($inputs){
+            $data= BatchSchedule::where('franchisee_id','=',Session::get('franchiseId'))
+                                  ->where('batch_id','=',$inputs['batch_id'])
+                                  ->whereDate('schedule_date','>=',date("Y-m-d"))
+                                  ->get();
+//            for($i=0;$i<count($data);$i++){
+//                $startDate=new DateTime($data[$i]['start_time']);
+//                $endDate=new DateTime($data[$i]['end_time']);
+//                $data[$i]['start_time']=$startDate->format('G:i A');
+//                $data[$i]['end_time']=$endDate->format('G:i A');
+//            }
+            return $data;
+        }
 }

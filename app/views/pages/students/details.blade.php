@@ -1647,7 +1647,7 @@ $('#year').change(function(){
             		for(i = 0; i< response[0].length; i++){
             			batchNames += "<option value = '"+response[0][i][0]['id']+"'>"+response[0][i][0]['batch_name']+"</option>" ;
             		}
-            		$('#batchName').html(batchNames);
+            		$('#batchName').html('<option></option>'+batchNames);
             	}
             }
         });
@@ -1876,6 +1876,198 @@ $('#BatchesCbx').change(function(){
     }
 });
 
+
+$('#excusedabsent').click(function(){
+    
+    $.ajax({
+	type: "POST",
+        url: "{{URL::to('/quick/getExcusedabsentStudentsByBatchId')}}",
+                        data: {'student_id':studentId,'batch_id':$('#batchName').val()},
+			dataType: 'json',
+			success: function(response){
+                            console.log(response);
+                            var data='';
+                            
+                            var data2="";
+                            for(var j=0;j<response.season_data.length;j++){
+                                data2+="<option value='"+response.season_data[j]['id']+"'>"+response.season_data[j]['season_name']+"</option>";
+                            }
+                            var class_data="";
+                            for(var z=0;z<response.classes_data.length;z++){
+                                class_data+="<option value='"+response.classes_data[z]['id']+"'>"+response.classes_data[z]['class_name']+"</option>";
+                            }
+                            for(var i=0;i<response.data.length;i++){
+                                 data+="<div class='uk-grid' data-uk-grid-margin>"+
+                                            "<div class='uk-width-medium-1-1'>"+
+                                                "<div class='parsley-row md-btn md-btn-warning' style='border-radius: 15px; font-size:12px;'>"+
+                                                  "Excused Absent Date: "+response.data[i]['attendance_date']+
+                                                  "<input type='hidden' id='eadate"+i+"' data='eadate"+i+"' data2="+i+" value='"+response.data[i]['attendance_date']+"'></input>"+
+                                                  "<input type='hidden' id='eabatch_id"+i+"' data='eabatch_id"+i+"' data2="+i+" value='"+response.data[i]['batch_id']+"'></input>"+
+                                                "</div>"+
+                                                "<div class='parsley-row md-btn md-btn-primary' style='border-radius: 15px; font-size:12px;'>"+
+                                                  "Description:"+response.data[i]['description_ea']+
+                                                "</div>"+
+                                            "</div><br clear='all'><br clear='all'>"+
+                                            "<div id='makeupmsg"+i+"' class='uk-width-medium-1-1'></div>"+
+                                            "<div class='uk-width-medium-1-3'>"+
+                                                "<div class='parsley-row'>"+
+                                                "<label for='season"+i+"'>Season<span class='req'>*</span></label>"+
+                                                 "<select id='season"+i+"' data='season' data2="+i+" class='form-control input-sm md-input' class='form-control input-sm md-input' style='padding:0px; font-weight:bold;color: #727272;'>"+data2+"</select>"+
+                                                "</div>"+
+                                            "</div>"+
+                                            "<div class='uk-width-medium-1-3'>"+
+                                                "<div class='parsley-row'>"+
+                                                    "<label for='classes"+i+"'>Classes<span class='req'>*</span></label>"+
+                                                     "<select id='classes"+i+"' data='classes' data2="+i+" class='form-control input-sm md-input' class='form-control input-sm md-input' style='padding:0px; font-weight:bold;color: #727272;'>"+"<option></option>"+class_data+"</select>"+
+                                                "</div>"+
+                                            "</div>"+
+                                            "<div class='uk-width-medium-1-3'>"+
+                                                "<div class='parsley-row'>"+
+                                                    "<label for='batches"+i+"'>Batch<span class='req'>*</span></label>"+
+                                                     "<select id='batches"+i+"' data='batch' data2="+i+" class='form-control input-sm md-input' class='form-control input-sm md-input' style='padding:0px; font-weight:bold;color: #727272;'>"+"<option></option>"+"</select>"+
+                                                "</div>"+
+                                            "</div><br clear='all'><br clear='all'>"+
+                                            "<div class='uk-width-medium-1-3'>"+
+                                                "<div class='parsley-row'>"+
+                                                    "<label for='date"+i+"'>Dates<span class='req'>*</span></label>"+
+                                                     "<select id='date"+i+"' data='date' data2="+i+" class='form-control input-sm md-input' class='form-control input-sm md-input' style='padding:0px; font-weight:bold;color: #727272;'>"+"<option></option>"+"</select>"+
+                                                "</div>"+
+                                            "</div>"+
+                                            "<div class='uk-width-medium-1-3'>"+
+                                                "<div class='parsley-row'>"+
+                                                    "<br><i class=' btn btn-success uk-icon-save  uk-icon-large' id='makeupsave"+i+"' data='makeupsave' data2="+i+"></i>"+
+
+                                                "</div>"+
+                                            "</div><br clear='all'><br clear='all'>"+
+                                          "</div>";
+                            }
+                            
+                            
+                            console.log(data);
+                            $('#eaabsentbody').html(data);
+                            $('#ea').modal('show');
+                            $('select[data="season"]').change(function(){
+                               //resetting 
+                               var i=$(this).attr('data2');
+                               $('#classes'+i).val('');
+                               $('#batches'+i).html('');
+                               $('#batches'+i).val('');
+                               $('#date'+i).html('');
+                               $('#date'+i).val('');
+                            });
+                            $('select[data="classes"]').change(function(){
+                                var i=$(this).attr('data2');
+                                
+                               // call ajax and get batches data
+                               if($('#season'+i).val()!='' && $('#classes'+i).val()!=''){
+                                   //console.log('correct');
+                                   
+                                   $.ajax({
+                                           type: "POST",
+                                           url: "{{URL::to('/quick/getBatchesForOldCustomer')}}",
+                                           data: {'seasonId': $('#season'+i).val(), 'classId': $('#classes'+i).val()},
+                                           dataType: 'json',
+                                          success: function(response){
+                                           //console.log(response.batch_data);
+                                            string = '<option value=""></options>';
+                                            if(response.batch_data.length == 0){
+                                                $('#OldCustomerMsgDiv').html('<h5 class="uk-alert uk-alert-warning" data-uk-alert>No Batches Found</h5>')
+                                                    setTimeout(function(){
+                                                        $('#OldCustomerMsgDiv').html('');
+                                                    }, 3500)
+                                            }else{
+                                                for(var x=0;x<response.batch_data.length;x++){
+                                                    string += '<option value="'+response.batch_data[x]['id']+'">'+response.batch_data[x]['batch_name']+' '+response.batch_data[x]['day']+' '+response.batch_data[x]['preferred_time']+' '+response.batch_data[x]['preferred_end_time'] +' ('+response.batch_data[x]['Leadinstructor'] +')</option>';
+                                                }
+                                            }
+                                            //console.log(string);
+                                            
+                                            $('#batches'+i).html(string);
+                                            $('#date'+i).html('');
+                                            $('#date'+i).val('');
+                                          }
+                                   });
+                               }else{
+                                    $('#batches'+i).html('');
+                                    $('#batches'+i).val('');
+                                    $('#date'+i).html('');
+                                    $('#date'+i).val('');
+                                   //display error
+                               }
+                            });
+                            
+                            //checking for batches to get dates
+                            $('select[data="batch"]').change(function(){
+                                var i=$(this).attr('data2');
+                                if($('#season'+i).val()!='' && $('#classes'+i).val()!='' && $('#batches'+i).val()!=''){
+                                $.ajax({
+                                    type: "POST",
+                                    url: "{{URL::to('/quick/getBatchDatesByBatchId')}}",
+                                    data: {'batch_id':$('#batches'+i).val()},
+                                    dataType: 'json',
+                                    success: function(response){
+                                        if(response.status=='success'){
+                                            console.log(response.dates);
+                                            var data='';
+                                            for(var x=0;x<response.dates.length;x++){
+                                                data+="<option value='"+response.dates[x]['schedule_date']+"'>"+response.dates[x]['schedule_date']+"</option>";
+                                            }
+                                           // console.log(data);
+                                           $('#date'+i).html(data);
+                                           $('#date'+i).val('');
+                                        }else{
+                                           
+                                        }
+                                    }
+                                });
+                                }else{
+                                $('#date'+i).html('');
+                                $('#date'+i).val('');
+                                }
+                            });
+                            
+                            
+                            $('i[data="makeupsave"]').click(function(){
+                                var i=$(this).attr('data2');
+                                if($('#season'+i).val()!='' && $('#classes'+i).val()!='' && $('#batches'+i).val()!='' && $('#date'+i).val()!=''){
+                                    
+                                    $(this).parent().append('<i class="uk-icon-spinner uk-icon-large uk-icon-spin"id="makeupsavespin'+i+'" data="makeupsavespin'+i+'" data2='+i+'></i>');
+                                    $('#makeupsave'+i).remove();
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "{{URL::to('/quick/createMakeupClass')}}",
+                                        data: {'ea_batch_id':$('#eabatch_id'+i).val(),'eadate':$('#eadate'+i).val(),
+                                               'student_id':studentId,'mu_season_id':$('#season'+i).val(),
+                                               'mu_class_id':$('#classes'+i).val(),'mu_batches_id':$('#batches'+i).val(),
+                                               'mu_date':$('#date'+i).val(),},
+                                        dataType: 'json',
+                                        success: function(response){
+                                            console.log(response);
+                                            if(response.status=='success'){
+                                                $('#makeupsavespin'+i).parent().append("<i class=' btn btn-success uk-icon-check  uk-icon-large' id='makeupcheck"+i+"' data='makeupcheck' data2="+i+"></i>");
+                                                $('#makeupsavespin'+i).remove();
+                                                $('#makeupmsg'+i).html("<p class='uk-alert uk-alert-success'>Makeup Class Created successfully</p>")
+                                                setTimeout(function(){
+                                                        $('#makeupcheck'+i).parent().parent().parent().remove();
+                                                }, 2000)
+                                            }
+                                        }
+                                    });
+                                }else{
+                                    
+                                    $('#makeupmsg'+i).html("<p class='uk-alert uk-alert-danger'>Please select all required Fields</p>");
+                                    setTimeout(function(){
+                                           $('#makeupmsg'+i).html('');
+                                    }, 2000)
+                                }    
+                            });
+
+                        }
+    });
+    
+  
+
+});
 </script>
 @stop @section('content')
 
@@ -1887,7 +2079,32 @@ $('#BatchesCbx').change(function(){
 	</ul>
 </div>
 <br clear="all" />
-
+ <!-- Excused Absent Modal -->
+  <div id='ea' class="modal fade" role="dialog" style="margin-top: 50px; z-index: 99999;"> 
+    <div class="modal-dialog modal-lg">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" id="eaheader">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Make-up</h4>
+        </div>
+        <div class="modal-body" id="eaabsentbody">
+            <div id = "makeupMsgDiv"></div>
+            
+            
+        </div>
+          
+        <div class="modal-footer" id="eafooter">
+          <!--<button type="submit" class="btn btn-primary" id="">Receive Payment</button>-->
+          <button type="button" class="btn btn-default"  data-dismiss="modal" id='eaclose'>Close</button>
+        </div>
+      
+      </div>
+    </div>
+  </div>
+ 
+ 
 <!-- Modal For Old Customer Enrollment -->
 <div id="EnrollOldCustomerModal" class="modal fade" role="dialog"
 	style="margin-top: 50px; z-index: 99999;">
@@ -2659,7 +2876,7 @@ $('#BatchesCbx').change(function(){
                             			<span class="md-btn md-btn-success" style="border-radius: 15px; font-size:12px;">
                             				Present days - <span class = "badge" id = "Pcount" style = "background: #000"></span> 
                             			</span>
-                            			<span class="md-btn md-btn-warning" style="border-radius: 15px; font-size:12px;">
+                            			<span class="md-btn md-btn-warning" style="border-radius: 15px; font-size:12px;" id="excusedabsent">
                             				Excused absent - <span class = "badge" id = "EAcount" style = "background: #000"></span>
                             			</span>
                             			<span class="md-btn md-btn-danger" style="border-radius: 15px; font-size:12px;">
@@ -2672,7 +2889,7 @@ $('#BatchesCbx').change(function(){
 			    				<br clear="all"/>
 			    				<br clear="all"/>
 			    				<div class="uk-width-medium-1-1"  id = "AttendanceDiv"> 
-                             			<option></option>
+                             			
 			    				</div>
 			    			</div>
                         </div>
@@ -4085,5 +4302,9 @@ $('#BatchesCbx').change(function(){
       
     </div>
   </div>
+
+      
+      
+
 
 @stop
