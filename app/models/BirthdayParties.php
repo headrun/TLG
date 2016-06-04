@@ -79,6 +79,28 @@ class BirthdayParties extends \Eloquent {
             $birthdaydetails= BirthdayParties::where('id','=',$id)->get();
             return ($birthdaydetails);
         }
+        
+        static function getallBirthdayParties() {
+        $birthdayDetails = BirthdayParties::all();
+        if ($birthdayDetails->count()) {
+            $calenderData = array();
+            $i = 0;
+            $calenderData['gotoDate'] = $birthdayDetails[0]->birthday_party_date;
+            foreach ($birthdayDetails as $birthdaydetails) {
+                $students = Students::getStudentId($birthdayDetails[$i]->student_id);
+                $calenderData['event'][$i]['title'] = $students[0]->student_name . " 's Birthday";
+                $calenderData['event'][$i]['id'] = $birthdaydetails->id;
+                $calenderData['event'][$i]['start'] = $birthdaydetails->birthday_party_date . ' ' . $birthdaydetails->birthday_party_time;
+                $calenderData['event'][$i]['end'] = $birthdaydetails->birthday_party_date . ' ' . $birthdaydetails->birthday_party_time;
+                $calenderData['event'][$i]['allDay'] = 'false';
+                $calenderData['event'][$i]['backgroundColor'] = '#909090';
+                $calenderData['event'][$i]['textColor'] = 'white';
+
+                $i++;
+            }
+            return $calenderData;
+        }
+    }
 
     
 }

@@ -265,4 +265,26 @@ class BatchSchedule extends \Eloquent {
 //            }
             return $data;
         }
+        
+        public static function getAllBatches() {
+        $batchSchedules = BatchSchedule::all();
+        if ($batchSchedules->count()) {
+            $calenderData = array();
+            $i = 0;
+            $calenderData['gotoDate'] = $batchSchedules['0']->schedule_date;
+            foreach ($batchSchedules as $batchSchedule) {
+                $batch = Batches::where('id', "=", $batchSchedules[$i]->batch_id)->get();
+                $calenderData['event'][$i]['title'] = $batch['0']->batch_name;
+                $calenderData['event'][$i]['id'] = $batch['0']->id;
+                $calenderData['event'][$i]['start'] = $batchSchedule->schedule_date . ' ' . $batchSchedule->start_time;
+                $calenderData['event'][$i]['end'] = $batchSchedule->schedule_date . ' ' . $batchSchedule->end_time;
+                $calenderData['event'][$i]['allDay'] = 'false';
+                $calenderData['event'][$i]['backgroundColor'] = 'blue';
+                $calenderData['event'][$i]['textColor'] = 'white';
+
+                $i++;
+            }
+            return $calenderData;
+        }
+    }
 }

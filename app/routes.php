@@ -14,6 +14,7 @@ Route::any('/terms_conditions', 'DashboardController@terms_conditions');
 
 Route::any('/classes', 'ClassesController@add_new_classes');
 Route::any('/add_new_class_franchise', 'ClassesController@add_new_class_franchise');
+Route::any('/calender', 'CalenderController@index');
 
 
 Route::group(array('prefix' => 'vault'), function() {
