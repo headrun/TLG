@@ -186,87 +186,87 @@ $(document).ready(function() {
 
     });
 });
-                var ajaxUrl = "{{url()}}/quick/";
-                function getbatchesStudents(batchId, dateStartEvent){
-
-                //console.log(ajaxUrl);
-                var isExists = "no";
-                $("#addAttendanceTitle").html("");
-                $("#addAttendanceTitle").html(dateStartEvent);
-                $.ajax({
-                type: "POST",
-                        url: ajaxUrl + "getStudentsByBatch",
-                        dataType: 'json',
-                        async: true,
-                        data:{'batchId':batchId, 'selectedDate':dateStartEvent},
-                        success: function(response, textStatus, jqXHR)
-                        {
-                        if (response.status == "success"){
-                        console.log(response.result);
-                        var i = 0;
-                        var attendanceString = "";
-                        $("#attendanceTbody").empty();
-                        $.each(response.result, function (index, item) {
-
-                        attendanceString = '<tr><td><input type="hidden" value="' + dateStartEvent + '"  name="attendanceDate_' + i + '"/><input type="hidden" value="' + batchId + '"  name="batch_' + i + '"/><input type="hidden" value="' + item.studentId + '"  name="student_' + i + '"/>' + item.studentName + '</td><td class="form-group"><input id="attendance_for_userP' + i + '" name="attendance_for_user' + i + '" value="P" type="radio" class="radio-custom" required /><label for="attendance_for_userP' + i + '" class="radio-custom-label">P</label><input id="attendance_for_userA' + i + '" name="attendance_for_user' + i + '" value="A"  type="radio" class="radio-custom" /><label for="attendance_for_userA' + i + '" class="radio-custom-label">A</label><input id="attendance_for_userEA' + i + '" name="attendance_for_user' + i + '" value="EA"  type="radio" class="radio-custom" /><label for="attendance_for_userEA' + i + '" class="radio-custom-label">EA</label></td><td></td></tr>';
-                        $("#attendanceTbody").append(attendanceString);
-                        if (item.isAttendanceEntered == 'yes'){
-                        console.log('attendanceentered' + item.isAttendanceEntered);
-                        console.log('attendanceStatus' + item.attendanceStatus);
-                        //$("#attendance_for_user"+i).val(item.attendanceStatus);
-                        $("input[name=attendance_for_user" + i + "][value='" + item.attendanceStatus + "']").attr('checked', 'checked');
-                        }
-                        i++;
-                        });
-                        $("#attendanceTbody").append('<tr><td><input type="hidden" name="totalStudents" value="' + i + '"/></td><td></td></tr>');
-                        $("#saveAttendanceBtn").attr("disabled", false);
-                        $("#addAttendance").modal('show');
-                        //$("#callbackMessage").html('<div class="uk-alert uk-alert-danger" data-uk-alert><a href="#" class="uk-alert-close uk-close"></a>Sorry, This Email address already exists.</div>');
-                        } else{
-                        //$("#callbackMessage").html("");
-                        }
-                        },
-                        error: function (jqXHR, textStatus, errorThrown)
-                        { }
-                });
-                console.log(isExists);
-                return isExists;
-                }
-
-                $("#addAttendanceForm").validator();
-                $('#addAttendanceForm').validator().on('submit', function (e) {
-                if (e.isDefaultPrevented()) {
-
-
-
-                } else {
-
-                $("#saveAttendanceBtn").attr("disabled", 'disabled');
-                e.preventDefault();
-                $.ajax({
-                type: "POST",
-                        url: ajaxUrl + "addStudentAttendance",
-                        dataType: 'json',
-                        async: true,
-                        data:$("#addAttendanceForm").serialize(),
-                        success: function(response, textStatus, jqXHR)
-                        {
-
-                        console.log(response);
-                        if (response.status == "success"){
-                        $("#messageAttendanceAddDiv").html('<p class="uk-alert uk-alert-success">Attendance has been added successfully.</p>');
-                        $("#saveAttendanceBtn").attr("disabled", false);
-                        } else{
-                        $("#messageAttendanceAddDiv").html('<p class="uk-alert uk-alert-warning">Sorry, Attendance could not be  added. Please contact administrator</p>');
-                        }
-
-                        },
-                        error: function (jqXHR, textStatus, errorThrown)
-                        { }
-                });
-                }
-
-                });
+//                var ajaxUrl = "{{url()}}/quick/";
+//                function getbatchesStudents(batchId, dateStartEvent){
+//
+//                //console.log(ajaxUrl);
+//                var isExists = "no";
+//                $("#addAttendanceTitle").html("");
+//                $("#addAttendanceTitle").html(dateStartEvent);
+//                $.ajax({
+//                type: "POST",
+//                        url: ajaxUrl + "getStudentsByBatch",
+//                        dataType: 'json',
+//                        async: true,
+//                        data:{'batchId':batchId, 'selectedDate':dateStartEvent},
+//                        success: function(response, textStatus, jqXHR)
+//                        {
+//                        if (response.status == "success"){
+//                        console.log(response.result);
+//                        var i = 0;
+//                        var attendanceString = "";
+//                        $("#attendanceTbody").empty();
+//                        $.each(response.result, function (index, item) {
+//
+//                        attendanceString = '<tr><td><input type="hidden" value="' + dateStartEvent + '"  name="attendanceDate_' + i + '"/><input type="hidden" value="' + batchId + '"  name="batch_' + i + '"/><input type="hidden" value="' + item.studentId + '"  name="student_' + i + '"/>' + item.studentName + '</td><td class="form-group"><input id="attendance_for_userP' + i + '" name="attendance_for_user' + i + '" value="P" type="radio" class="radio-custom" required /><label for="attendance_for_userP' + i + '" class="radio-custom-label">P</label><input id="attendance_for_userA' + i + '" name="attendance_for_user' + i + '" value="A"  type="radio" class="radio-custom" /><label for="attendance_for_userA' + i + '" class="radio-custom-label">A</label><input id="attendance_for_userEA' + i + '" name="attendance_for_user' + i + '" value="EA"  type="radio" class="radio-custom" /><label for="attendance_for_userEA' + i + '" class="radio-custom-label">EA</label></td><td></td></tr>';
+//                        $("#attendanceTbody").append(attendanceString);
+//                        if (item.isAttendanceEntered == 'yes'){
+//                        console.log('attendanceentered' + item.isAttendanceEntered);
+//                        console.log('attendanceStatus' + item.attendanceStatus);
+//                        //$("#attendance_for_user"+i).val(item.attendanceStatus);
+//                        $("input[name=attendance_for_user" + i + "][value='" + item.attendanceStatus + "']").attr('checked', 'checked');
+//                        }
+//                        i++;
+//                        });
+//                        $("#attendanceTbody").append('<tr><td><input type="hidden" name="totalStudents" value="' + i + '"/></td><td></td></tr>');
+//                        $("#saveAttendanceBtn").attr("disabled", false);
+//                        $("#addAttendance").modal('show');
+//                        //$("#callbackMessage").html('<div class="uk-alert uk-alert-danger" data-uk-alert><a href="#" class="uk-alert-close uk-close"></a>Sorry, This Email address already exists.</div>');
+//                        } else{
+//                        //$("#callbackMessage").html("");
+//                        }
+//                        },
+//                        error: function (jqXHR, textStatus, errorThrown)
+//                        { }
+//                });
+//                console.log(isExists);
+//                return isExists;
+//                }
+//
+//                $("#addAttendanceForm").validator();
+//                $('#addAttendanceForm').validator().on('submit', function (e) {
+//                if (e.isDefaultPrevented()) {
+//
+//
+//
+//                } else {
+//
+//                $("#saveAttendanceBtn").attr("disabled", 'disabled');
+//                e.preventDefault();
+//                $.ajax({
+//                type: "POST",
+//                        url: ajaxUrl + "addStudentAttendance",
+//                        dataType: 'json',
+//                        async: true,
+//                        data:$("#addAttendanceForm").serialize(),
+//                        success: function(response, textStatus, jqXHR)
+//                        {
+//
+//                        console.log(response);
+//                        if (response.status == "success"){
+//                        $("#messageAttendanceAddDiv").html('<p class="uk-alert uk-alert-success">Attendance has been added successfully.</p>');
+//                        $("#saveAttendanceBtn").attr("disabled", false);
+//                        } else{
+//                        $("#messageAttendanceAddDiv").html('<p class="uk-alert uk-alert-warning">Sorry, Attendance could not be  added. Please contact administrator</p>');
+//                        }
+//
+//                        },
+//                        error: function (jqXHR, textStatus, errorThrown)
+//                        { }
+//                });
+//                }
+//
+//                });
 
 </script>
 
@@ -301,10 +301,10 @@ $(document).ready(function() {
 <br clear="all"><hr>
 
 <!-- Add Attendance Modal  -->
-<div id="addAttendance" class="modal fade" role="dialog"
+<!--<div id="addAttendance" class="modal fade" role="dialog"
      style="margin-top: 50px; z-index: 99999;">
     <div class="modal-dialog modal-lg">
-        <!-- Modal content-->
+         Modal content
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -318,12 +318,12 @@ $(document).ready(function() {
                     <form id="addAttendanceForm" method="post>
                           <br  clear="all" />
                           <table class="uk-table table-striped" id="customersTable">
-                      <!-- <caption>Table caption</caption> -->
+                       <caption>Table caption</caption> 
                             <thead>
                                 <tr>
                                     <th>Student Name</th>
                                     <th>Attendance Status</th>
-                                    <!-- <th>Action</th> -->
+                                     <th>Action</th> 
                                 </tr>
                             </thead>
                             <tbody id="attendanceTbody"></tbody>
@@ -339,7 +339,7 @@ $(document).ready(function() {
         </div>
 
     </div>
-</div>
+</div>-->
 <!--  Add Attendance Modal -->
 
 
