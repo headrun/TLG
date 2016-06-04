@@ -14,7 +14,7 @@ Route::any('/terms_conditions', 'DashboardController@terms_conditions');
 
 Route::any('/classes', 'ClassesController@add_new_classes');
 Route::any('/add_new_class_franchise', 'ClassesController@add_new_class_franchise');
-Route::any('/calender', 'CalenderController@index');
+Route::any('/calendar', 'CalenderController@index');
 
 
 Route::group(array('prefix' => 'vault'), function() {
@@ -290,7 +290,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('/enrollOldCustomer','StudentsController@enrollOldCustomer');
         Route::any('/getExcusedabsentStudentsByBatchId','StudentsController@getExcusedabsentStudentsByBatchId');
         Route::any('createMakeupClass','ClassesController@createMakeupClass');
-        
+        Route::any('getMakeupdataByBatchId','ClassesController@getMakeupdatabyBatchId');
         
 	Route::any('saveSchedule', function(){
 	

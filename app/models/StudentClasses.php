@@ -108,6 +108,9 @@ class StudentClasses extends \Eloquent {
 		$StudentClasses->enrollment_start_date  = $input['enrollment_start_date'];
 		$StudentClasses->enrollment_end_date  = $input['enrollment_end_date'];		
 		$StudentClasses->selected_sessions  = $input['selected_sessions'];
+                if(isset($input['attendance_id'])){
+                    $StudentClasses->attendance_id=$input['attendance_id'];
+                }
                 if(isset($input['status'])){
                     $StudentClasses->status=$input['status'];
                 }else{
@@ -240,6 +243,12 @@ class StudentClasses extends \Eloquent {
                                    ->get();
         }
 	
+        static function getAllClassCountByBatchId($inputs){
+            return StudentClasses::where('batch_id','=',$inputs['batchId'])
+                          ->where('student_id','=',$inputs['studentId'])
+                          ->sum('selected_sessions');
+            
+        }
 	
 	
 }

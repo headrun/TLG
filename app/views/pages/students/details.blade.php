@@ -1723,7 +1723,7 @@ $('#year').change(function(){
             		var batchNames = '';
             		$('#batchName').html('<option></option>');
             		for(i = 0; i< response[0].length; i++){
-            			batchNames += "<option value = '"+response[0][i][0]['id']+"'>"+response[0][i][0]['batch_name']+"</option>" ;
+            			batchNames += "<option value = '"+response[0][i][0]['id']+"'>"+response[0][i][0]['batch_name']+' '+response[0][i][0]['day']+' '+response[0][i][0]['preferred_time']+' '+response[0][i][0]['preferred_end_time'] +' ('+response[0][i][0]['Leadinstructor'] +")</option>" ;
             		}
             		$('#batchName').html('<option></option>'+batchNames);
             	}
@@ -1746,17 +1746,22 @@ $('#batchName').change(function(){
             data: {'year': year, 'batchId': batchId, 'studentId': studentId},
             dataType: 'json',
             success: function(response){
-            	console.log(response.data.length);
+            	console.log(response);
             	if(response.data.length == 0){
             		$('#AttendanceDiv').html('<center><h4>No data was found</h4></center>');
             		$('#Pcount').text('0');
             		$('#Acount').text('0');
             		$('#EAcount').text('0');
+                        $('#makeup-session').text('0');
+                        $('#total-session').text(response.totalSession);
+                        
             	}else{
             		var markup = '';
             		var Pcount = 0;
             		var Acount = 0;
             		var EAcount = 0;
+                        var makeup =0;
+                        var total=response.data.length;
             		for(i = 0; i < response.data.length; i++){
             			if(response.data[i]["status"] == 'P'){
             				Pcount = Pcount+1;
@@ -1764,6 +1769,9 @@ $('#batchName').change(function(){
             				Acount = Acount+1;
             			}else if(response.data[i]["status"] == 'EA'){
             				EAcount = EAcount+1;
+                                        if(response.data[i]['makeup_class_given']===1){
+                                            makeup=makeup+1;
+                                        }
             			}
             			var stringDate = response.data[i]["attendance_date"].toString();
             			markup += '<span class = "badge" >'+stringDate+'</span>'+
@@ -1773,6 +1781,8 @@ $('#batchName').change(function(){
             		$('#Pcount').text(Pcount);
             		$('#Acount').text(Acount);
             		$('#EAcount').text(EAcount);
+                        $('#makeup-session').text(makeup);
+                        $('#total-session').text(response.totalSession);
             	} 
             }
 		});
@@ -1967,7 +1977,7 @@ $('#BatchesCbx').change(function(){
 
 
 $('#excusedabsent').click(function(){
-    
+    if($('#year').val()!='' && $('#batchName').val()!=''){
     $.ajax({
 	type: "POST",
         url: "{{URL::to('/quick/getExcusedabsentStudentsByBatchId')}}",
@@ -1991,6 +2001,7 @@ $('#excusedabsent').click(function(){
                                                 "<div class='parsley-row md-btn md-btn-warning' style='border-radius: 15px; font-size:12px;'>"+
                                                   "Excused Absent Date: "+response.data[i]['attendance_date']+
                                                   "<input type='hidden' id='eadate"+i+"' data='eadate"+i+"' data2="+i+" value='"+response.data[i]['attendance_date']+"'></input>"+
+                                                  "<input type='hidden' id='attendance_id"+i+"' data='attendance_id"+i+"' data2="+i+" value='"+response.data[i]['id']+"'></input>"+
                                                   "<input type='hidden' id='eabatch_id"+i+"' data='eabatch_id"+i+"' data2="+i+" value='"+response.data[i]['batch_id']+"'></input>"+
                                                 "</div>"+
                                                 "<div class='parsley-row md-btn md-btn-primary' style='border-radius: 15px; font-size:12px;'>"+
@@ -2128,7 +2139,7 @@ $('#excusedabsent').click(function(){
                                         data: {'ea_batch_id':$('#eabatch_id'+i).val(),'eadate':$('#eadate'+i).val(),
                                                'student_id':studentId,'mu_season_id':$('#season'+i).val(),
                                                'mu_class_id':$('#classes'+i).val(),'mu_batches_id':$('#batches'+i).val(),
-                                               'mu_date':$('#date'+i).val(),},
+                                               'mu_date':$('#date'+i).val(),'attendance_id':$('#attendance_id'+i).val()},
                                         dataType: 'json',
                                         success: function(response){
                                             console.log(response);
@@ -2154,11 +2165,65 @@ $('#excusedabsent').click(function(){
                         }
     });
     
-  
+}else{
+    $('#errorMsgDiv').html("<p class='uk-alert uk-alert-warning'> please select the year and batch</p>");
+    setTimeout(function(){
+       $('#errorMsgDiv').html(''); 
+    },2000);
+}  
 
 });
+
+$('#makeupsession').click(function(){
+
+    if($('#year').val()!='' && $('#batchName').val()!=''){
+        $('#eamodalheader').text('Makeup-Given Details');
+        $('#makeupMsgDiv').html('');
+        $('#eaabsentbody').html('');
+        // make ajax call to get data
+        $.ajax({
+			type: "POST",
+			url: "{{URL::to('/quick/getMakeupdataByBatchId')}}",
+                        data: {'batch_id':$('#batchName').val(),'student_id':studentId},
+			dataType: 'json',
+			success: function(response){
+                            console.log(response);
+                            //return;
+                            var data="<table class='uk-table table-striped'>"+
+                                     "<thead>"+
+                                     "<tr><th>EA Date</th><th>Description</th><th>Makeup Batch</th><th>Makeup-date</th><th>Make-up Given By</th></tr>"+
+                                     "</thead>"+
+                                     "<tbody>";
+                             for(var i=0;i<response.attendancedata.length;i++){
+                                 data+="<tr><td>"+response.attendancedata[i]['attendance_date']+"</td>"+
+                                       "<td>"+response.attendancedata[i]['description_ea']+"</td>"+
+                                       "<td>"+response.student_class_data[i][0]['batch_name']+"</td>"+
+                                       "<td>"+response.student_class_data[i][0]['enrollment_end_date']+"</td>"+
+                                       "<td>"+response.student_class_data[i][0]['receivedby']+"</td>"+
+                                       "</tr>";
+                             }
+                             data+="</tbody>";
+                                     
+                                     
+                            $('#eaabsentbody').html(data);
+                            $('#ea').modal('show');
+                        }
+        });
+        
+        
+        
+        
+    }else{
+        $('#errorMsgDiv').html("<p class='uk-alert uk-alert-warning'> please select the year and batch</p>");
+        setTimeout(function(){
+            $('#errorMsgDiv').html(''); 
+        },2000);
+    }
+});
+
 </script>
-@stop @section('content')
+@stop 
+@section('content')
 
 <div id="breadcrumb">
 	<ul class="crumbs">
@@ -2176,7 +2241,7 @@ $('#excusedabsent').click(function(){
       <div class="modal-content">
         <div class="modal-header" id="eaheader">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Make-up</h4>
+          <h4 class="modal-title" id='eamodalheader'>Make-up</h4>
         </div>
         <div class="modal-body" id="eaabsentbody">
             <div id = "makeupMsgDiv"></div>
@@ -2980,14 +3045,14 @@ $('#excusedabsent').click(function(){
                             			<!--<span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
                             				Total sessions - <span class = "badge" style = "background: #000"></span>
                             			</span>-->
-                                                <span class="md-btn md-btn-danger" style="border-radius: 15px; font-size:12px;">
-                            				Make-up given <span class = "badge" id = "makeup-given" style = "background: #000"></span>
+                                                <span class="md-btn md-btn-warning" id='makeupsession' style="border-radius: 15px; font-size:12px;">
+                            				Make-up given <span class = "badge" id = "makeup-session" style = "background: #000"></span>
                             			</span>
-                                                <span class="md-btn md-btn-danger" style="border-radius: 15px; font-size:12px;">
+                                                <span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
                             				Total-Session - <span class = "badge" id = "total-session" style = "background: #000"></span>
                                                 </span>
-                                                <span class="md-btn md-btn-danger" style="border-radius: 15px; font-size:12px;">
-                            				Transfer - <span class = "badge" id = "Transfer" style = "background: #000"></span>
+                                                <span class="md-btn md-btn-success" id="Transfers" style="border-radius: 15px; font-size:12px;">
+                            				Transfer</span>
                             			</span>
                             			
 			    				</div>

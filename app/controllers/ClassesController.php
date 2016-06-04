@@ -444,13 +444,7 @@ class ClassesController extends \BaseController {
            
            if(Auth::check()){
                $inputs=Input::all();
-               $update_attendance=Attendance::where('batch_id','=',$inputs['ea_batch_id'])
-                                  ->where('student_id','=',$inputs['student_id'])
-                                  ->where('attendance_date','=',$inputs['eadate'])
-                                  ->where('status','=','EA')
-                                  ->update(array('makeup_class_given'=>'1'));
-               if($update_attendance){
-                    //create makeup
+                 //create makeup
                    $student_data['studentId']=$inputs['student_id'];
                    $student_data['seasonId']=$inputs['mu_season_id'];
                    $student_data['classId']=$inputs['mu_class_id'];
@@ -458,13 +452,49 @@ class ClassesController extends \BaseController {
                    $student_data['enrollment_start_date']=$inputs['mu_date'];
                    $student_data['enrollment_end_date']=$inputs['mu_date'];
                    $student_data['selected_sessions']='1';
+                   $student_data['attendance_id']=$inputs['attendance_id'];
                    $student_data['status']='makeup';
                    $created_makeup_class=StudentClasses::addStudentClass($student_data);
-                   if($created_makeup_class){
+                   $update_attendance=Attendance::where('batch_id','=',$inputs['ea_batch_id'])
+                                  ->where('student_id','=',$inputs['student_id'])
+                                  ->where('attendance_date','=',$inputs['eadate'])
+                                  ->where('status','=','EA')
+                                  ->update(array('makeup_class_given'=>'1','student_class_id'=>$created_makeup_class->id));
+                   
+                   if($update_attendance){
                     return Response::json(array('status'=>'success','data'=>$inputs));
                    }else{
                     return Response::json(array('status'=>'failure'));   
                    }
+               
+                }
+            }
+       
+       
+       
+       public function getMakeupdatabyBatchId(){
+           if(Auth::check()){
+               $inputs=Input::all();
+               $student_classes;
+               $attendance_data=Attendance::where('batch_id','=',$inputs['batch_id'])
+                                            ->where('student_id','=',$inputs['student_id'])
+                                            ->where('makeup_class_given','=',1)
+                                            ->where('student_class_id','!=',0)
+                                            ->get();
+               for($i=0;$i<count($attendance_data);$i++){
+                   $student_classes[$i]=  StudentClasses::where('id','=',$attendance_data[$i]['student_class_id'])->get();
+                   $temp=Batches::find($student_classes[$i][0]['batch_id']);
+                   $timestamp = strtotime($temp->start_date);
+                   $temp2=User::find($temp['lead_instructor']);
+                   $student_classes[$i][0]['batch_name']=$temp->batch_name." ". date('l', $timestamp) ."(".$temp->preferred_time."-".$temp->preferred_end_time.")".$temp2->first_name.$temp2->last_name;
+                   $temp3=User::find($student_classes[$i][0]['created_by']);
+                   $student_classes[$i][0]['receivedby']=$temp3->first_name.$temp3->last_name;
+                   
+               }
+               if($student_classes){
+                return Response::json(array('status'=>'success','attendancedata'=>$attendance_data,'student_class_data'=>$student_classes));
+               }else{
+                return Response::json(array('status'=>'failure'));   
                }
            }
        }
