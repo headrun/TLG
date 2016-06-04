@@ -500,7 +500,85 @@ $(document).on('change', "#membershipType", function() {
 	calculateFinalAmount()
 })
 
+$(document).on('change', "#TotalAmountForOld", function() {
+   calculateSubTotalForOld();
+})
 
+
+$(document).on('change', "#MembershipTypeForOld", function() {
+	//console.log($(this).val());
+
+	if($(this).val() == '1'){
+		
+		$("#MembershipAmountForOld").val("2000");
+//		$("#membershipAmounttotals").val("2000");
+//                $('#membershipAmounttotalslabel').html('2000');
+		
+	}else if($(this).val() == '2'){
+		$("#MembershipAmountForOld").val("5000");
+//		$("#membershipAmounttotals").val("5000");
+//                $('#membershipAmounttotalslabel').html('5000');
+	}else {
+               $("#MembershipAmountForOld").val("0");
+        }
+        calculateSubTotalForOld();
+        
+})
+
+$(document).on('change', "#DiscountPercentageForOld", function() {
+
+   var DiscountAmountForOld = parseFloat(($("#TotalAmountForOld").val() * $("#DiscountPercentageForOld").val())); 
+   $("#DiscountAmountForOld").val(Math.round(DiscountAmountForOld)/100); 
+   calculateSubTotalForOld();
+})
+
+$(document).on('change', "#SiblingPercentageForOld", function() {
+
+   var currentTotal = parseFloat($("#TotalAmountForOld").val() - $("#DiscountAmountForOld").val());
+   var SiblingAmountForOld = parseFloat((currentTotal * $("#SiblingPercentageForOld").val())); 
+   $("#SiblingAmountForOld").val(Math.round(SiblingAmountForOld)/100);
+   calculateSubTotalForOld();
+})
+
+$(document).on('change', "#MultiClassesPercentageForOld", function() {
+
+   var currentTotal = parseFloat($("#TotalAmountForOld").val() - $("#DiscountAmountForOld").val() - $("#SiblingAmountForOld").val());
+   var MultiClassesAmountForOld = parseFloat((currentTotal * $("#MultiClassesPercentageForOld").val())); 
+   $("#MultiClassesAmountForOld").val(Math.round(MultiClassesAmountForOld)/100);
+   calculateSubTotalForOld();
+})
+
+$(document).on('change', "#AdminRupeeForOld", function() {
+   calculateSubTotalForOld();
+})
+
+function calculateSubTotalForOld() {
+    
+    var SubTotalForOld =    parseFloat(
+                               $("#TotalAmountForOld").val() - 
+                               $("#DiscountAmountForOld").val() - 
+                               $("#SiblingAmountForOld").val() - 
+                               $("#MultiClassesAmountForOld").val() - 
+                               $("#AdminRupeeForOld").val() 
+                              ) +
+                            parseFloat($("#MembershipAmountForOld").val()); 
+                    
+    $("#SubTotalForOld").val(SubTotalForOld); 
+    
+    calculateGrandTotalForOld(); 
+                              
+}
+
+function calculateGrandTotalForOld() {
+      
+   var TaxForOld = parseInt(Math.round($("#SubTotalForOld").val() * 14.5) / 100);
+   $("#TaxForOld").val(TaxForOld);
+   
+   var GrandTotalForOld = parseInt($("#SubTotalForOld").val()) + 
+                          parseInt($("#TaxForOld").val());
+   $("#GrandTotalForOld").val(GrandTotalForOld);               
+   
+}
 
 
 $("#closeEnrollmentModal").click(function (){
@@ -1736,9 +1814,17 @@ $('#addOldCustomerEnrollment').click(function(){
             $('.ClassesCbxForOld').append(classes); 
        }
     });
-
+    
+        /**
+        *  Populate values for Enroll Old customer 
+        */
 	$('#EnrollOldCustomerModal').modal('show', true);
 });
+
+function calculateToatlsForOld(){  
+   var totalAmountOld = parseFloat($("#NoOfClassesForOld1").val()*$("#EachClassAmountForOld").val());
+   return totalAmountOld;
+}
 
 
 $('#ClassesCbxForOld').change(function(){
@@ -1864,6 +1950,9 @@ $('#BatchesCbx').change(function(){
                             $('#classno').html('No Of Classes:'+response.class_count);
                             $('#NoOfClassesForOld1').val(response.class_count);
                             $('#classno').css('display','block');
+                            $("#TotalAmountForOld").val(calculateToatlsForOld());
+                            calculateSubTotalForOld();
+                            
                             }else{
                                 console.log('error');
                             }
@@ -2149,7 +2238,7 @@ $('#excusedabsent').click(function(){
                     	<div class="parsley-row" id='noofclass' style="margin-top: -23px;">
                             <span class="uk-alert uk-alert-success" id='classno' style="display:none">class No: </span>
                             <input type = "hidden" id="NoOfClassesForOld1"name="NoOfClassesForOld1"  
-								class='NoOfClassesForOld form-control input-sm md-input'
+								class='NoOfClassesForOld1 form-control input-sm md-input'
 								style="padding: 0px; font-weight: bold; color: #727272;">		                                         
 			</div>
                     </div>
@@ -2192,53 +2281,33 @@ $('#excusedabsent').click(function(){
 				<div class="uk-grid" data-uk-grid-margin>
 					<div class="uk-width-medium-1-3">
 						<div class="parsley-row">
-							<label for="BatchesCbxForOld">Amount For Each Class<span class="req">*</span></label>
+							<label for="EachClassAmountForOld">Amount For Each Class<span class="req">*</span></label>
                             <input type = "number" id="EachClassAmountForOld"name="EachClassAmountForOld" required
 								class='EachClassAmountForOld form-control input-sm md-input'
-								style="padding: 0px; font-weight: bold; color: #727272;">		                                           
+                                                                style="padding: 0px; font-weight: bold; color: #727272;" value="500">		                                           
 						</div>
 					</div>
                                       
                                     <div class="uk-width-medium-1-3">
-                                        <div class="parsley-row">
-                                            <label for="MembershipTypeForOld">Membership Type</label>
-                                            <select id="MembershipTypeForOld" name="MembershipTypeForOld" class="input-sm md-input"
-                                                    style='padding: 0px; font-weight: bold; color: #727272;'>
-                                                <option value=""></option>
-                                                <option value="1">Annual</option>
-                                                <option value="2">Lifetime</option>
-                                            </select> 		                                            
-                                        </div>
-                                    </div>
-                                    
-					<div class="uk-width-medium-1-3">
 						<div class="parsley-row">
-							<label for="BatchesCbxForOld">Membership Amount<span class="req">*</span></label>
-                                                        <input type = "number" id="MembershipAmountForOld"name="MembershipAmountForOld" value="0"
-								class='MembershipAmountForOld form-control input-sm md-input'
-								style="padding: 0px; font-weight: bold; color: #727272;">		                                         
-						</div>
-					</div>
-				</div>
-				</br class="all"/>
-				</br class="all"/>
-				<div class="uk-grid" data-uk-grid-margin>
-					<div class="uk-width-medium-1-4">
-						<div class="parsley-row">
-							<label for="BatchesCbxForOld">Total Amount<span class="req">*</span></label>
-                            <input type = "number" id="TotalAmountForOld"name="TotalAmountForOld" required
+							<label for="TotalAmountForOld">Total Amount<span class="req">*</span></label>
+                                                        <input type = "number" id="TotalAmountForOld"name="TotalAmountForOld" required
 								class='TotalAmountForOld form-control input-sm md-input'
-								style="padding: 0px; font-weight: bold; color: #727272;">		                                            
+                                                                style="padding: 0px; font-weight: bold; color: #727272;" value="0">		                                            
 						</div>
 					</div>
 				</div>
+				
 				</br class="all"/>
 				</br class="all"/>
 				<h4>Discouts Fields</h4>
+                                <br clear="all">
+                                <br clear="all">
+                                <br clear="all">
 				<div class="uk-grid" data-uk-grid-margin>
 					<div class="uk-width-medium-1-3">
 						<div class="parsley-row">
-							<label for="BatchesCbxForOld">Discounts %<span class="req">*</span></label>
+							<label for="DiscountPercentageForOld">Discounts %<span class="req">*</span></label>
                                                         <input type = "number" id="DiscountPercentageForOld"name="DiscountPercentageForOld" required value="0"
 								class='DiscountPercentageForOld form-control input-sm md-input'
 								style="padding: 0px; font-weight: bold; color: #727272;"> 
@@ -2246,7 +2315,7 @@ $('#excusedabsent').click(function(){
 					</div>
 					<div class="uk-width-medium-1-3">
 						<div class="parsley-row">
-							<label for="BatchesCbxForOld">Discounts Amount<span class="req">*</span></label>
+							<label for="DiscountAmountForOld">Discounts Amount<span class="req">*</span></label>
 							<input type = "number" id="DiscountAmountForOld"name="DiscountAmountForOld" required value="0"
 								class='DiscountAmountForOld form-control input-sm md-input'
 								style="padding: 0px; font-weight: bold; color: #727272;">		                                           
@@ -2258,7 +2327,7 @@ $('#excusedabsent').click(function(){
 				<div class="uk-grid" data-uk-grid-margin>
 					<div class="uk-width-medium-1-3">
 						<div class="parsley-row">
-							<label for="BatchesCbxForOld">Sibling Consideration Discount %<span class="req">*</span></label>
+							<label for="SiblingPercentageForOld">Sibling Consideration Discount %<span class="req">*</span></label>
                             <input type = "number" id="SiblingPercentageForOld"name="SiblingPercentageForOld" required value="0"
 								class='SiblingPercentageForOld form-control input-sm md-input'
 								style="padding: 0px; font-weight: bold; color: #727272;"> 
@@ -2266,7 +2335,7 @@ $('#excusedabsent').click(function(){
 					</div>
 					<div class="uk-width-medium-1-3">
 						<div class="parsley-row">
-							<label for="BatchesCbxForOld">Sibling Consideration Amount<span class="req">*</span></label>
+							<label for="SiblingAmountForOld">Sibling Consideration Amount<span class="req">*</span></label>
 							<input type = "number" id="SiblingAmountForOld"name="SiblingAmountForOld" required value="0"
 								class='SiblingAmountForOld form-control input-sm md-input'
 								style="padding: 0px; font-weight: bold; color: #727272;">		                                           
@@ -2278,7 +2347,7 @@ $('#excusedabsent').click(function(){
 				<div class="uk-grid" data-uk-grid-margin>
 					<div class="uk-width-medium-1-3">
 						<div class="parsley-row">
-							<label for="BatchesCbxForOld">Multi Classes Consideration %<span class="req">*</span></label>
+							<label for="MultiClassesPercentageForOld">Multi Classes Consideration %<span class="req">*</span></label>
                             <input type = "number" id="MultiClassesPercentageForOld"name="MultiClassesPercentageForOld" required value="0"
 								class='MultiClassesPercentageForOld form-control input-sm md-input'
 								style="padding: 0px; font-weight: bold; color: #727272;"> 
@@ -2286,7 +2355,7 @@ $('#excusedabsent').click(function(){
 					</div>
 					<div class="uk-width-medium-1-3">
 						<div class="parsley-row">
-							<label for="BatchesCbxForOld">Multi Class Consideration Amount<span class="req">*</span></label>
+							<label for="MultiClassesAmountForOld">Multi Class Consideration Amount<span class="req">*</span></label>
 							<input type = "number" id="MultiClassesAmountForOld"name="MultiClassesAmountForOld" required value="0"
 								class='MultiClassesAmountForOld form-control input-sm md-input'
 								style="padding: 0px; font-weight: bold; color: #727272;">		                                           
@@ -2298,22 +2367,46 @@ $('#excusedabsent').click(function(){
 				<div class="uk-grid" data-uk-grid-margin>
 					<div class="uk-width-medium-1-3">
 						<div class="parsley-row">
-							<label for="BatchesCbxForOld">Admin Rupee <span class="req">*</span></label>
+							<label for="AdminRupeeForOld">Admin Rupee <span class="req">*</span></label>
                             <input type = "number" id="AdminRupeeForOld"name="AdminRupeeForOld" required
 								class='AdminRupeeForOld form-control input-sm md-input' value="0"
 								style="padding: 0px; font-weight: bold; color: #727272;"> 
 						</div>
 					</div>
 				</div>
+                                </br class="all"/>
+				</br class="all"/>
+                                <div class="uk-grid" data-uk-grid-margin>
+                                    <div class="uk-width-medium-1-3">
+                                        <div class="parsley-row">
+                                            <label for="MembershipTypeForOld">Membership Type<span class="req">*</span></label>
+                                            <select id="MembershipTypeForOld" name="MembershipTypeForOld" class="input-sm md-input"
+                                                    style='padding: 0px; font-weight: bold; color: #727272;'>
+                                                <option value=""></option>
+                                                <option value="1" >Annual Membership</option>
+                                                <option value="2">Lifetime Membership</option>
+                                            </select> 		                                            
+                                        </div>
+                                    </div>
+                                    
+					<div class="uk-width-medium-1-3">
+						<div class="parsley-row">
+							<label for="MembershipAmountForOld">Membership Amount<span class="req">*</span></label>
+                                                        <input type = "number" id="MembershipAmountForOld"name="MembershipAmountForOld" value="0"
+								class='MembershipAmountForOld form-control input-sm md-input'
+								style="padding: 0px; font-weight: bold; color: #727272;">		                                         
+						</div>
+					</div>
+                                </div>
 				</br class="all"/>
 				</br class="all"/>
 				<div class="uk-grid" data-uk-grid-margin>
 					<div class="uk-width-medium-1-3">
 						<div class="parsley-row">
-							<label for="BatchesCbxForOld">Sub Total<span class="req">*</span></label>
+							<label for="SubTotalForOld">Sub Total<span class="req">*</span></label>
                             <input type = "number" id="SubTotalForOld"name="SubTotalForOld" required
 								class='SubTotalForOld form-control input-sm md-input'
-								style="padding: 0px; font-weight: bold; color: #727272;"> 
+                                                                style="padding: 0px; font-weight: bold; color: #727272;" value="0"> 
 						</div>
 					</div>
 				</div>
@@ -2322,10 +2415,10 @@ $('#excusedabsent').click(function(){
 				<div class="uk-grid" data-uk-grid-margin>
 					<div class="uk-width-medium-1-3">
 						<div class="parsley-row">
-							<label for="BatchesCbxForOld">Tax<span class="req">*</span></label>
+							<label for="TaxForOld">Tax<span class="req">*</span></label>
                             <input type = "number" id="TaxForOld"name="TaxForOld" required
 								class='TaxForOld form-control input-sm md-input'
-								style="padding: 0px; font-weight: bold; color: #727272;"> 
+                                                                style="padding: 0px; font-weight: bold; color: #727272;" value="0"> 
 						</div>
 					</div>
 				</div>
@@ -2334,10 +2427,10 @@ $('#excusedabsent').click(function(){
 				<div class="uk-grid" data-uk-grid-margin>
 					<div class="uk-width-medium-1-3">
 						<div class="parsley-row">
-							<label for="BatchesCbxForOld">Grand Total<span class="req">*</span></label>
+							<label for="GrandTotalForOld">Grand Total<span class="req">*</span></label>
                             <input type = "number" id="GrandTotalForOld"name="GrandTotalForOld" required
 								class='GrandTotalForOld form-control input-sm md-input'
-								style="padding: 0px; font-weight: bold; color: #727272;"> 
+                                                                style="padding: 0px; font-weight: bold; color: #727272;" value="0"> 
 						</div>
 					</div>
                                         <div class="uk-width-medium-1-3">
@@ -2395,8 +2488,9 @@ $('#excusedabsent').click(function(){
 									class="form-control input-sm md-input" />
 							</div>
 						</div>
-						</br class="all"/>
-						</br class="all"/>			
+						<br clear="all">
+                                                <br clear="all">
+                                                <br clear="all">			
 						<div class="uk-width-medium-1-2">
 							<div class="parsley-row">
 								<label for="cardBankName3" class="inline-label">Bank Name of your card<span class="req">*</span>
@@ -2457,6 +2551,7 @@ $('#excusedabsent').click(function(){
 
 	</div>
 </div>
+
 
 
 <div class="uk-grid" data-uk-grid-margin data-uk-grid-match
@@ -2885,6 +2980,16 @@ $('#excusedabsent').click(function(){
                             			<!--<span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
                             				Total sessions - <span class = "badge" style = "background: #000"></span>
                             			</span>-->
+                                                <span class="md-btn md-btn-danger" style="border-radius: 15px; font-size:12px;">
+                            				Make-up given <span class = "badge" id = "makeup-given" style = "background: #000"></span>
+                            			</span>
+                                                <span class="md-btn md-btn-danger" style="border-radius: 15px; font-size:12px;">
+                            				Total-Session - <span class = "badge" id = "total-session" style = "background: #000"></span>
+                                                </span>
+                                                <span class="md-btn md-btn-danger" style="border-radius: 15px; font-size:12px;">
+                            				Transfer - <span class = "badge" id = "Transfer" style = "background: #000"></span>
+                            			</span>
+                            			
 			    				</div>
 			    				<br clear="all"/>
 			    				<br clear="all"/>
