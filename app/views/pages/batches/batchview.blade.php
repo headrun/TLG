@@ -336,8 +336,16 @@ $('#addAttendanceForm').validator().on('submit', function (e) {
                                 
   				console.log(response);
   				if(response.status == "success"){
-  					$("#messageAttendanceAddDiv").html('<p class="uk-alert uk-alert-success">Attendance has been added successfully.</p>');
-  					$("#saveAttendanceBtn").attr("disabled", false);
+                                        $("#messageAttendanceAddDiv").hide();
+                                        $("#messageAttendanceAddDiv").html('<p class="uk-alert uk-alert-success">Attendance has been added successfully.</p>');
+  					$('#messageAttendanceAddDiv').show('slow');
+                                        setTimeout(function(){
+                                            $('#messageAttendanceAddDiv').slideUp();
+                                            $('#messageAttendanceAddDiv').html('');
+                                            $('#messageAttendanceAddDiv').show();
+                                        },4000);
+                                        $("#saveAttendanceBtn").attr("disabled", false);
+                                        
   				}else{
   					$("#messageAttendanceAddDiv").html('<p class="uk-alert uk-alert-warning">Sorry, Attendance could not be  added. Please contact administrator</p>');
   				}
@@ -415,7 +423,7 @@ $('#addAttendanceForm').validator().on('submit', function (e) {
 
 ?>
 	<div class="md-fab-wrapper">
-		<a class="md-fab md-fab-accent" href="#new_todo">
+		<a class="md-fab md-fab-accent" href="{{url()}}/customers/add" title="Add customers">
 			<i class="material-icons">&#xE03B;</i>
 		</a>
 	</div>

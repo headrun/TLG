@@ -1769,7 +1769,7 @@ $('#batchName').change(function(){
             				Acount = Acount+1;
             			}else if(response.data[i]["status"] == 'EA'){
             				EAcount = EAcount+1;
-                                        if(response.data[i]['makeup_class_given']===1){
+                                        if(response.data[i]['makeup_class_given']==1){
                                             makeup=makeup+1;
                                         }
             			}
@@ -1978,6 +1978,7 @@ $('#BatchesCbx').change(function(){
 
 $('#excusedabsent').click(function(){
     if($('#year').val()!='' && $('#batchName').val()!=''){
+    $('#eamodalheader').html('Make-up');
     $.ajax({
 	type: "POST",
         url: "{{URL::to('/quick/getExcusedabsentStudentsByBatchId')}}",
@@ -2043,9 +2044,20 @@ $('#excusedabsent').click(function(){
                             }
                             
                             
-                            console.log(data);
+                            //console.log(data);
                             $('#eaabsentbody').html(data);
-                            $('#ea').modal('show');
+                            if(response.data.length > 0){
+                                $('#ea').modal('show');
+                            }else{
+                                $('#errorMsgDiv').hide();
+                                $('#errorMsgDiv').html("<p class='uk-alert uk-alert-danger'>No Excused Absent or All Excused Absent makeup are given for this Batch</p>");
+                                $('#errorMsgDiv').show('slow');
+                                setTimeout(function(){
+                                    $('#errorMsgDiv').slideUp();
+                                    $('#errorMsgDiv').html('');
+                                    $('#errorMsgDiv').show();
+                                },4000);
+                            }
                             $('select[data="season"]').change(function(){
                                //resetting 
                                var i=$(this).attr('data2');
@@ -2148,16 +2160,20 @@ $('#excusedabsent').click(function(){
                                                 $('#makeupsavespin'+i).remove();
                                                 $('#makeupmsg'+i).html("<p class='uk-alert uk-alert-success'>Makeup Class Created successfully</p>")
                                                 setTimeout(function(){
+                                                        $('#makeupcheck'+i).parent().parent().parent().slideUp();
                                                         $('#makeupcheck'+i).parent().parent().parent().remove();
                                                 }, 2000)
                                             }
                                         }
                                     });
                                 }else{
-                                    
+                                    $('#makeupmsg'+i).hide();
                                     $('#makeupmsg'+i).html("<p class='uk-alert uk-alert-danger'>Please select all required Fields</p>");
+                                    $('#makeupmsg'+i).show('slow');
                                     setTimeout(function(){
+                                           $('#makeupmsg'+i).slideUp();
                                            $('#makeupmsg'+i).html('');
+                                           $('#makeupmsg'+i).show();
                                     }, 2000)
                                 }    
                             });
@@ -2166,9 +2182,13 @@ $('#excusedabsent').click(function(){
     });
     
 }else{
+    $('#errorMsgDiv').hide();
     $('#errorMsgDiv').html("<p class='uk-alert uk-alert-warning'> please select the year and batch</p>");
+    $('#errorMsgDiv').show('slow');
     setTimeout(function(){
-       $('#errorMsgDiv').html(''); 
+       $('#errorMsgDiv').slideUp();
+       $('#errorMsgDiv').html('');
+       $('#errorMsgDiv').show(); 
     },2000);
 }  
 
@@ -2189,6 +2209,7 @@ $('#makeupsession').click(function(){
 			success: function(response){
                             console.log(response);
                             //return;
+                            if(response.status==='success'){
                             var data="<table class='uk-table table-striped'>"+
                                      "<thead>"+
                                      "<tr><th>EA Date</th><th>Description</th><th>Makeup Batch</th><th>Makeup-date</th><th>Make-up Given By</th></tr>"+
@@ -2207,6 +2228,16 @@ $('#makeupsession').click(function(){
                                      
                             $('#eaabsentbody').html(data);
                             $('#ea').modal('show');
+                            }else{
+                                $('#errorMsgDiv').hide();
+                                $('#errorMsgDiv').html("<p class='uk-alert uk-alert-danger'>No Makeups Given for this Batch</p>");
+                                $('#errorMsgDiv').show('slow');
+                            setTimeout(function(){
+                                $('#errorMsgDiv').slideUp();
+                                $('#errorMsgDiv').html();
+                                $('#errorMsgDiv').show();
+                            },4000);
+                            }
                         }
         });
         
@@ -2214,10 +2245,14 @@ $('#makeupsession').click(function(){
         
         
     }else{
+        $('#errorMsgDiv').hide();
         $('#errorMsgDiv').html("<p class='uk-alert uk-alert-warning'> please select the year and batch</p>");
+        $('#errorMsgDiv').show('slow');
         setTimeout(function(){
+            $('#errorMsgDiv').slideUp();
             $('#errorMsgDiv').html(''); 
-        },2000);
+            $('#errorMsgDiv').show();
+        },4000);
     }
 });
 
@@ -3032,30 +3067,50 @@ $('#makeupsession').click(function(){
 			    			<br clear = "all"/>
 			    			<br clear = "all"/>
 			    			<div class="uk-grid data-uk-grid-margin">
-			    				<div class="uk-width-medium-1-1">
-                            			<span class="md-btn md-btn-success" style="border-radius: 15px; font-size:12px;">
-                            				Present days - <span class = "badge" id = "Pcount" style = "background: #000"></span> 
-                            			</span>
-                            			<span class="md-btn md-btn-warning" style="border-radius: 15px; font-size:12px;" id="excusedabsent">
-                            				Excused absent - <span class = "badge" id = "EAcount" style = "background: #000"></span>
-                            			</span>
-                            			<span class="md-btn md-btn-danger" style="border-radius: 15px; font-size:12px;">
-                            				Absent days - <span class = "badge" id = "Acount" style = "background: #000"></span>
-                            			</span>
-                            			<!--<span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
-                            				Total sessions - <span class = "badge" style = "background: #000"></span>
-                            			</span>-->
-                                                <span class="md-btn md-btn-warning" id='makeupsession' style="border-radius: 15px; font-size:12px;">
-                            				Make-up given <span class = "badge" id = "makeup-session" style = "background: #000"></span>
-                            			</span>
-                                                <span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
-                            				Total-Session - <span class = "badge" id = "total-session" style = "background: #000"></span>
-                                                </span>
-                                                <span class="md-btn md-btn-success" id="Transfers" style="border-radius: 15px; font-size:12px;">
-                            				Transfer</span>
-                            			</span>
-                            			
-			    				</div>
+			    				<div class="uk-width-medium-1-3">
+                                                            <div class="parsley-row">
+                                                                    <span class="md-btn md-btn-success" style="border-radius: 15px; font-size:12px;">
+                                                                        Present days - <span class = "badge" id = "Pcount" style = "background: #000"></span> 
+                                                                    </span>
+                                                             </div>
+                                                        </div>
+                                                        <div class="uk-width-medium-1-3">
+                                                            <div class="parsley-row">
+                                                                <span class="md-btn md-btn-warning" style="border-radius: 15px; font-size:12px;" id="excusedabsent">
+                                                                    Excused absent - <span class = "badge" id = "EAcount" style = "background: #000"></span>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    <div class="uk-width-medium-1-3">
+                                                        <div class="parsley-row">
+                                                            <span class="md-btn md-btn-danger" style="border-radius: 15px; font-size:12px;">
+                                                                 Absent days - <span class = "badge" id = "Acount" style = "background: #000"></span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="uk-grid data-uk-grid-margin">
+                                                    <div class="uk-width-medium-1-3">
+                                                        <div class="parsley-row">
+                                                            <span class="md-btn md-btn-warning" id='makeupsession' style="border-radius: 15px; font-size:12px;">
+                                         				Make-up given <span class = "badge" id = "makeup-session" style = "background: #000"></span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="uk-width-medium-1-3">
+                                                        <div class="parsley-row">
+                                                            <span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
+                                                                Total-Session - <span class = "badge" id = "total-session" style = "background: #000"></span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="uk-width-medium-1-3">
+                                                        <div class="parsley-row">
+                                                            <span class="md-btn md-btn-success" id="Transfers" style="border-radius: 15px; font-size:12px;">
+                                                            Transfer</span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
 			    				<br clear="all"/>
 			    				<br clear="all"/>
 			    				<div class="uk-width-medium-1-1"  id = "AttendanceDiv"> 
