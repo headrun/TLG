@@ -1,0 +1,162 @@
+ <!-- main sidebar -->
+    <aside id="sidebar_main">
+        <div class="sidebar_main_header">
+            <div class="sidebar_logo">
+                <a href="<?php echo url(); ?>/dashboard" class="sSidebar_hide">
+                	<img src="<?php echo url(); ?>/assets/img/logo.png" alt="" height="87" width="170"/> 
+                </a>
+                <a href="<?php echo url(); ?>/dashboard" class="sSidebar_show">
+                	<!-- <img src="assets/img/logo_main_small.png" alt="" height="32" width="32"/> -->
+                </a>
+            </div>
+            <!-- <div class="sidebar_actions">
+                <select id="lang_switcher" name="lang_switcher">
+                    <option value="gb" selected>English</option>
+                </select>
+            </div> -->
+        </div>
+        <div class="menu_section">
+            <ul>
+                <li id="DASHBOARD" title="Dashboard">
+                   <a href="<?php echo url(); ?>/dashboard">
+                        <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
+                        <span class="menu_title">Dashboard</span>
+                    </a>
+                </li>
+                
+               
+                 <li id="CUSTOMERS_MAIN">
+                    <a href="#">
+                        <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+                        <span class="menu_title">Customers</span>
+                    </a>
+                    <ul id="CUSTOMERS_MAIN_UL">
+                        <li id="PROSPECTUS_LIST"><a href="<?php echo url(); ?>/customers/prospectslist">Prospects List</a></li>
+                        <li id="MEMBERS_LIST"><a href="<?php echo url(); ?>/customers/memberslist">Members List</a></li>
+                        <li id="CUSTOMERS_ADD"><a href="<?php echo url(); ?>/customers/add">Add Customers</a></li>    
+                    </ul>
+                </li>
+                 <li id="STUDENTS_MAIN">
+                    <a href="#">
+                        <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+                        <span class="menu_title">Kids</span>
+                    </a>
+                    <ul id="STUDENTS_MAIN_UL">
+                        <li id="NONENROLLEDSTUDENTS"><a href="<?php echo url(); ?>/students/nonenrolled">Non Enrolled Kids</a></li>
+                        <li id="ENROLLEDSTUDENTS"><a href="<?php echo url(); ?>/students/enrolled">Enrolled Kids</a></li>
+                    </ul>
+                </li>
+                
+                 <li id="COURSES_MAIN">
+                    <a href="#">
+                        <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+                        <span class="menu_title">Batches</span>
+                    </a>
+                    <ul id="COURSES_MAIN_UL">
+                       <!--  <li id="COURSES"><a href="<?php echo url(); ?>/courses">Courses</a></li>
+                        <li id="CLASSES"><a href="<?php echo url(); ?>/classes">Classes</a></li> -->
+                        <li id="BATCHES"><a href="<?php echo url(); ?>/batches">Batches</a></li>
+                        <?php if(Session::get('userType') == 'ADMIN'){?>
+                        <li id="BATCHESLIMIT"><a href="<?php echo url(); ?>/batches/batcheslimit">Add/View BatchesLimit</a></li>
+                        <?php }?>
+                        
+                    </ul>
+                </li>
+               
+                
+                
+                
+                 <li id="EVENTS_MAIN">
+                 	<hr/>
+                 </li>
+                
+                <?php if(Session::get('userType') == 'ADMIN'){?>
+                        <li id="EVENTS_MAIN">
+                            <a href="#">
+                                <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+                                <span class="menu_title">Events</span>
+                            </a>
+                            <ul id="EVENTS_MAIN_UL">
+                                 <!--  <li id="COURSES"><a href="<?php echo url(); ?>/courses">Courses</a></li>
+                                 <li id="CLASSES"><a href="<?php echo url(); ?>/classes">Classes</a></li> -->
+                                 <li id="EVENTS"><a href="<?php echo url(); ?>/events">Events</a></li>
+                                 <li id="EVENT_TYPES"><a href="<?php echo url(); ?>/events/types">Event Types</a></li>
+                            </ul>
+                        </li>
+                 
+                 
+                	 <li id="USERS_MAIN">
+	                    <a href="#">
+	                        <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+	                        <span class="menu_title">Users</span>
+	                    </a>
+	                    <ul id="USERS_MAIN_UL">
+	                       <!--  <li id="COURSES"><a href="<?php echo url(); ?>/courses">Courses</a></li>
+	                        <li id="CLASSES"><a href="<?php echo url(); ?>/classes">Classes</a></li> -->
+	                        <li id="USERS"><a href="<?php echo url(); ?>/admin/users">All Users</a></li>
+	                        <li id="ADD_USERS"><a href="<?php echo url(); ?>/admin/users/add">Add User</a></li>
+	                    </ul>
+	                </li>
+                        <?php if(Session::get('userType') == 'SUPER_ADMIN'){?>
+	                 <li id="COURSES_MENU_MAIN">
+	                    <a href="#">
+	                        <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+	                        <span class="menu_title">Courses</span>
+	                    </a>
+	                    <ul id="COURSES_MENU_MAIN_UL">
+	                       <!--  <li id="COURSES"><a href="<?php echo url(); ?>/courses">Courses</a></li>
+	                        <li id="CLASSES"><a href="<?php echo url(); ?>/classes">Classes</a></li> -->
+	                        <li id="COURSES_LI"><a href="<?php echo url(); ?>/courses">Courses</a></li>
+	                    </ul>
+	                </li>
+	                 <li id="CLASSES_MAIN">
+	                    <a href="#">
+	                        <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+	                        <span class="menu_title">Classes</span>
+	                    </a>
+	                    <ul id="CLASSES_MAIN_UL">
+	                       <!--  <li id="COURSES"><a href="<?php echo url(); ?>/courses">Courses</a></li>
+	                        <li id="CLASSES"><a href="<?php echo url(); ?>/classes">Classes</a></li> -->
+	                        <li id="CLASSES_LI"><a href="<?php echo url(); ?>/classes">Classes</a></li>
+	                    </ul>
+	                </li>
+                        <?php }?>
+                        <li id="SEASONS_MENU_MAIN">
+	                    <a href="#">
+	                        <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+	                        <span class="menu_title">Seasons</span>
+	                    </a>
+	                    <ul id="SEASONS_MENU_MAIN_UL">
+	                        <li id="AddSeasons_LI"><a href="<?php echo url(); ?>/season/add">Add Season</a></li>
+                                <li id="ViewSeasons_LI"><a href="<?php echo url(); ?>/season/viewseasons">View Seasons</a></li>
+	                    </ul>
+	                </li>
+
+                    <li id="DISCOUNTS_MENU_MAIN">
+                        <a href="#">
+                            <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+                            <span class="menu_title">Prices & Discounts</span>
+                        </a>
+                        <ul id="DISCOUNTS_MENU_MAIN_UL">
+                            <li id="AddPrices_LI"><a href="<?php echo url(); ?>/prices/add_or_view_prices">Add/View Prices</a></li>
+                            <li id="AddDiscounts_LI"><a href="<?php echo url(); ?>/Discounts/add_or_view_discounts">Add/View Discounts</a></li>
+                            <li id="EnableDiscounts_LI"><a href="<?php echo url(); ?>/Discounts/enable_or_disable">Enable/Disable Discounts</a></li>
+                        </ul>
+                    </li>
+                   <li id="REPORTS_MENU_MAIN">
+                        <a href="#">
+                            <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+                            <span class="menu_title">Reports</span>
+                        </a>
+                        <ul id="REPORTS_MENU_MAIN_UL">
+                            <li id="ViewReoprt_LI"><a href="<?php echo url(); ?>/reports/view_reports">Enrollment</a></li>
+                        </ul>
+                    </li>
+               <?php }?>
+                
+                
+                
+            </ul>
+        </div>
+    </aside><!-- main sidebar end -->
+   
