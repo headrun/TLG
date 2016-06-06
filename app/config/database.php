@@ -69,7 +69,7 @@ return array(
 			'host'      => 'localhost',
 			'database'  => 'tlg',
 			'username'  => 'root',
-			'password'  => '',
+			'password'  => 'harsha',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',

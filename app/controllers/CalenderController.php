@@ -39,21 +39,7 @@ class CalenderController extends \BaseController {
 
     public function view() {
 
-        return "Calender View";
-
-//		if(Auth::check()){
-//			
-//			$currentPage  =  "BATCHES";
-//			$mainMenu     =  "COURSES_MAIN";
-//			$batchSchedules = BatchSchedule::getBatcheSchedulesbyCourseandClassID($id);
-//			$batchSchedules = json_encode($batchSchedules['event']);
-//                        
-//			$dataToView = array('currentPage', 'mainMenu', 'batchSchedules');
-//			return View::make('pages.batches.batchview', compact($dataToView));
-//		
-//		}else{
-//			return Redirect::to("/");
-//		}		
+        return "Calender View";	
     }
 
     /**

@@ -481,6 +481,7 @@ class ClassesController extends \BaseController {
                                             ->where('makeup_class_given','=',1)
                                             ->where('student_class_id','!=',0)
                                             ->get();
+               if(count($attendance_data)>0){
                for($i=0;$i<count($attendance_data);$i++){
                    $student_classes[$i]=  StudentClasses::where('id','=',$attendance_data[$i]['student_class_id'])->get();
                    $temp=Batches::find($student_classes[$i][0]['batch_id']);
@@ -490,6 +491,9 @@ class ClassesController extends \BaseController {
                    $temp3=User::find($student_classes[$i][0]['created_by']);
                    $student_classes[$i][0]['receivedby']=$temp3->first_name.$temp3->last_name;
                    
+               }
+               }else{
+                   return Response::json(array('status'=>'nomakeupmade'));
                }
                if($student_classes){
                 return Response::json(array('status'=>'success','attendancedata'=>$attendance_data,'student_class_data'=>$student_classes));

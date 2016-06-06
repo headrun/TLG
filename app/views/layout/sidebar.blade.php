@@ -138,7 +138,7 @@
                             <span class="menu_title">Prices & Discounts</span>
                         </a>
                         <ul id="DISCOUNTS_MENU_MAIN_UL">
-                            <li id="AddPrices_LI"><a href="{{url()}}/prices/add_or_view_prices">Add/View Prices</a></li>
+                            <!--<li id="AddPrices_LI"><a href="{{url()}}/prices/add_or_view_prices">Add/View Prices</a></li> -->
                             <li id="AddDiscounts_LI"><a href="{{url()}}/Discounts/add_or_view_discounts">Add/View Discounts</a></li>
                             <li id="EnableDiscounts_LI"><a href="{{url()}}/Discounts/enable_or_disable">Enable/Disable Discounts</a></li>
                         </ul>
