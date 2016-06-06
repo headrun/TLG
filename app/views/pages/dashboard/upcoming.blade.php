@@ -131,6 +131,8 @@
         "lengthMenu": [ 10, 50, 100, 150, 200 ]
     });
 
+
+    
     /* $("#followupTable tr").click(function (){
 
 		window.location = $(this).find('a').attr('href');
@@ -146,8 +148,61 @@
 		window.location = $(this).find('a').attr('href');
 	}) */
     
+    
+    $('#BdayPatiesFilterByDate').change(function(){
+        //alert($(this).val());
+        
+            $.ajax({
+                type: "POST",
+                url: "{{URL::to('/quick/BdayPartiesFiltering')}}",
+                dataType: 'json',
+                data:{"value": $('#BdayPatiesFilterByDate').val()},
+                success: function(response)
+                {
+                   $('#birthdayCelebrationTable').hide();
+                   //var BdayRows = '';
+                   
+                   console.log(response.data[0]);
+                   var tableHeader = '';
+                   tableHeader = '<table class="uk-table" id="birthdayCelebrationTable1">'+
+                                    '<thead>'+
+                                        '<tr>'+
+                                            '<th class="uk-text-nowrap">Customer</th>'+
+                                            '<th class="uk-text-nowrap">Kid</th>'+
+                                            '<th class="uk-text-nowrap">Mobile No</th>'+                                            
+                                            '<th class="uk-text-nowrap">DOB</th>'+
+                                            '<th class="uk-text-nowrap">Time</th>'+                              
+                                        '</tr>'+
+                                    '</thead>'+
+                                    '<tbody>';
+                   for(i = 0; i < response.data.length; i++){
+                        tableHeader  +=  '<tr onclick = navigateToCustomer("{{url()}}/customers/view/'+response.data[i]['customer_id']+'?tab=birthdayparty")>'+
+                                        '<td>'+response.data[i]['customer_name']+'</td>'+
+                                        '<td>'+response.data[i]['student_name']+'</td>'+
+                                        '<td>'+response.data[i]['mobile_no']+'</td>'+
+                                        '<td>'+response.data[i]['birthday_party_date']+'</td>'+
+                                        '<td>'+response.data[i]['birthday_party_time']+'</td>'+
+                                    '</tr>';
+                   } 
 
+                   tableHeader += '</tbody></table>';
 
+                   //console.log(tableHeader);
+                   $('#allBdayData').html(tableHeader);
+                   $("#birthdayCelebrationTable1").DataTable({
+                            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                                return nRow;
+                            },
+                            "iDisplayLength": 10,
+                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                    });
+                }
+            });
+    });
+
+    function navigateToCustomer(url){
+        window.location = url;
+    }
    
 
     </script>
@@ -420,7 +475,7 @@
                                     <thead>
                                         <tr>
                                             <th class="uk-text-nowrap">Customer</th>
-                                            <th class="uk-text-nowrap">Email</th>
+                                            <th class="uk-text-nowrap">Followup Type</th>
                                             <th class="uk-text-nowrap">Mobile No</th>
                                             <th class="uk-text-nowrap">Date</th>
                                         </tr>
@@ -429,7 +484,7 @@
                                     	<?php foreach($todaysFollowup as $items){?>
                                         <tr class="uk-table-middle smallText">
                                             <td class="uk-width-3-10 uk-text-nowrap">{{$items->Customers->customer_name}} {{$items->Customers->customer_lastname}}<a href="{{url()}}/customers/view/{{$items->Customers->id}}?tab=ivfollowup"></a></td>
-                                            <td class="uk-width-3-10 uk-text-nowrap">{{$items->Customers->customer_email}}</td>
+                                            <td class="uk-width-3-10 uk-text-nowrap">{{$items->followup_type}}</td>
                                             <td class="uk-width-3-10 uk-text-nowrap">{{$items->Customers->mobile_no}}</td>
                                             <td class="uk-width-3-10 uk-text-nowrap">{{date('d M Y', strtotime($items->reminder_date))}}</td>
                                         </tr>   
@@ -509,7 +564,7 @@
                                     <thead>
                                         <tr>
                                             <th class="uk-text-nowrap">Customer</th>
-                                            <th class="uk-text-nowrap">Email</th>
+                                            <th class="uk-text-nowrap">Followup Type</th>
                                             <th class="uk-text-nowrap">Mobile No</th>
                                             <th class="uk-text-nowrap">Date</th>
                                         </tr>
@@ -518,7 +573,7 @@
                                     	<?php foreach($activeRemindersCount as $items){?>
                                         <tr class="uk-table-middle smallText">
                                             <td class="uk-width-3-10 uk-text-nowrap">{{$items->Customers->customer_name}}{{$items->Customers->customer_lastname}}<a href="{{url()}}/customers/view/{{$items->Customers->id}}?tab=ivfollowup"></a></td>
-                                            <td class="uk-width-3-10 uk-text-nowrap">{{$items->Customers->customer_email}}</td>
+                                            <td class="uk-width-3-10 uk-text-nowrap">{{$items->followup_type}}</td>
                                             <td class="uk-width-3-10 uk-text-nowrap">{{$items->Customers->mobile_no}}</td>
                                             <td class="uk-width-3-10 uk-text-nowrap">{{date('d M Y', strtotime($items->reminder_date))}}</td>
                                         </tr>   
@@ -560,7 +615,6 @@
 			
             <!-- info cards -->
             
-            <br clear="all"/>
             <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
             <div class="uk-width-medium-1-2">
                     <div class="md-card">
@@ -678,20 +732,33 @@
                     <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-overflow-container">
-                            	<h3>Birthdays Celebration This Week</h3>
-                            	
+                                <div width = "100%">
+                                    <div style = "width: 60%; position: absolute">
+                                        <p style  ="font-size: 24px;">Birthdays Celebration </p>        
+                                    </div>
+                                    <div style = "width: 40%; margin-left: 60%">
+                                        <select id="BdayPatiesFilterByDate" required="required" class="form-control input-sm md-input" style="padding: 0px;font-weight:bold;color: #727272;">
+                                            <option value="Week">By Week</option>
+                                            <option value="Month">By Month</option>
+                                            <option value="Year">By Year</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+                                <br clear="all"/>
+                            	<div id = "allBdayData"></div>
                                 <table class="uk-table" id="birthdayCelebrationTable">
                                     <thead>
                                         <tr>
                                             <th class="uk-text-nowrap">Customer</th>
                                             <th class="uk-text-nowrap">Kid</th>
                                             <th class="uk-text-nowrap">Mobile No</th>                                            
-                                            <th class="uk-text-nowrap">DOC</th>
+                                            <th class="uk-text-nowrap">DOB</th>
                                             <th class="uk-text-nowrap">Time</th>
                               
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id = "BirthdayTableBody">
                                         <?php for($i=0;$i<count($birthdayPresentWeek);$i++){
                                             if($birthdayPresentWeek[$i]['franchisee_id']==$f_id){?>
                                         <tr>
@@ -714,6 +781,4 @@
               </div>
               
 
-
- 
 @stop

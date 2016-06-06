@@ -2069,7 +2069,6 @@ class StudentsController extends \BaseController {
 			$i = 0;
 			foreach ($studentsByBatchId as $studentAttendance){
 				$attendanceArray[$i]['studentName'] = $studentAttendance->Students->student_name;
-                                $attendanceArray[$i]['student_classes_id']= $studentAttendance->id;
                                 if($studentAttendance->status==='makeup'){
                                     $attendanceArray[$i]['studentName']=$attendanceArray[$i]['studentName'].' [Makeup]';
                                 }
@@ -2116,10 +2115,9 @@ class StudentsController extends \BaseController {
 				$attendanceData->batch_id        = $inputs['batch_'.$i];
 				$attendanceData->student_id      = $inputs['student_'.$i];
 				$attendanceData->status          = $inputs['attendance_for_user'.$i];
-                                $attendanceData->student_classes_id = $inputs['student_class_id'.$i];
                                 if($inputs['attendance_for_user'.$i]==='EA'){
                                     //** Add description for Excused Absent **// 
-                                    $attendanceData->description_absent =$inputs['description_user_'.$i];
+                                    $attendanceData->description_ea =$inputs['description_user_'.$i];
                                     // creating the retention id
                                     $getcustomerdetails=Students::find($inputs['student_'.$i]);
                                     $retentionData['customer_id']=$getcustomerdetails->customer_id;
@@ -2138,33 +2136,10 @@ class StudentsController extends \BaseController {
                                         //create followup
                                         $customer_logdata['reminderDate']=$inputs['reminderdate_user_'.$i];
                                     }
-                                    $customer_log_data=  Comments::addComments($customer_logdata);
-                                    
-                                }else if($inputs['attendance_for_user'.$i]==='A'){
-                                    //** Add description for Excused Absent **// 
-                                    $attendanceData->description_absent =$inputs['description_user_absent_'.$i];
-                                    // creating the retention id
-                                    $getcustomerdetails=Students::find($inputs['student_'.$i]);
-                                    $retentionData['customer_id']=$getcustomerdetails->customer_id;
-                                    $retentionData['student_id']=$inputs['student_'.$i];
-                                    $rdata=Retention::createRetention($retentionData);
-                                    //to create followup
-                                    
-                                    $customer_logdata['customerId']=$rdata->customer_id;
-                                    $customer_logdata['student_id']=$rdata->student_id;
-                                    $customer_logdata['followupType']='RETENTION';
-                                    $customer_logdata['commentStatus']='REMINDER_CALL';
-                                    $customer_logdata['retention_id']=$rdata->id;
-                                    $customer_logdata['commentText']=$inputs['description_user_absent_'.$i];
-                                    $customer_logdata['commentType']='INTERESTED';       
-                                    if($inputs['reminderdate_user_absent_'.$i]!=""){
-                                        //create followup
-                                        $customer_logdata['reminderDate']=$inputs['reminderdate_user_absent_'.$i];
-                                    }
-                                    $customer_log_data=  Comments::addComments($customer_logdata);
+                                    $customer_loag_data=  Comments::addComments($customer_logdata);
                                     
                                 }else{
-                                    $attendanceData->description_absent ='';
+                                    $attendanceData->description_ea ='';
                                 }
                                 
 				$attendanceData->save();

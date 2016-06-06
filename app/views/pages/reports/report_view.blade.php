@@ -62,14 +62,9 @@
                                           }else{
                                             header_data+=response[0]['data'][i]['batch_name']+"</td><td>";
                                           }
-                                    header_data+=response[0]['data'][i]['membership_amount']+"</td><td>";
-                                          if(typeof(response[0]['data'][i]['batch_name']) == 'undefined'){
-                                            header_data+=response[0]['data'][i]['payment_due_amount']+"</td><td>";
-                                          }else{
-                                            header_data+="null"+"</td><td>";
-                                          }
-                                          
-                                          header_data+=response[0]['data'][i]['payment_due_amount_after_discount']+"</td><td>"+
+                                    header_data+=response[0]['data'][i]['membership_amount']+"</td><td>"+
+                                          response[0]['data'][i]['payment_due_amount']+"</td><td>"+
+                                          response[0]['data'][i]['payment_due_amount_after_discount']+"</td><td>"+
                                           response[0]['data'][i]['created_at']+"</td></tr>";
                                    
                                     }
@@ -185,14 +180,9 @@
                                           }else{
                                             header_data+=response[0]['data'][i]['batch_name']+"</td><td>";
                                           }
-                                          header_data+=response[0]['data'][i]['membership_amount']+"</td><td>";
-                                          if(typeof(response[0]['data'][i]['batch_name']) == 'undefined'){
-                                            header_data+=response[0]['data'][i]['payment_due_amount']+"</td><td>";
-                                          }else{
-                                            header_data+="null"+"</td><td>";
-                                          }
-                                          
-                                          header_data+=response[0]['data'][i]['payment_due_amount_after_discount']+"</td><td>"+
+                                    header_data+=response[0]['data'][i]['membership_amount']+"</td><td>"+
+                                          response[0]['data'][i]['payment_due_amount']+"</td><td>"+
+                                          response[0]['data'][i]['payment_due_amount_after_discount']+"</td><td>"+
                                           response[0]['data'][i]['created_at']+"</td></tr>";
                                    
                                     }

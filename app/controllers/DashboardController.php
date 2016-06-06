@@ -66,6 +66,7 @@ class DashboardController extends \BaseController {
                         $todaysbpartycount=BirthdayParties::getBpartyCountBytoday();
                                 
 			$todaysFollowup = Comments::getAllFollowup();
+      //return $todaysFollowup;
 			$todaysIntrovisit = BatchSchedule::getTodaysIntroVisits();
 			
 			$activeRemindersCount = Comments::getAllFollowupActive();
@@ -200,7 +201,7 @@ class DashboardController extends \BaseController {
                         }
                         $f_id=Session::get('franchiseId');
                         
-                        
+
                         
 			$viewData = array('currentPage', 'mainMenu', 'f_id',
                                                            'birthday_data','birthday_data_month','birthday_month_startdays','birthdayPresentWeek',
@@ -210,12 +211,69 @@ class DashboardController extends \BaseController {
                                                             'totalbpartyCount','todaysbpartycount',
                                                            'totalParentchildCourse','totalPrekgKindergarten','totalGradeschool','totalCourses',
 							  'todaysCustomerReg','todaysEnrolledCustomers','enrolledCustomers','totalIntrovisitCount', 'introVisitCount', 'allIntrovisits', 'todaysFollowup', 
-							  'todaysIntrovisit','activeRemindersCount');
+							  'todaysIntrovisit','activeRemindersCount',);
 			return View::make('pages.dashboard.upcoming',compact($viewData));
 		}else{
 			return Redirect::to("/");
 		}
 	}
+
+
+  public function BdayPartiesFiltering(){
+      $inputs = Input::all();
+
+      if($inputs['value'] == "Week"){
+          $presentdate=new carbon();
+          $weeekdate=new carbon();
+          $weeekdate->addDays(7);
+          $birthdayCelebrationsData=BirthdayParties::
+                                                where('birthday_party_date','>=',$presentdate->toDateString())
+                                                ->where('birthday_party_date','<=',$weeekdate->toDateString())
+                                                //->where('franchisee_id','=',Session::get('franchiseId'))
+                                                ->get();
+          for($i=0;$i<count($birthdayCelebrationsData);$i++){
+              $customer_data=Customers::where('id','=',$birthdayCelebrationsData[$i]['customer_id'])->get();
+              $birthdayCelebrationsData[$i]['customer_name']= $customer_data[0]['customer_name'];
+              $birthdayCelebrationsData[$i]['mobile_no']= $customer_data[0]['mobile_no'];
+              $birthdayCelebrationsData[$i]['franchisee_id']= $customer_data[0]['franchisee_id'];
+              $student_data=  Students::where('id','=',$birthdayCelebrationsData[$i]['student_id'])->get();
+              $birthdayCelebrationsData[$i]['student_name']=$student_data[0]['student_name'];
+          }
+      }elseif($inputs['value'] == "Month"){
+          $birthdayCelebrationsData  = BirthdayParties::whereRaw('MONTH(birthday_party_date) = MONTH(NOW())')->get();
+
+          for($i=0;$i<count($birthdayCelebrationsData);$i++){
+              $customer_data=Customers::where('id','=',$birthdayCelebrationsData[$i]['customer_id'])->get();
+              $birthdayCelebrationsData[$i]['customer_name']= $customer_data[0]['customer_name'];
+              $birthdayCelebrationsData[$i]['mobile_no']= $customer_data[0]['mobile_no'];
+              $birthdayCelebrationsData[$i]['franchisee_id']= $customer_data[0]['franchisee_id'];
+              $student_data=  Students::where('id','=',$birthdayCelebrationsData[$i]['student_id'])->get();
+              $birthdayCelebrationsData[$i]['student_name']=$student_data[0]['student_name'];
+          }
+
+      }elseif($inputs['value'] == "Year"){
+          $birthdayCelebrationsData  = BirthdayParties::whereRaw('YEAR(birthday_party_date) = YEAR(NOW())')->get();
+
+          for($i=0;$i<count($birthdayCelebrationsData);$i++){
+              $customer_data=Customers::where('id','=',$birthdayCelebrationsData[$i]['customer_id'])->get();
+              $birthdayCelebrationsData[$i]['customer_name']= $customer_data[0]['customer_name'];
+              $birthdayCelebrationsData[$i]['mobile_no']= $customer_data[0]['mobile_no'];
+              $birthdayCelebrationsData[$i]['franchisee_id']= $customer_data[0]['franchisee_id'];
+              $student_data=  Students::where('id','=',$birthdayCelebrationsData[$i]['student_id'])->get();
+              $birthdayCelebrationsData[$i]['student_name']=$student_data[0]['student_name'];
+          }
+
+      }  
+
+      if($birthdayCelebrationsData){
+        return Response::json(array('status'=> 'success', 'data'=> $birthdayCelebrationsData));
+      }else{
+        return Response::json(array('status'=> 'failure'));
+      }
+  }
+
+
+
   public function terms_conditions(){
       $currentPage  =  "TERMS_CONDITIONS";
       $mainMenu     =  "TERMS_CONDITIONS_MAIN";

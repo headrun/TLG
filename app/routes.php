@@ -291,6 +291,8 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('/getExcusedabsentStudentsByBatchId','StudentsController@getExcusedabsentStudentsByBatchId');
         Route::any('createMakeupClass','ClassesController@createMakeupClass');
         Route::any('getMakeupdataByBatchId','ClassesController@getMakeupdatabyBatchId');
+    Route::any('BdayPartiesFiltering','DashboardController@BdayPartiesFiltering');
+
         
 	Route::any('saveSchedule', function(){
 	

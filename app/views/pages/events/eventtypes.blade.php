@@ -79,15 +79,16 @@
 			  async: true,
 			  success: function(response, textStatus, jqXHR)
 			  {
-				  $("#eventTypeIdEdit").val(id);
-				  $("#eventTypeNameEdit").val(response['0'].name);
+			  	console.log(response);
+				  /*$("#eventTypeIdEdit").val(id);
+				  $("#eventTypeNameEdit").val(response['0'].name);*/
 					
-				   console.log(response);
+				   
 				   if(response.status == "success"){
-						$("#messageEventEditDiv").html('<p class="uk-alert uk-alert-success">Event Type successfully edited.</p>');
+						$("#messageEventEditDiv").html('<p class="uk-alert uk-alert-success">Event Type successfully edited. Please wait until this page reloads.</p>');
 						setTimeout(function(){
 						   window.location.reload(1);
-						}, 5000);
+						}, 3500);
 				   }else{
 					   $("#messageEventEditDiv").html('<p class="uk-alert uk-alert-danger">Sorry, Event Type could not be  edited.</p>');
 				   }
