@@ -267,7 +267,9 @@ class BatchSchedule extends \Eloquent {
         }
         
         public static function getAllBatches() {
-        $batchSchedules = BatchSchedule::all();
+        $batchSchedules = BatchSchedule::where('franchisee_id','=',Session::get('franchiseId'))
+                                         ->where('holiday','!=',1)
+                                         ->get();
         if ($batchSchedules->count()) {
             $calenderData = array();
             $i = 0;

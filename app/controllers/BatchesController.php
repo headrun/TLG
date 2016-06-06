@@ -678,10 +678,10 @@ class BatchesController extends \BaseController {
                $batchData[$i]['preferred_end_time']=$endDate->format('G:i A');
                $temp=User::find($batchData[$i]['lead_instructor']);
                $batchData[$i]['Leadinstructor']=$temp->first_name.$temp->last_name;
-               $batch_count=  StudentClasses::where('batch_id','=',$batchData[$i]['batch_id'])
-                                              
-                                              ->whereIn('status',array('enrolled','makeup'))
-                                              ->count();
+//               $batch_count=  StudentClasses::where('batch_id','=',$batchData[$i]['batch_id'])
+//                                              
+//                                              ->whereIn('status',array('enrolled','makeup'))
+//                                              ->count();
            }
            if ($batchData) {
                return Response::json(array('status' => 'success', 'batch_data'=> $batchData));

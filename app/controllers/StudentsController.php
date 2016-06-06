@@ -2069,6 +2069,7 @@ class StudentsController extends \BaseController {
 			$i = 0;
 			foreach ($studentsByBatchId as $studentAttendance){
 				$attendanceArray[$i]['studentName'] = $studentAttendance->Students->student_name;
+                                $attendanceArray[$i]['student_classes_id']= $studentAttendance->id;
                                 if($studentAttendance->status==='makeup'){
                                     $attendanceArray[$i]['studentName']=$attendanceArray[$i]['studentName'].' [Makeup]';
                                 }
@@ -2115,6 +2116,7 @@ class StudentsController extends \BaseController {
 				$attendanceData->batch_id        = $inputs['batch_'.$i];
 				$attendanceData->student_id      = $inputs['student_'.$i];
 				$attendanceData->status          = $inputs['attendance_for_user'.$i];
+                                $attendanceData->student_classes_id = $inputs['student_class_id'.$i];
                                 if($inputs['attendance_for_user'.$i]==='EA'){
                                     //** Add description for Excused Absent **// 
                                     $attendanceData->description_ea =$inputs['description_user_'.$i];

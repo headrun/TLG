@@ -22,6 +22,7 @@ class BirthdayParties extends \Eloquent {
 		$birthday = new BirthdayParties();
 		$birthday->customer_id                   = $inputs['customerId'];
 		$birthday->student_id                    = $inputs['kidsSelect'];
+                $birthday->franchisee_id                 =Session::get('franchiseId');
                 if(isset($inputs['defaultBirthdayPrice'])){
                     $birthday->default_birthday_cost=$inputs['defaultBirthdayPrice'];
                 }
@@ -32,15 +33,12 @@ class BirthdayParties extends \Eloquent {
 		$birthday->advance_amount_paid           = $inputs['advanceAmount'];
 		$birthday->remaining_due_amount          = $inputs['remainingAmount'];
 		
-		$birthday->grand_total  				 = $inputs['grandTotal'];
-		$birthday->birthday_party_date  	     = date('Y-m-d',strtotime($inputs['birthdayCelebrationDate']));
-		$birthday->birthday_party_time  		 = date('H:i:s',strtotime($inputs['birthdayTime']));
+		$birthday->grand_total  		 = $inputs['grandTotal'];
+		$birthday->birthday_party_date  	 = date('Y-m-d',strtotime($inputs['birthdayCelebrationDate']));
+		$birthday->birthday_party_time           = date('H:i:s',strtotime($inputs['birthdayTime']));
 		$birthday->created_at                    = date("Y-m-d H:i:s");
 		$birthday->created_by                    = Session::get('userId');
-		
 		$birthday->save();
-		
-                
 		return $birthday;
 		
 	}
@@ -81,7 +79,7 @@ class BirthdayParties extends \Eloquent {
         }
         
         static function getallBirthdayParties() {
-        $birthdayDetails = BirthdayParties::all();
+        $birthdayDetails = BirthdayParties::where('franchisee_id','=',Session::get('franchiseId'))->get();
         if ($birthdayDetails->count()) {
             $calenderData = array();
             $i = 0;
@@ -95,7 +93,6 @@ class BirthdayParties extends \Eloquent {
                 $calenderData['event'][$i]['allDay'] = 'false';
                 $calenderData['event'][$i]['backgroundColor'] = '#909090';
                 $calenderData['event'][$i]['textColor'] = 'white';
-
                 $i++;
             }
             return $calenderData;
