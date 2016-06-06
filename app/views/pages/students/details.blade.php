@@ -2217,7 +2217,7 @@ $('#makeupsession').click(function(){
                                      "<tbody>";
                              for(var i=0;i<response.attendancedata.length;i++){
                                  data+="<tr><td>"+response.attendancedata[i]['attendance_date']+"</td>"+
-                                       "<td>"+response.attendancedata[i]['description_ea']+"</td>"+
+                                       "<td>"+response.attendancedata[i]['description_absent']+"</td>"+
                                        "<td>"+response.student_class_data[i][0]['batch_name']+"</td>"+
                                        "<td>"+response.student_class_data[i][0]['enrollment_end_date']+"</td>"+
                                        "<td>"+response.student_class_data[i][0]['receivedby']+"</td>"+

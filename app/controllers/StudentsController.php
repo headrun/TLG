@@ -2119,7 +2119,7 @@ class StudentsController extends \BaseController {
                                 $attendanceData->student_classes_id = $inputs['student_class_id'.$i];
                                 if($inputs['attendance_for_user'.$i]==='EA'){
                                     //** Add description for Excused Absent **// 
-                                    $attendanceData->description_ea =$inputs['description_user_'.$i];
+                                    $attendanceData->description_absent =$inputs['description_user_'.$i];
                                     // creating the retention id
                                     $getcustomerdetails=Students::find($inputs['student_'.$i]);
                                     $retentionData['customer_id']=$getcustomerdetails->customer_id;
@@ -2138,10 +2138,33 @@ class StudentsController extends \BaseController {
                                         //create followup
                                         $customer_logdata['reminderDate']=$inputs['reminderdate_user_'.$i];
                                     }
-                                    $customer_loag_data=  Comments::addComments($customer_logdata);
+                                    $customer_log_data=  Comments::addComments($customer_logdata);
+                                    
+                                }else if($inputs['attendance_for_user'.$i]==='A'){
+                                    //** Add description for Excused Absent **// 
+                                    $attendanceData->description_absent =$inputs['description_user_absent_'.$i];
+                                    // creating the retention id
+                                    $getcustomerdetails=Students::find($inputs['student_'.$i]);
+                                    $retentionData['customer_id']=$getcustomerdetails->customer_id;
+                                    $retentionData['student_id']=$inputs['student_'.$i];
+                                    $rdata=Retention::createRetention($retentionData);
+                                    //to create followup
+                                    
+                                    $customer_logdata['customerId']=$rdata->customer_id;
+                                    $customer_logdata['student_id']=$rdata->student_id;
+                                    $customer_logdata['followupType']='RETENTION';
+                                    $customer_logdata['commentStatus']='REMINDER_CALL';
+                                    $customer_logdata['retention_id']=$rdata->id;
+                                    $customer_logdata['commentText']=$inputs['description_user_absent_'.$i];
+                                    $customer_logdata['commentType']='INTERESTED';       
+                                    if($inputs['reminderdate_user_absent_'.$i]!=""){
+                                        //create followup
+                                        $customer_logdata['reminderDate']=$inputs['reminderdate_user_absent_'.$i];
+                                    }
+                                    $customer_log_data=  Comments::addComments($customer_logdata);
                                     
                                 }else{
-                                    $attendanceData->description_ea ='';
+                                    $attendanceData->description_absent ='';
                                 }
                                 
 				$attendanceData->save();
