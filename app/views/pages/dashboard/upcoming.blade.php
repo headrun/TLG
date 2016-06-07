@@ -159,10 +159,9 @@
                 data:{"value": $('#BdayPatiesFilterByDate').val()},
                 success: function(response)
                 {
-                   $('#birthdayCelebrationTable').hide();
                    //var BdayRows = '';
                    
-                   console.log(response.data[0]);
+                   //console.log(response.data[0]);
                    var tableHeader = '';
                    tableHeader = '<table class="uk-table" id="birthdayCelebrationTable1">'+
                                     '<thead>'+
@@ -189,6 +188,17 @@
 
                    //console.log(tableHeader);
                    $('#allBdayData').html(tableHeader);
+
+                   $("#birthdayCelebrationTable").DataTable({
+                        "destroy" : true,
+                        "paging":   false,
+                        "ordering": false,
+                        "info":     false,
+                        "searching" : false
+                   });
+
+                   $("#birthdayCelebrationTable").html('');
+
                    $("#birthdayCelebrationTable1").DataTable({
                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
                                 return nRow;
@@ -585,43 +595,13 @@
                         </div>
                     </div>
                 </div>
-                 <div class="uk-width-medium-1-2">
+                 
+                <div class="uk-width-medium-1-2">
                     <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-overflow-container">
-                            	<h3>Pending Payments Within a Week</h3>
-                            	
-                                <table class="uk-table" id="introvisitTable">
-                                    <thead>
-                                        <tr>
-                                            <th class="uk-text-nowrap">Customer</th>
-                                            <th class="uk-text-nowrap">Email</th>
-                                            <th class="uk-text-nowrap">Mobile No</th>
-                                            <th class="uk-text-nowrap">Status</th>
-                                            <th class="uk-text-nowrap">Visit Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    	
-                                    </tbody>
-                                </table>
-                               
-                            </div>
-                        </div>
-                    </div>
-                </div>
-             </div>
-            
-			
-            <!-- info cards -->
-            
-            <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
-            <div class="uk-width-medium-1-2">
-                    <div class="md-card">
-                        <div class="md-card-content">
-                            <div class="uk-overflow-container">
-                            	<h3>Upcoming Birthdays</h3>
-                            	
+                                <h3>Upcoming Birthdays</h3>
+                                
                                 <table class="uk-table" id="birthdayLog">
                                     <thead>
                                         <tr>
@@ -727,7 +707,14 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> 
+             </div>
+            
+			
+            <!-- info cards -->
+            
+            <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
+            
                 <div class="uk-width-medium-1-2">
                     <div class="md-card">
                         <div class="md-card-content">
