@@ -2144,7 +2144,7 @@ $('#excusedabsent').click(function(){
                                 if($('#season'+i).val()!='' && $('#classes'+i).val()!='' && $('#batches'+i).val()!='' && $('#date'+i).val()!=''){
                                     
                                     $(this).parent().append('<i class="uk-icon-spinner uk-icon-large uk-icon-spin"id="makeupsavespin'+i+'" data="makeupsavespin'+i+'" data2='+i+'></i>');
-                                    $('#makeupsave'+i).remove();
+                                    $('#makeupsave'+i).hide();
                                     $.ajax({
                                         type: "POST",
                                         url: "{{URL::to('/quick/createMakeupClass')}}",
@@ -2155,14 +2155,24 @@ $('#excusedabsent').click(function(){
                                         dataType: 'json',
                                         success: function(response){
                                             console.log(response);
-                                            if(response.status=='success'){
+                                            if(response.status==='success'){
                                                 $('#makeupsavespin'+i).parent().append("<i class=' btn btn-success uk-icon-check  uk-icon-large' id='makeupcheck"+i+"' data='makeupcheck' data2="+i+"></i>");
                                                 $('#makeupsavespin'+i).remove();
                                                 $('#makeupmsg'+i).html("<p class='uk-alert uk-alert-success'>Makeup Class Created successfully</p>")
                                                 setTimeout(function(){
                                                         $('#makeupcheck'+i).parent().parent().parent().slideUp();
                                                         $('#makeupcheck'+i).parent().parent().parent().remove();
-                                                }, 2000)
+                                                }, 3000)
+                                            }else if(response.status==='exists'){
+                                                //$('#makeupsavespin'+i).parent().append("<i class=' btn btn-success uk-icon-save  uk-icon-large' id='makeupsave"+i+"' data='makeupsave' data2="+i+"></i>");
+                                                $('#makeupsavespin'+i).remove();
+                                                $('#makeupsave'+i).show();
+                                                $('#makeupmsg'+i).html("<p class='uk-alert uk-alert-danger'>student is already enrolled to this class</p>");
+                                                setTimeout(function(){
+                                                        $('#makeupcheck'+i).parent().parent().parent().slideUp();
+                                                        $('#makeupmsg'+i).html('');
+                                                        $('#makeupcheck'+i).parent().parent().parent().remove();
+                                                }, 3000)
                                             }
                                         }
                                     });

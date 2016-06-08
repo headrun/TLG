@@ -452,6 +452,19 @@ class ClassesController extends \BaseController {
            if(Auth::check()){
                $inputs=Input::all();
                  //create makeup
+                  if(
+                   StudentClasses::where('student_id','=',$inputs['student_id'])
+                                   ->where('season_id','=',$inputs['mu_season_id'])
+                                   ->where('class_id','=',$inputs['mu_class_id'])
+                                   ->where('batch_id','=',$inputs['mu_batches_id'])
+                                   ->whereDate('enrollment_start_date','<=',$inputs['mu_date'])
+                                   ->whereDate('enrollment_end_date','>=',$inputs['mu_date'])
+                                   ->exists()
+                     ){
+                      
+                      return Response::json(array('status'=>'exists'));
+                     }else{
+                        // return Response::json(array('status'=>'success','data'=>$inputs));
                    $student_data['studentId']=$inputs['student_id'];
                    $student_data['seasonId']=$inputs['mu_season_id'];
                    $student_data['classId']=$inputs['mu_class_id'];
@@ -473,7 +486,7 @@ class ClassesController extends \BaseController {
                    }else{
                     return Response::json(array('status'=>'failure'));   
                    }
-               
+                     }
                 }
             }
        
