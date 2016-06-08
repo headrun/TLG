@@ -2006,7 +2006,7 @@ $('#excusedabsent').click(function(){
                                                   "<input type='hidden' id='eabatch_id"+i+"' data='eabatch_id"+i+"' data2="+i+" value='"+response.data[i]['batch_id']+"'></input>"+
                                                 "</div>"+
                                                 "<div class='parsley-row md-btn md-btn-primary' style='border-radius: 15px; font-size:12px;'>"+
-                                                  "Description:"+response.data[i]['description_ea']+
+                                                  "Description:"+response.data[i]['description_absent']+
                                                 "</div>"+
                                             "</div><br clear='all'><br clear='all'>"+
                                             "<div id='makeupmsg"+i+"' class='uk-width-medium-1-1'></div>"+
@@ -2400,7 +2400,7 @@ $('#makeupsession').click(function(){
 				
 				</br class="all"/>
 				</br class="all"/>
-				<h4>Discouts Fields</h4>
+				<h4>Discounts Fields</h4>
                                 <br clear="all">
                                 <br clear="all">
                                 <br clear="all">
@@ -2903,6 +2903,7 @@ $('#makeupsession').click(function(){
                                                         <!-- for discount enrollment -->
                                                         <?php if(isset($discountEnrollmentData)){?>
                                                         @for($i = 0; $i < count($discountEnrollmentData); $i++)
+                                                        <?php if($discountEnrollmentData[$i]['number_of_classes']!=0){ ?>
                                                         <div class="uk-width-medium-1-4 ">
                                                             <input type="radio" name="enrollmentClassesSelect" value="{{$discountEnrollmentData[$i]['number_of_classes']}}" discountPercentage="{{$discountEnrollmentData[$i]['discount_percentage']}}" position="{{$i}}" class="radio-custom" id="radio_demo_inline{{$i}}"/><label for="radio_demo_inline{{$i}}" class="radio-custom-label" >{{$discountEnrollmentData[$i]['number_of_classes']}} </label>
                                                         </div>
@@ -2916,6 +2917,7 @@ $('#makeupsession').click(function(){
                                                         <div class="uk-width-medium-1-4">
                                                             
                                                         </div>
+                                                        <?php } ?>
                                                         @endfor
                                                         <?php } ?>
                                                         <div class="uk-width-medium-1-4 ">

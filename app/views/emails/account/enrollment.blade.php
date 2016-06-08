@@ -26,15 +26,14 @@ $class  = $orderDetailsTomail['class']; */
 		.table td {
  		  text-align: center;   
 		}
-                 tr td{
-		
-			border-bottom:1px #e5e5e5 dashed;
-                        
-			padding:10px;
-			height:30px;
-		
-		
+                tr td{
+                    padding:10px;
+                    height:30px;
+                   
 		}
+              pre {
+                white-space: pre-wrap;  
+              }
 	</style>
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 	
@@ -86,7 +85,7 @@ $class  = $orderDetailsTomail['class']; */
 					<br clear="all"/>
 					<h4>Payment details:</h4>
 					
-                                        <table class = "table" style=" border:1px #e5e5e5 dashed;" >
+                                        <table class = "table"  id="payment_details" border="1" cell-spacing="15px" cell-padding='15px'>
 						<thead >
 							<th>Season Name</th>
 							<th>Batch Name</th>
@@ -99,12 +98,12 @@ $class  = $orderDetailsTomail['class']; */
 						<tbody>
 							@for($i = 0; $i < count($paymentDueDetails); $i++)
 								<tr>
-									<td>{{$getSeasonName[$i][0]['season_name']}}</td>
-									<td>{{$getBatchNname[$i][0]['batch_name']}}</td>
-									<td>{{$selectedSessionsInEachBatch[$i]}}</td>
-									<td>{{$classStartDate[$i]}}</td>
-									<td>{{$classEndDate[$i]}}</td>
-									<td>{{$totalAmountForEachBach[$i]}}</td>
+                                                                    <td class="center-block">{{$getSeasonName[$i][0]['season_name']}}</td>
+                                                                    <td class="center-block">{{$getBatchNname[$i][0]['batch_name']}}</td>
+                                                                    <td class="center-block">{{$selectedSessionsInEachBatch[$i]}}</td>
+                                                                    <td class="center-block">{{$classStartDate[$i]}}</td>
+                                                                    <td class="center-block">{{$classEndDate[$i]}}</td>
+                                                                    <td class="center-block">{{$totalAmountForEachBach[$i]}}</td>
 								</tr>
 							@endfor
 						</tbody>
@@ -173,7 +172,7 @@ $class  = $orderDetailsTomail['class']; */
 							<td style="text-align:right"><strong>Subtotal</strong></td>
 							<td  style="text-align:right">
 								
-								<strong>{{number_format((float)($paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']-$paymentDueDetails[0]['discount_admin_amount']), 2, '.', '')}}</strong>
+								<strong>{{number_format((float)(((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']-$paymentDueDetails[0]['discount_admin_amount']), 2, '.', '')}}</strong>
 							</td>
 						</tr>
 						
@@ -181,7 +180,7 @@ $class  = $orderDetailsTomail['class']; */
 							<td style="text-align:right"><strong>Service Tax</strong></td>
 							<td  style="text-align:right">
 								
-								<strong>{{number_format((float)( ($paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * 14.5/100), 2, '.', '') }}</strong>
+								<strong>{{number_format((float)( (((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * 14.5/100), 2, '.', '') }}</strong>
 							</td>
 						</tr>
 						
@@ -237,7 +236,7 @@ $class  = $orderDetailsTomail['class']; */
 					<p>Welcome. Thanks for Joining The Little Gym.  Regards, Team TLG</p>
 					<hr/>
 					<p style = "font-weight: bold">Terms & Conditions:</p>
-					<li>{{ $getTermsAndConditions[0]['terms_conditions']}}</li>
+					<pre>{{ $getTermsAndConditions[0]['terms_conditions']}}</pre>
 
 					<br/>					
 				</div>

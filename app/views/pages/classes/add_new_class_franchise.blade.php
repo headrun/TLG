@@ -68,26 +68,24 @@
 
 
 
-function editBasePrice(B_price, B_price_no){
-	var B_Price = B_price;
-	var B_Price_No = B_price_no;
-	$('#EditBasePrice').val(B_Price);
-	$('#EditBasePriceNo').val(B_Price_No);
+function editBasePrice(B_price, B_price_no,class_id){
+        
+//	
+	$('#EditBasePrice').val(B_price_no);
+//	$('#EditBasePriceNo').val(B_Price_No);
+//        $('#class_id').val(class_id);
 
 	$('#editModal').modal('show');
-}
-
-
+        
+        
 $('#saveBtn').click(function(){
 
-		var BasePrice = $('#EditBasePrice').val();
-		var BasePriceNo = $('#EditBasePriceNo').val();
 		
-	if(BasePrice != '' && BasePriceNo != ''){
+	if(B_price != '' && B_price_no != ''){
 		$.ajax({
         	type: "POST",
         	url: "{{URL::to('/quick/updateClassesBasePrice')}}",
-        	data: {'BasePrice': BasePrice,'BasePriceNo': BasePriceNo},
+        	data: {'BasePriceNo': $('#EditBasePrice').val(),'class_id':class_id},
         	dataType:"json",
         	success: function (response)
         	{
@@ -101,11 +99,15 @@ $('#saveBtn').click(function(){
         			console.log(response);
         		}
         	}	
-    	});
+                });
 	}else{
 		$('#modalMsgDiv').html("<h5 class = 'uk-alert uk-alert-danger' style = 'color: #fff; width: 100%; padding: 8px; text-align: center'>Please fill all required fields and Update.</h5>");		
 	}	
 	});
+
+        
+}
+
 
 
 	$('#Courses').change(function(){
@@ -235,7 +237,7 @@ $('#saveBtn').click(function(){
                          		<td>{{$getAllClassesForFranchise[$i]['slug']}}</td>
                          		<td>{{$getAllClassesForFranchise[$i]['base_price']}}</td>
                          		<td>
-                         			<span class='btn btn-warning btn-xs' title='Modify' onclick = 'editBasePrice("{{$getAllClassesForFranchise[$i]['base_price']}}", "{{$getAllClassesForFranchise[$i]['base_price_no']}}")'><i class="Small material-icons" style="font-size:20px;">mode_edit</i></span>
+                         			<span class='btn btn-warning btn-xs' title='Modify' onclick = 'editBasePrice("{{$getAllClassesForFranchise[$i]['base_price']}}", "{{$getAllClassesForFranchise[$i]['base_price_no']}}","{{$getAllClassesForFranchise[$i]['id']}}")'><i class="Small material-icons" style="font-size:20px;">mode_edit</i></span>
                          		</td>
                          	</tr>
                          @endfor
@@ -264,11 +266,19 @@ $('#saveBtn').click(function(){
 				
 				<div class="uk-width-medium-1-3">
         			<div class="parsley-row form-group">
-        				<label_ for="title[]" style = "font-weight:bold;">Base Price<span class_="req">*</span></label>
-        					<input id="EditBasePrice" required class="form-control input-sm md-input" name="CourseName[]" type="text"/>
-        			</div>
+        				<label_ for="EditBasePrice" style = "font-weight:bold;">Base Price<span class_="req">*</span></label>
+                                <select name="EditBasePrice" id="EditBasePrice" class="input-sm md-input"
+                                                                 style='padding: 0px; font-weight: bold; color: #727272; width:100%'>
+                                                                                        <option></option>
+                                                                                        @for($i=0; $i < count($franchiseeBaseprice); $i++)
+                                                                                        <option value = "{{$franchiseeBaseprice[$i]['base_price_no']}}">{{$franchiseeBaseprice[$i]['base_price']}}</option>
+                                                                                        @endfor
+                                </select>
+                                </div>
     			</div>
     			<input type = "hidden" id = "EditBasePriceNo">
+                        <input type = "hidden" id = "class_id">
+                        
     		</div>
     	</div>
       <div class="modal-footer">

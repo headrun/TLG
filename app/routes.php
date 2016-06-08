@@ -118,7 +118,7 @@ Route::group(array('prefix'=>'reports'),function(){
 
 
 /*****************************************************  AJAX ROUTES ********************************************************/
-
+if(Auth::check()){
 Route::group(array('prefix' => 'quick'), function() {
     
         /**
@@ -256,6 +256,7 @@ Route::group(array('prefix' => 'quick'), function() {
 	 */
 	Route::any('/addTermsAndConditions','DashboardController@addTermsAndConditionscont');
 	Route::any('/updateSecondChild_ClassDisc','DiscountsController@updateSecondChild_ClassDisc');
+        Route::any('/insertSecondChild_ClassDisc','DiscountsController@insertSecondChild_ClassDisc');
 	Route::any('/deleteDiscounts','DiscountsController@deleteDiscounts');
 	Route::any('/updateDiscounts','DiscountsController@updateDiscounts');
 	Route::any('checkSlotAvailableForIntrovisit', "EventsController@checkSlotAvailableForIntrovisit");
@@ -377,11 +378,13 @@ Route::group(array('prefix' => 'quick'), function() {
 	Route::get('logout', "VaultController@logout");
         
 });
-
+}
 Route::any('/getfullfranchiseedata','FranchiseeAdministration@getFullFranchiseeData');
 
 
 Route::get('/test', function(){
+    echo Hash::make('Headrun@tlg123');
+    die();
     $id=69;
     $AttendanceYeardata=DB::select("SELECT DISTINCT(YEAR(enrollment_start_date)) as Y FROM student_classes ORDER BY Y");
     

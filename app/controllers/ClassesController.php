@@ -99,6 +99,7 @@ class ClassesController extends \BaseController {
 		$franchiseeCourses = Courses::where('franchisee_id', '=', Session::get('franchiseId'))->get();
 		$franchiseeBaseprice = ClassBasePrice::getBasePricebyFranchiseeId();
 		$getAllClassesForFranchise = Classes::getAllClassesForFranchise();
+                
 
 		for($i=0;$i<sizeof($getAllClassesForFranchise);$i++){
 			$courseMasterId = Courses::where('id','=',$getAllClassesForFranchise[$i]['course_id'])->get();
@@ -108,16 +109,20 @@ class ClassesController extends \BaseController {
 
 			$getAllClassesForFranchise[$i]['course_name']=$courseName['course_name'];
 
-			$getBasePrice = ClassBasePrice::where('base_price_no', '=', $getAllClassesForFranchise[$i]['base_price_no'])->get();
-			$getBasePrice = ClassBasePrice::where('base_price_no', '=', $getAllClassesForFranchise[$i]['base_price_no'])->get();
-                //$getBasePrice = $getBasePrice[0];
-                if($getAllClassesForFranchise[$i]['base_price_no'] == 0){
-                	$getAllClassesForFranchise[$i]['base_price'] = '';
+//			$getBasePrice = ClassBasePrice::where('base_price_no', '=', $getAllClassesForFranchise[$i]['base_price_no'])->get();
+//			$getBasePrice = ClassBasePrice::where('base_price_no', '=', $getAllClassesForFranchise[$i]['base_price_no'])->get();
+//                //$getBasePrice = $getBasePrice[0];
+//                if($getAllClassesForFranchise[$i]['base_price_no'] == 0){
+//                	$getAllClassesForFranchise[$i]['base_price'] = '';
+//                }
+//                else{
+//                	$getAllClassesForFranchise[$i]['base_price']=$getBasePrice[0]['base_price'];	
+//                }
+                  $temp=ClassBasePrice::where('base_price_no','=',$getAllClassesForFranchise[$i]['base_price_no'])->get();
+                  $getAllClassesForFranchise[$i]['base_price']=$temp[0]['base_price'];
+                    
+                        
                 }
-                else{
-                	$getAllClassesForFranchise[$i]['base_price']=$getBasePrice[0]['base_price'];	
-                }
-		}
 		
         //return $getAllClassesForFranchise;
 		return View::make('pages.classes.add_new_class_franchise', compact('currentPage','mainMenu', 'franchiseeCourses', 'franchiseeBaseprice', 'getAllClassesForFranchise'));
@@ -139,7 +144,9 @@ class ClassesController extends \BaseController {
 
 	public function updateClassesBasePrice(){
 		$inputs = Input::all();
-		$send_details = ClassBasePrice::updateClassesBasePrice($inputs);
+		$send_details = Classes::find($inputs['class_id']);
+                $send_details->base_price_no=$inputs['BasePriceNo'];
+                $send_details->save();
 		if($send_details){
 			return Response::json(array('status'=>'success', $send_details));
 		}else{

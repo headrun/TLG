@@ -36,10 +36,11 @@ class CustomerMembership extends \Eloquent {
 	}
 	
 	static function getCustomerMembership($customerId){
-		return CustomerMembership::with('MembershipTypes')->where("customer_id", "=", $customerId)
-									->where("status", "=", 'active')
-									->first();
-									//->where("status", "=", "active")->get();
+		return CustomerMembership::where("customer_id", "=", $customerId)
+					   ->whereDate('membership_start_date','<=',date("Y-m-d"))    
+                                           ->whereDate('membership_end_date','>=',date("Y-m-d"))
+                                           ->count();
+						
 	}
          static function getMembertodaysRegCount(){
             return CustomerMembership::join('customers', 'customer_membership.customer_id', '=', 'customers.id')

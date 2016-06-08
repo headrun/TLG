@@ -35,6 +35,9 @@ print_r($orders); */
 		
 		
 		}
+                pre {
+                    white-space: pre-wrap;  
+                }
                 @media print {
                     #Header, #Footer { display: none !important; }
                 }
@@ -217,7 +220,7 @@ print_r($orders); */
 							<td style="text-align:right"><strong>Subtotal</strong></td>
 							<td  style="text-align:right">
 								
-								<strong>{{number_format((float)($paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']-$paymentDueDetails[0]['discount_admin_amount']), 2, '.', '')}}</strong>
+								<strong>{{number_format((float)(((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']-$paymentDueDetails[0]['discount_admin_amount']), 2, '.', '')}}</strong>
 							</td>
 						</tr>
 						
@@ -225,7 +228,7 @@ print_r($orders); */
 							<td style="text-align:right"><strong>Service Tax</strong></td>
 							<td  style="text-align:right">
 								
-								<strong>{{number_format((float)( ($paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * 14.5/100), 2, '.', '') }}</strong>
+								<strong>{{number_format((float)( (((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * 14.5/100), 2, '.', '') }}</strong>
 							</td>
 						</tr>
 						
@@ -279,7 +282,7 @@ print_r($orders); */
 					<p>Welcome. Thanks for Joining The Little Gym.  Regards, Team TLG</p>
 					<hr/>
 					<p style = "font-weight: bold">Terms & Conditions:</p>
-					<li>{{ $getTermsAndConditions[0]['terms_conditions']}}</li>
+					<pre>{{ $getTermsAndConditions[0]['terms_conditions']}}</pre>
 					<br/>					
 				</div>
 			

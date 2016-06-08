@@ -24,14 +24,5 @@ class ClassBasePrice extends \Eloquent {
         return ClassBasePrice::where('franchise_id','=',Session::get('franchiseId'))->get();
     }
 
-    static function updateClassesBasePrice($data){
-        //return $data;
-        if($data['BasePriceNo'] == 0){
-            return true;
-        }else{
-            $update =  ClassBasePrice::where('base_price_no', '=', $data['BasePriceNo'])
-                           ->update(array('base_price'=> $data['BasePrice']));
-            return $update;
-        }
-    }
+
 }

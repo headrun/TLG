@@ -64,7 +64,7 @@ class StudentsController extends \BaseController {
 		
         }
 	public function addstudent(){
-		
+            if(Auth::check()){
 		$inputs = Input::all();
 		$addStudentResult = Students::addStudent($inputs);
 		
@@ -74,6 +74,9 @@ class StudentsController extends \BaseController {
 		}else{
 			return Response::json(array("status"=>"failed"));
 		}
+            }else{
+                return Response::json(array("status"=>"failed"));
+            }
 	}
 	
 	
@@ -124,7 +127,8 @@ class StudentsController extends \BaseController {
 			$studentEnrollments = StudentClasses::getStudentEnrollments($id);
 			$paymentDues = PaymentDues::getAllPaymentDuesByStudent($id);
 			$customermembership = CustomerMembership::getCustomerMembership($student['0']->customer_id);
-			$scheduledIntroVisits = IntroVisit::getIntrovisitByStudentId($id);
+                        
+                        $scheduledIntroVisits = IntroVisit::getIntrovisitByStudentId($id);
 			$discountEligibility  = StudentClasses::discount($id, $student['0']->customer_id);
 			
                         //for dues
