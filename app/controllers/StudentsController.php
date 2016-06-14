@@ -2074,9 +2074,13 @@ class StudentsController extends \BaseController {
 			foreach ($studentsByBatchId as $studentAttendance){
 				$attendanceArray[$i]['studentName'] = $studentAttendance->Students->student_name;
                                 $attendanceArray[$i]['student_classes_id']= $studentAttendance->id;
+                                $attendanceArray[$i]['introvisit_id']= $studentAttendance->introvisit_id;
                                 if($studentAttendance->status==='makeup'){
                                     $attendanceArray[$i]['studentName']=$attendanceArray[$i]['studentName'].' [Makeup]';
+                                }elseif($studentAttendance->status==='introvisit'){
+                                    $attendanceArray[$i]['studentName']=$attendanceArray[$i]['studentName'].' [Introvisit]';
                                 }
+                                    
 				$attendanceArray[$i]['studentId']   = $studentAttendance->Students->id;
 				$studentAttendanceRecord = Attendance::getDaysAttendanceForStudent($studentAttendance->Students->id, $batchId,  $selectedDate);
 				
@@ -2119,6 +2123,7 @@ class StudentsController extends \BaseController {
 				$attendanceData->attendance_date = $inputs['attendanceDate_'.$i];
 				$attendanceData->batch_id        = $inputs['batch_'.$i];
 				$attendanceData->student_id      = $inputs['student_'.$i];
+                                $attendanceData->introvisit_id   = $inputs['introvisit_id'.$i];
 				$attendanceData->status          = $inputs['attendance_for_user'.$i];
                                 $attendanceData->student_classes_id = $inputs['student_class_id'.$i];
                                 if($inputs['attendance_for_user'.$i]==='EA'){
@@ -2184,12 +2189,33 @@ class StudentsController extends \BaseController {
 		
 		$inputs = Input::all();
 		
+            if(
+                   StudentClasses::where('student_id','=',$inputs['studentIdIntroVisit'])
+                                   ->where('season_id','=',$inputs['seasonId'])
+                                   ->where('class_id','=',$inputs['mu_class_id'])
+                                   ->where('batch_id','=',$inputs['mu_batches_id'])
+                                   ->whereDate('enrollment_start_date','<=',date('Y-m-d',strtotime($inputs['introVisitTxtBox'])))
+                                   ->whereDate('enrollment_end_date','>=',date('Y-m-d',strtotime($inputs['introVisitTxtBox'])))
+                                   ->exists()
+               ){
+                      
+                      return Response::json(array('status'=>'exists'));
+                }else{
 		
 		
 		$result = IntroVisit::addSchedule($inputs);
+		$student_class_input['studentId']=$inputs['studentIdIntroVisit'];
+                $student_class_input['seasonId']=$inputs['seasonId'];
+                $student_class_input['introvisit_id']=$result->id;
+                $student_class_input['classId']=$inputs['eligibleClassesCbx'];
+                $student_class_input['enrollment_start_date']=date('Y-m-d',strtotime($inputs['introVisitTxtBox']));
+                $student_class_input['enrollment_end_date']=date('Y-m-d',strtotime($inputs['introVisitTxtBox']));
+                $student_class_input['selected_sessions']=1;
+                $student_class_input['status']='introvisit';
+                $student_class_input['batchId']=$inputs['introbatchCbx'];
+                $student_class_data=  StudentClasses::addStudentClass($student_class_input);
 		
-		
-		$commentsInput['customerId']     = $inputs['customerId'];
+                $commentsInput['customerId']     = $inputs['customerId'];
                 $commentsInput['student_id']     = $inputs['studentIdIntroVisit'];
                 $commentsInput['introvisit_id']  = $result->id;
 		$commentsInput['commentText']    = Config::get('constants.IV_SCHEDULED_COMMENT').'  '.$inputs['customerCommentTxtarea'];
@@ -2212,7 +2238,7 @@ class StudentsController extends \BaseController {
 		}
 		return Response::json(array("status"=>"failed"));
 		
-		
+            }
 	}
 	
 	public function editIntroVisit(){
@@ -2922,12 +2948,109 @@ class StudentsController extends \BaseController {
         }
         
         public function getExcusedabsentStudentsByBatchId(){
+            if(Auth::check()){
             $inputs=Input::all();
             $season_data= Seasons::where('franchisee_id','=',Session::get('franchiseId'))->Orderby('id','desc')->get();
             $classes_data= Classes::where('franchisee_id','=',Session::get('franchiseId'))->get();
             return Response::json(array('status'=>'success','data'=>Attendance::getEAbybatchandStudentId($inputs['batch_id'],$inputs['student_id']),
                                         'season_data'=>$season_data,'classes_data'=>$classes_data));
+            }
         }
+        
+        public function transferkid(){
+            if(Auth::check()){
+                $inputs=Input::all();
+                // getting the batch_data
+                $batch_data=BatchSchedule::where('season_id','=',$inputs['season_id'])
+                                            ->where('batch_id','=',$inputs['batch_id'])
+                                            ->where('schedule_date','>=',$inputs['start_date'])
+                                            ->where('franchisee_id','=',Session::get('franchiseId'))
+                                            ->where('holiday','!=',1)  
+                                            ->take($inputs['no_of_class'])
+                                            ->get();
+                if(
+                    StudentClasses::where('student_id','=',$inputs['student_id'])
+                                            ->where('batch_id','=',$inputs['batch_id']) 
+                                            ->where('enrollment_start_date','>=',$batch_data[0]['schedule_date'])
+                                            ->where('enrollment_end_date','<=',$batch_data[count($batch_data)-1]['schedule_date'])
+                                            ->exists()
+                   ){
+                    return Response::json(array('status'=>'exists'));
+                    
+                }
+                
+                //creating new class 
+                   $newClassInput['studentId']=$inputs['student_id'];
+                   $newClassInput['seasonId']=$inputs['season_id'];
+                   $newClassInput['classId']=$inputs['class_id'];
+                   $newClassInput['batchId']=$inputs['batch_id'];
+                   $newClassInput['enrollment_start_date']=$batch_data[0]['schedule_date'];
+                   $newClassInput['enrollment_end_date']=$batch_data[count($batch_data)-1]['schedule_date'];
+                   $newClassInput['selected_sessions']=count($batch_data);
+                   $newClassInput['status']='transferred_class';
+                   $newstudent_class=  StudentClasses::addStudentClass($newClassInput);
+                //updating changes to student_class table   
+                
+                //getting attendance data
+                $attendance_date=Attendance::where('batch_id','=',$inputs['oldbatch_id'])
+                                                ->where('student_id','=',$inputs['student_id'])
+                                                ->max('attendance_date');
+                $success=0;
+                if(($attendance_date!='') && ($attendance_date!=null) ){
+                   // getting the latet attendance
+                   $attendance_class_data=Attendance::where('batch_id','=',$inputs['oldbatch_id'])
+                                                ->where('student_id','=',$inputs['student_id'])
+                                                ->where('attendance_date','=',$attendance_date)
+                                                ->first();
+                   $student_future_class =StudentClasses::where('batch_id','=',$inputs['oldbatch_id'])
+                                                 ->where('student_id','=',$inputs['student_id'])
+                                                 ->where('enrollment_start_date','>',$attendance_date)
+                                                 ->where('enrollment_end_date','>',$attendance_date)
+                                                 ->whereIn('status',array('enrolled','transferred_class','makeup'))
+                                                 ->update(array('status'=>'transferred_to_other_class',
+                                                                'transferred_student_class_id'=>$newstudent_class->id));
+                   $student_active_class =StudentClasses::where('id','=',$attendance_class_data['student_classes_id'])
+                                                  ->whereIn('status',array('enrolled','transferred_class','makeup'))
+                                                  ->update(array('status'=>'transferred_to_other_class',
+                                                                'transferred_student_class_id'=>$newstudent_class->id));
+                   //updating enrollemnt_end_date to delete rest of the classes
+                   $student_class_detail=StudentClasses::find($attendance_class_data['student_classes_id']);
+                   $student_class_detail->expected_enrollment_end_date=$student_class_detail->enrollment_end_date;
+                   $student_class_detail->enrollment_end_date=$attendance_date;
+                   $student_class_detail->save();
+                   $success=1;
+                }else{
+                    // no attendance found update all rows of batch
+                    
+                $student_future_class=StudentClasses::where('batch_id','=',$inputs['oldbatch_id'])
+                                                ->where('student_id','=',$inputs['student_id'])
+                                                //->where('enrollment_start_date','>',$inputs['start_date'])
+                                                //->where('enrollment_end_date','>',$inputs['start_date'])
+                                                ->whereIn('status',array('enrolled','transferred_class','makeup'))
+                                                ->update(array('status'=>'transferred_to_other_class',
+                                                        'transferred_student_class_id'=>$newstudent_class->id));
+                $success=1;            
+                }
+                
+                if($success){
+                    //creating followup
+                    $followup_input['customerId']=$inputs['customer_id'];
+                    $followup_input['followupType']='ENROLLMENT';
+                    $followup_input['student_id']=$inputs['student_id'];
+                    $followup_input['commentStatus']='ACTIVE/SCHEDULED';
+                    $followup_input['commentText']=$inputs['description'];
+                    $followup_input['commentType']='VERYINTERESTED';
+                    $create_followup=  Comments::addComments($followup_input);
+                    
+                    
+                    
+                }
+                
+                return Response::json(array('status'=>'success','data'=>$inputs));
+            }
+            
+        }
+        
         
 	public function store()
 	{

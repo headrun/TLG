@@ -264,7 +264,7 @@ function getbatchesStudents(batchId, dateStartEvent){
 				    $.each(response.result, function (index, item) {
 					//attendanceString = '<tr><td><input type="hidden" value="'+dateStartEvent+'"  name="attendanceDate_'+i+'"/><input type="hidden" value="'+batchId+'"  name="batch_'+i+'"/><input type="hidden" value="'+item.studentId+'"  name="student_'+i+'"/>'+item.studentName+'</td><td class="form-group"><input id="attendance_for_userP'+i+'" name="attendance_for_user'+i+'" value="P" type="radio" class="radio-custom" required /><label for="attendance_for_userP'+i+'" class="radio-custom-label">P</label><input id="attendance_for_userA'+i+'" name="attendance_for_user'+i+'" value="A"  type="radio" class="radio-custom" /><label for="attendance_for_userA'+i+'" class="radio-custom-label">A</label><input id="attendance_for_userEA'+i+'" name="attendance_for_user'+i+'" value="EA"  type="radio" class="radio-custom" /><label for="attendance_for_userEA'+i+'" class="radio-custom-label">EA</label></td><td></td></tr>';
 				    		
-				    	attendanceString = '<tr><td><input type="hidden" value="'+dateStartEvent+'"  name="attendanceDate_'+i+'"/><input type="hidden" value="'+batchId+'"  name="batch_'+i+'"/><input type="hidden" id="student_class_id'+i+'" name="student_class_id'+i+'" value="'+item.student_classes_id+'"><input type="hidden" value="'+item.studentId+'"  name="student_'+i+'"/>'+item.studentName+'</td><td class="form-group"><input id="attendance_for_userP'+i+'" name="attendance_for_user'+i+'" data="eadisable"  data2='+i+' value="P" type="radio" class="radio-custom" required /><label for="attendance_for_userP'+i+'" class="radio-custom-label">P</label><input id="attendance_for_userA'+i+'" name="attendance_for_user'+i+'" value="A" data3="Aenable" data="eadisable" data2='+i+' type="radio" class="radio-custom" /><label for="attendance_for_userA'+i+'" class="radio-custom-label">A</label><input id="attendance_for_userEA'+i+'" name="attendance_for_user'+i+'" data="eaenable" data2='+i+' value="EA"  type="radio" class="radio-custom" /><label for="attendance_for_userEA'+i+'" class="radio-custom-label">EA</label></td></tr>';
+				    	attendanceString = '<tr><td><input type="hidden" value="'+dateStartEvent+'"  name="attendanceDate_'+i+'"/><input type="hidden" value="'+batchId+'"  name="batch_'+i+'"/><input type="hidden" id="student_class_id'+i+'" name="student_class_id'+i+'" value="'+item.student_classes_id+'"><input type="hidden" value="'+item.studentId+'"  name="student_'+i+'"/><input type="hidden" value="'+item.introvisit_id+'"  name="introvisit_id'+i+'"/>'+item.studentName+'</td><td class="form-group"><input id="attendance_for_userP'+i+'" name="attendance_for_user'+i+'" data="eadisable"  data2='+i+' value="P" type="radio" class="radio-custom" required /><label for="attendance_for_userP'+i+'" class="radio-custom-label">P</label><input id="attendance_for_userA'+i+'" name="attendance_for_user'+i+'" value="A" data3="Aenable" data="eadisable" data2='+i+' type="radio" class="radio-custom" /><label for="attendance_for_userA'+i+'" class="radio-custom-label">A</label><input id="attendance_for_userEA'+i+'" name="attendance_for_user'+i+'" data="eaenable" data2='+i+' value="EA"  type="radio" class="radio-custom" /><label for="attendance_for_userEA'+i+'" class="radio-custom-label">EA</label></td></tr>';
 				    	$("#attendanceTbody").append(attendanceString);
 				    	
 	                  	if(item.isAttendanceEntered == 'yes'){
@@ -285,11 +285,11 @@ function getbatchesStudents(batchId, dateStartEvent){
                                     //console.log($(this).parent());
                                 });
                                 
-//                                $('input[type="radio"][data="eadisable"]').change(function(){
-//                                    var i=$(this).attr('data2');
-//                                    $('#ea'+i).remove();
-//                                    $('#absent'+i).remove();
-//                                });
+                                $('input[type="radio"][data="eadisable"]').change(function(){
+                                    var i=$(this).attr('data2');
+                                    $('#ea'+i).remove();
+                                    $('#absent'+i).remove();
+                                });
                                 
                                 $('input[type="radio"][data3="Aenable"]').change(function(){
                                         var i=$(this).attr('data2');

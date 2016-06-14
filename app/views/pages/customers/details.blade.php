@@ -39,6 +39,9 @@
     #enrolledtable tr:hover{
         background-color: #e0e0e0 !important;
     }
+   
+    
+    
 </style>
 @stop
 
@@ -356,9 +359,12 @@ $("#saveCustomerBtn").click(function (e){
 			success: function(response){
                             console.log(response);
                             if(response.status=='success'){
-                              $('#messageEditCustomerDiv').html('<p class="uk-alert uk-alert-success">Sucessfully saved changes </p>')
+                              $('#messageEditCustomerDiv').html('<p class="uk-alert uk-alert-success">Sucessfully saved changes.please wait till the page reloads </p>');
+                              setTimeout(function(){
+					   window.location.reload(1);
+					}, 2000);
                             }else{
-                                 $('#messageEditCustomerDiv').html('<p class="uk-alert uk-alert-failure">Sucessfully saved changes </p>')
+                                 $('#messageEditCustomerDiv').html('<p class="uk-alert uk-alert-failure">cannot save changes.Try again after some time</p>');
                             }
                         }
              }); 
@@ -1728,7 +1734,7 @@ $('#addIntroVisitSubmit').click(function(){
 	        success: function (response)
 	        {
                         console.log(response);
-	        	if(response.status == "success"){
+	        	if(response.status === "success"){
 	            	
 					$("#Msg").html('<p class="uk-alert uk-alert-success">Introductory visit was added successfully. Please wait till this page reloads</p>');
 					setTimeout(function(){
@@ -1736,7 +1742,12 @@ $('#addIntroVisitSubmit').click(function(){
                                             window.location.href = path+'?tab=ivfollowup';
                                             window.location.reload(1);
 					}, 5000);
-	        	}else{
+	        	}else if(response.status === "exists"){
+                            $("#Msg").html('<p class="uk-alert uk-alert-danger">Class Already exists for the same date</p>');
+                            setTimeout(function(){
+                                $("#Msg").html('');
+                            },2000);
+                        }else{
 	            	
 					
 	        		$("#Msg").html('<p class="uk-alert uk-alert-danger">Sorry! Introductory visit could not be enrolled.</p>');
@@ -2356,15 +2367,7 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
                 	<h4>Customer Details</h4>
                     <div class="md-card">
                         <div class="user_heading">
-                            <div class="user_heading_menu" data-uk-dropdown>
-                                <i class="md-icon material-icons md-icon-light">&#xE5D4;</i>
-                                <div class="uk-dropdown uk-dropdown-flip uk-dropdown-small">
-                                    <ul class="uk-nav">
-                                        <li><a href="#">Action 1</a></li>
-                                        <li><a href="#">Action 2</a></li>
-                                    </ul>
-                                </div>
-                            </div>
+                            
                             <div class="user_heading_avatar">
                                 <?php if($customer->profile_image!=''){ ?>
                                 <img src="{{url()}}/upload/profile/customer/{{$customer->profile_image}}"/>
@@ -2387,9 +2390,11 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
                                 	</span>                      
                                	</h2>
                                 <ul class="user_stats">
+                                    <?php if(isset($customer->customer_email) && $customer->customer_email!=''){ ?>
                                     <li>
                                         <h4 class="heading_a">{{$customer->customer_email}} <span class="sub-heading">Email</span></h4>
                                     </li>
+                                    <?php } ?>
                                     <li>
                                         <h4 class="heading_a">{{$customer->mobile_no}} <span class="sub-heading">Mobile</span></h4>
                                     </li>
@@ -3794,8 +3799,8 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
 				            </div>
                                             <div class="uk-width-medium-1-2">
 				                 <div class="parsley-row">
-				                 	<label for="customerLastName">Customer Lastname<span class="req">*</span></label>
-				                 	{{Form::text('customerLastName', "$customer->customer_lastname",array('id'=>'customerLastName', 'required', 'class' => 'form-control input-sm md-input'))}}
+				                 	<label for="customerLastName">Customer Lastname</label>
+				                 	{{Form::text('customerLastName', "$customer->customer_lastname",array('id'=>'customerLastName',  'class' => 'form-control input-sm md-input'))}}
 				                 </div>
 				            </div>
                                         </div>
@@ -3803,8 +3808,8 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
 			             
 				            <div class="uk-width-medium-1-2">
 				                 <div class="parsley-row">
-				                 	<label for="customerEmail">Customer email<span class="req">*</span></label>
-				                 	{{Form::email('customerEmail', $customer->customer_email,array('id'=>'customerEmail', 'required', 'class' => 'form-control input-sm md-input'))}}
+				                 	<label for="customerEmail">Customer email</label>
+				                 	{{Form::email('customerEmail', $customer->customer_email,array('id'=>'customerEmail', 'class' => 'form-control input-sm md-input'))}}
 				                 </div>
 				            </div>
 				            <div class="uk-width-medium-1-2">
@@ -3890,7 +3895,7 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
 		      </div>
 		      <div class="modal-footer">
 		      	
-		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-default" id="editcustomermodalclose" data-dismiss="modal">Close</button>
 		      </div>
 		    </div>
 		

@@ -701,7 +701,7 @@ class BatchesController extends \BaseController {
             return Response::json(array('status'=>'success','class_count'=>$class_count));
         }
         
-        public static function getBatchDatesByBatchId(){
+        public  function getBatchDatesByBatchId(){
             if(Auth::check()){
                 $inputs=Input::all();
                 $data=BatchSchedule::getBatchDatesByBatchId($inputs);
@@ -710,6 +710,18 @@ class BatchesController extends \BaseController {
                 }else{
                 return Response::json(array('status'=>'failure'));
                 }
+            }
+        }
+        
+        public function getBatchRemainingClassesCountByBatchId(){
+           if(Auth::check()){
+                $inputs=Input::all();
+                //return  Response::json(array($inputs));
+                $class_data=BatchSchedule::where('batch_id','=',$inputs['batch_id'])
+                                           ->whereDate('schedule_date','>=',$inputs['start_date'])
+                                           ->where('holiday','<>','1')
+                                           ->count();
+                return Response::json(array('status'=>'success','class_count'=>$class_data));
             }
         }
         /**

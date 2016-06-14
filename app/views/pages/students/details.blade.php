@@ -49,6 +49,7 @@
 
 var studentName   = "{{$student->student_name}}";
 var studentId     = "{{$student->id}}";
+var customerId    = "{{$student->customer_id}}";
 var studentGender = "{{$student->student_gender}}";
 var studentAge    = "{{date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->y;}}";
 
@@ -370,14 +371,19 @@ function calculateFinalAmount(){
                                 <?php } ?>
                                 
                                 <?php if(!$customermembership){?>
-                                    var finalAmount = finalAmount+parseFloat($("#membershipAmount").val());
+                                     finalAmount = finalAmount+parseFloat($("#membershipAmount").val());
                                 <?php }?>
                                  Adminamountcal=finalAmount;
-                                 var adminamt=parseFloat($('#admin_discount_amount').val());
+                                 if(typeof $('#admin_discount_amount').val()!='undefined'){
+                                    var adminamt=parseFloat($('#admin_discount_amount').val());
+                                    $("#subtotal").val((Math.round((finalAmount-adminamt)*100)/100));
+                                    $('#subtotallabel').html((Math.round((finalAmount-adminamt)*100)/100));
+                                 }else{
+                                    $("#subtotal").val((Math.round((finalAmount)*100)/100));
+                                    $('#subtotallabel').html((Math.round((finalAmount)*100)/100));
+                                 }
                                  
-                        	$("#subtotal").val((Math.round((finalAmount-adminamt)*100)/100));
-                                $('#subtotallabel').html((Math.round((finalAmount-adminamt)*100)/100));
-                                var tax =(finalAmount*14.5/100);
+                        	var tax =(finalAmount*14.5/100);
                                 tax=Math.round(tax*100)/100;
                                 
                                 $("#taxAmount").val(tax);
@@ -1787,7 +1793,12 @@ $('#batchName').change(function(){
             }
 		});
 	}else{
-		$('#errorMsgDiv').html('<h5 class="uk-alert uk-alert-danger" data-uk-alert>Please select year and Batch Name<h5>')
+		$('#errorMsgDiv').html('<h5 class="uk-alert uk-alert-danger" data-uk-alert>Please select year and Batch Name<h5>');
+                setTimeout(function(){
+                                    $('#errorMsgDiv').slideUp();
+                                    $('#errorMsgDiv').html('');
+                                    $('#errorMsgDiv').show();
+                },4000);
 	}
 });
 
@@ -2266,6 +2277,299 @@ $('#makeupsession').click(function(){
     }
 });
 
+$('#Transfers').click(function(){
+$('#eaabsentbody').empty();
+$('#Transferbtn').remove();
+$('#eaabsentbody').append("<div class='makeupMsgDiv' id='makeupMsgDiv'></div>");
+$('#eafooter').prepend('<button type="submit" class="btn btn-primary" id="Transferbtn">Transfer</button>')
+$('#Transferbtn').hide();
+if($('#year').val()!='' && $('#batchName').val()!=''){
+  $.ajax({
+        type: "POST",
+	url: "{{URL::to('/quick/getTransferkiddata')}}",
+        data: {'student_id':studentId,'batch_id':$('#batchName').val()},
+        dataType: 'json',
+            success: function(response){
+              
+              if(response.status=='success'){
+                if(response.remainingclass_count>0){
+                    $('#eamodalheader').html('Transfer Kid');
+                    var data="<div class='uk-grid' data-uk-grid-margin id='transferbody'>"+
+                                "<div class='uk-width-medium-1-1'>"+
+                                   "<div class='parsley-row md-btn md-btn-primary' style='border-radius: 15px; font-size:12px;'>"+
+                                                  "Remaining Classes:"+response.remainingclass_count+
+                                   "</div>"+
+                                   "<input type='hidden' id='remainingclass' value='"+response.remainingclass_count+"' />"+
+                                   "<input type='hidden' id='availableclass' value='' />"+
+                                "</div>"+
+                             "</div>"+
+                             "<div class='uk-grid' data-uk-grid-margin>"+
+                                "<div class='uk-width-medium-1-2'>"+
+                                   "<input type='text' id='transfer_enrollment_start_date' placeholder='StartDate' required class='uk-form-width-medium'/>" +
+                                "</div>"+
+                                "<div class='uk-width-medium-1-2'>"+
+                                    "<div id='transfermsg'></div>"+
+                                "</div>"+
+                             "</div>"+
+                             "<div class='uk-grid' data-uk-grid-margin>"+
+                                 "<div class='uk-width-medium-1-3'>"+
+                                    "<label for='TransferSeasonsCbx'>Seasons<span class='req'>*</span></label>"+
+                                    "<select id='TransferSeasonsCbx' name='TransferSeasonsCbx' required class='TransferSeasonsCbx form-control input-sm md-input' style='padding: 0px; font-weight: bold; color: #727272;'>"+
+                                    "</select>"+
+                                 "</div>"+
+                                 "<div class='uk-width-medium-1-3'>"+
+                                    "<label for='TransferClassesCbx'>Classes<span class='req'>*</span></label>"+
+                                    "<select id='TransferClassesCbx' name='TransferClassesCbx' required class='TransferClassesCbx form-control input-sm md-input' style='padding: 0px; font-weight: bold; color: #727272;'>"+
+                                    "</select>"+
+                                 "</div>"+
+                                 "<div class='uk-width-medium-1-3'>"+
+                                    "<label for='TransferbatchCbx'>Batches<span class='req'>*</span></label>"+
+                                    "<select id='TransferbatchCbx' name='TransferbatchCbx' required class='TransferbatchCbx form-control input-sm md-input' style='padding: 0px; font-weight: bold; color: #727272;'>"+
+                                    "</select>"+
+                                 "</div>"+
+                             "</div>"+
+                             "<div class='uk-grid' data-uk-grid-margin>"+
+                                "<div class='uk-width-medium-1-2'>"+
+                                    "<label for='TransferDescription'>Description<span class='req'>*</span></label>"+
+                                       "<input type='text' id='TransferDescription'  required class='form-control input-sm md-input'/>" +
+                                "</div>"+
+                             "</div>";
+                    
+                    $('#eaabsentbody').append(data);
+                    season_data='';
+                    for(var i=0;i<response.season_data.length;i++){
+                        season_data+="<option value="+response.season_data[i]['id']+">"+response.season_data[i]['season_name']+"</option>";
+                    }
+                    $('#TransferSeasonsCbx').append(season_data);
+                    classes_data='<option></option>';
+                    for(var i=0;i<response.class_data.length;i++){
+                        classes_data+="<option value="+response.class_data[i]['id']+">"+response.class_data[i]['class_name']+"</option>";
+                    }
+                    $('#TransferClassesCbx').append(classes_data);
+                    
+                    $('#transfer_enrollment_start_date').kendoDatePicker({ format: "yyyy-MM-dd",});
+                    $('#ea').modal('show');
+                    
+                    $('#TransferSeasonsCbx').change(function(){
+                        $('#TransferClassesCbx').val('');
+                        $('#TransferbatchCbx').html('');
+                        $('#TransferbatchCbx').val('');
+                        $('#transfermsg').html('');
+                        
+                    });
+                    
+                    $('#TransferClassesCbx').change(function(){
+                       if($('#TransferSeasonsCbx').val()!='' && $('#TransferClassesCbx').val()!=''){
+                        $.ajax({
+                            type: "POST",
+                            url: "{{URL::to('/quick/batchesByClassSeasonId')}}",
+                            data: {'seasonId':$('#TransferSeasonsCbx').val(),'classId':$('#TransferClassesCbx').val()},
+                            dataType: 'json',
+                            success: function(response){
+                                if(response.length>0){
+                                    var batch_data='<option></option>';
+                                    for(var i=0; i<response.length;i++){
+                                        batch_data+="<option value='"+response[i]['id']+"'>"+response[i]['batch_name']+' '+response[i]['day']+' '+response[i]['start_time']+' '+response[i]['end_time']+response[i]['instructor']+"</option>";
+                                    }
+                                $('#TransferbatchCbx').html('');
+                                $('#TransferbatchCbx').append(batch_data);
+                                $('#transfermsg').html('');
+                                }else{
+                                    $('#TransferbatchCbx').html('');
+                                    $('#transfermsg').html('');
+                                    $('#makeupMsgDiv').hide();
+                                    $('#makeupMsgDiv').html("<p class='uk-alert uk-alert-danger'>No Batches Available</p>");
+                                    $('#TransferbatchCbx').val('');
+                                    $('#makeupMsgDiv').show('slow');
+                                    setTimeout(function(){
+                                        $('#makeupMsgDiv').slideUp();
+                                        $('#makeupMsgDiv').html(''); 
+                                        $('#makeupMsgDiv').show();
+                                    },3000);
+                                }
+                            }
+                       });
+                       }else{
+                       $('#makeupMsgDiv').hide();
+                       $('#makeupMsgDiv').html('please select the season and class');
+                       $('#makeupMsgDiv').show('slow');
+                       setTimeout(function(){
+                            $('#makeupMsgDiv').slideUp();
+                            $('#makeupMsgDiv').html(''); 
+                            $('#makeupMsgDiv').show();
+                       },3000);
+                       }
+                    });
+                    
+                    $('#TransferbatchCbx').change(function(){
+                      if($('#TransferSeasonsCbx').val()!='' && $('#TransferClassesCbx').val()!='' && $('#transfer_enrollment_start_date').val()!='' && $('#TransferbatchCbx').val()!=''){
+                        $.ajax({
+                            type: "POST",
+                            url: "{{URL::to('/quick/getBatchRemainingClassesCountByBatchId')}}",
+                            data: {'start_date':$('#transfer_enrollment_start_date').val(),'batch_id':$('#TransferbatchCbx').val()},
+                            dataType: 'json',
+                            success: function(response){
+                                console.log(response);
+                                if(response.status=='success'){
+                                    var remclass=$('#remainingclass').val();
+                                    if(response.class_count >= remclass){
+                                    $('#transfermsg').html("<p class='uk-alert uk-alert-success'>Remaining Classes selected:"+remclass+"</p>");
+                                    $('#availableclass').val(response.class_count);
+                                    }else{
+                                    $('#transfermsg').html("<p class='uk-alert uk-alert-danger'>No of classes Available:"+response.class_count+"</p>");
+                                    $('#availableclass').val(response.class_count);
+                                    }
+                                }else{
+                                    console.log('error');
+                                }
+                            }
+                        });
+                    }else{
+                        $('#makeupMsgDiv').hide();
+                        $('#transfermsg').html('');
+                        $('#makeupMsgDiv').html("<p class='uk-alert uk-alert-danger'>please select all the required fields</p>");
+                        $('#Transferbtn').hide();
+                        $('#makeupMsgDiv').show('slow');
+                        setTimeout(function(){
+                            $('#makeupMsgDiv').slideUp();
+                            $('#makeupMsgDiv').html(''); 
+                            $('#makeupMsgDiv').show();
+                        },3000);
+                    }
+                    if($('#TransferbatchCbx').val()==null){
+                        $('#Transferbtn').hide();
+                    }
+                    if( ($('#transfer_enrollment_start_date').val()!='') && 
+                        ($('#TransferSeasonsCbx').val()!='') && 
+                        ($('#TransferClassesCbx').val()!='')&& 
+                        ($('#TransferbatchCbx').val()!='') &&
+                        ($('#TransferDescription').val()!='')){
+                         $('#Transferbtn').show();
+                    }else{
+                        $('#Transferbtn').hide();
+                    }
+                    });
+                    
+                    $('#TransferDescription').keyup(function(){
+                     if($('#transfer_enrollment_start_date').val()!='' && 
+                        $('#TransferSeasonsCbx').val()!=null && 
+                        $('#TransferClassesCbx').val()!=null && 
+                        $('#TransferbatchCbx').val()!=null) {
+                         $('#Transferbtn').show();
+                     }else{
+                         $('#Transferbtn').hide();
+                        $('#makeupMsgDiv').hide();
+                        $('#makeupMsgDiv').html("<p class='uk-alert uk-alert-danger'>please select all the required fields</p>");
+                        $('#makeupMsgDiv').show('slow');
+                        setTimeout(function(){
+                            $('#makeupMsgDiv').slideUp();
+                            $('#makeupMsgDiv').html(''); 
+                            $('#makeupMsgDiv').show();
+                        },3000); 
+                     }
+                     if($('#TransferDescription').val()==''){
+                         $('#Transferbtn').hide();
+                     }
+                    });
+                    
+                    $('#transfer_enrollment_start_date').change(function(){
+                       $('#TransferbatchCbx').val('');
+                       $('#transfermsg').html('');
+                    });
+                    $('#transfer_enrollment_start_date').keyup(function(){
+                        if($('#transfer_enrollment_start_date').val()==''){
+                             $('#TransferbatchCbx').val('');
+                             $('#transfermsg').html('');
+                             $('#Transferbtn').hide();
+                        }
+                    })
+                    
+                }else{
+                    $('#errorMsgDiv').hide();
+                    $('#errorMsgDiv').html("<p class='uk-alert uk-alert-warning'> Selected batch have no classes left</p>");
+                    $('#errorMsgDiv').show('slow');
+                    setTimeout(function(){
+                     $('#errorMsgDiv').slideUp();
+                     $('#errorMsgDiv').html(''); 
+                     $('#errorMsgDiv').show();
+                    },4000);
+                }
+              }
+            }
+    });    
+    
+    
+    
+    $('#Transferbtn').click(function(){
+        if($('#transfer_enrollment_start_date').val()!='' && 
+           $('#TransferSeasonsCbx').val()!='' &&
+           $('#TransferClassesCbx').val()!='' &&     
+           $('#TransferbatchCbx').val()!=''
+           ){
+        console.log('working');
+            $.ajax({
+			type: "POST",
+			url: "{{URL::to('/quick/transferkid')}}",
+                        data: {'student_id':studentId,'oldbatch_id':$('#batchName').val(),
+                               'customer_id':customerId,'description':$('#TransferDescription').val(),
+                               'start_date':$('#transfer_enrollment_start_date').val(),
+                               'season_id':$('#TransferSeasonsCbx').val(),
+                               'class_id':$('#TransferClassesCbx').val(),
+                               'batch_id':$('#TransferbatchCbx').val(),
+                               'no_of_class':$('#remainingclass').val(),
+                              },
+			dataType: 'json',
+			success: function(response){
+                            console.log(response);
+                            if(response.status==='success'){
+                                $('#makeupMsgDiv').hide();
+                                $('#makeupMsgDiv').html("<p class='uk-alert uk-alert-success'>successfully transferred kid. please wait till page reloads</p>");
+                                $('#makeupMsgDiv').show('slow');
+                                setTimeout(function(){
+                                    window.location.reload(1);
+                                },3000);
+                            }else if(response.status==='exists'){
+                                $('#makeupMsgDiv').hide();
+                                $('#makeupMsgDiv').html("<p class='uk-alert uk-alert-danger'>kid enrollment already exist please select some other batch.</p>");
+                                $('#makeupMsgDiv').show('slow');
+                                setTimeout(function(){
+                                    $('#makeupMsgDiv').slideUp();
+                                    $('#makeupMsgDiv').html(''); 
+                                    $('#makeupMsgDiv').show();
+                                },3000);
+                            }else{
+                                $('#makeupMsgDiv').hide();
+                                $('#makeupMsgDiv').html("<p class='uk-alert uk-alert-danger'>kid transfer cannot complete this time.</p>");
+                                $('#makeupMsgDiv').show('slow');
+                            }
+                        }
+             });
+        }else{
+            $('#errorMsgDiv').hide();
+            $('#errorMsgDiv').html("<p class='uk-alert uk-alert-warning'>please select all the required fields.</p>");
+            $('#errorMsgDiv').show('slow');
+            setTimeout(function(){
+                $('#errorMsgDiv').slideUp();
+                $('#errorMsgDiv').html(''); 
+                $('#errorMsgDiv').show();
+            },4000);
+        }
+    });
+    
+  
+}else{
+    $('#errorMsgDiv').hide();
+        $('#errorMsgDiv').html("<p class='uk-alert uk-alert-warning'> please select the year and batch</p>");
+        $('#errorMsgDiv').show('slow');
+        setTimeout(function(){
+            $('#errorMsgDiv').slideUp();
+            $('#errorMsgDiv').html(''); 
+            $('#errorMsgDiv').show();
+        },4000);
+}
+});
+
+
 </script>
 @stop 
 @section('content')
@@ -2669,15 +2973,7 @@ $('#makeupsession').click(function(){
 	<div class="uk-width-large-10-10">
 		<div class="md-card">
 			<div class="user_heading">
-				<div class="user_heading_menu" data-uk-dropdown>
-					<i class="md-icon material-icons md-icon-light">&#xE5D4;</i>
-					<div class="uk-dropdown uk-dropdown-flip uk-dropdown-small">
-						<ul class="uk-nav">
-							<li><a href="#">Action 1</a></li>
-							<li><a href="#">Action 2</a></li>
-						</ul>
-					</div>
-				</div>
+				
 				<div class="user_heading_avatar">
                                     <?php if($student->profile_image!=''){ ?>
 					<img src="{{url()}}/upload/profile/student/{{$student->profile_image}}" />
@@ -2853,7 +3149,7 @@ $('#makeupsession').click(function(){
 										<div class="md-list-content">
 											{{Form::open(array('files'=> true,
 											'url'=>'students/profile/picture'))}} <span
-												class="md-list-heading">{{Form::file('profileImage')}}</span>
+												class="md-list-heading">{{Form::file('profileImage',array('required', 'class'=>'form-control'))}}</span>
 											<span class="uk-text-small uk-text-muted">Change Profile
 												Picture</span> <input name="studentId"
 												value="{{$student->id}}" type="hidden" /> <input
@@ -2930,6 +3226,7 @@ $('#makeupsession').click(function(){
                                                         <?php } ?>
                                                         @endfor
                                                         <?php } ?>
+                                                        <?php  if(Session::get('userType') == 'ADMIN') { ?>
                                                         <div class="uk-width-medium-1-4 ">
                                                             <input type="radio" name="enrollmentClassesSelect" value="custom" class="radio-custom" id="radio_demo_inline_custom"/><label for="radio_demo_inline_custom" class="radio-custom-label" >Custom Class No</label>
                                                             <br>
@@ -2945,6 +3242,11 @@ $('#makeupsession').click(function(){
                                                                     <input type='number' name='customEnrollmemt' id='customEnrollmemtDiscount' class='form-control input-sm md-input text-center' style='padding:0px;margin-top:10px;' value='0' />
                                                             -->
                                                         </div>
+                                                 <?php }else{ ?>
+                                                        <div class="uk-width-medium-1-4 "></div>
+                                                        <div class="uk-width-medium-1-4 "></div>
+                                                        <div class="uk-width-medium-1-4 "></div>
+                                                 <?php } ?>
                                                         
                                                         <div class="uk-width-medium-1-4 text-center">
                                                         
@@ -2958,7 +3260,7 @@ $('#makeupsession').click(function(){
                                                 </a>
 						<?php }?>
                                                 </div>
-                                                        
+                                                       
                                             </div>
                                                 
                                                 <hr>

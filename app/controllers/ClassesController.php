@@ -19,7 +19,8 @@ class ClassesController extends \BaseController {
 			return Response::json(array('status'=> 'failure', $send_details));
 		}
 	}
-
+        
+        
 
 	public function InsertNewClassFromFranchise(){
 		$inputs = Input::all();
@@ -522,6 +523,35 @@ class ClassesController extends \BaseController {
                }
            }
        }
+       
+       
+       
+       public function getTransferkiddatabyBatchId(){
+            $inputs = Input::all();
+            $student_class_data['student_class_data']=StudentClasses::where('student_id','=',$inputs['student_id'])
+                                                                     ->where('batch_id','=',$inputs['batch_id'])
+                                                                     ->whereIn('status',array('enrolled','transferred_class'))
+                                                                     ->get();
+            $count=0;
+            for($i=0;$i<count($student_class_data['student_class_data']);$i++){
+                $student_class_data['student_class_data'][$i]['attendance_count']=Attendance::where('batch_id','=',$inputs['batch_id'])
+                                                               ->where('student_id','=',$inputs['student_id'])
+                                                               ->whereIn('status',array('P','A','EA'))
+                                                               ->whereDate('attendance_date','>=',$student_class_data['student_class_data'][$i]['enrollment_start_date'])
+                                                               ->whereDate('attendance_date','<=',$student_class_data['student_class_data'][$i]['enrollment_end_date'])
+                                                               ->count();
+                if($student_class_data['student_class_data'][$i]['attendance_count']!=$student_class_data['student_class_data'][$i]['selected_sessions']){
+                    $student_class_data['student_class_data'][$i]['attendance_incomplete_count']=$student_class_data['student_class_data'][$i]['selected_sessions']-$student_class_data['student_class_data'][$i]['attendance_count'];
+                    $count+=$student_class_data['student_class_data'][$i]['attendance_incomplete_count'];
+                }
+            }
+            $season_data=Seasons::where('franchisee_id','=',Session::get ( 'franchiseId' ))
+                                  ->whereNotIn('season_type', ['Summer Season'])
+                                  ->orderBy('id', 'DESC')
+                                  ->get();
+            $classData = Classes::where('franchisee_id', '=', Session::get('franchiseId'))->get();
+            return Response::json(array('status'=>'success','remainingclass_count'=>$count,'season_data'=>$season_data,'class_data'=>$classData));
+        }
 
 	/**
 	 * Show the form for creating a new resource.

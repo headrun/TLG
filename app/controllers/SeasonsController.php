@@ -137,7 +137,7 @@ class SeasonsController extends \BaseController {
         }
                 public function getSeasonsForEnrollment(){
             $season_data=Seasons::where('franchisee_id','=',Session::get ( 'franchiseId' ))
-                                  ->whereNotIn('season_type', ['Summer Season','Winter Season'])
+                                  ->whereNotIn('season_type', ['Summer Season'])
                                   ->orderBy('id', 'DESC')
                                   ->get();
             $classData = Classes::where('franchisee_id', '=', Session::get('franchiseId'))->get();

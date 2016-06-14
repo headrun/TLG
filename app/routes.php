@@ -208,7 +208,7 @@ Route::group(array('prefix' => 'quick'), function() {
 	Route::any('createorder',"StudentsController@createPendingorder");
 	Route::any('creatependingorder',"StudentsController@createPendingOrderForEnrollment");
 	Route::any('getStudentsByCustomerid','StudentsController@getStudentsByCustomerid');
-        
+        Route::any('transferkid','StudentsController@transferkid');
 	/**
 	 *  --------------------------------------------------------------------------------------------------------------------------------------
 	 * Estimate related Ajax calls
@@ -229,6 +229,7 @@ Route::group(array('prefix' => 'quick'), function() {
 	Route::any('getBatcheSchedules', "BatchesController@getBatchesSchedules");	
         Route::any('getBatchData','BatchesController@getBatchData');
         Route::any('getBatchRemainingClassesByBatchId','BatchesController@getBatchRemainingClassesByBatchId');
+        Route::any('getBatchRemainingClassesCountByBatchId','BatchesController@getBatchRemainingClassesCountByBatchId');
         Route::any('/checkbatchesslot','BatchesController@checkBatchExistBySeasonIdLocationId');
         Route::any('getBatchDetailsById','BatchesController@getBatchDetailsById');
         Route::any('editbatchByBatchId','BatchesController@editbatchByBatchId');
@@ -254,6 +255,7 @@ Route::group(array('prefix' => 'quick'), function() {
 	 * Other Ajax Calls
 	 *  -------------------------------------------------------------------
 	 */
+        
 	Route::any('/addTermsAndConditions','DashboardController@addTermsAndConditionscont');
 	Route::any('/updateSecondChild_ClassDisc','DiscountsController@updateSecondChild_ClassDisc');
         Route::any('/insertSecondChild_ClassDisc','DiscountsController@insertSecondChild_ClassDisc');
@@ -292,7 +294,8 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('/getExcusedabsentStudentsByBatchId','StudentsController@getExcusedabsentStudentsByBatchId');
         Route::any('createMakeupClass','ClassesController@createMakeupClass');
         Route::any('getMakeupdataByBatchId','ClassesController@getMakeupdatabyBatchId');
-    Route::any('BdayPartiesFiltering','DashboardController@BdayPartiesFiltering');
+        Route::any('getTransferkiddata','ClassesController@getTransferkiddatabyBatchId');
+        Route::any('BdayPartiesFiltering','DashboardController@BdayPartiesFiltering');
 
         
 	Route::any('saveSchedule', function(){
@@ -383,6 +386,12 @@ Route::any('/getfullfranchiseedata','FranchiseeAdministration@getFullFranchiseeD
 
 
 Route::get('/test', function(){
+    return StudentClasses::where('student_id','=','153')
+                                                ->where('status','=','enrolled')
+                                                 ->join('batches','student_classes.batch_id','=','batches.id')->get();
+    
+    
+    die();
     echo Hash::make('Headrun@tlg123');
     die();
     $id=69;

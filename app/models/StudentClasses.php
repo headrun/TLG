@@ -108,6 +108,9 @@ class StudentClasses extends \Eloquent {
 		$StudentClasses->enrollment_start_date  = $input['enrollment_start_date'];
 		$StudentClasses->enrollment_end_date  = $input['enrollment_end_date'];		
 		$StudentClasses->selected_sessions  = $input['selected_sessions'];
+                if(isset($input['introvisit_id'])){
+                    $StudentClasses->introvisit_id=$input['introvisit_id'];
+                }
                 if(isset($input['attendance_id'])){
                     $StudentClasses->attendance_id=$input['attendance_id'];
                 }
@@ -184,7 +187,7 @@ class StudentClasses extends \Eloquent {
 		$selectedDate = date('Y-m-d', strtotime($selectedDate));
 		$studentByBatchId  =   StudentClasses::with('Students')
 								->where('batch_id', '=', $batchId)
-                                                                ->whereIn('status',array('enrolled','makeup'))
+                                                                ->whereIn('status',array('enrolled','makeup','introvisit','transferred_class'))
 								->whereDate('enrollment_start_date', '<=', $selectedDate)
 								->whereDate('enrollment_end_date', '>=', $selectedDate)
 								->get();
@@ -246,6 +249,7 @@ class StudentClasses extends \Eloquent {
         static function getAllClassCountByBatchId($inputs){
             return StudentClasses::where('batch_id','=',$inputs['batchId'])
                           ->where('student_id','=',$inputs['studentId'])
+                          ->whereIn('status', array('enrolled','transferred_class'))
                           ->sum('selected_sessions');
             
         }

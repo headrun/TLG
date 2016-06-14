@@ -12,9 +12,7 @@ class BatchSchedule extends \Eloquent {
 		return $this->belongsTo('Students','student_id');
 	}
 	
-	
-	
-	public function Batches(){
+        public function Batches(){
 		return $this->belongsTo('Batches','batch_id');
 	}
 	
