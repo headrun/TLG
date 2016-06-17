@@ -383,7 +383,7 @@ function calculateFinalAmount(){
                                     $('#subtotallabel').html((Math.round((finalAmount)*100)/100));
                                  }
                                  
-                        	var tax =(finalAmount*14.5/100);
+                        	var tax =(finalAmount*15/100);
                                 tax=Math.round(tax*100)/100;
                                 
                                 $("#taxAmount").val(tax);
@@ -406,7 +406,7 @@ function calculateFinalAmount(){
                                     
                                     $("#subtotal").val(subtotal-adminamt);
                                     $('#subtotallabel').html(subtotal-adminamt);
-                                    var tax =((subtotal-adminamt)*14.5/100);
+                                    var tax =((subtotal-adminamt)*15/100);
                                     tax=Math.round(tax*100)/100;
                                     
                                     $("#taxAmount").val(tax);
@@ -424,7 +424,7 @@ function calculateFinalAmount(){
                                     
                                     $("#subtotal").val(subtotal-adminamt);
                                     $('#subtotallabel').html(subtotal-adminamt);
-                                    var tax =((subtotal-adminamt)*14.5/100);
+                                    var tax =((subtotal-adminamt)*15/100);
                                     tax=Math.round(tax*100)/100;
                                     
                                     $("#taxAmount").val(tax);
