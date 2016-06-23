@@ -66,7 +66,7 @@
     					'</div>'+
     					'<div class="uk-width-medium-1-3">'+
         					'<div class="parsley-row form-group">'+
-        						'<label for="title[]">Number of Classes<span class="req">*</span></label>'+
+        						'<label for="title[]">Discount Percentage<span class="req">*</span></label>'+
         						'<input id="DiscountPrcnt[]" required class="form-control input-sm md-input" name="DiscountPrcnt[]" type="text"/>'+
         					'</div>'+
     					'</div>'+

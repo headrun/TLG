@@ -231,10 +231,10 @@ class StudentsController extends \BaseController {
                         }
                         
                         $AttendanceYeardata=DB::select("SELECT EXTRACT(year from enrollment_start_date) as year FROM student_classes WHERE student_id = $id GROUP BY year");   
-                        
+                        $taxPercentage=  PaymentTax::getTaxPercentageForPayment();
                          //return $student[0]['id'];
 			$dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 
-                                                                'discountEnrollmentData','latestEnrolledData',
+                                                                'discountEnrollmentData','latestEnrolledData','taxPercentage',
                                                                 'discount_second_class_elligible','discount_second_child_elligible','discount_second_child','discount_second_class',
 								'studentEnrollments','customermembership','paymentDues',
 								'scheduledIntroVisits', 'introvisit', 'discountEligibility','paidAmountdata','order_due_data',
@@ -1928,7 +1928,10 @@ class StudentsController extends \BaseController {
 	public function addbirthdayParty(){
 		
 		$inputs = Input::all();
-                $taxAmtapplied=$inputs['taxAmount'];
+               
+                if($inputs['remainingAmount'] >=0){
+                
+                    $taxAmtapplied=$inputs['taxAmount'];
                 if($inputs['membershipType'] != "" && $inputs['membershipPriceBday'] !=0 ){
 			$membershipInput['customer_id']        = $inputs['customerId'];
 			$membershipInput['membership_type_id'] = $inputs['membershipType'];
@@ -1938,25 +1941,26 @@ class StudentsController extends \BaseController {
                         }
 		}
                 $addBirthday =  BirthdayParties::addbirthdayParty($inputs);
-                
-                if($inputs['remainingAmount']!=0){
-                    
                     if(isset($customerMembershipData)){
                     $addBirthday['membership_id']=$customerMembershipData->id;
                     $membership_data=  MembershipTypes::find($customerMembershipData->membership_type_id);
                     $addBirthday['membership_amount']=$membership_data->fee_amount;
-                    
-                    
                     }
+                $addBirthday['taxpercent']=$inputs['taxPercentage'];  
+                if($inputs['remainingAmount']!='0'){
+                    $addBirthday['payment_type']="bipay";
+                }else{
+                    $addBirthday['payment_type']="singlepay";
+                }
                 $firstpayment=PaymentDues::createBirthdaypaymentFirstdues($addBirthday);
+                if($inputs['remainingAmount']!='0'){
                 $addPaymentDues= PaymentDues::createBirthdaypaymentdues($addBirthday);
                 }
-                if(isset($addPaymentDues)){
                 $addBirthdayOrder = Orders::createBOrder($addBirthday,$firstpayment,$taxAmtapplied,$inputs);
-                }else{
-                    $addBirthdayOrder = Orders::createBOrderwithoutPaymentDue($addBirthday,$addPaymentDues,$taxAmtapplied);
+                
                 }
-                $addPaymentremainder= PaymentReminders::addReminderDates($addBirthday);
+                
+                //$addPaymentremainder= PaymentReminders::addReminderDates($addBirthday);
                 
                 $input['customerId']=$addBirthday->customer_id;
                 $input['birthday_id']=$addBirthday->id;

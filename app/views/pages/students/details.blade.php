@@ -55,6 +55,7 @@ var studentAge    = "{{date_diff(date_create(date('Y-m-d',strtotime($student->st
 
 var ageYear  = '<?php echo date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->y;?>';
 var ageMonth = '<?php echo date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->m;?>';
+var tax_Percentage= "{{$taxPercentage->tax_percentage}}";
 //getEligibleClasses()
 var selectedNoOfClass=0;
 var DiscountPercentage=0;
@@ -383,7 +384,7 @@ function calculateFinalAmount(){
                                     $('#subtotallabel').html((Math.round((finalAmount)*100)/100));
                                  }
                                  
-                        	var tax =(finalAmount*15/100);
+                        	var tax =(finalAmount*tax_Percentage/100);
                                 tax=Math.round(tax*100)/100;
                                 
                                 $("#taxAmount").val(tax);
@@ -406,7 +407,7 @@ function calculateFinalAmount(){
                                     
                                     $("#subtotal").val(subtotal-adminamt);
                                     $('#subtotallabel').html(subtotal-adminamt);
-                                    var tax =((subtotal-adminamt)*15/100);
+                                    var tax =((subtotal-adminamt)*tax_Percentage/100);
                                     tax=Math.round(tax*100)/100;
                                     
                                     $("#taxAmount").val(tax);
@@ -424,7 +425,7 @@ function calculateFinalAmount(){
                                     
                                     $("#subtotal").val(subtotal-adminamt);
                                     $('#subtotallabel').html(subtotal-adminamt);
-                                    var tax =((subtotal-adminamt)*15/100);
+                                    var tax =((subtotal-adminamt)*tax_Percentage/100);
                                     tax=Math.round(tax*100)/100;
                                     
                                     $("#taxAmount").val(tax);
@@ -577,7 +578,7 @@ function calculateSubTotalForOld() {
 
 function calculateGrandTotalForOld() {
       
-   var TaxForOld = parseInt(Math.round($("#SubTotalForOld").val() * 14.5) / 100);
+   var TaxForOld = parseInt(Math.round($("#SubTotalForOld").val() * tax_Percentage) / 100);
    $("#TaxForOld").val(TaxForOld);
    
    var GrandTotalForOld = parseInt($("#SubTotalForOld").val()) + 
@@ -2895,10 +2896,13 @@ if($('#year').val()!='' && $('#batchName').val()!=''){
 						</div>
 						<div class="uk-width-medium-1-2">
 							<div class="parsley-row">
-								<label for="card4digits3" class="inline-label">Last 4 digits
-									of your card<span class="req">*</span>
-								</label> <input id="card4digits3" number name="card4digits3"
-									maxlength="4" type="text"
+                                                                <label for="cardBankName3" class="inline-label">Bank Name of your card<span class="req">*</span>
+								</label> <input id="cardBankName3" number name="cardBankName3"
+									type="text"
+									class="form-control input-sm md-input" />
+                                                                
+								<input id="card4digits3" number name="card4digits3"
+                                                                       maxlength="4" type="hidden"  value="1234"
 									class="form-control input-sm md-input" />
 							</div>
 						</div>
@@ -2907,18 +2911,14 @@ if($('#year').val()!='' && $('#batchName').val()!=''){
                                                 <br clear="all">			
 						<div class="uk-width-medium-1-2">
 							<div class="parsley-row">
-								<label for="cardBankName3" class="inline-label">Bank Name of your card<span class="req">*</span>
-								</label> <input id="cardBankName3" number name="cardBankName3"
-									type="text"
-									class="form-control input-sm md-input" />
+								
 							</div>
 						</div>
 									
 						<div class="uk-width-medium-1-2">
 							<div class="parsley-row">
-								<label for="cardRecieptNumber3" class="inline-label">Reciept number<span class="req">*</span>
-								</label> <input id="cardRecieptNumber3" number name="cardRecieptNumber3"
-									maxlength="4" type="text" 
+								<input id="cardRecieptNumber3" number name="cardRecieptNumber3"
+									maxlength="4" type="hidden" value='1234' 
 									class="form-control input-sm md-input" />
 							</div>
 						</div>
@@ -3973,10 +3973,10 @@ if($('#year').val()!='' && $('#batchName').val()!=''){
 									</div>
 									<div class="uk-width-medium-1-2">
 										<div class="parsley-row">
-											<label for="card4digits" class="inline-label">Last 4 digits
-												of your card<span class="req">*</span>
-											</label> <input id="card4digits" number name="card4digits"
-												maxlength="4" type="text"
+                                                                                    
+											<label for="cardBankName" class="inline-label">Bank Name of your card<span class="req">*</span>
+											</label> <input id="cardBankName" number name="cardBankName"
+												 type="text"
 												class="form-control input-sm md-input" />
 										</div>
 									</div>
@@ -3986,18 +3986,20 @@ if($('#year').val()!='' && $('#batchName').val()!=''){
                                                                         
 									<div class="uk-width-medium-1-2">
 										<div class="parsley-row">
-											<label for="cardBankName" class="inline-label">Bank Name of your card<span class="req">*</span>
-											</label> <input id="cardBankName" number name="cardBankName"
-												 type="text"
+                                                                                        <label for="card4digits" class="inline-label" style="display:none">Last 4 digits
+												of your card<span class="req">*</span>
+											</label> <input id="card4digits" number name="card4digits"
+                                                                                               maxlength="4" type="hidden" value="1234"
 												class="form-control input-sm md-input" />
+                                                                                        
 										</div>
 									</div>
 									
 									<div class="uk-width-medium-1-2">
 										<div class="parsley-row">
-											<label for="cardRecieptNumber" class="inline-label">Reciept number<span class="req">*</span>
+											<label for="cardRecieptNumber" class="inline-label" style="display:none">Reciept number<span class="req">*</span>
 											</label> <input id="cardRecieptNumber" number name="cardRecieptNumber"
-												maxlength="4" type="text" 
+												maxlength="4" type="hidden"  value="1234" 
 												class="form-control input-sm md-input" />
 										</div>
 									</div>

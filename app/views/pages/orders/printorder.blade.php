@@ -263,10 +263,8 @@ print_r($orders); */
 					  <div class="col-md-3 title">Payment type details</div>
 					  <div class="col-md-4">
 					  	<span style="font-weight: bold">Bank Name: </span><span>{{$paymentMode[0]['bank_name']}}</span><br>
-					  	<spanstyle="font-weight: bold">Card Type: </span><span>{{$paymentMode[0]['card_type']}}</span><br>
-					  	<span style="font-weight: bold">Card Last Digits: </span><span>{{$paymentMode[0]['card_last_digit']}}</span><br>
-					  	<span style="font-weight: bold">Reciept Number: </span><span>{{$paymentMode[0]['receipt_number']}}</span><br>
-					  </div>
+					  	<span style="font-weight: bold">Card Type: </span><span>{{$paymentMode[0]['card_type']}}</span><br>
+                                          </div>
 					</div>
 					@elseif($paymentMode[0]['payment_mode'] == 'cheque')
 					 <div class="row datarow">

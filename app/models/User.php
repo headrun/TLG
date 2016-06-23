@@ -54,7 +54,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	static function getInstructors(){
 		
 		return User::select('id', DB::raw('CONCAT(first_name, " ", last_name) AS full_name'))
-					->where("user_type", "=", "TEACHER")
+					->where("user_type", "=", "INSTRUCTOR")
 					->where("franchisee_id", "=", Session::get('franchiseId') )
 					->lists("full_name", 'id');
 	}

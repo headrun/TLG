@@ -360,6 +360,7 @@ class CustomersController extends \BaseController {
                            $membership_followup_data[$i]['membership_end_date']=$Customer_membership_data->membership_end_date;
                         }
                         }
+                        $taxPercentage=  PaymentTax::getTaxPercentageForPayment();
                         
 			$viewData = array (
                                         'birthdaypaiddata',
@@ -383,7 +384,7 @@ class CustomersController extends \BaseController {
                                         'enrollmentFollowupData',
                                         'customer_student_data',
                                         'membership_followup_data',
-                                        
+                                        'taxPercentage',
 			);
 			return View::make ( 'pages.customers.details', compact ( $viewData ) );
 		}else{

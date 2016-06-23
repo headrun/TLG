@@ -53,7 +53,7 @@ class Orders extends \Eloquent {
                 }else if($input['payment_mode']=='card'){
                     $order->payment_mode    = $input['payment_mode'];
                     if(isset($input['card_last_digit'])){
-                    $order->card_last_digit = $input['card_last_digit'];
+                    //$order->card_last_digit = $input['card_last_digit'];
                     }
                     if($input['card_type']){
                     $order->card_type       = $input['card_type'];
@@ -63,7 +63,7 @@ class Orders extends \Eloquent {
                     $order->bank_name       = $input['bank_name'];
                     }
                     if(isset($input['receipt_number'])){
-                    $order->receipt_number  =$input['receipt_number'];
+                    //$order->receipt_number  =$input['receipt_number'];
                     }
                 }else if($input['payment_mode']=='cash'){ //for cash
                     $order->payment_mode    = $input['payment_mode'];
@@ -117,13 +117,13 @@ class Orders extends \Eloquent {
                          $order->card_type=$inputs['birthdayCardType'];
                         }
                         if(isset($inputs['birthdayCard4digits'])){
-                         $order->card_last_digit=$inputs['birthdayCard4digits'];
+                         //$order->card_last_digit=$inputs['birthdayCard4digits'];
                         }
                         if(isset($inputs['birthdayCardBankName'])){
                          $order->bank_name=$inputs['birthdayCardBankName'];
                         }
                         if(isset($inputs['birthdayCardRecieptNumber'])){
-                            $order->receipt_number=$inputs['birthdayCardRecieptNumber'];
+                           // $order->receipt_number=$inputs['birthdayCardRecieptNumber'];
                         }
                     }
                     if($inputs['birthdayPaymentTypeRadio']=='cash'){
@@ -135,6 +135,9 @@ class Orders extends \Eloquent {
                 }
 		// $order->payment_mode = 'cash';
 		$order->amount = $addbirthday ['advance_amount_paid'];
+                if(isset($inputs['taxPercentage'])){
+                    $order->tax_percentage= $inputs['taxPercentage'];
+                }
                 $order->tax_amount=$taxAmtapplied;
 		// $order->status = 'completed';
 		$order->created_by = Session::get ( 'userId' );

@@ -113,8 +113,10 @@ class PaymentDues extends \Eloquent {
                 if(isset($addBirthday['membership_amount'])){
                     $paymentDues->membership_amount=$addBirthday['membership_amount'];
                 }
-                
-		$paymentDues->payment_type         = 'bipay';
+                if(isset($addBirthday['taxpercent'])){
+                    $paymentDues->tax_percentage=$addBirthday['taxpercent'];
+                }
+                $paymentDues->payment_type = $addBirthday['payment_type'];
                 $paymentDues->payment_status       = 'paid';
 		//$paymentDues->discount_applied     = $taxAmtapplied;
                 $paymentDues->payment_due_for       ="birthday";
@@ -136,8 +138,16 @@ class PaymentDues extends \Eloquent {
                //     $paymentDues->membership_amount=$addBirthday['membership_amount'];
                 }
 		$paymentDues->payment_due_amount   = $addBirthday['remaining_due_amount'];
-		$paymentDues->payment_type         = 'bipay';
-                $paymentDues->payment_status       = 'pending';
+                if($addBirthday['remaining_due_amount']!='0'){
+                    $paymentDues->payment_type         = 'bipay';
+                    $paymentDues->payment_status       = 'pending';
+                }else{
+                    $paymentDues->payment_type         = 'singlepay';
+                    $paymentDues->payment_status       = 'paid';
+                }
+                if(isset($addBirthday['taxpercent'])){
+                    $paymentDues->tax_percentage=$addBirthday['taxpercent'];
+                }
 		//$paymentDues->discount_applied     = $taxAmtapplied;
                 $paymentDues->payment_due_for       ="birthday";
 		$paymentDues->created_by           = Session::get('userId');

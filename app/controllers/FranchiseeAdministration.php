@@ -44,6 +44,7 @@ class FranchiseeAdministration extends \BaseController {
 	 */
 	public function adduser()
 	{
+            if(Auth::check()){
 		$currentPage  =  "ADD_USERS";
 		$mainMenu     =  "USERS_MAIN";
 		
@@ -89,6 +90,7 @@ class FranchiseeAdministration extends \BaseController {
 		//$data = array('Users','currentPage', 'mainMenu');
 		
 		return View::make('pages.users.useradd', compact('Users','currentPage', 'mainMenu') );
+            }
 	}
 
 

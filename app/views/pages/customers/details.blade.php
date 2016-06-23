@@ -90,7 +90,7 @@
 
 var customerName = "{{$customer->customer_name}}";
 var customerId   = "{{$customer->id}}";
-
+var tax_Percentage= "{{$taxPercentage->tax_percentage}}";
 $("#followuptable").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
 
@@ -450,7 +450,7 @@ var start = $("#birthdayTime").kendoTimePicker({
 var end = $("#endTime").kendoTimePicker().data("kendoTimePicker");
 //define min/max range
 start.min("9:00 AM");
-start.max("5:00 PM");
+start.max("9:00 AM");
 
 
 
@@ -496,7 +496,7 @@ function calculateBirthdayPartyPrice(){
 
             $("#taxAmount").empty();
             $("#totalAmountPayable").empty();
-            var tax = Math.floor(((14.5/100)*parseInt(advance)))
+            var tax = Math.floor(((tax_Percentage/100)*parseInt(advance)))
 	
             $("#totalAmountPayable").val((parseInt(tax)+parseInt(advance)))
             $("#taxAmount").val(tax);
@@ -533,7 +533,7 @@ function calculateBirthdayPartyPrice(){
 
 	$("#taxAmount").empty();
 	$("#totalAmountPayable").empty();
-	var tax = Math.floor(((14.5/100)*parseInt(advance)))
+	var tax = Math.floor(((tax_Percentage/100)*parseInt(advance)))
 	
 	$("#totalAmountPayable").val((parseInt(tax)+parseInt(advance)))
 	$("#taxAmount").val(tax);
@@ -551,6 +551,9 @@ $('#advanceAmount').keyup(function  (){
         if($('#advanceAmount').val()==''){
             $('#advanceAmount').val('0');
         }
+        if(parseInt($('#advanceAmount').val()) > parseInt($('#grandTotal').val())){
+            $('#advanceAmount').val($('#grandTotal').val());
+        }
 	calculateBirthdayPartyPrice();
 });
 
@@ -562,6 +565,9 @@ $('#advanceAmount').change(function(){
         }
         if($('#advanceAmount').val()==''){
             $('#advanceAmount').val('0');
+        }
+        if(parseInt($('#advanceAmount').val()) > parseInt($('#grandTotal').val())){
+            $('#advanceAmount').val($('#grandTotal').val());
         }
 	calculateBirthdayPartyPrice();
 });
@@ -825,7 +831,7 @@ $("input[name='paymentTypeRadio']").change(function (){
 
 
 function pendingamount(pendingamountId,pendingAmount){
-   var taxamount=Math.floor(((14.5/100)*parseInt(pendingAmount)));  
+   var taxamount=Math.floor(((tax_Percentage/100)*parseInt(pendingAmount)));  
 /*   $('#birthdayPending_id').val(pendingamountId);
    $('#birthdaypending_amt').val(pendingAmount);
    $('#receiveBirthdayCardDetailsDiv').hide();
@@ -849,7 +855,7 @@ function pendingamount(pendingamountId,pendingAmount){
                             $('#additionalhalfhours').val(response.birthday_data['additional_half_hours']);
                             $('#additionalhalfhourscost').val(response.birthday_data['additional_halfhour_price']);
                             $('#amountpending').val(response.birthday_data['remaining_due_amount']);
-                            var tax=Math.floor(((14.5/100)*parseInt($('#amountpending').val())));
+                            var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
                             $('#advancepaid').val(response.birthday_data['advance_amount_paid']);
                             $('#taxamount').val(tax);
                             $('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt(response.birthday_data['remaining_due_amount']));
@@ -890,7 +896,7 @@ function pendingamount(pendingamountId,pendingAmount){
                                 $('#additionalguestcost').val(addguestamt);
                                 var addtionaltimecost=parseInt($('#additionalhalfhourscost').val());
                                 $('#amountpending').val(parseInt(response.birthday_data['default_birthday_cost'])+addguestamt+addtionaltimecost);
-                                var tax=Math.floor(((14.5/100)*parseInt($('#amountpending').val())));
+                                var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
                                 $('#taxamount').val(tax);
                                 $('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt($('#amountpending').val()));
                             });
@@ -907,7 +913,7 @@ function pendingamount(pendingamountId,pendingAmount){
                                 $('#additionalguestcost').val(addguestamt);
                                 var addtionaltimecost=parseInt($('#additionalhalfhourscost').val());
                                 $('#amountpending').val(parseInt(response.birthday_data['default_birthday_cost'])+addguestamt+addtionaltimecost);
-                                var tax=Math.floor(((14.5/100)*parseInt($('#amountpending').val())));
+                                var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
                                 $('#taxamount').val(tax);
                                 $('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt($('#amountpending').val()));
                             });
@@ -922,7 +928,7 @@ function pendingamount(pendingamountId,pendingAmount){
                                 $('#additionalhalfhourscost').val(parseInt($('#additionalhalfhours').val()) * 3000);
                                 var addtionaltimecost=parseInt($('#additionalhalfhourscost').val());
                                 $('#amountpending').val(parseInt(response.birthday_data['default_birthday_cost'])+parseInt($('#additionalguestcost').val())+addtionaltimecost);
-                                var tax=Math.floor(((14.5/100)*parseInt($('#amountpending').val())));
+                                var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
                                 $('#taxamount').val(tax);
                                 $('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt($('#amountpending').val()));
                         
@@ -938,7 +944,7 @@ function pendingamount(pendingamountId,pendingAmount){
                                 $('#additionalhalfhourscost').val(parseInt($('#additionalhalfhours').val()) * 3000);
                                 var addtionaltimecost=parseInt($('#additionalhalfhourscost').val());
                                 $('#amountpending').val(parseInt(response.birthday_data['default_birthday_cost'])+parseInt($('#additionalguestcost').val())+addtionaltimecost);
-                                var tax=Math.floor(((14.5/100)*parseInt($('#amountpending').val())));
+                                var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
                                 $('#taxamount').val(tax);
                                 $('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt($('#amountpending').val()));
                         
@@ -951,7 +957,7 @@ function pendingamount(pendingamountId,pendingAmount){
             var printoption=$('#birthdayReceiveinvoicePrintOption').is(':checked');
             if($('#changeorder').is(":checked")==false){
              // create normal order form pending order
-            var taxamount=Math.floor(((14.5/100)*parseInt($('#amountpending').val())));   
+            var taxamount=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));   
             
             
                   if(paymentType=='cash'){
@@ -1064,7 +1070,7 @@ function pendingamount(pendingamountId,pendingAmount){
                    
          }else{
              //update birthday and payment due table the create order from pending order
-              var taxamount=Math.floor(((14.5/100)*parseInt($('#amountpending').val())));
+              var taxamount=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
                 if(paymentType=='cash'){ 
                  $.ajax({
 			type: "POST",
@@ -2923,7 +2929,7 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
 																
 															</tbody>
 													</table>
-													<br clear="all"/>
+													
 													<h4>Payment</h4>
 													<table id="birthdayPriceTable" class="uk-table table-striped table-condensed">
 															<!-- <caption>Table caption</caption> -->
@@ -2944,6 +2950,7 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
 																	<td colspan="2">Tax</td>
 																	<td>
 																		{{Form::text('taxAmount', '',array('id'=>'taxAmount', 'required', 'readonly', 'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
+                                                                                                                                                <input type="hidden" name="taxPercentage" id="taxPercentage" value="{{$taxPercentage->tax_percentage}}">
 																	</td>
 																</tr>
 																
@@ -2995,28 +3002,30 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
                                                                                                                                                 </div>
                                                                                                                                                 <div class="uk-width-medium-1-2">
                                                                                                                                                     <div class="parsley-row">
-                                                                                                                                                        <label for="birthdayCard4digits" class="inline-label">Last 4 digits
+                                                                                                                                                        <label for="birthdayCardBankName" class="inline-label">Bank Name of your card<span class="req">*</span>
+                                                                                                                                                        </label> <input id="birthdayCardBankName" number name="birthdayCardBankName"
+                                                                                                                                                               accept=""type="text"
+                                                                                                                                                               accesskey=""class="form-control input-sm md-input" />
+                                                                                                                                                        
+                                                                                                                                                        <label for="birthdayCard4digits" class="inline-label" style="display:none">Last 4 digits
                                                                                                                                                             of your card<span class="req">*</span>
                                                                                                                                                         </label> <input id="card4digits" number name="birthdayCard4digits"
-                                                                                                                                                           accept=""maxlength="4" type="text"
+                                                                                                                                                           accept=""maxlength="4" type="hidden" value="1234"
                                                                                                                                                            accesskey=""class="form-control input-sm md-input" />
                                                                                                                                                     </div>
                                                                                                                                                 </div>
 									
                                                                                                                                                 <div class="uk-width-medium-1-2">
                                                                                                                                                     <div class="parsley-row">
-                                                                                                                                                        <label for="birthdayCardBankName" class="inline-label">Bank Name of your card<span class="req">*</span>
-                                                                                                                                                        </label> <input id="birthdayCardBankName" number name="birthdayCardBankName"
-                                                                                                                                                               accept=""type="text"
-                                                                                                                                                               accesskey=""class="form-control input-sm md-input" />
+                                                                                                                                                        
                                                                                                                                                     </div>
                                                                                                                                                 </div>
 									
                                                                                                                                                 <div class="uk-width-medium-1-2">
                                                                                                                                                     <div class="parsley-row">
-                                                                                                                                                        <label for="birthdayCardRecieptNumber" class="inline-label">Reciept number<span class="req">*</span>
+                                                                                                                                                        <label for="birthdayCardRecieptNumber" class="inline-label" style="display:none">Reciept number<span class="req" >*</span>
                                                                                                                                                         </label> <input id="cardRecieptNumber" number name="birthdayCardRecieptNumber"
-                                                                                                                                                        accept=""maxlength="4" type="text" 
+                                                                                                                                                        accept=""maxlength="4" type="hidden" 
                                                                                                                                                         accesskey=""class="form-control input-sm md-input" />
                                                                                                                                                     </div>
                                                                                                                                                 </div>

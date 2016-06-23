@@ -7,6 +7,15 @@ use Illuminate\Support\Facades\Redirect;
 Route::any('/', "VaultController@login");
 Route::any('/try', "TryController@index");
 
+
+Route::group(array('prefix' => 'vault'), function() {
+	Route::any('login', "VaultController@login");
+	Route::get('logout', "VaultController@logout");
+	
+});
+if(Auth::check()){
+    
+
 Route::any('/courses', 'CoursesController@viewCourses');
 //Route::any('/classes', 'ClassesController@index');
 
@@ -17,11 +26,6 @@ Route::any('/add_new_class_franchise', 'ClassesController@add_new_class_franchis
 Route::any('/calendar', 'CalenderController@index');
 
 
-Route::group(array('prefix' => 'vault'), function() {
-	Route::any('login', "VaultController@login");
-	Route::get('logout', "VaultController@logout");
-	
-});
 
 Route::group(array('prefix' => 'courses'), function() {
 	Route::any('/add', "CoursesController@addCourses");
@@ -118,7 +122,7 @@ Route::group(array('prefix'=>'reports'),function(){
 
 
 /*****************************************************  AJAX ROUTES ********************************************************/
-if(Auth::check()){
+
 Route::group(array('prefix' => 'quick'), function() {
     
         /**
@@ -381,8 +385,9 @@ Route::group(array('prefix' => 'quick'), function() {
 	Route::get('logout', "VaultController@logout");
         
 });
-}
 Route::any('/getfullfranchiseedata','FranchiseeAdministration@getFullFranchiseeData');
+}
+
 
 
 Route::get('/test', function(){
