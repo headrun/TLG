@@ -180,7 +180,7 @@ $class  = $orderDetailsTomail['class']; */
 							<td style="text-align:right"><strong>Service Tax</strong></td>
 							<td  style="text-align:right">
 								
-								<strong>{{number_format((float)( (((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * 15/100), 2, '.', '') }}</strong>
+								<strong>{{number_format((float)( (((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * $paymentDueDetails[0]['tax_percentage']/100), 2, '.', '') }}</strong>
 							</td>
 						</tr>
 						

@@ -493,6 +493,9 @@ class StudentsController extends \BaseController {
 										->where('is_cancelled', '!=', '1')
 										->where('franchise_id', '=', Session::get('franchiseId'))
 										->get();
+                // getting the tax for particular franchisee
+                $tax=PaymentTax::getTaxPercentageForPayment();
+                $tax=$tax->tax_percentage;
                 //** checking if it is a one batch **//
                 if(count($getEstimateDetails) == 1){
                     
@@ -564,6 +567,7 @@ class StudentsController extends \BaseController {
                 $paymentDuesInput['start_order_date']                       = $insertDataToStudentClassTable['enrollment_start_date'];
                 $paymentDuesInput['end_order_date']                         = $insertDataToStudentClassTable['enrollment_end_date'];
                 $paymentDuesInput['payment_batch_amount']                   = $paymentDuesInput['selected_order_sessions']*$paymentDuesInput['each_class_cost'];
+                $paymentDuesInput['tax']                                    = $tax;
                 
                 $sendPaymentDetailsToInsert = PaymentDues::createPaymentDues($paymentDuesInput);
                 
@@ -699,6 +703,7 @@ class StudentsController extends \BaseController {
                                 $paymentDuesInput[$i]['start_order_date']                   = $insertDataToStudentClassTable['enrollment_start_date'];
                                 $paymentDuesInput[$i]['end_order_date']                     = $insertDataToStudentClassTable['enrollment_end_date'];
                                 $paymentDuesInput[$i]['payment_batch_amount']               = $paymentDuesInput[$i]['selected_order_sessions']*$paymentDuesInput[$i]['each_class_cost'];
+                                $paymentDuesInput[$i]['tax']                                = $tax;
                                 
                                 $sendPaymentDetailsToInsert = PaymentDues::createPaymentDues($paymentDuesInput[$i]);
                                 
@@ -872,6 +877,7 @@ class StudentsController extends \BaseController {
                                 $paymentDuesInput[$i]['end_order_date']                     = $insertDataToStudentClassTable['enrollment_end_date'];
                                 $paymentDuesInput[$i]['payment_batch_amount']               = $paymentDuesInput[$i]['selected_order_sessions']*$paymentDuesInput[$i]['each_class_cost'];
                                 $paymentDuesInput[$i]['payment_due_amount']                 = $inputs['singlePayAmount'];
+                                $paymentDuesInput[$i]['tax']                                = $tax;
                                 
                                 $sendPaymentDetailsToInsert = PaymentDues::createPaymentDues($paymentDuesInput[$i]);
                                 

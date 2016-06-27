@@ -31,7 +31,10 @@ class PaymentDues extends \Eloquent {
                 }
 		$paymentDues->payment_due_amount   = $inputs['payment_due_amount'];
                 if(isset($inputs['payment_due_amount_after_discount'])){
-                $paymentDues->payment_due_amount_after_discount   = $inputs['payment_due_amount_after_discount'];
+                  $paymentDues->payment_due_amount_after_discount   = $inputs['payment_due_amount_after_discount'];
+                }
+                if(isset($inputs['tax'])){
+                    $paymentDues->tax_percentage=$inputs['tax'];
                 }
 		$paymentDues->payment_type         = 'singlepay';
                 $paymentDues->payment_due_for      = 'enrollment';
