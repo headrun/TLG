@@ -321,8 +321,11 @@ class StudentsController extends \BaseController {
         
         
         public function enrollOldCustomer(){
-        	$inputs = Input::all();
-            //return $inputs;
+        	$inputs = Input::all();  
+                
+                $tax=PaymentTax::getTaxPercentageForPayment();
+                $tax=$tax->tax_percentage;
+                
                 $oldStudentId = $inputs['oldCustomerStudentId'];
         // There are no multiple batches, all classes are selected in one batch
         // *****
@@ -380,6 +383,7 @@ class StudentsController extends \BaseController {
             $paymentDuesInput['start_order_date']                       = $insertDataToStudentClassTable['enrollment_start_date'];
             $paymentDuesInput['end_order_date']                         = $insertDataToStudentClassTable['enrollment_end_date'];
             $paymentDuesInput['payment_batch_amount']                   = $paymentDuesInput['selected_order_sessions']*$paymentDuesInput['each_class_cost'];
+            $paymentDuesInput['tax']                                    = $tax;
             $sendPaymentDetailsToInsert = PaymentDues::createPaymentDues($paymentDuesInput);
             
             // Inserting data to  Paymemt_master table
