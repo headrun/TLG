@@ -28,7 +28,7 @@ class CustomersController extends \BaseController {
 			);
 			return View::make ( 'pages.customers.memberslist', compact ( $viewData ) );
 		} else {
-			return Redirect::to ( "/" );
+			return Redirect::action('VaultController@logout');
 		}
 	}
 	
@@ -146,7 +146,7 @@ class CustomersController extends \BaseController {
 			);
 			return View::make ( 'pages.customers.customeradd', compact ( $viewData ) );
 		} else {
-			return Redirect::to ( "/" );
+			return Redirect::action('VaultController@logout');
 		}
 	}
 	
@@ -361,8 +361,12 @@ class CustomersController extends \BaseController {
                         }
                         }
                         $taxPercentage=  PaymentTax::getTaxPercentageForPayment();
+                        $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
+                        $birthday_base_price = BirthdayBasePrice::getBirthdaybasePrice();
+                        
                         
 			$viewData = array (
+                                        'birthday_base_price',
                                         'birthdaypaiddata',
                                         'birthdayDuedata',
 					'customer',
@@ -385,10 +389,11 @@ class CustomersController extends \BaseController {
                                         'customer_student_data',
                                         'membership_followup_data',
                                         'taxPercentage',
+                                        'tax_data',
 			);
 			return View::make ( 'pages.customers.details', compact ( $viewData ) );
 		}else{
-			return Redirect::to("/");
+			return Redirect::action('VaultController@logout');
 		}
 	}
 	

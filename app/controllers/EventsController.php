@@ -43,7 +43,7 @@ class EventsController extends \BaseController {
 			
 		
 		}else{
-			return Redirect::to("/");
+			return Redirect::action('VaultController@logout');
 		}
 	}
 	
@@ -70,7 +70,7 @@ class EventsController extends \BaseController {
 			return View::make('pages.events.eventtypes', compact($dataToView));
 	
 		}else{
-			return Redirect::to("/");
+			return Redirect::action('VaultController@logout');
 		}
 	}
 	

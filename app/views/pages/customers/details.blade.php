@@ -91,6 +91,17 @@
 var customerName = "{{$customer->customer_name}}";
 var customerId   = "{{$customer->id}}";
 var tax_Percentage= "{{$taxPercentage->tax_percentage}}";
+
+var birthday_default_price="{{$birthday_base_price->default_birthday_price}}",
+    birthday_additional_guest_price="{{$birthday_base_price->additional_guest}}",
+    birthday_additional_half_hour_price="{{$birthday_base_price->additional_half_hour}}",
+    member_birthday_price="{{$birthday_base_price->member_birthday_price}}";
+
+birthday_default_price=parseInt(birthday_default_price);
+birthday_additional_guest_price=parseInt(birthday_additional_guest_price);
+birthday_additional_half_hour_price=parseInt(birthday_additional_half_hour_price);
+member_birthday_price=parseInt(member_birthday_price);
+
 $("#followuptable").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
 
@@ -461,34 +472,27 @@ function calculateBirthdayPartyPrice(){
                 
 	if($('#applyMembership').is(":checked")) {
 
-	$("#defaultBirthdayPrice").val('12000');
-	if($("#membershipType").val() == "1"){
-		
-		$("#defaultBirthdayPrice").val('10000')
-		
-	}else if($("#membershipType").val() == "2"){
-		
-		$("#defaultBirthdayPrice").val('10000');
-		
+	$("#defaultBirthdayPrice").val(birthday_default_price);
+	
+        if($("#membershipType").val() != ""){
+            $("#defaultBirthdayPrice").val(member_birthday_price)
 	}
         
             // if member are selected 
             
-            var additionalGuestPrice    = parseInt($("#additionalGuestPrice").val());
-            var additionalHalfHourPrice = parseInt($("#additionalHalfHourPrice").val());
-            if(($('#membershipType').val()=='1')){
-            var membershipPrice         = parseInt( $("#membershipPriceBday").val());
-            }
-            var defaultBirthdayPrice    = parseInt($("#defaultBirthdayPrice").val());
-	    if($('#membershipType').val()=='1'){
-            var grandTotal = (additionalGuestPrice + additionalHalfHourPrice + membershipPrice + defaultBirthdayPrice);
+            var additionalGuestPrice    = parseFloat($("#additionalGuestPrice").val());
+            var additionalHalfHourPrice = parseFloat($("#additionalHalfHourPrice").val());
+            if(($('#membershipType').val()!="")){
+                var membershipPrice         = parseFloat( $("#membershipPriceBday").val());
+                var defaultBirthdayPrice    = parseFloat($("#defaultBirthdayPrice").val());
+                var grandTotal = (additionalGuestPrice + additionalHalfHourPrice + membershipPrice + defaultBirthdayPrice);
             }else {
                 var grandTotal = (additionalGuestPrice + additionalHalfHourPrice + defaultBirthdayPrice);
             }
             
 	
             $("#grandTotal").val(grandTotal);
-            console.log($("#grandTotal").val());
+            //console.log($("#grandTotal").val());
             var advance = $('#advanceAmount').val();
             var remainingAmount = (grandTotal-advance);
 
@@ -506,10 +510,10 @@ function calculateBirthdayPartyPrice(){
 	}else{
                 if($("#applyMembership").css('display')=='block'){
                   //  alert($("#applyMembership").css('display'));
-                    $("#defaultBirthdayPrice").val('12000');
+                    $("#defaultBirthdayPrice").val(birthday_default_price);
                 }else{
                    // alert($("#applyMembership").css('display'));
-                    $("#defaultBirthdayPrice").val('10000');
+                    $("#defaultBirthdayPrice").val(member_birthday_price);
                 }
 	}
 
@@ -518,7 +522,7 @@ function calculateBirthdayPartyPrice(){
         
 	var membershipPrice         = parseInt( $("#membershipPriceBday").val());
 	
-        var defaultBirthdayPrice    = parseInt($("#defaultBirthdayPrice").val());
+        var defaultBirthdayPrice    = parseFloat($("#defaultBirthdayPrice").val());
 		
 	var grandTotal = (additionalGuestPrice + additionalHalfHourPrice + membershipPrice+ defaultBirthdayPrice);
 
@@ -582,7 +586,7 @@ $('#additionalGuestCount').keyup(function (){
             $('#additionalGuestCount').val('0');
         }
         
-	$("#additionalGuestPrice").val((parseInt($(this).val())*300));
+	$("#additionalGuestPrice").val((parseInt($(this).val())*birthday_additional_guest_price));
 	calculateBirthdayPartyPrice();
 
 });
@@ -597,7 +601,7 @@ $('#additionalGuestCount').change(function (){
             $('#additionalGuestCount').val('0');
         }
         
-	$("#additionalGuestPrice").val((parseInt($(this).val())*300));
+	$("#additionalGuestPrice").val((parseInt($(this).val())*birthday_additional_guest_price));
 	calculateBirthdayPartyPrice();
 
 });
@@ -613,7 +617,7 @@ $('#additionalHalfHourCount').keyup(function (){
         }
         
         
-	$("#additionalHalfHourPrice").val((parseInt($(this).val())*3000));
+	$("#additionalHalfHourPrice").val((parseInt($(this).val())*birthday_additional_half_hour_price));
 	calculateBirthdayPartyPrice();
 
 });
@@ -627,7 +631,7 @@ $('#additionalHalfHourCount').change(function (){
         }
         
         
-	$("#additionalHalfHourPrice").val((parseInt($(this).val())*3000));
+	$("#additionalHalfHourPrice").val((parseInt($(this).val())*birthday_additional_half_hour_price));
 	calculateBirthdayPartyPrice();
 
 });
@@ -638,15 +642,17 @@ $(document).ready(function (){
 
 
 	$("#membershipType").on('change',function (){
-
-		if($(this).val() == "1"){
-			$("#membershipPriceBday").val("2000");
-		}else if($(this).val() == "2"){
-			$("#membershipPriceBday").val("5000");
-		}else{
-			$("#membershipPriceBday").val("0");
-		}
-		calculateBirthdayPartyPrice();
+                
+            if($(this).val()!= ""){
+                for(var z=0;z<membershipTypes.length;z++){
+                    if(membershipTypes[z]['id']==$(this).val()){
+                      $("#membershipPriceBday").val(membershipTypes[z]['fee_amount']);
+                    }
+                }
+            }else{
+                $("#membershipPriceBday").val("0");
+            }
+            calculateBirthdayPartyPrice();
 	});
 		
 })
@@ -661,7 +667,7 @@ $("#applyMembership").change(function (){
                 $('#membershipType').val('');
                 $('#membershipPriceBday').val('0');
 		$("#membershipType").prop('required','true');
-		$("#defaultBirthdayPrice").val('10000');
+		$("#defaultBirthdayPrice").val(member_birthday_price);
 	}else{
                 console.log('removing membership');
                 if($('#membershipType').val()==''){
@@ -669,7 +675,7 @@ $("#applyMembership").change(function (){
                 }
                 $('#membershipType').val('');
                 $('#membershipPriceBday').val('0');
-		$("#defaultBirthdayPrice").val('12000');
+		$("#defaultBirthdayPrice").val(birthday_default_price);
 		$("#membershipTableRow").hide();
 		$("#membershipType").prop('required','false');
 	}
@@ -892,7 +898,7 @@ function pendingamount(pendingamountId,pendingAmount){
                                     $('#additionalguestNo').val(0);
                                 }
                                 var addguestno=$('#additionalguestNo').val()
-                                var addguestamt=$('#additionalguestNo').val() * 300;
+                                var addguestamt=$('#additionalguestNo').val() * parseInt(birthday_additional_guest_price);
                                 $('#additionalguestcost').val(addguestamt);
                                 var addtionaltimecost=parseInt($('#additionalhalfhourscost').val());
                                 $('#amountpending').val(parseInt(response.birthday_data['default_birthday_cost'])+addguestamt+addtionaltimecost);
@@ -909,7 +915,7 @@ function pendingamount(pendingamountId,pendingAmount){
                                     $('#additionalguestNo').val(0);
                                 }
                                 var addguestno=$('#additionalguestNo').val()
-                                var addguestamt=$('#additionalguestNo').val() * 300;
+                                var addguestamt=$('#additionalguestNo').val() * parseInt(birthday_additional_guest_price);
                                 $('#additionalguestcost').val(addguestamt);
                                 var addtionaltimecost=parseInt($('#additionalhalfhourscost').val());
                                 $('#amountpending').val(parseInt(response.birthday_data['default_birthday_cost'])+addguestamt+addtionaltimecost);
@@ -925,7 +931,7 @@ function pendingamount(pendingamountId,pendingAmount){
                                 if($('#additionalhalfhours').val()==''){
                                     $('#additionalhalfhours').val(0);
                                 }
-                                $('#additionalhalfhourscost').val(parseInt($('#additionalhalfhours').val()) * 3000);
+                                $('#additionalhalfhourscost').val(parseInt($('#additionalhalfhours').val()) * birthday_additional_half_hour_price);
                                 var addtionaltimecost=parseInt($('#additionalhalfhourscost').val());
                                 $('#amountpending').val(parseInt(response.birthday_data['default_birthday_cost'])+parseInt($('#additionalguestcost').val())+addtionaltimecost);
                                 var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
@@ -941,7 +947,7 @@ function pendingamount(pendingamountId,pendingAmount){
                                 if($('#additionalhalfhours').val()==''){
                                     $('#additionalhalfhours').val(0);
                                 }
-                                $('#additionalhalfhourscost').val(parseInt($('#additionalhalfhours').val()) * 3000);
+                                $('#additionalhalfhourscost').val(parseInt($('#additionalhalfhours').val()) * birthday_additional_half_hour_price);
                                 var addtionaltimecost=parseInt($('#additionalhalfhourscost').val());
                                 $('#amountpending').val(parseInt(response.birthday_data['default_birthday_cost'])+parseInt($('#additionalguestcost').val())+addtionaltimecost);
                                 var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
@@ -1238,7 +1244,7 @@ var yearAndMonth= (parseInt(ageYear*12)+parseInt(ageMonth));
           //console.log(yearAndMonth);
 	  $.ajax({
         type: "POST",
-        url: "{{URL::to('/quick/eligibleClassess')}}",
+        url: "{{URL::to('/quick/eligibleClassessForIv')}}",
         //data: {'ageYear': ageYear, 'ageMonth': ageMonth, 'gender':studentGender,'yearAndMonth':yearAndMonth,},
         data: {'ageYear': ageYear, 'ageMonth': ageMonth, 'gender':studentGender,'yearAndMonth':yearAndMonth},
         dataType:"json",
@@ -2309,7 +2315,7 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
           
          // $('#birthdayPartyCreateBtn').addClass('disabled');
           $('#birthdayCardType').prop('required',true);
-          $('#birthdayCardBankName').prop('required',true);
+         // $('#birthdayCardBankName').prop('required',true);
           $('#birthdayCard4digits').prop('required',true);
           $('#cardRecieptNumber').prop('required',true);
          $('#birthdayCardDetailsDiv').css('display','block');
@@ -2868,9 +2874,9 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
 																		
 																		
 																		if(isset($customerMembership->id)){?>
-																			{{Form::text('defaultBirthdayPrice', '10000',array('id'=>'defaultBirthdayPrice', 'required',  'readonly', 'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
+																			{{Form::text('defaultBirthdayPrice', (int)$birthday_base_price->member_birthday_price,array('id'=>'defaultBirthdayPrice', 'required',  'readonly', 'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
 																		<?php }else{?>
-																			{{Form::text('defaultBirthdayPrice', '12000',array('id'=>'defaultBirthdayPrice', 'required',  'readonly', 'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}																		
+																			{{Form::text('defaultBirthdayPrice', (int)$birthday_base_price->default_birthday_price ,array('id'=>'defaultBirthdayPrice', 'required',  'readonly', 'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}																		
 																		<?php }?>
 																	</td>															
 																</tr>
@@ -2943,11 +2949,25 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
 																<tr style="text-align: right;">
 																	<td colspan="2">Advance </td>
 																	<td>
-																		{{Form::text('advanceAmount', '3000',array('id'=>'advanceAmount', 'required',  'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
+																		{{Form::text('advanceAmount', (int)$birthday_base_price->default_advance_amount,array('id'=>'advanceAmount', 'required',  'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
 																	</td>
 																</tr>																
 																<tr style="text-align: right;">
-																	<td colspan="2">Tax</td>
+																	<td colspan="2">Tax
+                                                                                                                                            <?php 
+                                                                                                                                              if(isset($tax_data)){
+                                                                                                                                                echo "[";
+                                                                                                                                                for($i=0;$i<count($tax_data);$i++){
+                                                                                                                                                echo $tax_data[$i]['tax_particular'].':'.$tax_data[$i]['tax_percentage'].'%';
+                                                                                                                                                if($i != count($tax_data) -1){
+                                                                                                                                                    echo ", &nbsp;";
+                                                                                                                                                }
+                                                                                                                                                }
+                                                                                                                                                echo "]";
+                                                                                                                                               } 
+                                                                                                                                            ?> 
+                                                                                                                                        
+                                                                                                                                        </td>
 																	<td>
 																		{{Form::text('taxAmount', '',array('id'=>'taxAmount', 'required', 'readonly', 'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
                                                                                                                                                 <input type="hidden" name="taxPercentage" id="taxPercentage" value="{{$taxPercentage->tax_percentage}}">
@@ -3002,7 +3022,7 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
                                                                                                                                                 </div>
                                                                                                                                                 <div class="uk-width-medium-1-2">
                                                                                                                                                     <div class="parsley-row">
-                                                                                                                                                        <label for="birthdayCardBankName" class="inline-label">Bank Name of your card<span class="req">*</span>
+                                                                                                                                                        <label for="birthdayCardBankName" class="inline-label">Bank Name of your card<span class="req"></span>
                                                                                                                                                         </label> <input id="birthdayCardBankName" number name="birthdayCardBankName"
                                                                                                                                                                accept=""type="text"
                                                                                                                                                                accesskey=""class="form-control input-sm md-input" />
@@ -4074,29 +4094,35 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
                     </div>
                     <div class="uk-width-medium-1-2">
 			<div class="parsley-row">
+                            <label for="birthdayReceivecardBankName" class="inline-label">Bank Name of your card<span class="req">*</span>
+			    </label> 
+                            <input id="birthdayReceivecardBankName" number name="birthdayReceivecardBankName"	 type="text"
+			     class="form-control input-sm md-input" />
+                            
+                            <!--
                             <label for="birthdayCard4digits" class="inline-label">Last 4 digits
                                of your card<span class="req">*</span>
-			    </label> 
+			    </label>
+                            -->
                             <input id="birthdayReceivecard4digits" number name="birthdayReceivecard4digits"
-			    maxlength="4" type="text" class="form-control input-sm md-input" />
+			    maxlength="4" type="hidden" class="form-control input-sm md-input" value="0"/>
 			</div>
 		    </div>
 	            <br clear="all"/><br clear="all"/>						
                     <div class="uk-width-medium-1-2">
 			<div class="parsley-row">
-                            <label for="birthdayReceivecardBankName" class="inline-label">Bank Name of your card<span class="req">*</span>
-			    </label> 
-                            <input id="birthdayReceivecardBankName" number name="birthdayReceivecardBankName"	 type="text"
-			     class="form-control input-sm md-input" />
+                            
 			</div>
 		    </div>
 									
 		    <div class="uk-width-medium-1-2">
 			<div class="parsley-row">
+                            <!--
 			    <label for="birthdayReceivecardRecieptNumber" class="inline-label">Reciept number<span class="req">*</span>
-			    </label> 
+			    </label>
+                            -->
                             <input id="birthdayReceivecardRecieptNumber" number name="birthdayReceivecardRecieptNumber"
-				 type="text" class="form-control input-sm md-input" />
+				 type="hidden" class="form-control input-sm md-input" value="0" />
                         </div>
                     </div>
 

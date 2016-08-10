@@ -95,6 +95,7 @@ class ClassesController extends \BaseController {
 
 
 	public function add_new_class_franchise(){
+            if(Auth::check()){
 		$currentPage  =  "CLASSES_FRANCHISE";
 		$mainMenu     =  "CLASSES_MAIN";
 		$franchiseeCourses = Courses::where('franchisee_id', '=', Session::get('franchiseId'))->get();
@@ -119,7 +120,7 @@ class ClassesController extends \BaseController {
 //                else{
 //                	$getAllClassesForFranchise[$i]['base_price']=$getBasePrice[0]['base_price'];	
 //                }
-                  $temp=ClassBasePrice::where('base_price_no','=',$getAllClassesForFranchise[$i]['base_price_no'])->get();
+                  $temp=ClassBasePrice::where('base_price_no','=',$getAllClassesForFranchise[$i]['base_price_no'])->where('franchise_id','=',Session::get('franchiseId'))->get();
                   $getAllClassesForFranchise[$i]['base_price']=$temp[0]['base_price'];
                     
                         
@@ -127,7 +128,10 @@ class ClassesController extends \BaseController {
 		
         //return $getAllClassesForFranchise;
 		return View::make('pages.classes.add_new_class_franchise', compact('currentPage','mainMenu', 'franchiseeCourses', 'franchiseeBaseprice', 'getAllClassesForFranchise'));
-	}
+        }else{
+            return Redirect::action('VaultController@logout');
+        }
+        }
 
 
 
@@ -346,7 +350,28 @@ class ClassesController extends \BaseController {
 		return Response::json($classesEligible);
         }
 	
+        public function eligibleClassessForIV(){
+            $classesMaster = ClassesMaster::select('id')
+			->where("age_start_limit_unit", "=", "months")
+                        ->where("age_end_limit_unit", "=", "months")
+			->get();
+            $masterClassIDs = array();
+		$i = 0;
+		foreach($classesMaster->toArray() as $masterClass){
+				
+			$masterClassIDs[$i] = $masterClass['id'];
+			$i++;
+		}
+		
+		$classesEligible = DB::table('classes')
+                                        ->whereIn('class_master_id', $masterClassIDs)
+                                        ->where('franchisee_id', '=', Session::get('franchiseId'))
+                                        ->get();
+		
+                header('Access-Control-Allow-Origin: *');
+		return Response::json($classesEligible);
         
+        }
         
 	public function batchesByClassSeasonId(){
 		$inputs=Input::all();

@@ -108,19 +108,19 @@
 				<br clear="all"/>
 				<div class="col-md-11" style="margin:0px auto !important; float:none;">
 					<div class="row datarow">
-					  <div class="col-md-3 title">Customer Name</div>
+					  <div class="col-md-3 title">Customer Name</div><br>
 					  <div class="col-md-4" style="float:left !important">{{$customer_data->customer_name}}</div>
 					</div>
 					
 					<div>
 						<div class="" style="width:50%; float:left">
 						  <div class="title">Kid Name</div>
-						  <div class="col-md-4" style="float:left !important">{{$student_data->student_name}}</div>
+						  <div class="col-md-4" style="float:left !important; padding-left:0!important;">{{$student_data->student_name}}</div>
 						</div>
 						
 						<div class="" style="width:50%; float:right">
 						  <div class="title">Birthday party date and time</div>
-						  <div class="col-md-4" style="float:left !important">{{$birthday_data->birthday_party_date}} : {{$birthday_data->birthday_party_time }}</div>
+						  <div class="col-md-4" style="float:left !important; padding-left:0!important;">{{$birthday_data->birthday_party_date}} : {{$birthday_data->birthday_party_time }}</div>
 						</div>
 					</div>
 					
@@ -198,7 +198,21 @@
 						
 					
 					</table>
-                                        <h6>Tax Amount: {{$order_data->tax_amount}}</h6>
+                                        <h6>Tax Amount
+                                             <?php 
+                                                                                        if(isset($tax_data)){
+                                                                                            echo "[";
+                                                                                            for($i=0;$i<count($tax_data);$i++){
+                                                                                                echo $tax_data[$i]['tax_particular'].':'.$tax_data[$i]['tax_percentage'].'%';
+                                                                                                if($i != count($tax_data) -1){
+                                                                                                    echo ", &nbsp;";
+                                                                                                }
+                                                                                            }
+                                                                                            echo "]";
+                                                                                        } 
+                                                                                    ?> 
+                                            
+                                            :{{$order_data->tax_amount}}</h6>
 					<h5>Total  Amount paid with Tax is {{$order_data->amount+$order_data->tax_amount}}</h5>
 					
 					<div class="row datarow">
@@ -224,7 +238,7 @@
 					
 					<br clear="all"/>
 					
-					<p>Welcome. Thanks for Celebrating B'day in  The Little Gym.  Regards, Team TLG</p>
+                                        <p class="text-center">Welcome. Thanks for Celebrating B'day in  The Little Gym.  Regards, Team TLG</p>
 				    <hr/>
 					<p>Terms & Conditions:</p>
 					<br/>

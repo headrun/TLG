@@ -55,7 +55,7 @@ class CoursesController extends \BaseController {
 //	
 //	}
         public function addCourses(){
-		
+            if(Auth::check()){
 		$currentPage  =  "COURSES";
 		$mainMenu     =  "COURSES_MAIN";
 		
@@ -88,15 +88,23 @@ class CoursesController extends \BaseController {
 		$courseList = CoursesMaster::getCoursesList();
 		$courses    = Courses::getFranchiseCourses(Session::get('franchiseId'));
 		return View::make('pages.courses.addCourse', compact('courseList', 'courses','currentPage','mainMenu'));
+                
+                }else{
+                    return Redirect::action('VaultController@logout');
+                }
 	
 	}
 
         public function courseNameList() {
-            $currentPage  =  "COURSES";
-            $mainMenu     =  "COURSES_MAIN";
-            $courseList = CoursesMaster::getCoursesList();
-            $courses    = Courses::getFranchiseCourses(Session::get('franchiseId'));
-            return View::make('pages.courses.course-name-list', compact('currentPage','mainMenu','courseList','courses'));
+            if(Auth::check()){ 
+                $currentPage  =  "COURSES";
+                $mainMenu     =  "COURSES_MAIN";
+                $courseList = CoursesMaster::getCoursesList();
+                $courses    = Courses::getFranchiseCourses(Session::get('franchiseId'));
+                return View::make('pages.courses.course-name-list', compact('currentPage','mainMenu','courseList','courses'));
+           }else{
+               return Redirect::action('VaultController@logout');
+           }
         }
         
         
@@ -116,7 +124,7 @@ class CoursesController extends \BaseController {
 		//return $eligibleForAction;
 		return View::make('pages.courses.courses', compact('currentPage','mainMenu', 'allCourse', 'eligibleForAction'));	
             }else{
-                return Redirect::action('DashboardController@index');
+                return Redirect::action('VaultController@logout');
             }
                 
             }

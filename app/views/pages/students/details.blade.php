@@ -294,9 +294,10 @@ $("#addEnrollment").click(function(){
 
 $("#enrollmentOptions").click(function (){
         <?php if(!$customermembership){?>
-		$("#membershipAmount").val("2000");
-		$("#membershipAmounttotals").val("2000");
-                $('#membershipAmounttotalslabel').html("2000");
+	   var membershipAmt={{json_encode($membershipTypesAll)}};	
+		$("#membershipAmount").val(membershipAmt[0]['fee_amount']);
+		$("#membershipAmounttotals").val(membershipAmt[0]['fee_amount']);
+                $('#membershipAmounttotalslabel').html(membershipAmt[0]['fee_amount']);
 	<?php }?>
                 
                 $('#enrollNow').addClass('disabled');
@@ -447,7 +448,7 @@ $("input[name='paymentTypeRadio']").change(function (){
 
 		$("#cardType").attr("required",true);
 		$("#card4digits").attr("required",true);
-		$("#cardBankName").attr("required",true);
+		$("#cardBankName").attr("required",false);
 		$("#cardRecieptNumber").attr("required",true);
 
 
@@ -491,7 +492,16 @@ function applyDiscountOnLastPayment(){
 
 $(document).on('change', "#membershipType", function() {
 	//console.log($(this).val());
-
+        var membershipTypesAll={{json_encode($membershipTypesAll)}};
+        for(var z=0;z<membershipTypesAll.length;z++){
+            if(membershipTypesAll[z]['id'] == $(this).val()){
+                $("#membershipAmount").val(membershipTypesAll[z]['fee_amount']);
+		$("#membershipAmounttotals").val(membershipTypesAll[z]['fee_amount']);
+                $('#membershipAmounttotalslabel').html(membershipTypesAll[z]['fee_amount']);
+            }
+        }
+        
+        /*
 	if($(this).val() == '1'){
 		
 		$("#membershipAmount").val("2000");
@@ -503,8 +513,8 @@ $(document).on('change', "#membershipType", function() {
 		$("#membershipAmounttotals").val("5000");
                 $('#membershipAmounttotalslabel').html('5000');
 	}
-
-	calculateFinalAmount()
+        */
+	calculateFinalAmount();
 })
 
 $(document).on('change', "#TotalAmountForOld", function() {
@@ -514,21 +524,21 @@ $(document).on('change', "#TotalAmountForOld", function() {
 
 $(document).on('change', "#MembershipTypeForOld", function() {
 	//console.log($(this).val());
-
-	if($(this).val() == '1'){
-		
-		$("#MembershipAmountForOld").val("2000");
-//		$("#membershipAmounttotals").val("2000");
-//                $('#membershipAmounttotalslabel').html('2000');
-		
-	}else if($(this).val() == '2'){
-		$("#MembershipAmountForOld").val("5000");
-//		$("#membershipAmounttotals").val("5000");
-//                $('#membershipAmounttotalslabel').html('5000');
-	}else {
-               $("#MembershipAmountForOld").val("0");
+        if($(this).val()!=""){
+        var membershipTypesAll={{json_encode($membershipTypesAll)}};
+        for(var z=0;z<membershipTypesAll.length;z++){
+            if(membershipTypesAll[z]['id'] == $(this).val()){
+                $("#MembershipAmountForOld").val(membershipTypesAll[z]['fee_amount']);
+            }
         }
         calculateSubTotalForOld();
+        }else{   
+               $("#MembershipAmountForOld").val('0');
+               $('#SubTotalForOld').val('0');
+               $('#TaxForOld').val('0');
+               $('#GrandTotalForOld').val('0');
+        }
+        
         
 })
 
@@ -1660,6 +1670,15 @@ $.urlParam = function(name){
 
  //for selecting proper div receive payment tab 
 $(document).ready(function(){
+    var data='';
+    var membershipTypesAll={{json_encode($membershipTypesAll)}};
+    for(var z=0;z<membershipTypesAll.length;z++){
+        console.log(membershipTypesAll[z]);
+         data+= "<option value="+membershipTypesAll[z]['id']+">"+membershipTypesAll[z]['description']+"</option>";
+    }
+    $('#MembershipTypeForOld').append(data);
+    $('#membershipType').append(data);
+    
    $('#paymentOptionsReceive_1').change(function(){
       if($('#paymentOptionsReceive_1').is(":checked")){
           //console.log('card');
@@ -2608,6 +2627,7 @@ if($('#year').val()!='' && $('#batchName').val()!=''){
     </div>
   </div>
  
+
  
 <!-- Modal For Old Customer Enrollment -->
 <div id="EnrollOldCustomerModal" class="modal fade" role="dialog"
@@ -2798,8 +2818,6 @@ if($('#year').val()!='' && $('#batchName').val()!=''){
                                             <select id="MembershipTypeForOld" name="MembershipTypeForOld" class="input-sm md-input"
                                                     style='padding: 0px; font-weight: bold; color: #727272;'>
                                                 <option value=""></option>
-                                                <option value="1" >Annual Membership</option>
-                                                <option value="2">Lifetime Membership</option>
                                             </select> 		                                            
                                         </div>
                                     </div>
@@ -2897,9 +2915,9 @@ if($('#year').val()!='' && $('#batchName').val()!=''){
 						<div class="uk-width-medium-1-2">
 							<div class="parsley-row">
                                                                 <label for="cardBankName3" class="inline-label">Bank Name of your card<span class="req">*</span>
-								</label> <input id="cardBankName3" number name="cardBankName3"
+								</label> <input id="cardBankName3"  name="cardBankName3"
 									type="text"
-									class="form-control input-sm md-input" />
+									class="form-control input-sm md-input"  />
                                                                 
 								<input id="card4digits3" number name="card4digits3"
                                                                        maxlength="4" type="hidden"  value="1234"
@@ -3876,8 +3894,8 @@ if($('#year').val()!='' && $('#batchName').val()!=''){
 										<td>
                                                                                     <select id="membershipType" name="membershipType" class="input-sm md-input-width-small"
 												style='padding: 0px; font-weight: bold; color: #727272;width:50%; float:right'>
-													<option value="1">Annual Membership</option>
-													<option value="2">Lifetime Membership</option>
+                                                                                                       
+													
                                                                                     </select>
 											<input type="hidden" name="membershipAmount"
 												id="membershipAmount" readonly value=""
@@ -3902,7 +3920,20 @@ if($('#year').val()!='' && $('#batchName').val()!=''){
 										</td>
 									</tr>
 									<tr>
-										<td colspan="2" style="text-align: right; font-weight: bold">Tax</td>
+										<td colspan="2" style="text-align: right; font-weight: bold">Tax {{$taxPercentage->tax_percentage}}% 
+                                                                                    <?php 
+                                                                                        if(isset($tax_data)){
+                                                                                            echo "[";
+                                                                                            for($i=0;$i<count($tax_data);$i++){
+                                                                                                echo $tax_data[$i]['tax_particular'].':'.$tax_data[$i]['tax_percentage'].'%';
+                                                                                                if($i != count($tax_data) -1){
+                                                                                                    echo ", &nbsp;";
+                                                                                                }
+                                                                                            }
+                                                                                            echo "]";
+                                                                                        } 
+                                                                                    ?> 
+                                                                                </td>
                                                                                 <td><label style="font-weight:bold" id="taxAmountlabel"></label>
                                                                                     <input style="font-weight: bold" type="hidden"
 											name="taxAmount" id="taxAmount" value="" readonly

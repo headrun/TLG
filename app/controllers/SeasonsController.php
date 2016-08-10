@@ -11,7 +11,10 @@ class SeasonsController extends \BaseController {
             $mainMenu = "SEASONS_MENU_MAIN";
             $viewdata=array('currentPage','mainMenu');
             return View::make('pages.seasons.seasonadd',  compact($viewdata));
+            }else{
+                return Redirect::action('VaultController@logout');
             }
+            
         }
         
         public function getstartenddays(){
@@ -170,6 +173,8 @@ class SeasonsController extends \BaseController {
             }
             $viewdata=array('currentPage','mainMenu','season_data');
             return View::make('pages.seasons.seasonview',  compact($viewdata));
+            }else{
+            return Redirect::action('VaultController@logout');
             }
 	}
         

@@ -12,12 +12,13 @@ class MembershipTypes extends \Eloquent {
 	
 	static function getMembershipTypesForSelectBox(){
 		
-		return MembershipTypes::lists('name', 'id');
+		return MembershipTypes::where('franchisee_id','=',Session::get('franchiseId'))
+                                        ->lists('name', 'id');
 	}
 	
 	static function getMembershipTypes(){
 	
-		return MembershipTypes::all();
+            return MembershipTypes::where('franchisee_id','=',Session::get('franchiseId'))->get();
 	}
 	
 	

@@ -14,6 +14,8 @@ class ReportsController extends \BaseController {
                 }else{
                     return Redirect::action('DashboardController@index');
                 }    
+            }else{
+                return Redirect::action('VaultController@logout');
             }
         }
     
@@ -32,6 +34,8 @@ class ReportsController extends \BaseController {
                     return Response::json(array(IntroVisit::getAllIntrovisitforReport($inputs),'Introvisit'));
                 }else if($inputs['reportType']=='Inquiry'){
                     return Response::json(array(Inquiry::getAllInquiryforReport($inputs),'Inquiry'));
+                }else if($inputs['reportType']=='Weekly'){
+                    return Response::json(array(PaymentDues::getWeeklyEnrollmentReport(),'Weekly'));
                 }
                 
                 return Response::json(array($inputs));

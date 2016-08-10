@@ -223,7 +223,7 @@ class BatchesController extends \BaseController {
 			
 		
 		}else{
-			return Redirect::to("/");
+			return Redirect::action('VaultController@logout');
 		}
 	}
 
@@ -243,7 +243,7 @@ class BatchesController extends \BaseController {
 			return View::make('pages.batches.batchview', compact($dataToView));
 		
 		}else{
-			return Redirect::to("/");
+			return Redirect::action('VaultController@logout');
 		}		
 	}
 	
@@ -391,7 +391,7 @@ class BatchesController extends \BaseController {
 			return View::make('pages.batches.attendance', compact($dataToView));
 		
 		}else{
-			return Redirect::to("/");
+			return Redirect::action('VaultController@logout');
 		}
 		
 	}
@@ -505,7 +505,7 @@ class BatchesController extends \BaseController {
             //$class_data=  ClassBasePrice::where('base_price_no','=',Batches::find($inputs['batchId'])->classes()->base_price_no)->select('base_price')->get();
             //$classAmount=$batch_data->class_amount;
              $base_price_no=Batches::find($inputs['batchId'])->classes()->select('base_price_no')->get();
-             $base_price=ClassBasePrice::where('base_price_no','=',$base_price_no[0]['base_price_no'])->get();
+             $base_price=ClassBasePrice::where('base_price_no','=',$base_price_no[0]['base_price_no'])->where('franchise_id','=',Session::get('franchiseId'))->get();
              $base_price=$base_price[0]['base_price'];
             }
             if($batchClassesCount){
@@ -612,7 +612,7 @@ class BatchesController extends \BaseController {
                     $viewData= compact('currentPage','mainMenu','batchLimit');
                     return View::make('pages.batches.batcheslimit',$viewData);
                 }else{
-                    return Redirect::action('DashboardController@index');
+                    return Redirect::action('VaultController@logout');
                 }
             }    
         }
@@ -637,7 +637,7 @@ class BatchesController extends \BaseController {
                     }
                     return Redirect::action('BatchesController@batcheslimit');
                 }else{
-                    return Redirect::action('DashboardController@index');
+                    return Redirect::action('VaultController@logout');
                 }
             }    
         }

@@ -272,6 +272,31 @@
                                     $('#reportTable').DataTable(//{dom:'T<"clear">lfrtip',
                                     //   "tableTools": {"sSwfPath": "/swf/copy_csv_xls_pdf.swf"}}
                                     );
+                            }else if(response[1]==='Weekly'){
+                                var header_data="<div class='md-card-content'>"+
+                                                "<div class='uk-overflow-container'>"+
+                                            "<table id='reportTable' class='uk-table'>"+
+                                            "<thead>"+
+                                            '<tr>'+
+                                            '<th>Customer Name</th>'+
+                                            '<th>Kid Name</th>'+
+                                            '<th>Invoice No</th>'+
+                                            '<th>Amount</th>'+
+                                            '<th>Class</th>'+
+                                            '</tr></thead>';
+                                for(var i=0;i<response[0]['data'].length;i++){
+                                    header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
+                                          response[0]['data'][i]['student_name']+"</td><td>"+
+                                          response[0]['data'][i]['invoice_no']+"</td><td>"+
+                                          response[0]['data'][i]['payment_due_amount_after_discount']+"</td><td>"+
+                                          response[0]['data'][i]['batch_name']+"</td></tr>";
+                                    }
+                                    header_data+="</table></div></div>";
+                                    console.log(header_data);
+                                    $('#reportdata').html(header_data);
+                                    $('#reportTable').DataTable(//{dom:'T<"clear">lfrtip',
+                                    //   "tableTools": {"sSwfPath": "/swf/copy_csv_xls_pdf.swf"}}
+                                    );
                             }
                         }
              });  
@@ -332,6 +357,7 @@
                                                     <option value="Membership">Membership</option>
                                                     <option value="Introvisit">Introvisit</option>
                                                     <option value="Inquiry">Inquiry</option>
+                                                    <option value="Weekly">SAR(Weekly)</option>
                                             </select>
                                                  
                                    </div>

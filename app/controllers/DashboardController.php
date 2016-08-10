@@ -214,7 +214,7 @@ class DashboardController extends \BaseController {
 							  'todaysIntrovisit','activeRemindersCount',);
 			return View::make('pages.dashboard.upcoming',compact($viewData));
 		}else{
-			return Redirect::to("/");
+			return Redirect::action('VaultController@logout');
 		}
 	}
 
@@ -275,6 +275,7 @@ class DashboardController extends \BaseController {
 
 
   public function terms_conditions(){
+      if(Auth::check()){
       $currentPage  =  "TERMS_CONDITIONS";
       $mainMenu     =  "TERMS_CONDITIONS_MAIN";
       $getTermsAndConditions = TermsAndConditions::all();
@@ -282,6 +283,9 @@ class DashboardController extends \BaseController {
       //return $getTermsAndConditions;
       $data = compact('currentPage', 'mainMenu', 'getTermsAndConditions');
       return View::make('pages.dashboard.terms_conditions', $data);
+      }else{
+      return Redirect::action('VaultController@logout');
+      }
   }
 
 

@@ -33,7 +33,7 @@ class CalenderController extends \BaseController {
             $dataToView = ['currentPage', 'mainMenu', 'batchSchedules', 'birthdaySchedules', 'allEvents'];
             return View::make('pages.calender.calenderindex', compact($dataToView));
         } else {
-            return Redirect::to("/");
+            return Redirect::action('VaultController@logout');
         }
     }
 

@@ -248,6 +248,7 @@ class PaymentsController extends \BaseController {
 	
 	
 	public function printOrder($id){
+            if(Auth::check()){
 		$totalSelectedClasses = '';
 		$totalAmountForAllBatch = '';
 		$payment_no = Crypt::decrypt($id);
@@ -262,22 +263,30 @@ class PaymentsController extends \BaseController {
 			$totalAmountForEachBach[] = (int)$paymentDueDetails[$i]['payment_batch_amount'];
 			$totalAmountForAllBatch = $totalAmountForAllBatch + (int)$paymentDueDetails[$i]['payment_batch_amount'];
 		}
+                if($paymentDueDetails[0]['membership_type_id']!=0){
+                      $membership_data= MembershipTypes::find($paymentDueDetails[0]['membership_type_id']);
+                      $paymentDueDetails[0]['membership_type']=$membership_data->description;
+                }
 		$getCustomerName = Customers::select('customer_name')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
 		$getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
 		$paymentMode = Orders::where('payment_no', '=', $payment_no)->get();
 		$getTermsAndConditions = TermsAndConditions::where('id', '=', (TermsAndConditions::max('id')))->get();
-
-		//return $paymentMode[0]['membership_type'];
+                $franchisee_name=Franchisee::find(Session::get('franchiseId'));
+		$tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
                 $data = compact('totalSelectedClasses', 'getBatchNname',
-		 'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate',
-		  'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName',
+		 'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate','franchisee_name',
+		  'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName','tax_data',
 		   'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode', 'getTermsAndConditions');
 		return View::make('pages.orders.printorder', $data);
 		//return $discounts_amount;	
+                }else{
+                    return Redirect::action('VaultController@logout');
+                }
 	}
 	
 	
 	public function printBdayOrder($oid) {
+            if(Auth::check()){
 		$orderid = Crypt::decrypt($oid);
 		$order_data = Orders::where ( 'orders.id', '=', $orderid )->get();
 		$customer_data = Customers::where ( 'id', '=', $order_data [0] ['customer_id'] )->get ();
@@ -296,16 +305,21 @@ class PaymentsController extends \BaseController {
 		$customer_data = $customer_data [0];
 		$birthday_data = $birthday_data [0];
 		$student_data = $student_data [0];
+                $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
 		$data = array (
 				'order_data',
 				'customer_data',
 				'birthday_data',
 				'student_data',
                                 'payment_due_data',
+                                'tax_data',
 		);
 		
 		// print_r($data);
 		return View::make ( 'pages.orders.bdayprintorder', compact ( $data ) );
+                }else{
+                    return Redirect::action('VaultController@logout');
+                }
 	}
 
 
@@ -329,6 +343,8 @@ class PaymentsController extends \BaseController {
           }
           $data=array('currentPage','mainMenu','base_price_data');
          return View::make('pages.prices.add_or_view_prices',compact($data));
+      }else{
+        return Redirect::action('VaultController@logout');
       }
   }      
   

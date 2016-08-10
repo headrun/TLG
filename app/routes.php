@@ -13,11 +13,12 @@ Route::group(array('prefix' => 'vault'), function() {
 	Route::get('logout', "VaultController@logout");
 	
 });
-if(Auth::check()){
+
     
 
 Route::any('/courses', 'CoursesController@viewCourses');
 //Route::any('/classes', 'ClassesController@index');
+
 
 Route::any('/terms_conditions', 'DashboardController@terms_conditions');
 
@@ -30,8 +31,7 @@ Route::any('/calendar', 'CalenderController@index');
 Route::group(array('prefix' => 'courses'), function() {
 	Route::any('/add', "CoursesController@addCourses");
         Route::any('/name_list', "CoursesController@courseNameList");
-            Route::any('/add', "CoursesController@addCourses");
-	Route::get('logout', "VaultController@logout");
+       
 });
 
 
@@ -51,6 +51,8 @@ Route::group(array('prefix' => 'dashboard'), function() {
 
 });
 
+
+
 Route::group(array('prefix' => 'students'), function() {
 	Route::any('/nonenrolled', "StudentsController@index");
         Route::any('/enrolled', "StudentsController@enrolledstudents");
@@ -58,6 +60,7 @@ Route::group(array('prefix' => 'students'), function() {
 	Route::any('/profile/picture', "StudentsController@uploadProfilePicture");
 
 });
+
 
 Route::group(array('prefix' => 'customers'), function() {
 	Route::any('/memberslist', "CustomersController@index");
@@ -69,12 +72,12 @@ Route::group(array('prefix' => 'customers'), function() {
 });
 
 
+    
 Route::group(array('prefix' => 'batches'), function() {
 	Route::any('/', "BatchesController@index");
 	Route::any('/view/{id}', "BatchesController@view");
 	Route::any('/attendance/{id}', "BatchesController@attendance");
         Route::any('/batcheslimit',"BatchesController@batcheslimit");
-	Route::get('logout', "VaultController@logout");
         Route::any('/addbatchlimit',"BatchesController@addBatchLimit");
 });
 
@@ -97,6 +100,7 @@ Route::group(array('prefix' => 'orders'), function() {
 });
 
 
+    
 Route::group(array('prefix'=>'season'),function(){
         Route::any('/add','SeasonsController@add');
         Route::any('/viewseasons','SeasonsController@index');
@@ -118,7 +122,7 @@ Route::group(array('prefix'=>'reports'),function(){
 });
 
 
-
+if(Auth::check()){
 
 
 /*****************************************************  AJAX ROUTES ********************************************************/
@@ -167,6 +171,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('getClassesByCourseId', "ClassesController@getClassesByCourseId");
 	Route::any('classesbymaster', "ClassesController@classesbymaster");	
 	Route::any('classesbyCourse', "ClassesController@classesbyCourse");
+        Route::any('eligibleClassessForIv', "ClassesController@eligibleClassessForIV");
 	Route::any('eligibleClassess', "ClassesController@eligibleClassess");
         Route::any('eligibleClassessForOtherBatches', "ClassesController@eligibleClassessForOtherBatches");
         Route::any('batchesByClassSeasonId', "ClassesController@batchesByClassSeasonId");
@@ -391,13 +396,16 @@ Route::any('/getfullfranchiseedata','FranchiseeAdministration@getFullFranchiseeD
 
 
 Route::get('/test', function(){
+    echo Hash::make('Michael@tlg123');
+    die();
+    
     return StudentClasses::where('student_id','=','153')
                                                 ->where('status','=','enrolled')
                                                  ->join('batches','student_classes.batch_id','=','batches.id')->get();
     
     
-    die();
-    echo Hash::make('Headrun@tlg123');
+    
+    
     die();
     $id=69;
     $AttendanceYeardata=DB::select("SELECT DISTINCT(YEAR(enrollment_start_date)) as Y FROM student_classes ORDER BY Y");

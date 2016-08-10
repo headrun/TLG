@@ -24,7 +24,7 @@ class FranchiseeAdministration extends \BaseController {
 	 */
 	public function users()
 	{
-		
+		if(Auth::check()){
 		//echo "Users";
 		$currentPage  =  "USERS";
 		$mainMenu     =  "USERS_MAIN";
@@ -34,6 +34,9 @@ class FranchiseeAdministration extends \BaseController {
 		//$data = array('Users','currentPage', 'mainMenu');
 		
 		return View::make('pages.users.userslist', compact('Users','currentPage', 'mainMenu') );
+                }else{
+                return Redirect::action('VaultController@logout');
+                }
 	}
 
 
@@ -90,6 +93,8 @@ class FranchiseeAdministration extends \BaseController {
 		//$data = array('Users','currentPage', 'mainMenu');
 		
 		return View::make('pages.users.useradd', compact('Users','currentPage', 'mainMenu') );
+            }else{
+                return Redirect::action('VaultController@logout');
             }
 	}
 
@@ -103,7 +108,7 @@ class FranchiseeAdministration extends \BaseController {
 	public function viewUser($id)
 	{
 		
-		
+		if(Auth::check()){
 		
 		$currentPage  =  "USERS";
 		$mainMenu     =  "USERS_MAIN";
@@ -130,6 +135,10 @@ class FranchiseeAdministration extends \BaseController {
 		//$data = array('Users','currentPage', 'mainMenu');
 		
 		return View::make('pages.users.useredit', compact('User','currentPage', 'mainMenu') );
+                
+                }else{
+                    return Redirect::action('VaultController@logout');
+                }
 		
 	}
 	

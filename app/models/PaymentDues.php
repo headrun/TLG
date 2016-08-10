@@ -1,4 +1,5 @@
 <?php
+use Carbon\Carbon;
 
 class PaymentDues extends \Eloquent { 
 	protected $table = 'payments_dues';
@@ -28,6 +29,7 @@ class PaymentDues extends \Eloquent {
                     $paymentDues->membership_id=$inputs['membership_id'];
                     $paymentDues->membership_type_id=$inputs['membership_type_id'];
                     $paymentDues->membership_amount=$inputs['membership_amount'];
+                    $paymentDues->membership_name=$inputs['membership_name'];
                 }
 		$paymentDues->payment_due_amount   = $inputs['payment_due_amount'];
                 if(isset($inputs['payment_due_amount_after_discount'])){
@@ -319,5 +321,55 @@ class PaymentDues extends \Eloquent {
                                         ->where('membership_id','<>',0)
                                         ->sum('membership_amount');
         return $membership;
-  }   
+  }
+  
+  static function getWeeklyEnrollmentReport(){
+      $now = Carbon::now();
+      $enrollmentReportDetails['data']=PaymentDues::where('payment_due_for','=','enrollment')
+                                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                    ->where('payment_status','=','paid')
+                                                    ->where('student_class_id','<>',0)
+                                                    ->whereDate('created_at','>=',new Carbon('last monday'))
+                                                    ->whereDate('created_at','<=',$now->toDateString())
+                                                    ->orderBy('id','desc')
+                                                    ->get();
+      for($i=0;$i<count($enrollmentReportDetails['data']);$i++){
+            $temp=  Customers::find($enrollmentReportDetails['data'][$i]['customer_id']);
+            $enrollmentReportDetails['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+            $temp2=  Students::find($enrollmentReportDetails['data'][$i]['student_id']);
+            $enrollmentReportDetails['data'][$i]['student_name']=$temp2->student_name;
+            $temp3= Batches::find($enrollmentReportDetails['data'][$i]['batch_id']);
+            $enrollmentReportDetails['data'][$i]['batch_name']=$temp3->batch_name;
+            $temp4= Orders::where('payment_no','=',$enrollmentReportDetails['data'][$i]['payment_no'])->get();
+            $franchisee_name=Franchisee::find(Session::get('franchiseId'));
+            
+            $yrdata= strtotime($enrollmentReportDetails['data'][$i]['created_at']);
+                                                  
+                                                  
+                                                  switch (strlen($temp4[0]['id'])){
+                                                    
+                                                    case 1:
+                                                        $enrollmentReportDetails['data'][$i]['invoice_no']= 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|00000'.$temp4[0]['id'];
+                                                        break;
+                                                    case 2:
+                                                        $enrollmentReportDetails['data'][$i]['invoice_no']= 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|0000'.$temp4[0]['id'];
+                                                        break;
+                                                    case 3:
+                                                        $enrollmentReportDetails['data'][$i]['invoice_no']= 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|000'.$temp4[0]['id'];
+                                                        break;
+                                                    case 4: 
+                                                        $enrollmentReportDetails['data'][$i]['invoice_no']= 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|00'.$temp4[0]['id'];
+                                                        break;
+                                                    case 5:
+                                                        $enrollmentReportDetails['data'][$i]['invoice_no']= 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|0'.$temp4[0]['id'];
+                                                        break;
+                                                    default:
+                                                        $enrollmentReportDetails['data'][$i]['invoice_no']= $temp4[0]['id'];
+                                                        break;
+                                                    }
+           
+            
+      }
+      return $enrollmentReportDetails;
+  }
 }

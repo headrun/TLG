@@ -41,7 +41,7 @@ class StudentsController extends \BaseController {
 			return View::make('pages.students.nonenrolledstudentlist', compact($dataToView));
 			
 		}else{
-			return Redirect::to("/");
+			return Redirect::action('VaultController@logout');
 		}
 		
 	}
@@ -55,7 +55,7 @@ class StudentsController extends \BaseController {
                 $dataToView = array('students','currentPage', 'mainMenu');
                 return View::make('pages.students.enrolledstudentslist', compact($dataToView));
             }else{
-			return Redirect::to("/");
+			return Redirect::action('VaultController@logout');
             }
 		
         }
@@ -228,16 +228,18 @@ class StudentsController extends \BaseController {
                         
                         $AttendanceYeardata=DB::select("SELECT EXTRACT(year from enrollment_start_date) as year FROM student_classes WHERE student_id = $id GROUP BY year");   
                         $taxPercentage=  PaymentTax::getTaxPercentageForPayment();
+                        $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
+                        $membershipTypesAll = MembershipTypes::getMembershipTypes();
                          //return $student[0]['id'];
-			$dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 
-                                                                'discountEnrollmentData','latestEnrolledData','taxPercentage',
+			$dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll',
+                                                                'discountEnrollmentData','latestEnrolledData','taxPercentage','tax_data',
                                                                 'discount_second_class_elligible','discount_second_child_elligible','discount_second_child','discount_second_class',
 								'studentEnrollments','customermembership','paymentDues',
 								'scheduledIntroVisits', 'introvisit', 'discountEligibility','paidAmountdata','order_due_data',
                                                                 'payment_made_data','payments_master_details', 'AttendanceYeardata');
 			return View::make('pages.students.details',compact($dataToView));
 		}else{
-			return Redirect::to("/");
+			return Redirect::action('VaultController@logout');
 		}
 	}
 	
@@ -399,7 +401,8 @@ class StudentsController extends \BaseController {
                 if($inputs['paymentTypeRadioForOld'] == 'card'){
                     $order['payment_mode']    =  $inputs['paymentTypeRadioForOld'];
                     $order['card_type']    =  $inputs['cardType3'];       
-                    $order['card_last_digit']    =  $inputs['card4digits3'];       
+                    $order['card_last_digit']    =  $inputs['card4digits3'];      
+                    
                     $order['bank_name']    =  $inputs['cardBankName3'];       
                     $order['receipt_number']    =  $inputs['cardRecieptNumber3'];       
                 }
@@ -541,6 +544,8 @@ class StudentsController extends \BaseController {
                         $customerMembershipDetails=CustomerMembership::addMembership($customerMembershipInput);
                         $paymentDuesInput['membership_id']		=	$customerMembershipDetails->id;
                         $paymentDuesInput['membership_type_id']         =	$customerMembershipDetails->membership_type_id;
+                        $temp=MembershipTypes::find($customerMembershipDetails->membership_type_id);
+                        $paymentDuesInput['membership_name']            =       $temp->description;
                         $paymentDuesInput['membership_amount']          =	$inputs['membershipAmount'];
                 }
                 
@@ -682,6 +687,10 @@ class StudentsController extends \BaseController {
                                     $paymentDuesInput[$i]['membership_id']		=	$customerMembershipDetails->id;
                                     $paymentDuesInput[$i]['membership_type_id']         =	$customerMembershipDetails->membership_type_id;
                                     $paymentDuesInput[$i]['membership_amount']          =	$inputs['membershipAmount'];
+                                    $temp=MembershipTypes::find($customerMembershipDetails->membership_type_id);
+                                    $paymentDuesInput['membership_name']            =       $temp->description;
+                                    
+                                    
                                 }
                                 //** checking for discounts **//
                                 if($inputs['discountPercentage']!=''){
@@ -853,6 +862,9 @@ class StudentsController extends \BaseController {
                                     $paymentDuesInput[$i]['membership_id']		=	$customerMembershipDetails->id;
                                     $paymentDuesInput[$i]['membership_type_id']         =	$customerMembershipDetails->membership_type_id;
                                     $paymentDuesInput[$i]['membership_amount']          =	$inputs['membershipAmount'];
+                                    $temp=MembershipTypes::find($customerMembershipDetails->membership_type_id);
+                                    $paymentDuesInput['membership_name']            =       $temp->description;
+                                    
                                 }
                                 //** checking for discounts **//
                                 if($inputs['discountPercentage']!=''){
@@ -999,13 +1011,20 @@ class StudentsController extends \BaseController {
 			$totalAmountForEachBach[] = (int)$paymentDueDetails[$i]['payment_batch_amount'];
 			$totalAmountForAllBatch = $totalAmountForAllBatch + (int)$paymentDueDetails[$i]['payment_batch_amount'];
                     }   
+                    
                     $getTermsAndConditions = TermsAndConditions::where('id', '=', (TermsAndConditions::max('id')))->get();
                     $getCustomerName = Customers::select('customer_name','customer_email')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
                     //return Response::json(array($getCustomerName));
                     $getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
                     $paymentMode = Orders::where('payment_no', '=', $final_payment_master_no)->get();
-                    $data = compact('totalSelectedClasses', 'getBatchNname',
-                        'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate',
+                    if($paymentDueDetails[0]['membership_type_id']!=0){
+                      $membership_data= MembershipTypes::find($paymentDueDetails[0]['membership_type_id']);
+                      $paymentDueDetails[0]['membership_type']=$membership_data->description;
+                    }
+                    $franchisee_name=Franchisee::find(Session::get('franchiseId'));
+                    $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
+                    $data = compact('totalSelectedClasses', 'getBatchNname','tax_data',
+                        'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate','franchisee_name',
                         'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName','getTermsAndConditions',
                         'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode');
                     Mail::send('emails.account.enrollment', $data, function($msg) use ($data){
@@ -1316,12 +1335,13 @@ class StudentsController extends \BaseController {
 	public function addIntroVisit(){
 		
 		$inputs = Input::all();
+                
 		
             if(
                    StudentClasses::where('student_id','=',$inputs['studentIdIntroVisit'])
                                    ->where('season_id','=',$inputs['seasonId'])
-                                   ->where('class_id','=',$inputs['mu_class_id'])
-                                   ->where('batch_id','=',$inputs['mu_batches_id'])
+                                   ->where('class_id','=',$inputs['eligibleClassesCbx'])
+                                   ->where('batch_id','=',$inputs['introbatchCbx'])
                                    ->whereDate('enrollment_start_date','<=',date('Y-m-d',strtotime($inputs['introVisitTxtBox'])))
                                    ->whereDate('enrollment_end_date','>=',date('Y-m-d',strtotime($inputs['introVisitTxtBox'])))
                                    ->exists()
@@ -1330,7 +1350,7 @@ class StudentsController extends \BaseController {
                       return Response::json(array('status'=>'exists'));
                 }else{
 		
-		
+	
 		$result = IntroVisit::addSchedule($inputs);
 		$student_class_input['studentId']=$inputs['studentIdIntroVisit'];
                 $student_class_input['seasonId']=$inputs['seasonId'];

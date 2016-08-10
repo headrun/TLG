@@ -104,7 +104,37 @@ print_r($orders); */
 				<p style="text-align: center;">Thank You and welcome to The Little Gym family</p>
 				<br clear="all"/>
 				<div class="col-md-7" style="margin:0px auto !important; float:left; border-bottom:2px dashed #EEEEEE;">
-				 <h4>Payment Reciept and Enrollment  Details</h4>
+                                    <h4>Invoice Number :
+
+                                             <?php
+                                                  $yrdata= strtotime($paymentDueDetails[0]['created_at']);
+                                                  
+                                                  
+                                                  switch (strlen($paymentMode[0]['id'])){
+                                                    
+                                                    case 1:
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|00000'.$paymentMode[0]['id'];
+                                                        break;
+                                                    case 2:
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|0000'.$paymentMode[0]['id'];
+                                                        break;
+                                                    case 3:
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|000'.$paymentMode[0]['id'];
+                                                        break;
+                                                    case 4: 
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|00'.$paymentMode[0]['id'];
+                                                        break;
+                                                    case 5:
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|0'.$paymentMode[0]['id'];
+                                                        break;
+                                                    default:
+                                                        echo $paymentMode[0]['id'];
+                                                        break;
+                                                    }
+                                                
+                                            ?> 
+                                    </h4>
+                                    <h4>Payment Reciept and Enrollment  Details</h4>
 				</div>
 				<div class = "col-md-4" style = "float: right">
 					<b><?php
@@ -167,12 +197,9 @@ print_r($orders); */
 						
 						</thead>
 						<?php $membershipAmount = ''; 
-						if($paymentDueDetails[0]['membership_type_id'] == 1){
-							$membership = "Annual Membership Amount";
-							$membershipAmount = 2000;
-						}elseif($paymentDueDetails[0]['membership_type_id'] == 2){
-							$membership = "Life-Time Membership Amount";
-							$membershipAmount = 5000;
+						if($paymentDueDetails[0]['membership_type_id'] != 0){
+							$membership = $paymentDueDetails[0]['membership_type'];
+							$membershipAmount = $paymentDueDetails[0]['membership_amount'];
 						}
 						?>
 						
@@ -225,7 +252,21 @@ print_r($orders); */
 						</tr>
 						
 						<tr>
-							<td style="text-align:right"><strong>Service Tax</strong></td>
+							<td style="text-align:right">
+                                                            <strong>Tax ({{$paymentDueDetails[0]['tax_percentage']}} %)</strong>
+                                                            <p>[<?php 
+                                                                if(isset($tax_data)){
+                                                                  for($i=0;$i<count($tax_data);$i++){
+                                                                      echo $tax_data[$i]['tax_particular'].':'.$tax_data[$i]['tax_percentage'].'%';
+                                                                      if($i != count($tax_data) -1){
+                                                                          echo ", &nbsp;";
+                                                                      }
+                                                                      
+                                                                  }
+                                                                }
+                                                                ?>
+                                                                ]</p>
+                                                        </td>
 							<td  style="text-align:right">
 								
 								<strong>{{number_format((float)( (((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * $paymentDueDetails[0]['tax_percentage']/100), 2, '.', '') }}</strong>

@@ -20,6 +20,8 @@ class DiscountsController extends \BaseController {
 
             $viewdata=array('currentPage','mainMenu', 'discount_data');
             return View::make('pages.Discounts.add_or_view_discounts',  compact($viewdata));
+        }else{
+            return Redirect::action('VaultController@logout');
         }
 	}
 
@@ -34,6 +36,8 @@ class DiscountsController extends \BaseController {
             $viewdata=array('currentPage','mainMenu', 'discount_data');
             //$viewdata=array('currentPage','mainMenu');
             return View::make('pages.Discounts.enable_or_disable',  compact($viewdata));
+        }else{
+            return Redirect::action('VaultController@logout');
         }
 	}
 
