@@ -462,14 +462,16 @@ function editbatch(batchId,locationId,instructorId){
                                 $('#changeBatchEndTime').val(response.batchData['preferred_end_time']);
                                 var data='';
                                 var info='';
+                                
                                 for(var i=0;i<response.instructorData.length;i++){
                                     data+="<option value="+response.instructorData[i]['id']+">"+response.instructorData[i]['first_name']+response.instructorData[i]['last_name']+"</option>";
                                 }
-                                
+                                $('#editleadInstructor').empty();
                                 $('#editleadInstructor').append(data);
                                 for(var i=0;i<response.locationData.length;i++){
                                     info+="<option value="+response.locationData[i]['id']+">"+response.locationData[i]['location_name']+"</option>";
                                 }
+                                $('#locationName').empty();
                                 $('#locationName').append(info);
                                 $('#editleadInstructor').val(instructorId);
                                 $('#locationName').val(locationId);

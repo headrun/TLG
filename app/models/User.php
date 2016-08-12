@@ -115,7 +115,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
         
         static function getTeachersByFranchiseeId($franchisee_id){
             return User::where('franchisee_id','=',$franchisee_id)
-                         ->where('user_type','=','TEACHER')
+                         ->where('user_type','=','INSTRUCTOR')
                          ->get();
         }
 
