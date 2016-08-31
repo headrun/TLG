@@ -476,8 +476,9 @@ class StudentsController extends \BaseController {
                     //return Response::json(array($getCustomerName));
                     $getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
                     $paymentMode = Orders::where('payment_no', '=', $final_payment_master_no)->get();
+                    $franchisee_name=Franchisee::find(Session::get('franchiseId'));
                     $data = compact('totalSelectedClasses', 'getBatchNname',
-                        'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate',
+                        'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate','franchisee_name',
                         'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName','getTermsAndConditions',
                         'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode');
                     Mail::send('emails.account.enrollment', $data, function($msg) use ($data){
