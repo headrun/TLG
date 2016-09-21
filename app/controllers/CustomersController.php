@@ -65,10 +65,6 @@ class CustomersController extends \BaseController {
 			$inputs = Input::all ();
 			if (isset ( $inputs ['customerName'] )) {
 				
-				/* echo "<pre>";
-				print_r($inputs);
-				echo "</pre>";
-				exit(); */
 				
 				$addCustomerResult = Customers::addCustomers ( $inputs );
 	
@@ -537,6 +533,20 @@ class CustomersController extends \BaseController {
             
             
             return Response::json(array('status'=>'success'));
+        }
+        
+        
+        
+        public function getUniqueLocality(){
+            if(Auth::check()){
+                return Response::json(array('status'=>'success','data'=>Customers::where('locality','!=','')->where('franchisee_id','=',Session::get('franchiseId'))->distinct('locality')->select('locality')->get()));
+            }
+        }
+        
+        public function getUniqueApartmentNames(){
+            if(Auth::check()){
+                return Response::json(array('status'=>'success','data'=>Customers::where('apartment_name','!=','')->where('franchisee_id','=',Session::get('franchiseId'))->distinct('apartment_name')->select('apartment_name')->get()));
+            }
         }
 		/**
 	 * Store a newly created resource in storage.

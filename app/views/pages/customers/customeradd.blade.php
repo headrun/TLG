@@ -375,6 +375,22 @@ $(document).ready(function(){
 				            </div>  
 				            <br clear="all"/><br clear="all"/><br clear="all"/>
 				   </div>    
+				   <div class="uk-grid" data-uk-grid-margin>
+			                    <div class="uk-width-medium-1-2"> 
+				                  <div class="parsley-row form-group">
+				                 	<label for="altMobileNo">Alternate Mobile No</label>
+				                 	{{Form::text('altMobileNo', null,array('id'=>'altMobileNo',"onkeypress"=>"return isNumberKey(event);", 'maxlength'=>'10',  'minlength'=>'10', 'pattern'=>'\d*', 'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
+				                 </div>
+				            </div>    
+				            <div class="uk-width-medium-1-2">    
+				                  <div class="parsley-row form-group">
+				                 	<label for="landlineNo">Landline No</label>
+				                 	
+				                 	{{Form::text('landlineNo', null,array('id'=>'landlineNo','class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
+				                 </div>
+				            </div>  
+				            <br clear="all"/><br clear="all"/><br clear="all"/>
+				   </div>    
 				        
 				        
 				        <br clear="all"/>

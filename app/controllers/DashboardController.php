@@ -201,9 +201,10 @@ class DashboardController extends \BaseController {
                         }
                         $f_id=Session::get('franchiseId');
                         
+                        $expiringbatch= Batches::getExpiringBatchData();
 
                         
-			$viewData = array('currentPage', 'mainMenu', 'f_id',
+			$viewData = array('currentPage', 'mainMenu', 'f_id','expiringbatch',
                                                            'birthday_data','birthday_data_month','birthday_month_startdays','birthdayPresentWeek',
                                                            'todaysMemberReg','membersCount',
                                                            'todaysNonmemberReg','NonmembersCount',

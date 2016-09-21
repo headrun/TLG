@@ -24,6 +24,7 @@
 <script src="{{url()}}/assets/js/pages/kendoui.min.js"></script>
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
 <script type="text/javascript">
+;(function($) {
     $(document).ready(function() {
     $('#reportGenerateStartdate').kendoDatePicker( {format: "yyyy-MM-dd"});
     $('#reportGenerateenddate').kendoDatePicker({format: "yyyy-MM-dd"});
@@ -76,17 +77,7 @@
                                     header_data+="</table></div></div>";
                                     console.log(header_data);
                                     $('#reportdata').html(header_data);
-                                    $('#reportTable').DataTable(//{dom:'T<"clear">lfrtip',
-                                       //"tableTools": {"sSwfPath": "/swf/copy_csv_xls_pdf.swf"}}
-                                    );
-                                //$('#generateddataTableheader').empty();
-                               // $('#generateddataTablebody').empty();
-                              //  $("#ReportTable").DataTable();
-                               // $('#generateddataTableheader').html(header_data);
-                               // $('#generateddataTablebody').html(data);
-                              //  $("#ReportTable").DataTable();
-                            
-                                
+                                    $('#reportTable').DataTable();
                             }
                         }
              }); 
@@ -292,17 +283,169 @@
                                           response[0]['data'][i]['batch_name']+"</td></tr>";
                                     }
                                     header_data+="</table></div></div>";
-                                    console.log(header_data);
+                                    //console.log(header_data);
                                     $('#reportdata').html(header_data);
                                     $('#reportTable').DataTable(//{dom:'T<"clear">lfrtip',
                                     //   "tableTools": {"sSwfPath": "/swf/copy_csv_xls_pdf.swf"}}
                                     );
+                            }else if(response[1]==='BySchool'){
+                            
+                                var header_data="<div class='md-card-content'>"+
+                                                "<div class='uk-overflow-container'>"+
+                                            "<table id='reportTable' class='uk-table'>"+
+                                            "<thead>"+
+                                            '<tr>'+
+                                            '<th>Customer Name</th>'+
+                                            '<th>Student Name</th>'+
+                                            '<th>Batch Name</th>'+
+                                            '<th>Membership Amount</th>'+
+                                            '<th>Enrollment Amount</th>'+
+                                            '<th>Transaction Date</th>'+
+                                            '</tr></thead>';
+                                    
+                                    for(var i=0;i<response[0]['data'].length;i++){
+                                    header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
+                                          response[0]['data'][i]['student_name']+"</td><td>"+
+                                          response[0]['data'][i]['batch_name']+"</td><td>"+
+                                          response[0]['data'][i]['membership_amount']+"</td><td>"+
+                                          response[0]['data'][i]['payment_due_amount_after_discount']+"</td><td>"+
+                                          response[0]['data'][i]['created_at']+"</td></tr>";
+                                    }
+                                    header_data+="</table></div></div>";
+                                    //console.log(header_data);
+                                    $('#reportdata').html(header_data);
+                                    $('#reportTable').DataTable();
+                            }else if(response[1]==='ByLocality'){
+                                                           
+                                var header_data="<div class='md-card-content'>"+
+                                                "<div class='uk-overflow-container'>"+
+                                            "<table id='reportTable' class='uk-table'>"+
+                                            "<thead>"+
+                                            '<tr>'+
+                                            '<th>Customer Name</th>'+
+                                            '<th>Student Name</th>'+
+                                            '<th>Batch Name</th>'+
+                                            '<th>Membership Amount</th>'+
+                                            '<th>Enrollment Amount</th>'+
+                                            '<th>Transaction Date</th>'+
+                                            '</tr></thead>';
+                                    
+                                    for(var i=0;i<response[0]['data'].length;i++){
+                                    header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
+                                          response[0]['data'][i]['student_name']+"</td><td>"+
+                                          response[0]['data'][i]['batch_name']+"</td><td>"+
+                                          response[0]['data'][i]['membership_amount']+"</td><td>"+
+                                          response[0]['data'][i]['payment_due_amount_after_discount']+"</td><td>"+
+                                          response[0]['data'][i]['created_at']+"</td></tr>";
+                                    }
+                                    header_data+="</table></div></div>";
+                                    //console.log(header_data);
+                                    $('#reportdata').html(header_data);
+                                    $('#reportTable').DataTable();
+ 
+                            }else if(response[1]==='ByApartment'){
+                                                           
+                                var header_data="<div class='md-card-content'>"+
+                                                "<div class='uk-overflow-container'>"+
+                                            "<table id='reportTable' class='uk-table'>"+
+                                            "<thead>"+
+                                            '<tr>'+
+                                            '<th>Customer Name</th>'+
+                                            '<th>Student Name</th>'+
+                                            '<th>Batch Name</th>'+
+                                            '<th>Membership Amount</th>'+
+                                            '<th>Enrollment Amount</th>'+
+                                            '<th>Transaction Date</th>'+
+                                            '</tr></thead>';
+                                    
+                                    for(var i=0;i<response[0]['data'].length;i++){
+                                    header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
+                                          response[0]['data'][i]['student_name']+"</td><td>"+
+                                          response[0]['data'][i]['batch_name']+"</td><td>"+
+                                          response[0]['data'][i]['membership_amount']+"</td><td>"+
+                                          response[0]['data'][i]['payment_due_amount_after_discount']+"</td><td>"+
+                                          response[0]['data'][i]['created_at']+"</td></tr>";
+                                    }
+                                    header_data+="</table></div></div>";
+                                    console.log(header_data);
+                                    $('#reportdata').html(header_data);
+                                    $('#reportTable').DataTable();
+ 
                             }
                         }
              });  
               //$("#ReportTable").DataTable();
     });
-
+    $('#reportType').change(function(){
+        if(($('#reportType').val()==='BySchool')||($('#reportType').val()==='ByLocality')||($('#reportType').val()==='ByApartment')){
+            
+            if($('#reportType').val()==='BySchool'){
+                $('#reportoption').html('Select School');
+                $('#reportOptionSelect').empty();
+                 $.ajax({
+			type: "POST",
+			url: "{{URL::to('/quick/getUniqueSchoolNames')}}",
+                        data: {},
+			dataType: 'json',
+			success: function(response){
+                            if(response.status==='success'){
+                                var data='';
+                                for(var i=0;i<response.data.length;i++){
+                                    data+="<option value='"+response.data[i]['school']+"'>"+response.data[i]['school']+"</option>";
+                                }
+                                $('#reportOptionSelect').html(data);
+                            }
+                        }
+                 });
+                
+            }
+            if($('#reportType').val()==='ByLocality'){
+                $('#reportoption').html('Select Locality');
+                $('#reportOptionSelect').empty();
+                 $.ajax({
+			type: "POST",
+			url: "{{URL::to('/quick/getUniqueLocalityNames')}}",
+                        data: {},
+			dataType: 'json',
+			success: function(response){
+                            if(response.status==='success'){
+                                var data='';
+                                for(var i=0;i<response.data.length;i++){
+                                    data+="<option value='"+response.data[i]['locality']+"'>"+response.data[i]['locality']+"</option>";
+                                }
+                                $('#reportOptionSelect').html(data);
+                            }
+                        }
+                 });
+            }
+            if($('#reportType').val()==='ByApartment'){
+                $('#reportoption').html('Select Apartment');
+                $('#reportOptionSelect').empty();
+                 $.ajax({
+			type: "POST",
+			url: "{{URL::to('/quick/getUniqueApartmentNames')}}",
+                        data: {},
+			dataType: 'json',
+			success: function(response){
+                            if(response.status==='success'){
+                                var data='';
+                                for(var i=0;i<response.data.length;i++){
+                                    data+="<option value='"+response.data[i]['apartment_name']+"'>"+response.data[i]['apartment_name']+"</option>";
+                                }
+                                $('#reportOptionSelect').html(data);
+                            }
+                        }
+                 });
+            }
+            $('.reportdynamic').css('display','block');
+            
+            
+        }else{
+            $('#reportoption').empty();
+            $('.reportdynamic').css('display','none');
+        }
+    });
+})(jQuery);
 </script>
 @stop
 
@@ -324,29 +467,29 @@
 
 <!-- <div class="md-card">
 	    <div class="md-card-content large-padding">-->
-               <center>
+<!--               <center>
 		<h3 class="heading_b uk-margin-bottom">Enrollment and Birthday Report</h3>
-               </center>
+               </center>-->
                 <div class="md-card uk-margin-medium-bottom">
 		    <div class="md-card-content">
                         <br>
                         {{ Form::open(array('url' => '/reports/generatereport', 'id'=>"generatereportform", "class"=>"uk-form-stacked", 'method' => 'post')) }}    
                            <div class="uk-grid" data-uk-grid-margin>
-                               <div class="uk-width-medium-1-3">
+                               <div class="uk-width-medium-1-4">
                                    <div class="parsley-row form-group">
                                         <label for="startDate">Start Date</label><br>
                                             {{Form::text('reportGenerateStartdate',
 						null,array('id'=>'reportGenerateStartdate', 'class' => '','required'))}} 
                                     </div>
                                 </div>
-                            <div class="uk-width-medium-1-3">
+                            <div class="uk-width-medium-1-4">
                                <div class="parsley-row form-group">
                                         <label for="endDate">End Date</label><br>
                                             {{Form::text('reportGenerateEnddate',
 						null,array('id'=>'reportGenerateenddate', 'class' => '','required'))}} 
                                </div>
                             </div>
-                               <div class="uk-width-1-3">
+                               <div class="uk-width-1-4">
                                    <div class="parsley-row form-group">
                                         <strong><label>Report Type</label></strong>
                                             <select name="reportType" id="reportType" class="input-sm md-input"
@@ -358,17 +501,29 @@
                                                     <option value="Introvisit">Introvisit</option>
                                                     <option value="Inquiry">Inquiry</option>
                                                     <option value="Weekly">SAR(Weekly)</option>
+                                                    <option value="BySchool">By School</option>
+                                                    <option value="ByLocality">By Locality</option>
+                                                    <option value="ByApartment">By Apartmnet</option>
                                             </select>
                                                  
                                    </div>
                                </div>
-                            <div class="uk-width-1-3"></div>
-                            <div class="uk-width-1-3"></div>
-                            <div class="uk-width-1-3">
-                                <div class="parsley-row">
-                                <button type="submit" class="md-btn md-btn-primary" style="float:right" >Generate</button>
+                            <div class="uk-width-1-4">
+                                <div class="parsley-row form-group reportdynamic" style="display:none;">
+                                    <strong><label id="reportoption"></label></strong>
+                                    <select name="reportOptionSelect" id="reportOptionSelect" class="input-sm md-input"
+                                        style='padding: 0px; font-weight: bold; color: #727272; width:100%'>
+                                    </select>
                                 </div>
                             </div>
+                            <div class="uk-width-1-4">
+                                <div class="parsley-row">
+                                <button type="submit" class="md-btn md-btn-primary">Generate</button>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-4"></div>
+                            <div class="uk-width-1-4"></div>
+                            <div class="uk-width-1-4"></div>
                             </div>
                         {{ Form::close() }}
                     

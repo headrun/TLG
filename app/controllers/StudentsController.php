@@ -1014,7 +1014,7 @@ class StudentsController extends \BaseController {
                     }   
                     
                     $getTermsAndConditions = TermsAndConditions::where('id', '=', (TermsAndConditions::max('id')))->get();
-                    $getCustomerName = Customers::select('customer_name','customer_email')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
+                    $getCustomerName = Customers::select('customer_name','customer_lastname','customer_email')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
                     //return Response::json(array($getCustomerName));
                     $getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
                     $paymentMode = Orders::where('payment_no', '=', $final_payment_master_no)->get();
@@ -2198,6 +2198,13 @@ class StudentsController extends \BaseController {
                 return Response::json(array('status'=>'success','data'=>$inputs));
             }
             
+        }
+        
+        
+        public function getUniqueSchoolNames(){
+            if(Auth::check()){
+                return Response::json(array('status'=>'success','data'=>Students::where('school','!=','')->where('franchisee_id','=',Session::get('franchiseId'))->distinct('school')->select('school')->get()));
+            }
         }
         
         

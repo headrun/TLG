@@ -54,13 +54,7 @@ Log::useFiles(storage_path().'/logs/laravel.log');
 App::error(function(Exception $exception, $code)
 {
 	Log::error($exception);
-	return "<center>
-				<img src='http://tlg.headrun.com/assets/img/logo.png'/ >
-				<br><br>
-				<p style = 'font-size: 40px; font-weight: bold; color: #E53935'>Sorry, Page Not Found</p>
-				<br><br>
-				<a href='javascript:javascript:history.go(-1)'>Click here to go back to previous page</a>
-			<center>";
+
 });
 
 

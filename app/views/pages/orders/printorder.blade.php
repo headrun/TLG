@@ -95,7 +95,7 @@ print_r($orders); */
 			<div class="col-md-9"  style="margin:0px auto !important; float:none; border: 1px dashed #ededed; padding:20px;">
 				<div class="col-md-11" style="margin:0px auto !important; float:none; border-bottom:2px dashed #EEEEEE;">
 					<div style="margin:0px auto; width:154px; display:block;  background-repeat:no-repeat;  background-image: url('{{url()}}//assets/img/logo.png'); height:90px;">
-						<img src="{{url()}}//assets/img/logo.png"/>
+						<img src="{{url()}}/assets/img/logo.png"/>
 					
 					</div>
 				
@@ -147,7 +147,7 @@ print_r($orders); */
 				<div class="col-md-11" style="margin:0px auto !important; float:none;">
 					<div class="row datarow">
 					  <div class="col-md-3 title">Customer Name</div>
-					  <div class="col-md-4" style="float:left !important">{{$getCustomerName[0]['customer_name']}}</div>
+					  <div class="col-md-4" style="float:left !important">{{$getCustomerName[0]['customer_name'].' '}}{{$getCustomerName[0]['customer_lastname']}}</div>
 					</div>
 					<div>
 						<div class="" style="width:50%; float:left">

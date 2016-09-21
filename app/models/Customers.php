@@ -54,7 +54,9 @@ class Customers extends \Eloquent {
 		$customer->customer_name  =  ucfirst($inputs['customerName']);
                 $customer->customer_lastname=ucfirst($inputs['customerLastName']);
 		$customer->customer_email = $inputs['customerEmail'];
-		$customer->mobile_no      = $inputs['customerMobile'];	
+		$customer->mobile_no      = $inputs['customerMobile'];
+                $customer->alt_mobile_no  = $inputs['altMobileNo'];
+                $customer->landline_no    = $inputs['landlineNo'];
 		$customer->building       = $inputs['building'];		
 		$customer->apartment_name = $inputs['apartment'];
 		$customer->lane           = $inputs['lane'];

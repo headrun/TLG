@@ -96,7 +96,7 @@ $class  = $orderDetailsTomail['class']; */
 				<br clear="all"/>
 				<div class="col-md-11" style="margin:0px auto !important; float:none;">
 					<div class="row datarow">
-					  <div class="title" style="font-weight:bold">Customer Name: </div>{{$getCustomerName[0]['customer_name']}}
+					  <div class="title" style="font-weight:bold">Customer Name: </div>{{$getCustomerName[0]['customer_name'].' '}}{{$getCustomerName[0]['customer_lastname']}}
 					</div>
 					<br clear="all"/>
 					<br clear="all"/>

@@ -372,4 +372,84 @@ class PaymentDues extends \Eloquent {
       }
       return $enrollmentReportDetails;
   }
+  static public function getBySchoolEnrollmentReport($inputs){
+      $student_data=Students::where('school','=',$inputs['reportOptionSelect'])->select('id')->get();
+      
+      for($i=0;$i<count($student_data);$i++){
+        $student_ids[]=$student_data[$i]['id'];                                            
+      }
+      
+        $enrollmentReportDetails['data']=PaymentDues::whereIn('student_id',$student_ids)
+                                                    ->where('payment_due_for','=','enrollment')
+                                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                    ->where('payment_status','=','paid')
+                                                    ->where('student_class_id','<>',0)
+                                                    ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                                    ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                                                    ->orderBy('id','desc')
+                                                    ->get();
+        for($i=0;$i<count($enrollmentReportDetails['data']);$i++){
+            $temp=  Customers::find($enrollmentReportDetails['data'][$i]['customer_id']);
+            $enrollmentReportDetails['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+            $temp2=  Students::find($enrollmentReportDetails['data'][$i]['student_id']);
+            $enrollmentReportDetails['data'][$i]['student_name']=$temp2->student_name;
+            $temp3= Batches::find($enrollmentReportDetails['data'][$i]['batch_id']);
+            $enrollmentReportDetails['data'][$i]['batch_name']=$temp3->batch_name;
+        }
+        
+        return $enrollmentReportDetails;
+  }
+  
+  static public function getByLocalityEnrollmentReport($inputs){
+      $customer_data=Customers::where('locality','=',$inputs['reportOptionSelect'])->select('id')->get();
+      
+      for($i=0;$i<count($customer_data);$i++){
+        $customer_ids[]=$customer_data[$i]['id'];                                            
+      }
+        $enrollmentReportDetails['data']=PaymentDues::whereIn('customer_id',$customer_ids)
+                                                    ->where('payment_due_for','=','enrollment')
+                                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                    ->where('payment_status','=','paid')
+                                                    ->where('student_class_id','<>',0)
+                                                    ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                                    ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                                                    ->orderBy('id','desc')
+                                                    ->get();
+        for($i=0;$i<count($enrollmentReportDetails['data']);$i++){
+            $temp=  Customers::find($enrollmentReportDetails['data'][$i]['customer_id']);
+            $enrollmentReportDetails['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+            $temp2=  Students::find($enrollmentReportDetails['data'][$i]['student_id']);
+            $enrollmentReportDetails['data'][$i]['student_name']=$temp2->student_name;
+            $temp3= Batches::find($enrollmentReportDetails['data'][$i]['batch_id']);
+            $enrollmentReportDetails['data'][$i]['batch_name']=$temp3->batch_name;
+        }
+        
+        return $enrollmentReportDetails;
+  }
+  static public function getByApartmentEnrollmentReport($inputs){
+      $customer_data=Customers::where('apartment_name','=',$inputs['reportOptionSelect'])->select('id')->get();
+      
+      for($i=0;$i<count($customer_data);$i++){
+        $customer_ids[]=$customer_data[$i]['id'];                                            
+      }
+        $enrollmentReportDetails['data']=PaymentDues::whereIn('customer_id',$customer_ids)
+                                                    ->where('payment_due_for','=','enrollment')
+                                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                    ->where('payment_status','=','paid')
+                                                    ->where('student_class_id','<>',0)
+                                                    ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                                    ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                                                    ->orderBy('id','desc')
+                                                    ->get();
+        for($i=0;$i<count($enrollmentReportDetails['data']);$i++){
+            $temp=  Customers::find($enrollmentReportDetails['data'][$i]['customer_id']);
+            $enrollmentReportDetails['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+            $temp2=  Students::find($enrollmentReportDetails['data'][$i]['student_id']);
+            $enrollmentReportDetails['data'][$i]['student_name']=$temp2->student_name;
+            $temp3= Batches::find($enrollmentReportDetails['data'][$i]['batch_id']);
+            $enrollmentReportDetails['data'][$i]['batch_name']=$temp3->batch_name;
+        }
+          return $enrollmentReportDetails;
+  }
+  
 }

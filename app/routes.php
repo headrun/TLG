@@ -192,7 +192,8 @@ Route::group(array('prefix' => 'quick'), function() {
 	 */
 	Route::any('customerexistence', "CustomersController@checkCustomerExists");
 	Route::any('editCustomer', "CustomersController@editCustomer");
-	
+        Route::any('getUniqueLocalityNames',"CustomersController@getUniqueLocality");
+        Route::any('getUniqueApartmentNames',"CustomersController@getUniqueApartmentNames");
 	
 	
 	/**
@@ -218,6 +219,7 @@ Route::group(array('prefix' => 'quick'), function() {
 	Route::any('creatependingorder',"StudentsController@createPendingOrderForEnrollment");
 	Route::any('getStudentsByCustomerid','StudentsController@getStudentsByCustomerid');
         Route::any('transferkid','StudentsController@transferkid');
+        Route::any('getUniqueSchoolNames',"StudentsController@getUniqueSchoolNames");
 	/**
 	 *  --------------------------------------------------------------------------------------------------------------------------------------
 	 * Estimate related Ajax calls
@@ -396,7 +398,7 @@ Route::any('/getfullfranchiseedata','FranchiseeAdministration@getFullFranchiseeD
 
 
 Route::get('/test', function(){
-    echo Hash::make('Michael@tlg123');
+    echo Hash::make('mtlg0001');
     die();
     
     return StudentClasses::where('student_id','=','153')

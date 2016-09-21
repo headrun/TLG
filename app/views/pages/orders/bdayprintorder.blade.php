@@ -109,7 +109,7 @@
 				<div class="col-md-11" style="margin:0px auto !important; float:none;">
 					<div class="row datarow">
 					  <div class="col-md-3 title">Customer Name</div><br>
-					  <div class="col-md-4" style="float:left !important">{{$customer_data->customer_name}}</div>
+					  <div class="col-md-4" style="float:left !important">{{$customer_data->customer_name.' '}}{{$customer_data->customer_lastname}}</div>
 					</div>
 					
 					<div>

@@ -2484,8 +2484,28 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
                                                         <span class="uk-text-small uk-text-muted">Phone</span>
                                                     </div>
                                                 </li>
-                                                
-                                               
+                                                @if($customer->alt_mobile_no)
+                                                <li>
+                                                    <div class="md-list-addon-element">
+                                                        <i class="md-list-addon-icon material-icons">&#xE8C5;</i>
+                                                    </div>
+                                                    <div class="md-list-content">
+                                                        <span class="md-list-heading">{{$customer->alt_mobile_no}}</span>
+                                                        <span class="uk-text-small uk-text-muted">Alt-Phone</span>
+                                                    </div>
+                                                </li>
+                                               @endif
+                                               @if($customer->landline_no)
+                                                <li>
+                                                    <div class="md-list-addon-element">
+                                                        <i class="md-list-addon-icon material-icons">&#xE0D1;</i>
+                                                    </div>
+                                                    <div class="md-list-content">
+                                                        <span class="md-list-heading">{{$customer->landline_no}}</span>
+                                                        <span class="uk-text-small uk-text-muted">Landline No</span>
+                                                    </div>
+                                                </li>
+                                               @endif
                                                @if($customer->building)
                                                 <li>
                                                     <div class="md-list-content">

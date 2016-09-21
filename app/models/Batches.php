@@ -129,6 +129,12 @@ class Batches extends \Eloquent {
             return Batches::where('id','=',$batchId)->delete();
         }
 	
-	
+        static function getExpiringBatchData(){
+            return Batches::with('LeadInstructors')
+                            ->where('franchisee_id','=',Session::get('franchiseId'))
+                            ->where('end_date','>=',  date("Y-M-d"))
+                            ->orderBy('end_date')
+                            ->get();
+        }
 	
 }

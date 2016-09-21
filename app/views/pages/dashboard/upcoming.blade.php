@@ -130,7 +130,25 @@
         "iDisplayLength": 10,
         "lengthMenu": [ 10, 50, 100, 150, 200 ]
     });
+    
+    $("#classesExpiringTable").DataTable({
+        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
 
+            // Bind click event
+            $(nRow).click(function() {
+                  //window.open($(this).find('a').attr('href'));
+				//window.location = $(this).find('a').attr('href');
+                  //OR
+
+                // window.open(aData.url);
+
+            });
+
+            return nRow;
+        },
+        "iDisplayLength": 10,
+        "lengthMenu": [ 10, 50, 100, 150, 200 ]
+    });
 
     
     /* $("#followupTable tr").click(function (){
@@ -765,6 +783,44 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="uk-width-medium-1-2">
+                    <div class="md-card">
+                        <div class="md-card-content">
+                            <div class="uk-overflow-container">
+                                <div width = "100%">
+                                    
+                                        <p style  ="font-size: 24px;">Classes (Expiring) </p>        
+                                    
+                                    
+                                </div>
+                                <br clear="all"/>
+                            	<table class="uk-table" id="classesExpiringTable">
+                                    <thead>
+                                        <tr>
+                                            <th class="uk-text-nowrap">Class Name</th>
+                                            <th class="uk-text-nowrap">End Date</th>
+                                            <th class="uk-text-nowrap">Time</th>                                            
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($expiringbatch as $batch)
+                                        <tr>
+                                            <td>{{$batch->batch_name}}</td>
+                                            <td>{{$batch->end_date}}</td>
+                                            <td>{{$batch->preferred_time.' - '}}{{$batch->preferred_end_time}}</td>
+                                            
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
               </div>
               
 

@@ -267,7 +267,7 @@ class PaymentsController extends \BaseController {
                       $membership_data= MembershipTypes::find($paymentDueDetails[0]['membership_type_id']);
                       $paymentDueDetails[0]['membership_type']=$membership_data->description;
                 }
-		$getCustomerName = Customers::select('customer_name')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
+		$getCustomerName = Customers::select('customer_name','customer_lastname')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
 		$getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
 		$paymentMode = Orders::where('payment_no', '=', $payment_no)->get();
 		$getTermsAndConditions = TermsAndConditions::where('id', '=', (TermsAndConditions::max('id')))->get();
