@@ -201,12 +201,7 @@ class CustomersController extends \BaseController {
 					Orders::createOrder($order);
 				}
 			}
-			//$customerMembership = "";
 			
-			/* echo '<pre>';
-			print_r($customer);
-			echo '</pre>';
-			exit(); */
 			$presentDate=  Carbon::now();
                         $membershipStartDate=Carbon::now();
                         $membershipEndDate=Carbon::now();

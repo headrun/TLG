@@ -40,7 +40,12 @@ Route::group(array('prefix' => 'admin'), function() {
 	Route::any('/users/add', "FranchiseeAdministration@adduser");
 	Route::get('/users', "FranchiseeAdministration@users");
 	Route::any('/users/view/{id}', ['uses' =>"FranchiseeAdministration@viewUser"]);
+        
 
+});
+
+Route::group(array('prefix'=>'settings'), function(){
+        Route::any('/changepassword','UsersController@changepassword');
 });
 
 
@@ -137,7 +142,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('deleteCoursesMaster', "CoursesController@deleteCoursesMaster");
         Route::any('updateCoursesMaster', "CoursesController@updateCoursesMaster");	
         Route::any('InsertNewCoursesMaster', "CoursesController@InsertNewCoursesMaster"); 
-        
+        Route::any('updatepassword','UsersController@updatepassword');
         
         
         Route::group(array('prefix'=>'baseprice'),function(){
@@ -398,7 +403,8 @@ Route::any('/getfullfranchiseedata','FranchiseeAdministration@getFullFranchiseeD
 
 
 Route::get('/test', function(){
-    echo Hash::make('mtlg0001');
+   // return View::make( 'pages.error404');
+    echo Hash::make('harsha');
     die();
     
     return StudentClasses::where('student_id','=','153')

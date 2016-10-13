@@ -152,6 +152,15 @@
                             <li id="ViewReoprt_LI"><a href="{{url()}}/reports/view_reports">Enrollment</a></li>
                         </ul>
                     </li>
+                    <li id="SETTINGS_MENU_MAIN">
+                        <a href="#">
+                            <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+                            <span class="menu_title">Settings</span>
+                        </a>
+                        <ul id="SETTINGS_MENU_MAIN_UL">
+                            <li id="ChangePassword_LI"><a href="{{url()}}/settings/changepassword">Change Password</a></li>
+                        </ul>
+                    </li>
                <?php }?>
                 
                 

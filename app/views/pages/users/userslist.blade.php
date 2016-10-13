@@ -21,8 +21,8 @@
 
 $("#customersTable").DataTable();
 $("#customersTable tr").click(function (){
-	window.location = $(this).find('a').attr('href');
-})
+	//window.location = $(this).find('a').attr('href');
+});
 
 	
 	

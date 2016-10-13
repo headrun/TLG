@@ -1209,6 +1209,8 @@ $(document).ready(function(){
    $('#customerInfoTabMenu').attr('aria-expanded','false');
    $('#birthdayPartyInfoTabMenu').addClass('uk-active');
    $('#birthdayPartyInfoTabMenu').attr('aria-expanded','false');
+   $('#membershipTabMenu').addClass('uk-active');
+   $('#membershipTabMenu').attr('aria-expanded','false');
    
    //for tabs data
    $('#customerInfoTab').attr('aria-hidden','true');
@@ -1221,6 +1223,28 @@ $(document).ready(function(){
    
    
    }
+   if($.urlParam('tab')==='birthdayparty'){
+   //for heading     
+   $('#customerInfoTabMenu').removeClass('uk-active');
+   $('#customerInfoTabMenu').attr('aria-expanded','false');
+   $('#birthdayPartyInfoTabMenu').addClass('uk-active');
+   $('#birthdayPartyInfoTabMenu').attr('aria-expanded','false');
+   $('#membershipTabMenu').addClass('uk-active');
+   $('#membershipTabMenu').attr('aria-expanded','false');
+   
+   //for tabs data
+   $('#customerInfoTab').attr('aria-hidden','true');
+   $('#customerInfoTab').removeClass('uk-active');
+   $('#customerInfoTab').attr('style','');
+   
+   $('#birthdays').attr('aria-hidden','false');
+   $('#birthdays').addClass('uk-active');
+   $('#birthdays').attr('style','animation-duration: 200ms;');
+   
+   
+   }
+   
+   
    
 });
 /*
@@ -2452,9 +2476,9 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
                         <div class="user_content">
                             <ul id="user_profile_tabs" class="uk-tab" data-uk-tab="{connect:'#user_profile_tabs_content', animation:'slide-horizontal'}" data-uk-sticky="{ top: 48, media: 960 }">
                                 <li id="customerInfoTabMenu" class="uk-active"><a href="#">About</a></li>
-                               <!-- <li id="customerMembershipInfoTabMenu" class=""><a href="#">Membership</a></li> -->
                                 <li id="studentInfoTabMenu" class=""><a href="#">Kids</a></li> 
                                 <li id="birthdayPartyInfoTabMenu"><a>Birthday Parties</a></li>
+                              <!--  <li id="customerMembershipInfoTabMenu" class="" ><a href='#'>Membership</a></li> -->
                                 <li id="commentsInfoTabMenu" class="" data-target="#commentsandlogsdivTab"><a href="#" data-target="#commentsandlogsdivTab">Comments and logs</a></li> 
                                 <li id="followupTabMenu" class="" data-target="#followupTab"><a href="#" data-target="#followupTab">Followup</a></li> 
                                
@@ -2588,147 +2612,7 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
                                         </div>
                                         
                                 </li>
-                                <!--
-                                <li id="customerMembershipInfoTab">
                                 
-                                <?php 
-                                	/* echo '<pre>';
-                               		print_r($customerMembership);
-                                	echo '</pre>'; */
-                                	
-                                	//if($customerMembership){
-                                
-                                ?>
-                                		<ul class="md-list md-list-addon">
-                                                <li>
-                                                    <div class="md-list-addon-element">
-                                                        <i class="md-list-addon-icon material-icons">verified_user</i>
-                                                    </div>
-                                                    <div class="md-list-content">
-                                                        <span class="md-list-heading">{{--$customerMembership->name--}}  </span>
-                                                        <span class="uk-text-small uk-text-muted">Current membership</span>
-                                                    </div>
-                                                </li>
-                                         </ul>
-                                                
-                                
-                                
-                                <?php 
-                                	//}else{
-                                
-                                ?>
-                                
-                                
-                                <p class="uk-alert uk-alert-warning">No membership found.</p>
-                                <?php //$url = '/customers/view/'.$customer->id; 
-                                ?>
-                                {{-- Form::open(array('files'=> true,'url' => $url, 'id'=>"addCustomerForm", "class"=>"uk-form-stacked", 'method' => 'post')) --}}
-                                <br clear="all"/><br clear="all"/>
-							         <h4>Membership details</h4>
-							         <br clear="all"/>
-							         <div class="uk-grid" data-uk-grid-margin>
-								   		<div class="uk-width-medium-1-2">							             		 
-										    <div class="parsley-row form-group">
-											    <label for="membershipType">Membership Type<span class="req"></span></label> 
-											    
-											    <select id="membershipTypesMembersDiv" name="membershipTypesMembersDiv" class="input-sm md-input" style="padding:0px; font-weight:bold;color: #727272;">
-											    <option value=""></option>
-											    @foreach ($membershipTypesAll as $membershipType)
-												    <option value="{{$membershipType->id}}"> {{$membershipType->name}}</option>
-												@endforeach
-											    
-											    </select>
-										    </div><br>
-									    </div>  
-									    <div class="uk-width-medium-1-2">							             		 
-										    <div class="parsley-row form-group" id="membershipPriceOuterDiv">
-											    <label for="membershipPrice">Membership Price<span class="req"></span></label> 
-											    {{Form::text('membershipPrice', null,array('id'=>'membershipPrice', 'readonly','class' => 'input-sm md-input'))}}			
-										    </div><br>
-									    </div>     
-									 </div>  
-									 
-									 <div id="paymentType" class="uk-grid" data-uk-grid-margin>
-										<div class="uk-width-medium-1-3">
-											<div class="parsley-row form-group">
-												<input type="radio" name="paymentTypeRadio"
-													id="paymentOptions_1" value="card" /> <label
-													for="paymentOptions_1" class="inline-label">Card</label> <input
-													type="radio" name="paymentTypeRadio" id="paymentOptions_2"
-													value="cash" /> <label for="paymentOptions_2"
-													class="inline-label">Cash</label> <input type="radio"
-													name="paymentTypeRadio" id="paymentOptions_3" value="cheque" />
-												<label for="paymentOptions_3" class="inline-label">Cheque</label>
-			
-											</div>
-										</div>
-									</div>
-									<div id="paymentType" style="width: 100%"><br clear="all"/>
-											<div id="cardDetailsDiv" class="uk-grid" data-uk-grid-margin>
-												<div class="uk-width-medium-1-1">
-													<h4>Card details</h4><br clear="all"/>
-												</div>
-												
-												<div class="uk-width-medium-1-2">
-													<div class="parsley-row form-group">
-														<select name="cardType" id="cardType"
-															class="input-sm md-input"
-															class="form-control input-sm md-input"
-															style='padding: 0px; font-weight: bold; color: #727272;'>
-															<option value="master">Master card</option>
-															<option value="maestro">Maestro</option>
-															<option value="visa">Visa</option>
-															<option value="visa">Rupay</option>
-														</select>
-													</div>
-												</div>
-												<div class="uk-width-medium-1-2">
-													<div class="parsley-row">
-														<label for="card4digits" class="inline-label">Last 4 digits
-															of your card<span class="req">*</span>
-														</label> <input id="card4digits" number name="card4digits"
-															maxlength="4" type="text"
-															class="form-control input-sm md-input" />
-													</div>
-												</div>
-			
-											</div>
-											<div id="chequeDetailsDiv" class="uk-grid" data-uk-grid-margin>
-			
-												<div class="uk-width-medium-1-1">
-													<h4>Cheque details</h4><br clear="all"/>
-												</div>
-												<div class="uk-width-medium-1-2">
-													<div class="parsley-row form-group">
-														<label for="chequeBankName" class="inline-label">Bank name<span
-															class="req">*</span></label> <input id="chequeBankName"
-															name="bankName" type="text"
-															class="form-control input-sm md-input" />
-													</div>
-												</div>
-												<div class="uk-width-medium-1-2">
-													<div class="parsley-row">
-														<label for="chequeNumber form-group" class="inline-label">Cheque number<span
-															class="req">*</span></label> <input id="chequeNumber"
-															name="chequeNumber" type="text"
-															class="form-control input-sm md-input" />
-													</div>
-												</div>
-												
-											</div>
-											<div class="uk-width-medium-1-2">
-												<div class="parsley-row">
-													<button class="btn btn-primary">Add Membership</button>
-												</div>
-											</div>
-										</div>
-									{{Form::close()}}
-                                <?php 
-                                //	}
-                                ?>
-                                -->
-                                
-                                </li>
                                 <li id="studentInfoTab">
                                 
                                 	<br clear="all"/>
@@ -3295,6 +3179,60 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
 											
 											
 										</li>
+                                          <!--  <li id="membershipdivTab">
+                                                <div class="md-card-content large-padding">
+                                                    <div class="membershipcomments"></div>
+                                                    <div class=" uk-grid" data-uk-grid-margin>
+                                                    <div class="uk-width-medium-1-3">
+                                                    <div class="parsley-row">
+                                                        
+                                                        <label for="membershipTypeforMembership" style="font-weight:lighter;">Membership Type<span class="req">*</span></label><br>
+                                                        <select id="membershipTypeforMembership" name="membershipTypeforMembership" required
+								class='membershipTypeforMembership form-control input-sm md-input'
+								style="padding: 0px; font-weight: bold; color: #727272;">
+                                                            @foreach($membershipTypesAll as $membership)
+                                                            <option value="{{$membership['id']}}">{{$membership['name']}}</option>
+                                                            @endforeach
+                                                            
+                                                        </select>                                            
+                                                    </div>
+                                                   </div>
+                                                  <div class="uk-width-medium-1-3"></div>
+                                                  <div class="uk-width-medium-1-3">
+                                                      <div class="parsley-row">
+                                                          <br>
+                                                          <button class="uk-button md-btn md-btn-primary uk-button-primary" style="float:right;">
+                                                              <i class="uk-icon-shopping-cart" style="color:white"></i>
+                                                              &nbsp; Membership</button>
+                                                      </div>
+                                                  </div>
+                                                  <div class="uk-width-medium-1-1">
+                                                      <table class="uk-table">
+                                                          <thead>
+                                                              <tr>
+                                                                  <td class="uk-text-justify" style="font-weight:600;"><i class="uk-icon-th-list"></i> Membership Types</td>
+                                                                  <td class="uk-text-justify" style="font-weight:600;"><i class="uk-icon-calendar"></i> Interval </td>
+                                                                  <td class="uk-text-justify" style="font-weight:600;"><i class="uk-icon-newspaper-o"></i> Amount (<i class="uk-icon-inr"></i>)</td>
+                                                              </tr>
+                                                          </thead>
+                                                          <tbody>
+                                                            @foreach($membershipTypesAll as $membership)
+                                                            <tr>
+                                                                <td>{{$membership['description']}}</td>
+                                                                <td>{{$membership['year_interval']}}</td>
+                                                                <td>{{$membership['fee_amount']}}</td>
+                                                            </tr>
+                                                            @endforeach
+                                                          </tbody>
+                                                      </table>
+                                                  </div>
+                                                  <div class="uk-width-medium-1-1">
+                                                      <h5 class="uk-text-bold"><i class="uk-icon-shopping-cart"></i> Purchased Membership Details</h5>
+                                                  </div>
+                                                </div>
+                                             </div>   
+                                            </li>
+                                          -->
 		                           <li id="commentsandlogsdivTab">
 		                           
 		                           		<?php 

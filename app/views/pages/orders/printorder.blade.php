@@ -277,7 +277,7 @@ print_r($orders); */
 							<td style="text-align:right"><strong>Grand Total</strong></td>
 							<td  style="text-align:right">
 								
-								<strong>{{$paymentDueDetails[0]['payment_due_amount_after_discount'] }}</strong>
+								<strong>{{(int)$paymentDueDetails[0]['payment_due_amount_after_discount'] }}</strong>
 							</td>
 						</tr>
 						<tr>

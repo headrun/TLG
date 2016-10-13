@@ -258,7 +258,7 @@ $("#customerSubmit").click(function (event){
                                                 <?php if(isset($customers)){ ?>
 		                            @foreach($customers as $customer)
 		                            <tr>
-		                                <td>{{$customer->customer_name.'a'}}&nbsp;{{$customer->customer_lastname}}</td>
+		                                <td>{{$customer->customer_name.' '}}&nbsp;{{$customer->customer_lastname}}</td>
 		                                <td>{{$customer->customer_email}}</td>
 		                                <td>{{$customer->mobile_no}}</td>
 		                                <td>{{$customer->building}} {{$customer->apartment_name}} {{$customer->lane}}
