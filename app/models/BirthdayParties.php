@@ -60,17 +60,15 @@ class BirthdayParties extends \Eloquent {
 	static function getBirthdaysByCustomer($customerId){
 		return BirthdayParties::with('Customers', 'Students')->where('customer_id', '=', $customerId)->get();
 	}
-               static function getBpartyCount(){
+        static function getBpartyCount(){
              return DB::table('birthday_parties')
-                                             ->join('customers', 'birthday_parties.customer_id', '=', 'customers.id')
-                                             ->where('customers.franchisee_id', '=', Session::get('franchiseId'))
+                                             ->where('franchisee_id', '=', Session::get('franchiseId'))
                                              ->count();
         }
         static function  getBpartyCountBytoday(){
              return DB::table('birthday_parties')
-                                             ->join('customers', 'birthday_parties.customer_id', '=', 'customers.id')
                                              ->whereDate('birthday_parties.birthday_party_date', '=',  date("Y-m-d"))
-                                             ->where('customers.franchisee_id', '=', Session::get('franchiseId'))
+                                             ->where('franchisee_id', '=', Session::get('franchiseId'))
                                              ->count();
         } 
         static function getBirthdaybyId($id){

@@ -34,20 +34,10 @@ class Customers extends \Eloquent {
 	
 	static function addCustomers($inputs){
 		
-		
-		/* [customerName] => dasf
-		[customerEmail] => asdfasdf
-		[customerMobile] => asdf
-		[building] => asdf
-		[apartment] => asdfasdf
-		[lane] => asdfasdf
-		[locality] => asdf
-		[state] => asdfasdf
-		[city] => asdf
-		[zipcode] => sdfasdf
-		[source] => asdfa
-		[referredBy] => asdf
-		[introVisit] => on */
+		if(! Customers::where('mobile_no','=',$inputs['customerMobile'])
+                              ->where('customer_email','=',$inputs['customerEmail'])
+                              ->exists()
+                   ){
 		
 		$customer = new Customers();
 		$customer->franchisee_id  = Session::get('franchiseId');
@@ -80,6 +70,9 @@ class Customers extends \Eloquent {
 		$customer->created_at     = date("Y-m-d H:i:s");
 		$customer->save();
 		return $customer;
+            }else{
+                return false;
+            }
 	}
 	
 	

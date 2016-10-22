@@ -339,6 +339,14 @@ $(document).ready(function(){
                       </div>
                       <br clear="all"/>
 					@endif
+                                        @if (Session::has('warning'))
+					  <div class="uk-alert uk-alert-warning" data-uk-alert>
+                      		 <a href="#" class="uk-alert-close uk-close"></a>
+                             {{ Session::get('warning') }}
+                      </div>
+                      <br clear="all"/>
+					@endif
+                                        
 					
 					<div id="callbackMessage"></div>
 					<br clear="all"/>

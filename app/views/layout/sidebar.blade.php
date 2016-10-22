@@ -9,11 +9,7 @@
                 	<!-- <img src="assets/img/logo_main_small.png" alt="" height="32" width="32"/> -->
                 </a>
             </div>
-            <!-- <div class="sidebar_actions">
-                <select id="lang_switcher" name="lang_switcher">
-                    <option value="gb" selected>English</option>
-                </select>
-            </div> -->
+            
         </div>
         <div class="menu_section">
             <ul>
@@ -150,6 +146,8 @@
                         </a>
                         <ul id="REPORTS_MENU_MAIN_UL">
                             <li id="ViewReoprt_LI"><a href="{{url()}}/reports/view_reports">Enrollment</a></li>
+                            <li id="ViewDeletedCustomer_LI"><a href="{{url()}}/reports/deleted_customers">Deleted Customers</a></li>
+                        
                         </ul>
                     </li>
                     <li id="SETTINGS_MENU_MAIN">
@@ -159,6 +157,7 @@
                         </a>
                         <ul id="SETTINGS_MENU_MAIN_UL">
                             <li id="ChangePassword_LI"><a href="{{url()}}/settings/changepassword">Change Password</a></li>
+                            
                         </ul>
                     </li>
                <?php }?>

@@ -124,6 +124,7 @@ Route::group(array('prefix'=>'Discounts'),function(){
 
 Route::group(array('prefix'=>'reports'),function(){
         Route::any('/view_reports','ReportsController@view_reports');
+        Route::any('/deleted_customers','ReportsController@deleted_customers');
 });
 
 
@@ -199,7 +200,7 @@ Route::group(array('prefix' => 'quick'), function() {
 	Route::any('editCustomer', "CustomersController@editCustomer");
         Route::any('getUniqueLocalityNames',"CustomersController@getUniqueLocality");
         Route::any('getUniqueApartmentNames',"CustomersController@getUniqueApartmentNames");
-	
+	Route::any('deleteCustomer',"CustomersController@deleteCustomer");
 	
 	/**
 	 *  --------------------------------------------------------------------------------------------------------------------------------------
@@ -225,6 +226,9 @@ Route::group(array('prefix' => 'quick'), function() {
 	Route::any('getStudentsByCustomerid','StudentsController@getStudentsByCustomerid');
         Route::any('transferkid','StudentsController@transferkid');
         Route::any('getUniqueSchoolNames',"StudentsController@getUniqueSchoolNames");
+        Route::any('deleteIVdata',"StudentsController@deleteIVdata");
+        Route::any('deletebirthdaydata',"StudentsController@deletebirthdaydata");
+        Route::any('deleteenrollmentdata',"StudentsController@deleteenrollmentdata");
 	/**
 	 *  --------------------------------------------------------------------------------------------------------------------------------------
 	 * Estimate related Ajax calls
@@ -404,11 +408,12 @@ Route::any('/getfullfranchiseedata','FranchiseeAdministration@getFullFranchiseeD
 
 Route::get('/test', function(){
    // return View::make( 'pages.error404');
-    echo Hash::make('harsha');
-    die();
+    echo Hash::make('welcome1');
+                          
+die();
     
     return StudentClasses::where('student_id','=','153')
-                                                ->where('status','=','enrolled')
+                                                ->where('statuy','=','enrolled')
                                                  ->join('batches','student_classes.batch_id','=','batches.id')->get();
     
     

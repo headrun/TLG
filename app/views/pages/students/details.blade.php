@@ -2589,6 +2589,109 @@ if($('#year').val()!='' && $('#batchName').val()!=''){
 }
 });
 
+$('.deleteivdata').click(function(){
+    $('.deletemsg').html("<p class='uk-alert uk-alert-warning'>Please wait... Introvisit Data Deleting...</p>");
+    $.ajax({
+        type: "POST",
+        url: "{{URL::to('/quick/deleteIVdata')}}",
+        data: {'student_id':studentId},
+        dataType: 'json',
+	success: function(response){
+            if(response.status==='success'){
+                if(response.deleted_data==1){
+                    $('.deletemsg').html("<p class='uk-alert uk-alert-success'>Introvisit Data Deleted...</p>");
+                }else{
+                    $('.deletemsg').html("<p class='uk-alert uk-alert-success'>No Introvisit Data Found...</p>");
+                }
+                    $('deletemsg').show('slow');
+                    setTimeout(function(){
+                        $('.deletemsg').slideUp();
+                        $('.deletemsg').html(''); 
+                        $('.deletemsg').show('slow');
+                    },2000);
+                
+            }else{
+                
+                $('.deletemsg').html("<p class='uk-alert uk-alert-danger'>Sorry.. Error in Deleting Introvisit Data</p>");
+                setTimeout(function(){
+                        $('.deletemsg').slideUp();
+                        $('.deletemsg').html(''); 
+                        $('.deletemsg').show('slow');
+                    },2000);
+            }
+        }
+    });
+});
+
+$('.deletbirthdaydata').click(function(){
+    $('.deletemsg').html("<p class='uk-alert uk-alert-warning'>Please wait... Birthday Data Deleting...</p>");
+    $.ajax({
+        type: "POST",
+        url: "{{URL::to('/quick/deletebirthdaydata')}}",
+        data: {'student_id':studentId},
+        dataType: 'json',
+	success: function(response){
+            if(response.status==='success'){
+                console.log(response);
+                if(response.deleted_data==1){
+                    $('.deletemsg').html("<p class='uk-alert uk-alert-success'>Birthday Data Deleted...</p>");
+                }else{
+                    $('.deletemsg').html("<p class='uk-alert uk-alert-success'>No Birthday Data Found...</p>");
+                }
+                    $('deletemsg').show('slow');
+                    setTimeout(function(){
+                        $('.deletemsg').slideUp();
+                        $('.deletemsg').html(''); 
+                        $('.deletemsg').show('slow');
+                    },2000);
+                
+            }else{
+                
+                $('.deletemsg').html("<p class='uk-alert uk-alert-danger'>Sorry.. Error in Deleting Birthday Data</p>");
+                setTimeout(function(){
+                        $('.deletemsg').slideUp();
+                        $('.deletemsg').html(''); 
+                        $('.deletemsg').show('slow');
+                    },2000);
+            }
+        }
+    });
+});
+
+$('.deleteenrollmentdata').click(function(){
+    $('.deletemsg').html("<p class='uk-alert uk-alert-warning'>Please wait... Enrollment Data Deleting...</p>");
+    $.ajax({
+        type: "POST",
+        url: "{{URL::to('/quick/deleteenrollmentdata')}}",
+        data: {'student_id':studentId, 'customer_id':customerId},
+        dataType: 'json',
+	success: function(response){
+            if(response.status==='success'){
+                console.log(response);
+                if(response.deleted_data==1){
+                    $('.deletemsg').html("<p class='uk-alert uk-alert-success'>Enrollment Data Deleted...</p>");
+                }else{
+                    $('.deletemsg').html("<p class='uk-alert uk-alert-success'>No Enrollment Data Found...</p>");
+                }
+                    $('deletemsg').show('slow');
+                    setTimeout(function(){
+                        $('.deletemsg').slideUp();
+                        $('.deletemsg').html(''); 
+                        $('.deletemsg').show('slow');
+                    },2000);
+                
+            }else{
+                
+                $('.deletemsg').html("<p class='uk-alert uk-alert-danger'>Sorry.. Error in Deleting Enrollment Data</p>");
+                setTimeout(function(){
+                        $('.deletemsg').slideUp();
+                        $('.deletemsg').html(''); 
+                        $('.deletemsg').show('slow');
+                    },2000);
+            }
+        }
+    });
+});
 
 </script>
 @stop 
@@ -2991,7 +3094,18 @@ if($('#year').val()!='' && $('#batchName').val()!=''){
 	<div class="uk-width-large-10-10">
 		<div class="md-card">
 			<div class="user_heading">
-				
+				<!--
+                                <div class="user_heading_menu" data-uk-dropdown="{pos:'left-top'}">
+                                    <i class="md-icon material-icons md-icon-light">&#xE5D4;</i>
+                                    <div class="uk-dropdown uk-dropdown-small ">
+                                        <ul class="uk-nav">
+                                            <li><a href="#"><i class="material-icons">delete</i> IV Data</a></li>
+                                            <li><a href="#"><i class="material-icons">delete</i> Birthday Data <br> <em class="text-center" style="color:black">(with payments)</em></a></li>
+                                            <li><a href="#"><i class="material-icons">delete</i> Enrollment Data<br> <em class="text-center" style="color:black">(with payments)</em></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                -->
 				<div class="user_heading_avatar">
                                     <?php if($student->profile_image!=''){ ?>
 					<img src="{{url()}}/upload/profile/student/{{$student->profile_image}}" />
@@ -3055,11 +3169,54 @@ if($('#year').val()!='' && $('#batchName').val()!=''){
                                            <?php } ?>
                                        </div>
                                     </div>
+                                    
 				</div>
-				<a class="md-fab md-fab-small md-fab-accent" id="editKidBtn"> <i
+                                <a class="md-fab md-fab-small md-fab-accent" id="editKidBtn" style="right:83px"> <i
 					class="material-icons">&#xE150;</i>
 				</a>
-			</div>
+                                <?php if(Session::get('userType')=='ADMIN'){ ?>
+				<a class="md-fab md-fab-small md-fab-accent uk-alert-danger"  data-uk-modal="{target:'#my-id'}" id="deleteBtn"> <i
+					class="material-icons">delete</i>
+				</a>
+                                <?php } ?>
+
+                                <!-- This is the modal -->
+                                <div id="my-id" class="uk-modal">
+                                    <div class="uk-modal-dialog">
+                                        <a class="uk-modal-close uk-close"></a>
+                                            <div class="uk-modal-header" style="color:red;">
+                                                <h3 class="uk-modal-title">Delete Data</h3>
+                                            </div>
+                                            <div class="modaldata">
+                                                <div class="deletemsg"></div>
+                                                <div class="uk-grid" data-uk-grid-margin="">
+                                                    <div class="uk-width-medium-1-3 " >
+                                                        <button class=" center-block text-center uk-button uk-button-danger uk-button-large deleteivdata" style="font-size:12px;">
+                                                            <i class="material-icons" style="color:white">delete</i> Introvisit Data
+                                                        </button>
+                                                    </div>
+                                                    <div class="uk-width-medium-1-3">
+                                                        <button class="  center-block text-center uk-button uk-button-danger uk-button-large deletbirthdaydata" style="font-size:12px;">
+                                                            <i class="material-icons" style="color:white">delete</i> Birthday Party Data
+                                                        </button>
+                                                        <em class="uk-text-center-small center-block text-center" style="color:black;font-size:12px;"> (with payments)</em>
+                                                    </div>
+                                                    <div class="uk-width-medium-1-3">
+                                                        <button class="center-block text-center  uk-button uk-button-danger uk-button-large  deleteenrollmentdata" style="font-size:12px;">
+                                                            <i class="material-icons" style="color:white">delete</i> Enrollment Data
+                                                        </button>
+                                                        <em class="uk-text-center-small text-center center-block " style="color:black;font-size:12px;">(with payments)</em>
+                                                    </div>
+                                                </div>
+                                            </div>
+         
+         
+                                            <div class="uk-modal-footer uk-text-right">
+                                                <button type="button" class="md-btn md-btn-flat uk-modal-close ">Close</button>
+                                            </div>
+                                    </div>
+                                </div>
+                    </div>
 			<div class="user_content">
 				<ul id="user_profile_tabs" class="uk-tab"
 					data-uk-tab="{connect:'#user_profile_tabs_content', animation:'slide-horizontal'}"

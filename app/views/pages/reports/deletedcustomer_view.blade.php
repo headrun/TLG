@@ -14,6 +14,7 @@
 <script src="{{url()}}/bower_components/datatables-tabletools/js/dataTables.tableTools.js"></script>
 <script src="{{url()}}/assets/js/custom/datatables_uikit.min.js"></script>
 <script src="{{url()}}/assets/js/pages/plugins_datatables.min.js"></script>
+
 <script type="text/javascript">
 
 	$("#studentsTable").DataTable({
@@ -22,7 +23,7 @@
             // Bind click event
             $(nRow).click(function() {
                   //window.open($(this).find('a').attr('href'));
-				window.location = $(this).find('a').attr('href');
+	//			window.location = $(this).find('a').attr('href');
                   //OR
 
                 // window.open(aData.url);
@@ -43,85 +44,64 @@
 
 </script>
 @stop
-
-
 @section('content')
+
 <div id="breadcrumb">
 	<ul class="crumbs">
 		<li class="first"><a href="{{url()}}" style="z-index:9;"><span></span>Home</a></li>
-		<li><a href="{{url()}}/students/enrolled" style="z-index:8;">Enrolled Students</a></li>
+		<li><a href="#" style="z-index:8;">Reports</a></li>
+                <li><a href="#" style="z-index:7;">Deleted Customers</a></li>
 		
 	</ul>
 </div>
-<br clear="all"/>
-<div class="">
+    <br clear="all"/>
+    
 	<div class="row">
-	
-		
-		
-		
-		
-		
+            <h3 class="heading_b uk-margin-bottom">Deleted Customers</h3>
             
-            
-            
-		            <h3 class="heading_b uk-margin-bottom">Enrolled Students</h3>
-		            
-		            <?php 
-		            	/*  echo "<pre>";
-		            	print_r($customers);
-		            	echo "</pre>";  */
-		            
-		            ?>
-		
-		           
-		            <div class="md-card uk-margin-medium-bottom">
-		                <div class="md-card-content">
-		                    <div class="uk-overflow-container">
-		                        <table class="uk-table table-striped" id="studentsTable">
+            <div class="md-card uk-margin-medium-bottom">
+		<div class="md-card-content">
+		    <div class="uk-overflow-container">
+                        
+		        <table class="uk-table table-striped" id="studentsTable" width="100%">
 		                            <!-- <caption>Table caption</caption> -->
 		                            <thead>
 		                            <tr>
-		                                <th>Name</th>
-		                                <th>Gender</th>
-		                                <th>Age</th>
-		                                <th>Date Of Birth</th>
+		                                <th>Customer</th>
+		                                <th>Email</th>
+		                                <th>Mobile No</th>
+                                                <th>Alt Mobile No</th>
+                                                <th>Landline No</th>
+		                                <th>Address</th>
+                                                <th>Deleted at</th>
 		                                <!-- <th>Action</th> -->
 		                            </tr>
 		                            </thead>
 		                            <tbody>
-		                            @foreach($students as $student)
-                                            <?php if($student->franchisee_id==Session::get('franchiseId')){ ?>
+		                            @foreach($deletedCustomer_data as $customer)
+                                            
 		                            <tr>
-		                                <td>{{$student->student_name}}</td>
-		                                <td>{{$student->student_gender}}</td>
-		                                <td><?php echo date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->y.'.'.date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->m.'years';?> </td>
-		                                <td>
-                                                    {{$student->student_date_of_birth}}
-		                                	<a  style="display: none" href="{{url()}}/students/view/{{$student->id}}">View/Edit</a>
-		                                
-		                                </td>
+		                                <td>{{$customer->customer_name.' '}}{{$customer->customer_lastname}}</td>
+		                                <td>{{$customer->customer_email}}</td>
+		                                <td>{{$customer->mobile_no}}</td>
+                                                <td>{{$customer->alt_mobile_no}}</td>
+                                                <td>{{$customer->landline_no}}</td>
+		                                <td>{{$customer->building}} {{$customer->apartment_name}} {{$customer->lane}}
+                                                <td>{{$customer->created_at}}</td>
+                                                </td>
 		                                
 		                                
 		                            </tr>
-                                            <?php } ?>
+                                            
 		                            @endforeach 
 		                            </tbody>
 		                        </table>
 		                    </div>
-		                </div>
-		            </div>
-			
-		
-		
-		
-		
-		
-	</div><!-- row -->
-</div><!-- Container -->
- <div class="md-fab-wrapper">
-<a class="md-fab md-fab-accent" href="{{url()}}/customers/add" title="Add customers">
-<i class="material-icons">&#xE03B;</i>
-</a>
+		</div>
+            </div>
+
+        </div>
+    
 </div>
+
 @stop

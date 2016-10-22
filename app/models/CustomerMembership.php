@@ -55,33 +55,22 @@ class CustomerMembership extends \Eloquent {
         
         }
         static function getNonMembertodaysRegCount(){
+//            
+                            
                            $s=DB::table('customers')
                                 ->leftJoin('customer_membership', 'customer_id', '=', 'customers.id')        
                                 ->whereDate('customers.created_at', '=',  date("Y-m-d"))     
                                 ->where('customers.franchisee_id','=',Session::get('franchiseId'))
-                                ->get();    
-                            $i=0;
-                            foreach ($s as $user)
-                               {
-                                if($user->membership_type_id==''){
-                                           $i++;   
-                                }   
-                               }
-                       return $i; 
+                                ->where('membership_type_id','=',null)
+                                ->count('customers.id');    
+                       return $s; 
                     }
         static function getNonMemberCount(){
                             $s=DB::table('customers')
                                 ->leftJoin('customer_membership', 'customer_id', '=', 'customers.id')
                                 ->where('customers.franchisee_id', '=',  Session::get('franchiseId'))
-                                ->get();    
-                            $i=0;
-                            foreach ($s as $user)
-                               {
-                                if($user->membership_type_id==''){
-                                           $i++;   
-                                }   
-                               }
-                       return $i; 
-        
+                                ->where('membership_type_id','=',null)
+                                ->count('customers.id');    
+                       return $s; 
         }
 }

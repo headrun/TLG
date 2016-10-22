@@ -54,11 +54,20 @@ class DashboardController extends \BaseController {
                          
 			
 			//for courses
-                        
-                        $totalParentchildCourse=  Classes::getallParentchildCourseCount();
-                        $totalPrekgKindergarten=    Classes::getallPrekgKindergartenCount();
-                        $totalGradeschool=          Classes::getallGradeschoolCount();
-                        $totalCourses=$totalParentchildCourse+$totalPrekgKindergarten+$totalGradeschool;
+                        $courses=Courses::where('franchisee_id','=',Session::get('franchiseId'))->select('course_name','id')->get();
+                        $present_date=Carbon::now();
+                        foreach($courses as $course){
+                          $temp= DB::select(DB::raw("SELECT count(distinct(student_classes.id)) as totalno
+                                                     FROM student_classes INNER JOIN students ON student_classes.student_id = students.id
+                                                     WHERE students.franchisee_id = ".Session::get('franchiseId').
+                                                     " AND class_id IN (select id from classes where course_id =".$course->id .")".
+                                                     " AND enrollment_start_date <= '".$present_date->toDateString().
+                                                     "' AND enrollment_end_date >= '".$present_date->toDateString().
+                                                     "' AND student_classes.status IN ('enrolled','transferred_class')"));
+                          $course->totalno=$temp[0]->totalno;
+                          
+                        }
+                       
                         
 			//for birthdayparty
                         
@@ -66,6 +75,8 @@ class DashboardController extends \BaseController {
                         $todaysbpartycount=BirthdayParties::getBpartyCountBytoday();
                                 
 			$todaysFollowup = Comments::getAllFollowup();
+                        $futurefollowups= Comments::getFutureFollowup();
+                        
       //return $todaysFollowup;
 			$todaysIntrovisit = BatchSchedule::getTodaysIntroVisits();
 			
@@ -82,8 +93,7 @@ class DashboardController extends \BaseController {
                                                                     ->select('student_id')
                                                                     ->get();
                         
-                                                    //var_dump($birthday_celebration_data); die();
-                        
+                                                    
                         for($i=0;$i<count($birthday_celebration_data);$i++){
                            $student_id[$i]=$birthday_celebration_data[$i]['student_id'];
                         }
@@ -93,18 +103,15 @@ class DashboardController extends \BaseController {
                        
                         // for rest of the days of month
                         $birthday_data= Students::whereNotIn('id',$student_id)
-                                                 //  where('student_date_of_birth','>',$startdate->toDateString())
                                                   ->where('student_date_of_birth','<>','')
                                                   ->where( DB::raw('MONTH(student_date_of_birth)'), '=', $month )
                                                   ->where( DB::raw('DATE(student_date_of_birth)'), '>', $presentdate )
                                                   ->where('franchisee_id','=',Session::get('franchiseId'))
-                                                  //->where('student_date_of_birth','=','0000-'.$month.'-00') 
                                                   ->orderBy(DB::raw('DAY(student_date_of_birth)'))
                                                   -> get();
                         
                        
-                      //  echo $month; die(); 
-                        
+                      
                         for($i=0;$i<count($birthday_data);$i++){
                             $customer_data= Customers::where('id','=',$birthday_data[$i]['customer_id'])->get();
                             $birthday_data[$i]['customer_name']=  $customer_data[0]['customer_name'];
@@ -210,7 +217,7 @@ class DashboardController extends \BaseController {
                                                            'todaysNonmemberReg','NonmembersCount',
                                                             'customerCount', "reminderCount", 
                                                             'totalbpartyCount','todaysbpartycount',
-                                                           'totalParentchildCourse','totalPrekgKindergarten','totalGradeschool','totalCourses',
+                                                           'courses','futurefollowups',
 							  'todaysCustomerReg','todaysEnrolledCustomers','enrolledCustomers','totalIntrovisitCount', 'introVisitCount', 'allIntrovisits', 'todaysFollowup', 
 							  'todaysIntrovisit','activeRemindersCount',);
 			return View::make('pages.dashboard.upcoming',compact($viewData));

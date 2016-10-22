@@ -159,14 +159,11 @@ class Comments extends \Eloquent {
 	
 	static function getReminderCountByFranchiseeId(){
 		
-		//$today = date('Y-m-d');
-		return Comments::where("franchisee_id", "=", Session::get('franchiseId'))
+            return Comments::where("franchisee_id", "=", Session::get('franchiseId'))
 					->where("reminder_date", "!=", "NULL")
-					//->where("reminder_date", "LIKE", "".$today."%")
-                                        ->whereDate('reminder_date','=',date("Y-m-d"))
+					->whereDate('reminder_date','=',date("Y-m-d"))
 					->count();
-					//->get();
-		
+					
 	}
 	
 	static function getTodaysFollowup(){
@@ -185,20 +182,19 @@ class Comments extends \Eloquent {
 	
 		$today = date('Y-m-d');
 		return Comments::with('Customers')->where("franchisee_id", "=", Session::get('franchiseId'))
-		//->where("reminder_date", "!=", "NULL")
-		->whereDate("reminder_date", "=", $today)
-		//->whereIn("comment_type", ["FOLLOW_UP", "CALL_BACK"])		
-		->orderBy('reminder_date', 'desc')
-		//->where("reminder_date", "LIKE", "".$today."%")
-		->get();
+		                 ->whereDate("reminder_date", "=", $today)
+		                 ->orderBy('reminder_date', 'desc')
+		                 ->get();
 		
-		/* ->where("comment_type", "=", "FOLLOW_UP")
-		//->orWhere("comment_type", "=", "CALL_BACK")
-		->orWhere(function ($query) {
-			$query->where("comment_type", "=", "CALL_BACK");
-		}) */
 	
 	}
+        
+        static function getFutureFollowup(){
+            return Comments::with('Customers')->where('franchisee_id','=',Session::get('franchiseId'))
+                            ->whereDate("reminder_date",'>',date('Y-m-d'))
+                            ->orderBy('reminder_date', 'desc')
+                            ->get();
+        }
 	
 	static function getAllFollowupActive(){
 	

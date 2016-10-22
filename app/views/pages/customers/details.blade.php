@@ -2378,6 +2378,47 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
  
 });
 
+$('.deletecustomer').click(function(){
+   $('.deletemsg').html("<p class='uk-alert uk-alert-warning'>Please wait... Customer Data Deleting...</p>");
+    $.ajax({
+        type: "POST",
+        url: "{{URL::to('/quick/deleteCustomer')}}",
+        data: {'customer_id':customerId},
+        dataType: 'json',
+	success: function(response){
+            if(response.status==='success'){
+                if(response.deleted_data==1){
+                    $('.deletemsg').html("<p class='uk-alert uk-alert-success'>Customer Deleted...</p>");
+                }    
+                    $('deletemsg').show('slow');
+                    setTimeout(function(){
+                        $('.deletemsg').slideUp();
+                        $('.deletemsg').html(''); 
+                        $('.deletemsg').show('slow');
+                    },2000);
+                    $('.deletecustomerclose').click(function(event){
+                        event.preventDefault();
+                        window.location.assign("{{url()}}/dashboard");
+                    });
+                    $('#deletecustomerclose').click(function(event){
+                        event.preventDefault();
+                        window.location.assign("{{url()}}/dashboard");
+                    });
+                
+            }else{
+                
+                $('.deletemsg').html("<p class='uk-alert uk-alert-danger'>Sorry.. Error in Deleting customer</p>");
+                setTimeout(function(){
+                        $('.deletemsg').slideUp();
+                        $('.deletemsg').html(''); 
+                        $('.deletemsg').show('slow');
+                    },2000);
+            }
+        }
+    }); 
+});
+
+
 </script>
 @stop
 @section('content')
@@ -2468,9 +2509,43 @@ $("input[name='birthdayPaymentTypeRadio']").change(function(){
                                 
                             </div>
                             
-                            <a class="md-fab md-fab-small md-fab-accent" id="editCustomerBtn">
+                            <a class="md-fab md-fab-small md-fab-accent" id="editCustomerBtn" style="right:83px">
                                     <i class="material-icons">&#xE150;</i>
-                                </a>
+                            </a>
+                            <?php if(Session::get('userType')=='ADMIN'){ ?>
+                            <a class="md-fab md-fab-small md-fab-accent uk-alert-danger"  data-uk-modal="{target:'#my-id',bgclose:false}" id="deleteBtn"> <i
+					class="material-icons">delete</i>
+                            </a>
+                            <?php } ?>
+                            
+                                <!-- This is the modal -->
+                                <div id="my-id" class="uk-modal">
+                                    <div class="uk-modal-dialog ">
+                                        <a class="uk-modal-close uk-close" id="deletecustomerclose"></a>
+                                            <div class="uk-modal-header" style="color:red;">
+                                                <h3 class="uk-modal-title">Delete Data</h3>
+                                            </div>
+                                            <div class="modaldata">
+                                                <div class="deletemsg"></div>
+                                                <div class="uk-grid" data-uk-grid-margin="">
+                                                    
+                                                    <div class="uk-width-medium-1-1">
+                                                        <button class="  center-block text-center uk-button uk-button-danger uk-button-large deletecustomer" style="font-size:12px;">
+                                                            <i class="material-icons " style="color:white">delete</i> Customer
+                                                        </button>
+                                                        <em class="uk-text-center-small center-block text-center " style="color:black;"> (with payments)</em>
+                                                    </div>
+                                                   
+                                                </div>
+                                            </div>
+         
+         
+                                            <div class="uk-modal-footer uk-text-right">
+                                                <button type="button" class="md-btn md-btn-flat uk-modal-close deletecustomerclose ">Close</button>
+                                            </div>
+                                    </div>
+                                </div>
+
                             
                         </div>
                         <div class="user_content">

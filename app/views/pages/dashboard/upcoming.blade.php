@@ -39,6 +39,27 @@
     <!--  datatables functions -->
     <script src="{{url()}}/assets/js/pages/plugins_datatables.min.js"></script>
     <script>
+        
+        
+        
+    $("#futurefollowupTable").DataTable({
+        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+
+            // Bind click event
+            $(nRow).click(function() {
+                  //window.open($(this).find('a').attr('href'));
+				window.location = $(this).find('a').attr('href');
+                  //OR
+
+                // window.open(aData.url);
+
+            });
+
+            return nRow;
+        },
+        "iDisplayLength": 10,
+        "lengthMenu": [ 10, 50, 100, 150, 200 ]
+    });    
     $("#followupTable").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
 
@@ -299,19 +320,6 @@
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <center><span class="uk-text-muted uk-text-small" id = "Titles"> Prospects</span></center>
-                             <!--<table style="width: 100% " >
-                                <thead>
-                                        <tr>
-                                            <th align="left"><center><span class="uk-text-muted uk-text-small">Today</span></center></th>
-                                            <th align="right" valign="right"><center><span class="uk-text-muted uk-text-small">Till now</span></center></th>
-                                        </tr>
-                                </thead>
-                                <tbody align = "center">
-                                <td><h2 class="uk-margin-remove"><span class="countUpMe">{{$todaysNonmemberReg}}<noscript>12456</noscript></span></h2></td>
-                                <td valign="left"><h2 class="uk-margin-remove"><span class="countUpMe">{{$NonmembersCount}}<noscript>12456</noscript></span></h2></td>
-                                </tbody>
-                            </table>-->
-
                             <div class = "row" style = "">
                                 <div class = "col-md-6">
                                     <center><span class="uk-text-muted uk-text-small">Today</span></center>
@@ -331,26 +339,6 @@
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <center><span class="uk-text-muted uk-text-small" id = "Titles">Enrolled Kids</span></center>
-                             <!--<table style="width: 100% " >
-                                <thead>
-                                        <tr>
-                                            <th align="left"><center><span class="uk-text-muted uk-text-small">Today</span></center></th>
-                                            <th align="right" valign="right"><center><span class="uk-text-muted uk-text-small">Till now</span></center></th>
-                                        </tr>
-                                </thead>
-                                <tbody>
-                                <td ><center><h2 class="uk-margin-remove"><span class="countUpMe">@if($todaysEnrolledCustomers){{$todaysEnrolledCustomers}}@else 0 @endif<noscript>12456</noscript></span></h2></center></td>
-                                <td valign="left" ><center><h2 class="uk-margin-remove"><span class="countUpMe">
-                                                 @if($enrolledCustomers)
-                            
-                                                 {{$enrolledCustomers}}
-                                                  @else
-							    0
-						  @endif
-                                            <noscript>12456</noscript></span></h2></center></td>
-                                </tbody>
-                            </table>-->
-
                             <div class = "row" style = "">
                                 <div class = "col-md-6">
                                     <center><span class="uk-text-muted uk-text-small">Today</span></center>
@@ -392,19 +380,6 @@
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <center><span class="uk-text-muted uk-text-small" id = "Titles">Introductory Visit</span></center>
-                             <!--<table style="width: 100% " >
-                                <thead>
-                                        <tr>
-                                            <th align="left"><center><span class="uk-text-muted uk-text-small">Today</span></center></th>
-                                            <th align="right" valign="right"><center><span class="uk-text-muted uk-text-small">Till now</span></center></th>
-                                        </tr>
-                                </thead>
-                                <tbody align = "center">
-                                <td><h2 class="uk-margin-remove"><span class="countUpMe">{{$introVisitCount}}<noscript>12456</noscript></span></h2></td>
-                                <td valign="left"><h2 class="uk-margin-remove"><span class="countUpMe">{{$totalIntrovisitCount}}<noscript>12456</noscript></span></h2></td>
-                                </tbody>
-                            </table>-->
-
                             <div class = "row" style = "">
                                 <div class = "col-md-6">
                                     <center><span class="uk-text-muted uk-text-small">Today</span></center>
@@ -424,18 +399,6 @@
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <center><span class="uk-text-muted uk-text-small" id = "Titles">Birthday Party</span></center>
-                             <!--<table style="width: 100% " >
-                                <thead>
-                                        <tr>
-                                            <th align="left"><center><span class="uk-text-muted uk-text-small">Today</span></center></th>
-                                            <th align="right" valign="right"><center><span class="uk-text-muted uk-text-small">Till now</span></center></th>
-                                        </tr>
-                                </thead>
-                                <tbody align = "center"> 
-                                <td><h2 class="uk-margin-remove"><span class="countUpMe">{{$todaysbpartycount}}<noscript>12456</noscript></span></h2></td>
-                                <td valign="left"><h2 class="uk-margin-remove"><span class="countUpMe">{{$totalbpartyCount}}<noscript>12456</noscript></span></h2></td>
-                                </tbody>
-                            </table>-->
                             <div class = "row" style = "">
                                 <div class = "col-md-6">
                                     <center><span class="uk-text-muted uk-text-small">Today</span></center>
@@ -455,27 +418,12 @@
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <span class="uk-text-muted uk-text-small" id = "Titles">Current Enrollment</span>
-                             <!--<table style="width: 100% " >
-                                <thead>
-                                        <tr>
-                                            <th align="left"><span class="uk-text-muted uk-text-small">ParentChild:{{$totalParentchildCourse}}</span></th>
-                                        </tr><tr>
-                                            <th align="right" valign="right"><span class="uk-text-muted uk-text-small">Pre/K: {{$totalPrekgKindergarten}}</span></th>
-                                        </tr><tr>
-                                            <th align="right" valign="right"><span class="uk-text-muted uk-text-small">Gradeschool: {{$totalGradeschool}}</span></th>
-                                        </tr><tr>   
-                                            <th align="right" valign="right"><span class="uk-text-muted uk-text-small">Total: {{$totalCourses}}</span></th>
-                                        
-                                        </tr>
-                                </thead>
-                            </table>-->
-
+                            
                             <div class = "row" style = "">
                                 <div class = "col-md-12">  
-                                        <h5><span class="uk-text-muted uk-text-small_"><span>Parent & Child :</span><b> &nbsp;&nbsp;{{$totalParentchildCourse}}</b></span></h5>
-                                        <h5><span class="uk-text-muted uk-text-small_"><span>Pre / K:</span><b> &nbsp;&nbsp; {{$totalPrekgKindergarten}}</b></span></h5>
-                                        <h5><span class="uk-text-muted uk-text-small_"><span>Grade School:</span><b> &nbsp;&nbsp; {{$totalGradeschool}}</b></span></h5>
-                                        <h5><span class="uk-text-muted uk-text-small_"><span>Total:</span><b> &nbsp;&nbsp; {{$totalCourses}}</b></span></h5>
+                                        @foreach($courses as $course)
+                                        <h5><span class="uk-text-muted uk-text-small_"><span>{{$course->course_name}} :</span><b>{{$course->totalno}} &nbsp;&nbsp;</b></span></h5>
+                                        @endforeach
                                 </div>
                             </div>
                             
@@ -822,6 +770,53 @@
                 </div>
                 
               </div>
+            
+            
+            <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
+            
+                <div class="uk-width-medium-1-2">
+                    <div class="md-card">
+                        <div class="md-card-content">
+                            <div class="uk-overflow-container">
+                            <h3>Follow Ups (Future)</h3>
+                            	<?php if(isset($futurefollowups)){?>
+                                <table class="uk-table dashboardTable" id="futurefollowupTable" >
+                                    <thead>
+                                        <tr>
+                                            <th class="uk-text-nowrap">Customer</th>
+                                            <th class="uk-text-nowrap">Followup Type</th>
+                                            <th class="uk-text-nowrap">Mobile No</th>
+                                            <th class="uk-text-nowrap">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    	<?php foreach($futurefollowups as $items){?>
+                                        <tr class="uk-table-middle smallText">
+                                            <td class="uk-width-3-10 uk-text-nowrap">{{$items->Customers->customer_name}} {{$items->Customers->customer_lastname}}<a href="{{url()}}/customers/view/{{$items->Customers->id}}?tab=ivfollowup"></a></td>
+                                            <td class="uk-width-3-10 uk-text-nowrap">{{$items->followup_type}}</td>
+                                            <td class="uk-width-3-10 uk-text-nowrap">{{$items->Customers->mobile_no}}</td>
+                                            <td class="uk-width-3-10 uk-text-nowrap">{{date('d M Y', strtotime($items->reminder_date))}}</td>
+                                        </tr>   
+                                        <?php }?>                                     
+                                    </tbody>
+                                </table>
+                                <?php }?>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+               <div class="uk-width-medium-1-2">
+                   <!--
+                    <div class="md-card">
+                        <div class="md-card-content">
+                            <div class="uk-overflow-container">
+                            
+                            </div>
+                        </div>
+                    </div>
+                   -->
+               </div>
+            </div>
               
 
 @stop

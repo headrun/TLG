@@ -86,31 +86,7 @@ class Classes extends \Eloquent {
 	
         
         
-        
-        public static function getallParentchildCourseCount(){
-            return DB::table('classes_master')
-                                            ->join('classes', 'classes_master.id', '=', 'classes.class_master_id')
-                                            ->join('student_classes', 'student_classes.class_id', '=', 'classes.id')
-                                            ->where('classes.franchisee_id', '=', Session::get('franchiseId'))
-                                            ->where('course_master_id','=','1')
-                                            ->count();
-        }
-	public static function getallPrekgKindergartenCount(){
-            return DB::table('classes_master')
-                                            ->join('classes', 'classes_master.id', '=', 'classes.class_master_id')
-                                            ->join('student_classes', 'student_classes.class_id', '=', 'classes.id')
-                                            ->where('classes.franchisee_id', '=', Session::get('franchiseId'))
-                                            ->where('course_master_id','=','2')
-                                            ->count();
-        }
-        public static function getallGradeschoolCount(){
-            return DB::table('classes_master')
-                                            ->join('classes', 'classes_master.id', '=', 'classes.class_master_id')
-                                            ->join('student_classes', 'student_classes.class_id', '=', 'classes.id')
-                                            ->where('classes.franchisee_id', '=', Session::get('franchiseId'))
-                                            ->where('course_master_id','=','3')
-                                            ->count();
-        } 
+         
         public static function getstudentclasses($classId){
             return Classes::where('id','=',$classId)->get();
         }

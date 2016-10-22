@@ -128,7 +128,7 @@ class CustomersController extends \BaseController {
 						
 					return Redirect::to ( 'customers/view/' . $addCustomerResult->id );
 				} else {
-					Session::flash ( 'warning', "Sorry, Customer Could not be added at the moment." );
+					Session::flash ( 'warning', "Sorry, Customer already exists in the system." );
 				}
 			}
 			
@@ -541,6 +541,140 @@ class CustomersController extends \BaseController {
         public function getUniqueApartmentNames(){
             if(Auth::check()){
                 return Response::json(array('status'=>'success','data'=>Customers::where('apartment_name','!=','')->where('franchisee_id','=',Session::get('franchiseId'))->distinct('apartment_name')->select('apartment_name')->get()));
+            }
+        }
+        
+        
+        
+        public function deleteCustomer(){
+            if((Auth::check()) && (Session::get('userType')=='ADMIN') ){
+                 $inputs=Input::all();
+                 $deleted=0;
+                 //orders
+                 if(Orders::where('customer_id','=',$inputs['customer_id'])
+                           ->exists()
+                   ){
+                     Orders::where('customer_id','=',$inputs['customer_id'])
+                             ->delete();
+                     $deleted=1;
+                   }
+                 if(PaymentMaster::where('customer_id','=',$inputs['customer_id'])
+                                  ->exists()){
+                     PaymentMaster::where('student_id','=',$inputs['customer_id'])
+                                  ->delete();
+                     $deleted=1;
+                   }
+                 if(PaymentDues::where('customer_id','=',$inputs['customer_id'])
+                                ->where('franchisee_id','=',Session::get('franchiseId'))
+                                ->exists()){
+                     PaymentDues::where('customer_id','=',$inputs['customer_id'])
+                                ->where('franchisee_id','=',Session::get('franchiseId'))
+                                ->delete();
+                     $deleted=1;
+                 }
+                if(PaymentFollowups::where('customer_id','=',$inputs['customer_id'])
+                                     ->exists()
+                        ){
+                    PaymentFollowups::where('customer_id','=',$inputs['customer_id'])
+                                      ->delete();
+                    $deleted=1;
+                }
+                
+                if(BirthdayParties::where('customer_id','=',$inputs['customer_id'])
+                                    ->exists()){
+                        
+                        BirthdayParties::where('customer_id','=',$inputs['customer_id'])
+                                    ->delete();
+                        $deleted=1;
+                }
+                if(IntroVisit::where('customer_id','=',$inputs['customer_id'])
+                               ->where('franchisee_id','=',Session::get('franchiseId'))
+                               ->exists()){
+                        IntroVisit::where('customer_id','=',$inputs['customer_id'])
+                               ->where('franchisee_id','=',Session::get('franchiseId'))
+                               ->delete();
+                        $deleted=1;
+                }
+                if(CustomerMembership::where('customer_id','=',$inputs['customer_id'])->exists()){
+                    CustomerMembership::where('customer_id','=',$inputs['customer_id'])->delete();
+                }
+                if(MembershipFollowup::where('customer_id','=',$inputs['customer_id'])->exists()){
+                   MembershipFollowup::where('customer_id','=',$inputs['customer_id'])->delete(); 
+                }
+                if(PaymentReminders::where('customer_id','=',$inputs['customer_id'])->exists()){
+                    PaymentReminders::where('customer_id','=',$inputs['customer_id'])->delete();
+                }
+                if(Students::where('customer_id','=',$inputs['customer_id'])->exists()){
+                    $student_ids=Students::where('customer_id','=',$inputs['customer_id'])
+                                 ->select('id')->get();
+                    foreach($student_ids as $student_id){
+                        if(StudentClasses::where('student_id','=',$student_id->id)
+                                   ->exists()
+                        ){
+                            StudentClasses::where('student_id','=',$student_id->id)->delete();
+                            $deleted=1;
+                        }
+                        if(Attendance::where('student_id','=',$student_id->id)->exists()){
+                            Attendance::where('student_id','=',$student_id->id)->delete();
+                            $deleted=1;
+                        }
+                    }
+                   Students::where('customer_id','=',$inputs['customer_id'])->delete();
+                }
+                if(Customers::where('id','=',$inputs['customer_id'])->exists()){
+                
+                
+                $customer_data=Customers::find($inputs['customer_id']);
+                $deletedcustomer= new DeletedCustomers();
+                $deletedcustomer->customer_id=$inputs['customer_id'];
+                $deletedcustomer->franchisee_id=$customer_data->franchisee_id;
+                $deletedcustomer->customer_name=$customer_data->customer_name;
+                $deletedcustomer->customer_lastname=$customer_data->customer_lastname;
+                $deletedcustomer->mobile_no=$customer_data->mobile_no;
+                $deletedcustomer->alt_mobile_no=$customer_data->alt_mobile_no;
+                $deletedcustomer->landline_no=$customer_data->landline_no;
+                $deletedcustomer->building=$customer_data->building;
+                $deletedcustomer->apartment_name=$customer_data->apartment_name;
+                $deletedcustomer->lane=$customer_data->lane;
+                $deletedcustomer->locality=$customer_data->locality;
+                $deletedcustomer->state=$customer_data->state;
+                $deletedcustomer->city=$customer_data->city;
+                $deletedcustomer->zipcode=$customer_data->zipcode;
+                $deletedcustomer->address=$customer_data->address;
+                $deletedcustomer->source=$customer_data->source;
+                $deletedcustomer->source_event=$customer_data->source_event;
+                $deletedcustomer->profile_image=$customer_data->profile_image;
+                $deletedcustomer->stage=$customer_data->stage;
+                $deletedcustomer->referred_by=$customer_data->referred_by;
+                $deletedcustomer->created_by=Session::get('userId');
+                $deletedcustomer->created_at=date("Y-m-d H:i:s");
+                $deletedcustomer->save();
+                
+                if(Comments::where('customer_id','=',$inputs['customer_id'])->exists()){
+                    Comments::where('customer_id','=',$inputs['customer_id'])->delete();
+                }
+                
+                Customers::where('id','=',$inputs['customer_id'])->delete();
+                $deleted=1;
+                }
+                
+                
+                
+              if($deleted){
+//                    $comment= new comments();
+//                    $comment->deletedcustomer_id=$inputs['customer_id'];
+//                    $comment->franchisee_id= Session::get('franchiseId');
+//                    $comment->log_text= "Customer deleted";
+//                    $comment->comment_type="ACTION_LOG";
+//                    //$comment->followup_type="INQUIRY";
+//                    $comment->created_by    = Session::get('userId');
+//                    $comment->created_at    = date("Y-m-d H:i:s");
+//                    $comment->save();
+                }
+                   
+                return Response::json(array('status'=>'success','deleted_data'=>$deleted)); 
+            }else{
+                return Response::json(array('status'=>'failure'));
             }
         }
 		/**

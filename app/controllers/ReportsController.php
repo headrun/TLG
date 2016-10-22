@@ -47,6 +47,20 @@ class ReportsController extends \BaseController {
                 return Response::json(array($inputs));
             }
         }
+        
+        public static function deleted_customers(){
+            if((Auth::check()) && (Session::get('userType'))=='ADMIN'){
+                $currentPage  =  "ViewDeletedCustomer_LI";
+                $mainMenu     =  "REPORTS_MENU_MAIN";
+                $deletedCustomer_data=DeletedCustomers::where('franchisee_id','=',Session::get('franchiseId'))
+                                                        ->orderBy('id','desc')
+                                                        ->get();
+                $viewData= compact('currentPage','mainMenu','deletedCustomer_data');
+                return View::make('pages.reports.deletedcustomer_view',$viewData);
+            }else{
+                return Redirect::action('VaultController@logout');
+            }
+        }
     
 	/**
 	 * Display a listing of the resource.

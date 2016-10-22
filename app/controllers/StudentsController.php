@@ -36,6 +36,7 @@ class StudentsController extends \BaseController {
 			$students = StudentClasses::getAllNonEnrolledStudents(Session::get('franchiseId'));
                         
                         
+                        
                         //return $students;
 			$dataToView = array("customers",'customersDD', 'students','currentPage', 'mainMenu');
 			return View::make('pages.students.nonenrolledstudentlist', compact($dataToView));
@@ -2204,6 +2205,213 @@ class StudentsController extends \BaseController {
         public function getUniqueSchoolNames(){
             if(Auth::check()){
                 return Response::json(array('status'=>'success','data'=>Students::where('school','!=','')->where('franchisee_id','=',Session::get('franchiseId'))->distinct('school')->select('school')->get()));
+            }
+        }
+        
+        
+        public function deleteIVdata(){
+            if((Auth::check()) && (Session::get('userType')=='ADMIN') ){
+                $inputs=Input::all();
+                $deleted_data=0;
+                if(StudentClasses::where('student_id','=',$inputs['student_id'])
+                                   ->where('introvisit_id','<>',0)
+                                   ->exists()
+                        ){
+                    StudentClasses::where('student_id','=',$inputs['student_id'])
+                                   ->where('introvisit_id','<>',0)
+                                   ->delete();
+                    $deleted_data=1;
+                }
+                if(IntroVisit::where('student_id','=',$inputs['student_id'])
+                               ->where('franchisee_id','=',Session::get('franchiseId'))
+                               ->exists()
+                        ){
+                        $introvisit_data=Introvisit::where('student_id','=',$inputs['student_id'])
+                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                    ->get();
+                        IntroVisit::where('student_id','=',$inputs['student_id'])
+                               ->where('franchisee_id','=',Session::get('franchiseId'))
+                               ->delete();
+                        $deleted_data=1;
+                        for($i=0;$i<1;$i++){
+                            $intro_data=$introvisit_data[$i];
+                            if(Comments::where('introvisit_id','=',$intro_data->id)
+                                     ->exists()
+                               ){
+                                Comments::where('introvisit_id','=',$intro_data->id)
+                                         ->update(array('reminder_date'=>null));
+                               }
+                            $comment=  new Comments();
+                            $comment->customer_id=   $intro_data->customer_id;
+                            $comment->student_id= $intro_data->student_id;
+                            $comment->franchisee_id= $intro_data->franchisee_id;
+                            $comment->log_text= "Introvisits are deleted";
+                            $comment->comment_type="ACTION_LOG";
+                            $comment->followup_type="INQUIRY";
+                            $comment->created_by    = Session::get('userId');
+                            $comment->created_at    = date("Y-m-d H:i:s");
+                            $comment->save();
+                                
+                        }
+               }
+               return Response::json(array('status'=>'success','deleted_data'=>$deleted_data));
+            }else{
+               return Response::json(array('status'=>'failure')); 
+            }
+            
+            
+        }
+        
+        public function deletebirthdaydata(){
+            if((Auth::check()) && (Session::get('userType')=='ADMIN') ){
+                $inputs=Input::all();
+                $deleted=0;
+                    
+                if(Orders::where('student_id','=',$inputs['student_id'])
+                           ->where('payment_for','=','birthday')
+                           ->exists()
+                   ){
+                Orders::where('student_id','=',$inputs['student_id'])
+                            ->where('payment_for','=','birthday')
+                           ->delete();
+                    $deleted=1;
+                }
+               
+                if(PaymentDues::where('student_id','=',$inputs['student_id'])
+                                ->where('franchisee_id','=',Session::get('franchiseId'))
+                                ->where('payment_due_for','=','birthday')
+                                ->exists()
+                   ){
+                    PaymentDues::where('student_id','=',$inputs['student_id'])
+                                ->where('franchisee_id','=',Session::get('franchiseId'))
+                                ->where('payment_due_for','=','birthday')
+                                ->delete();
+                    $deleted=1;
+                   }
+                if(BirthdayParties::where('student_id','=',$inputs['student_id'])
+                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                    ->exists()        
+                        ){
+                    $deleted=1;
+                    $birthday_data=BirthdayParties::where('student_id','=',$inputs['student_id'])
+                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                    ->get();
+                    BirthdayParties::where('student_id','=',$inputs['student_id'])
+                                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                                    ->delete();
+                    
+                    for($i=0;$i<1;$i++){
+                            $birth_data=$birthday_data[$i];
+                            if(Comments::where('birthday_id','=',$birth_data->id)
+                                     ->exists()
+                               ){
+                                Comments::where('introvisit_id','=',$birth_data->id)
+                                         ->update(array('reminder_date'=>null));
+                               }
+                            $comment=  new Comments();
+                            $comment->customer_id=   $birth_data->customer_id;
+                            $comment->student_id= $birth_data->student_id;
+                            $comment->franchisee_id= $birth_data->franchisee_id;
+                            $comment->log_text= "Birthday data are deleted";
+                            $comment->comment_type="ACTION_LOG";
+                            $comment->followup_type="INQUIRY";
+                            $comment->created_by    = Session::get('userId');
+                            $comment->created_at    = date("Y-m-d H:i:s");
+                            $comment->save();
+                                
+                        }
+                }
+                
+                return Response::json(array('status'=>'success','deleted_data'=>$deleted));
+                   
+            }else{
+                return Response::json(array('status'=>'failure'));
+            }
+        }
+        
+        
+        public function deleteenrollmentdata(){
+            if((Auth::check()) && (Session::get('userType')=='ADMIN') ){
+                $inputs=Input::all();
+                $deleted=0;
+                if(Orders::where('student_id','=',$inputs['student_id'])
+                           ->where('payment_for','=','enrollment')
+                           ->exists()
+                   ){
+                Orders::where('student_id','=',$inputs['student_id'])
+                            ->where('payment_for','=','enrollment')
+                           ->delete();
+                    $deleted=1;
+                }
+                
+                if(PaymentMaster::where('student_id','=',$inputs['student_id'])
+                                  ->exists()
+                        ){
+                    PaymentMaster::where('student_id','=',$inputs['student_id'])
+                                  ->delete();
+                }
+                
+                if(PaymentDues::where('student_id','=',$inputs['student_id'])
+                                ->where('franchisee_id','=',Session::get('franchiseId'))
+                                ->where('payment_due_for','=','enrollment')
+                                ->exists()
+                   ){
+                    PaymentDues::where('student_id','=',$inputs['student_id'])
+                                ->where('franchisee_id','=',Session::get('franchiseId'))
+                                ->where('payment_due_for','=','enrollment')
+                                ->delete();
+                    $deleted=1;
+                   }
+                if(PaymentFollowups::where('student_id','=',$inputs['student_id'])
+                                     ->exists()
+                        ){
+                    PaymentFollowups::where('student_id','=',$inputs['student_id'])
+                                      ->delete();
+                    $deleted=1;
+                }
+                if(PaymentReminders::where('student_id','=',$inputs['student_id'])->exists()){
+                    PaymentReminders::where('student_id','=',$inputs['student_id'])->delete();
+                    $deleted=1;
+                }
+                if(StudentClasses::where('student_id','=',$inputs['student_id'])
+                                   ->where('introvisit_id','=',0)
+                                   ->exists()
+                        ){
+                    
+                    StudentClasses::where('student_id','=',$inputs['student_id'])
+                                   ->where('introvisit_id','=',0)
+                                   ->delete();
+                    
+                    
+                    if(Comments::whereNotNull('paymentfollowup_id')
+                                 ->where('student_id','=',$inputs['student_id'])
+                                 ->exists()
+                      ){
+                       Comments::whereNotNull('paymentfollowup_id')
+                                 ->where('student_id','=',$inputs['student_id'])
+                                 ->update(array('reminder_date'=>NULL));
+                    
+                            
+                      }
+                    $deleted=1;
+                }
+                if($deleted){
+                    $comment= new comments();
+                    $comment->student_id=$inputs['student_id'];
+                    $comment->customer_id=$inputs['customer_id'];
+                    $comment->franchisee_id= Session::get('franchiseId');
+                    $comment->log_text= "Enrollment data are deleted";
+                    $comment->comment_type="ACTION_LOG";
+                    $comment->followup_type="INQUIRY";
+                    $comment->created_by    = Session::get('userId');
+                    $comment->created_at    = date("Y-m-d H:i:s");
+                    $comment->save();
+                }
+                   
+                
+                return Response::json(array('status'=>'success','deleted_data'=>$deleted));
+            }else{
+                return Response::json(array('status'=>'failure'));
             }
         }
         

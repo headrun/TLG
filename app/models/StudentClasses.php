@@ -31,6 +31,15 @@ class StudentClasses extends \Eloquent {
 	
 	static function getAllEnrolledStudents($franchiseeId){
 		$present_date=Carbon::now();
+                
+                $students=DB::select(DB::raw(
+                        "SELECT * from students where id IN (SELECT distinct (students.id)
+                         FROM student_classes INNER JOIN students ON student_classes.student_id = students.id
+                         WHERE students.franchisee_id = ".$franchiseeId." AND enrollment_start_date <= '".$present_date->toDateString().
+                         "' AND enrollment_end_date >='".$present_date->toDateString()."' AND student_classes.status 
+                         IN ('enrolled','transferred_class'))")
+                                   );
+                /*
                 $students=StudentClasses::with(array('Students'=>function($q){
                     $q->where('franchisee_id','=', Session::get('franchiseId'))
                       ->select('id','students.*');
@@ -39,23 +48,22 @@ class StudentClasses extends \Eloquent {
                    ->distinct('student_id')
                    ->groupBy('student_id')
                    ->get();
-                                      
+                */                      
 		return $students;
 	}
         static function getAllNonEnrolledStudents($franchiseeId){
 		
                 $present_date=Carbon::now();
+                
+                $students=DB::select(DB::raw(
+                        "SELECT * from students where students.id NOT IN (SELECT students.id
+                         FROM student_classes INNER JOIN students ON student_classes.student_id = students.id
+                         WHERE students.franchisee_id = ".$franchiseeId." AND ".
+                         " enrollment_end_date <'".$present_date->toDateString()."' AND student_classes.status 
+                         IN ('enrolled','transferred_class'))and franchisee_id= ".$franchiseeId)
+                                   );
+                
                 /*
-                return $present_date->toDateString();
-                return StudentClasses::with(array('Students'=>function($q){
-                    $q->where('franchisee_id','=', Session::get('franchiseId'))->get();
-                }))->whereDate('enrollment_start_date','<=',$present_date->toDateString())
-                   ->whereDate('enrollment_end_date','>=', $present_date->toDateString())
-                   ->distinct('student_id')
-                   ->groupBy('student_id')
-                   ->select('student_id')
-                   ->get();
-                   */
                 $students=StudentClasses::with(array('Students'=>function($q){
                     $q->where('franchisee_id','=', Session::get('franchiseId'))
                        ->get();
@@ -79,8 +87,8 @@ class StudentClasses extends \Eloquent {
                 }else{                               
                 $nonEnrolledStudents[0]='';                      
                 }
-                
-                return $nonEnrolledStudents;
+                */
+                return $students;
 	}
         
         
@@ -134,34 +142,17 @@ class StudentClasses extends \Eloquent {
 	
 	static function getEnrolledCustomers(){
 		
-		/* $enrolledCustomers =   DB::table('customers')
-					            ->join('students', 'students.customer_id', '=', 'customers.id')
-					            ->join('student_classes', 'student_classes.student_id', '=', 'students.id')
-					            ->where('customers.franchisee_id', '=',  Session::get('franchiseId'))
-					            ->select('customers.id', DB::raw('count(customers.id) as enrolledCustomers'))  
-								->groupBy('customers.id')		
-					            ->get(); */
-		
 		$franchiseeId = Session::get('franchiseId');
-		
-		$enrolledCustomers = DB::table('students')
-		->join('student_classes', 'student_classes.student_id', '=', 'students.id')
-		//->join('batches', 'batches.id', '=', 'student_classes.batch_id')
-		->where('students.franchisee_id','=',$franchiseeId)
-		->count();
-		
-		
-		/* DB::select( DB::raw("SELECT id FROM students WHERE some_col = :somevariable"), array(
-		'somevariable' => $someVariable,
-		));
- */
-		//echo $enrolledCustomers;
-		//exit();
-		
-		//$enrolledCustomers = Students::with('StudentClasses')->where('franchisee_id', '=', Session::get('franchiseId'))->count();
-		
-		
-		if($enrolledCustomers){
+		$present_date=Carbon::now();
+		$enrolledCustomers = 
+                        DB::select(DB::raw("SELECT count(id) as enrollmentno from students where id IN (SELECT distinct (students.id)
+                         FROM student_classes INNER JOIN students ON student_classes.student_id = students.id
+                         WHERE students.franchisee_id = ".$franchiseeId." AND enrollment_start_date <= '".$present_date->toDateString().
+                         "' AND enrollment_end_date >='".$present_date->toDateString()."' AND student_classes.status 
+                         IN ('enrolled','transferred_class'))"));
+                                  
+		$enrolledCustomers=$enrolledCustomers[0]->enrollmentno;	
+                if($enrolledCustomers){
 		return $enrolledCustomers;
 		}
 		return false;
@@ -169,13 +160,15 @@ class StudentClasses extends \Eloquent {
 	
         static function getTodaysEnrolledCustomers(){
             $franchiseeId = Session::get('franchiseId');
-		
-		$todaysEnrolledCustomers = DB::table('students')
-		->join('student_classes', 'student_classes.student_id', '=', 'students.id')
-		//->join('batches', 'batches.id', '=', 'student_classes.batch_id')
-		->where('students.franchisee_id','=',$franchiseeId)
-                ->whereDate('student_classes.created_at','=',date("Y-m-d"))
-		->count();
+            $present_date=Carbon::now();
+		$todaysEnrolledCustomers = 
+                        DB::select(DB::raw("SELECT count(distinct (students.id)) as enrollmentno
+                                                FROM student_classes INNER JOIN students ON student_classes.student_id = students.id
+                                                WHERE student_classes.created_at= ".$present_date->toDateString()." AND students.franchisee_id=".$franchiseeId." AND student_classes.status 
+                                                IN ('enrolled','transferred_class')")
+                                  
+                                   );
+		$todaysEnrolledCustomers=$todaysEnrolledCustomers[0]->enrollmentno;	
                 if($todaysEnrolledCustomers){ 
                     return $todaysEnrolledCustomers;
                     
