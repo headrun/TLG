@@ -31,16 +31,16 @@ class DashboardController extends \BaseController {
                         
                         //Enrolled customers(kids)
                         $todaysEnrolledCustomers=StudentClasses::getTodaysEnrolledCustomers();
-			$enrolledCustomers = StudentClasses::getEnrolledCustomers();
+			                  $enrolledCustomers = StudentClasses::getEnrolledCustomers();
 			
                         
                         //for followups
                         $reminderCount = Comments::getReminderCountByFranchiseeId();
                         
-			//Introvisit
+			                   //Introvisit
                         $totalIntrovisitCount = IntroVisit::getIntrovistCount();
-			$introVisitCount = IntroVisit::getIntrovisitBytoday();
-			$allIntrovisits  = IntroVisit::getAllActiveIntrovisit();
+			                  $introVisitCount = IntroVisit::getIntrovisitBytoday();
+			                  $allIntrovisits  = IntroVisit::getAllActiveIntrovisit();
                         
                         for($i=0;$i<count($allIntrovisits);$i++){
                             $data=  Comments::where('introvisit_id','=',$allIntrovisits[$i]['id'])
@@ -53,7 +53,7 @@ class DashboardController extends \BaseController {
                          
                          
 			
-			//for courses
+			                  //for courses
                         $courses=Courses::where('franchisee_id','=',Session::get('franchiseId'))->select('course_name','id')->get();
                         $present_date=Carbon::now();
                         foreach($courses as $course){
@@ -74,13 +74,13 @@ class DashboardController extends \BaseController {
                         $totalbpartyCount=BirthdayParties::getBpartyCount();
                         $todaysbpartycount=BirthdayParties::getBpartyCountBytoday();
                                 
-			$todaysFollowup = Comments::getAllFollowup();
+			                  $todaysFollowup = Comments::getAllFollowup();
                         $futurefollowups= Comments::getFutureFollowup();
                         
-      //return $todaysFollowup;
-			$todaysIntrovisit = BatchSchedule::getTodaysIntroVisits();
+                        //return $todaysFollowup;
+			                  $todaysIntrovisit = BatchSchedule::getTodaysIntroVisits();
 			
-			$activeRemindersCount = Comments::getAllFollowupActive();
+			                  $activeRemindersCount = Comments::getAllFollowupActive();
 			
                         //get birthday dates
                         $startdate=new carbon();
@@ -125,12 +125,9 @@ class DashboardController extends \BaseController {
                         while($m<=12){
                             $birthday_data_month[]=
                                                   Students::whereNotIn('id',$student_id)
-                                                 //  where('student_date_of_birth','>',$startdate->toDateString())
                                                   ->where('student_date_of_birth','<>','')
                                                   ->where( DB::raw('MONTH(student_date_of_birth)'), '=', $m )
-                                                //  ->where( DB::raw('DATE(student_date_of_birth)'), '>', $presentdate )
                                                   ->where('franchisee_id','=',Session::get('franchiseId'))
-                                                  //->where('student_date_of_birth','=','0000-'.$month.'-00') 
                                                   ->orderBy(DB::raw('DAY(student_date_of_birth)'))
                                                   -> get();
                             $m++;
@@ -162,8 +159,6 @@ class DashboardController extends \BaseController {
                             }
                         }
                         
-                       // var_dump($birthday_data_month);exit();
-                       //for starting days of present month
                         
                         $birthday_month_startdays= Students::whereNotIn('id',$student_id)
                                                  //  where('student_date_of_birth','>',$startdate->toDateString())
@@ -196,7 +191,6 @@ class DashboardController extends \BaseController {
                         $birthdayPresentWeek=BirthdayParties::
                                                               where('birthday_party_date','>=',$presentdate->toDateString())
                                                               ->where('birthday_party_date','<=',$weeekdate->toDateString())
-                                                              //->where('franchisee_id','=',Session::get('franchiseId'))
                                                               ->get();
                         for($i=0;$i<count($birthdayPresentWeek);$i++){
                           $customer_data=Customers::where('id','=',$birthdayPresentWeek[$i]['customer_id'])->get();
@@ -206,12 +200,11 @@ class DashboardController extends \BaseController {
                           $student_data=  Students::where('id','=',$birthdayPresentWeek[$i]['student_id'])->get();
                           $birthdayPresentWeek[$i]['student_name']=$student_data[0]['student_name'];
                         }
-                        $f_id=Session::get('franchiseId');
                         
                         $expiringbatch= Batches::getExpiringBatchData();
 
                         
-			$viewData = array('currentPage', 'mainMenu', 'f_id','expiringbatch',
+			$viewData = array('currentPage', 'mainMenu', 'expiringbatch',
                                                            'birthday_data','birthday_data_month','birthday_month_startdays','birthdayPresentWeek',
                                                            'todaysMemberReg','membersCount',
                                                            'todaysNonmemberReg','NonmembersCount',
