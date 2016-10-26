@@ -451,5 +451,39 @@ class PaymentDues extends \Eloquent {
         }
           return $enrollmentReportDetails;
   }
+
+
+  static public function createMembershipPaymentDues($inputs) {
+
+        $paymentDues = new PaymentDues();
+        $paymentDues->customer_id          = $inputs['customer_id'];
+        $paymentDues->franchisee_id        = Session::get('franchiseId');
+            if(isset($inputs['membership_id'])){
+                    $paymentDues->membership_id=$inputs['membership_id'];
+                    $paymentDues->membership_type_id=$inputs['membership_type_id'];
+                    $paymentDues->membership_amount=$inputs['membership_amount'];
+                    $paymentDues->membership_name=$inputs['membership_name'];
+            }
+        $paymentDues->payment_due_amount   = $inputs['payment_due_amount'];
+                if(isset($inputs['payment_due_amount_after_discount'])){
+                  $paymentDues->payment_due_amount_after_discount   = $inputs['payment_due_amount_after_discount'];
+                }
+                if(isset($inputs['tax'])){
+                    $paymentDues->tax_percentage=$inputs['tax'];
+                }
+        $paymentDues->payment_type         = 'singlepay';
+        $paymentDues->payment_due_for      = 'membership';
+        $paymentDues->payment_status       = 'paid';
+        
+        $paymentDues->created_by              = Session::get('userId');
+                if(isset($inputs['created_at'])){
+                    $paymentDues->created_at = $inputs['created_at'];
+                }else{
+        $paymentDues->created_at              = date("Y-m-d H:i:s");
+                }
+                $paymentDues->save();
+        
+        return $paymentDues;
+  }
   
 }

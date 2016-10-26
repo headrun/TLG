@@ -15,18 +15,18 @@ class CustomerMembership extends \Eloquent {
 	}
         
 	static function addMembership($inputs){
-                $present_date=Carbon::now();
+        $present_date=Carbon::now();
 		$customerMembership = new CustomerMembership();
 		$customerMembership->customer_id        = $inputs['customer_id'];
 		$customerMembership->membership_type_id = $inputs['membership_type_id'];
 		$customerMembership->status             = "active";
 		$customerMembership->action             = "default";
-                $customerMembership->membership_start_date=$present_date->toDateString();
-                if(isset($inputs['membership_type_id'])){
-                    $interval=  MembershipTypes::find($inputs['membership_type_id']);
-                    $present_date=$present_date->addYears($interval->year_interval);
-                    $customerMembership->membership_end_date=$present_date->toDateString();    
-                }
+        $customerMembership->membership_start_date=$present_date->toDateString();
+            if(isset($inputs['membership_type_id'])){
+                $interval=  MembershipTypes::find($inputs['membership_type_id']);
+                $present_date=$present_date->addYears($interval->year_interval);
+                $customerMembership->membership_end_date=$present_date->toDateString();    
+            }
 		$customerMembership->created_by         = Session::get('userId');
 		$customerMembership->created_at         = date("Y-m-d H:i:s");
 		$customerMembership->save();
@@ -72,5 +72,12 @@ class CustomerMembership extends \Eloquent {
                                 ->where('membership_type_id','=',null)
                                 ->count('customers.id');    
                        return $s; 
+        }
+
+        static function getCustomerMembershipDetails($customerId){
+            return  CustomerMembership::
+                                        join('membership_types','membership_types.id','=','membership_type_id')
+                                        ->where('customer_id','=',$customerId)
+                                        ->get();
         }
 }

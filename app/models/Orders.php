@@ -27,24 +27,16 @@ class Orders extends \Eloquent {
 		$order = new Orders();
 		
 		$order->customer_id     = $input['customer_id'];
-//                if(isset($input['seasonId'])){
-//                          $order->season_id       = $input['seasonId'];
-//                }
               
 		if(isset($input['student_id'])){
 			$order->student_id      = $input['student_id'];
 		}
 		
-//		if(isset($input['student_classes_id'])){
-//			$order->student_classes_id     = $input['student_classes_id'];
-//		}
                 if(isset($input['payment_no'])){
                         $order->payment_no= $input['payment_no'];
                 }
 		
 		$order->payment_for     = $input['payment_for'];
-		//$order->payment_dues_id = $input['payment_dues_id'];
-		//$order->payment_mode    = $input['payment_mode'];
 		
                 if($input['payment_mode']=='cheque'){
                     $order->payment_mode    = $input['payment_mode'];
@@ -52,9 +44,6 @@ class Orders extends \Eloquent {
                     $order->cheque_number   = $input['cheque_number'];
                 }else if($input['payment_mode']=='card'){
                     $order->payment_mode    = $input['payment_mode'];
-                    if(isset($input['card_last_digit'])){
-                    //$order->card_last_digit = $input['card_last_digit'];
-                    }
                     if($input['card_type']){
                     $order->card_type       = $input['card_type'];
                     
@@ -63,7 +52,6 @@ class Orders extends \Eloquent {
                     $order->bank_name       = $input['bank_name'];
                     }
                     if(isset($input['receipt_number'])){
-                    //$order->receipt_number  =$input['receipt_number'];
                     }
                 }else if($input['payment_mode']=='cash'){ //for cash
                     $order->payment_mode    = $input['payment_mode'];
@@ -82,9 +70,9 @@ class Orders extends \Eloquent {
                 $order->created_at      = date("Y-m-d H:i:s");
                 }
                 if(isset($input['membershipType'])){
-			$order->membership_type = $input['membershipType'];
+			$order->membership_type_id = $input['membershipType'];
 		}else{
-			$order->membership_type = null;
+			$order->membership_type_id = null;
 		}
 		
 		$order->save();
@@ -300,5 +288,38 @@ class Orders extends \Eloquent {
     }
     static function getOrderDetailsbyPaydueId($paydueId){
         return Orders::where('payment_dues_id','=',$paydueId)->get();
+    }
+
+    static public function CreateMembershipOrder($inputs) {
+        $order = new Orders();
+        $order -> customer_id = $inputs['customer_id'];
+        $order -> payment_dues_id = $inputs['payment_due_id'];
+        $order -> payment_for = 'membership';
+        $order -> membership_id = $inputs['membership_id'];
+        $order -> membership_type = $inputs['membership_type_id'];
+        $order -> membership_name = $inputs['membership_name'];
+        $order -> payment_mode = $inputs['payment_mode'];
+        
+         if( $inputs['payment_mode'] == 'cheque'){
+
+            $order -> bank_name = $inputs['chequeBankName'];
+            $order -> cheque_number = $inputs['chequeNumber']; 
+         
+         }else if($inputs['payment_mode'] == 'card'){
+            
+            $order -> bank_name = $inputs['bankName'];
+            $order -> card_type =$inputs['cardType'];
+         } 
+         
+        $order -> amount = $inputs['payment_due_amount'];
+        $order -> tax_percentage = $inputs['tax']; 
+        $order -> tax_amount = $inputs['taxamt'];
+        $order -> order_status = 'completed';
+        $order -> created_by = Session::get ( 'userId' );
+        $order -> created_at = date ( "Y-m-d H:i:s" );
+
+        $order -> save();
+        return $order;
+        
     }
 }

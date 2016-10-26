@@ -202,7 +202,7 @@ class DashboardController extends \BaseController {
                         }
                         
                         $expiringbatch= Batches::getExpiringBatchData();
-
+                        
                         
 			$viewData = array('currentPage', 'mainMenu', 'expiringbatch',
                                                            'birthday_data','birthday_data_month','birthday_month_startdays','birthdayPresentWeek',

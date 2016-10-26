@@ -354,6 +354,9 @@ class CustomersController extends \BaseController {
                         $taxPercentage=  PaymentTax::getTaxPercentageForPayment();
                         $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
                         $birthday_base_price = BirthdayBasePrice::getBirthdaybasePrice();
+                        $membership_data=CustomerMembership::getCustomerMembershipDetails($customer->id);
+
+
                         
                         
 			$viewData = array (
@@ -370,6 +373,7 @@ class CustomersController extends \BaseController {
 					'kidsSelect',
 					'membershipTypes',
 					'membershipTypesAll',
+					'membership_data',
 					'birthdays',
                                         'iv_data',
                                         'birthday_data',
@@ -387,6 +391,65 @@ class CustomersController extends \BaseController {
 			return Redirect::action('VaultController@logout');
 		}
 	}
+
+
+	public function purchaseMembership(){
+		if(Auth::check()){
+			$inputs=Input::all();
+			DB::beginTransaction();
+			try {
+				
+				// adding to membershiptable
+    			$membership_data=CustomerMembership::addMembership($inputs);
+    			//adding to payment_duetable
+    			$inputs['membership_id']=$membership_data->id;
+    			$memdata=MembershipTypes::find($inputs['membership_type_id']);
+    			$inputs['membership_name']=$memdata->name;
+    			$inputs['amount']=$memdata->fee_amount;
+    			$inputs['membership_amount']=$inputs['amount'];
+    			$inputs['payment_due_amount']=$inputs['amount'];
+    			$inputs['payment_due_amount_after_discount']=$inputs['amount'];
+    			$tax=PaymentTax::where('franchisee_id','=',Session::get('franchiseId'))
+    						->select('tax_percentage')->get();
+    			$tax=$tax[0];
+    			$inputs['tax']= $tax['tax_percentage'];
+    			
+    			$payment_data=PaymentDues::createMembershipPaymentDues($inputs);
+    			$inputs['payment_due_id']=$payment_data->id;
+    			$inputs['taxamt']=($inputs['membership_amount']*$inputs['tax'])/100;
+    			// /return Response::json(array('status'=>'success','data'=>$inputs));
+    			//adding to orderstable
+    			$order_data=Orders::CreateMembershipOrder($inputs);
+    			
+    			DB::commit();
+    			return Response::json(array('status'=>'success','print_id'=>Crypt::encrypt($order_data->id)));
+    			// all good
+			} catch (\Exception $e) {
+    			DB::rollback();
+    			return Response::json(array('status'=>'failure'));
+    			// something went wrong
+			}
+
+
+		}else{
+			return Redirect::action('VaultController@logout');	
+		}
+
+	}
+
+	static public function getmembershiptypedetails() {
+		if(Auth::check()){
+			$inputs=Input::all();
+			$memdata=MembershipTypes::find($inputs['mem_type_id']);
+			$tax_data=PaymentTax::where('franchisee_id','=',Session::get('franchiseId'))->get();
+			$tax_data=$tax_data[0];
+			$taxcal=($memdata->fee_amount*$tax_data->tax_percentage)/100;
+			$totalcost=$memdata->fee_amount+$taxcal;
+			return Response::json(array('status'=>'success','mem_data'=>$memdata,'tax_data'=>$tax_data,'taxcal'=>$taxcal,'totalcost'=>$totalcost));
+		}else{
+			return Redirect::action('VaultController@logout');	
+		}
+	} 
 	
 	public function uploadProfilePicture(){
 	
@@ -660,17 +723,7 @@ class CustomersController extends \BaseController {
                 
                 
                 
-              if($deleted){
-//                    $comment= new comments();
-//                    $comment->deletedcustomer_id=$inputs['customer_id'];
-//                    $comment->franchisee_id= Session::get('franchiseId');
-//                    $comment->log_text= "Customer deleted";
-//                    $comment->comment_type="ACTION_LOG";
-//                    //$comment->followup_type="INQUIRY";
-//                    $comment->created_by    = Session::get('userId');
-//                    $comment->created_at    = date("Y-m-d H:i:s");
-//                    $comment->save();
-                }
+              
                    
                 return Response::json(array('status'=>'success','deleted_data'=>$deleted)); 
             }else{

@@ -286,7 +286,7 @@ class PaymentsController extends \BaseController {
 	
 	
 	public function printBdayOrder($oid) {
-            if(Auth::check()){
+     	if(Auth::check()){
 		$orderid = Crypt::decrypt($oid);
 		$order_data = Orders::where ( 'orders.id', '=', $orderid )->get();
 		$customer_data = Customers::where ( 'id', '=', $order_data [0] ['customer_id'] )->get ();
@@ -317,9 +317,37 @@ class PaymentsController extends \BaseController {
 		
 		// print_r($data);
 		return View::make ( 'pages.orders.bdayprintorder', compact ( $data ) );
-                }else{
+        }else{
                     return Redirect::action('VaultController@logout');
-                }
+        }
+	}
+
+	public static function printMembershipOrder($oid) {
+		
+		if(Auth::check()){
+
+			//getting data for printing 
+			$orderid = Crypt::decrypt($oid);
+			$order_data = Orders::find($orderid);
+			$customer_data = Customers::find($order_data ['customer_id']);
+			$membership_data = CustomerMembership::find($order_data ['membership_id']);
+			$membership_type = MembershipTypes::find($order_data ['membership_type']);
+			$paymentDueDetails = PaymentDues::find($order_data ['payment_dues_id']);
+			$franchisee_data=Franchisee::find(Session::get('franchiseId')); 
+			$getTermsAndConditions = TermsAndConditions::where('id', '=', (TermsAndConditions::max('id')))->get();
+			$getTermsAndConditions = $getTermsAndConditions[0];
+			//serializing data and making view
+			$data=array('order_data','customer_data','membership_data',
+						'membership_type','paymentDueDetails','franchisee_data',
+						'getTermsAndConditions');
+			return View::make( 'pages.orders.membershipprintorder',compact ($data) ); 
+
+		}else{
+
+			return Redirect::action('VaultController@logout');	
+		
+		}
+
 	}
 
 

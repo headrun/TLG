@@ -69,7 +69,7 @@ Route::group(array('prefix' => 'students'), function() {
 
 Route::group(array('prefix' => 'customers'), function() {
 	Route::any('/memberslist', "CustomersController@index");
-        Route::any('/prospectslist', "CustomersController@getNonMembersList");
+    Route::any('/prospectslist', "CustomersController@getNonMembersList");
 	Route::any('/add', "CustomersController@add");
 	Route::any('/view/{id}', "CustomersController@details");
 	Route::any('/profile/picture', "CustomersController@uploadProfilePicture");
@@ -82,8 +82,8 @@ Route::group(array('prefix' => 'batches'), function() {
 	Route::any('/', "BatchesController@index");
 	Route::any('/view/{id}', "BatchesController@view");
 	Route::any('/attendance/{id}', "BatchesController@attendance");
-        Route::any('/batcheslimit',"BatchesController@batcheslimit");
-        Route::any('/addbatchlimit',"BatchesController@addBatchLimit");
+    Route::any('/batcheslimit',"BatchesController@batcheslimit");
+    Route::any('/addbatchlimit',"BatchesController@addBatchLimit");
 });
 
 
@@ -98,7 +98,8 @@ Route::group(array('prefix' => 'events'), function() {
 
 Route::group(array('prefix' => 'orders'), function() {
 	Route::any('/print/{id}', "PaymentsController@printOrder");
-        Route::any('/Bprint/{id}',"PaymentsController@printBdayOrder");
+    Route::any('/Bprint/{id}',"PaymentsController@printBdayOrder");
+    Route::any('/Membershipprint/{id}',"PaymentsController@printMembershipOrder");
 	Route::any('/types', "EventsController@eventTypes");
 
 
@@ -144,7 +145,8 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('updateCoursesMaster', "CoursesController@updateCoursesMaster");	
         Route::any('InsertNewCoursesMaster', "CoursesController@InsertNewCoursesMaster"); 
         Route::any('updatepassword','UsersController@updatepassword');
-        
+    	Route::any('purchaseMembership','CustomersController@purchaseMembership');    
+    	Route::any('getmembershiptypedetails','CustomersController@getmembershiptypedetails');
         
         Route::group(array('prefix'=>'baseprice'),function(){
             Route::any('/deletebaseprice','PaymentsController@deletebaseprice');
