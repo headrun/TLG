@@ -70,9 +70,9 @@ class Orders extends \Eloquent {
                 $order->created_at      = date("Y-m-d H:i:s");
                 }
                 if(isset($input['membershipType'])){
-			$order->membership_type_id = $input['membershipType'];
+			$order->membership_type = $input['membershipType'];
 		}else{
-			$order->membership_type_id = null;
+			$order->membership_type= null;
 		}
 		
 		$order->save();
