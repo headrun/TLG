@@ -329,6 +329,13 @@ class PaymentsController extends \BaseController {
 			//getting data for printing 
 			$orderid = Crypt::decrypt($oid);
 			$order_data = Orders::find($orderid);
+			if($order_data->payment_for=='birthday'){
+				PaymentsController:: printBdayOrder($oid);
+			}
+			if($order_data->payment_for=='enrollment'){
+				PaymentsController:: printOrder(Crypt::encrypt($order_data->payment_no));	
+			}
+
 			$customer_data = Customers::find($order_data ['customer_id']);
 			$membership_data = CustomerMembership::find($order_data ['membership_id']);
 			$membership_type = MembershipTypes::find($order_data ['membership_type']);

@@ -36,18 +36,18 @@ class VaultController extends \BaseController {
 				if (Auth::attempt(array('email' => $inputs['email'], 'password' => $inputs['password'])))
 				{
 					$authenticatedUser = Auth::user();
-					$userObject = User::with('Franchisee')->find(Auth::id());
+					
+					$userObject = User::find(Auth::id());
 					
 					
 					Session::put('userId', $userObject->id);
 					Session::put('email', $userObject->email);
-					Session::put('franchiseId', $userObject->franchisee_id);
+					if($userObject->user_type != 'SUPER_ADMIN'){
+						Session::put('franchiseId', $userObject->franchisee_id);
+					}
 					Session::put('firstName', $userObject->first_name);
 					Session::put('lastName', $userObject->last_name);
 					Session::put('userType', $userObject->user_type);
-					//Session::put('classAmount',$userObject->franchisee->franchisee_class_amount);
-					//return Session::get('classAmount');
-					
 					return Redirect::to('/dashboard');
 				}
 			}

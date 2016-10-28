@@ -1,5 +1,6 @@
 <?php
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Crypt;
 class CustomerMembership extends \Eloquent {
 	protected $fillable = [];
 	protected $table = 'customer_membership';
@@ -75,9 +76,18 @@ class CustomerMembership extends \Eloquent {
         }
 
         static function getCustomerMembershipDetails($customerId){
-            return  CustomerMembership::
+            $customer_mem_data=  CustomerMembership::
                                         join('membership_types','membership_types.id','=','membership_type_id')
-                                        ->where('customer_id','=',$customerId)
+                                        ->join('orders','orders.membership_id','=','customer_membership.id')
+                                        ->where('customer_membership.customer_id','=',$customerId)
+                                        ->select('description','membership_start_date','membership_end_date','customer_membership.id', 'orders.id as order_id')
                                         ->get();
+            foreach($customer_mem_data as $mem) {
+
+                $mem->enc_order_id=crypt::encrypt($mem->order_id);               
+
+            }
+            return $customer_mem_data;
+
         }
 }

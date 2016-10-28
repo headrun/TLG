@@ -355,7 +355,8 @@ class CustomersController extends \BaseController {
                         $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
                         $birthday_base_price = BirthdayBasePrice::getBirthdaybasePrice();
                         $membership_data=CustomerMembership::getCustomerMembershipDetails($customer->id);
-
+                        
+                        
 
                         
                         

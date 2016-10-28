@@ -13,7 +13,9 @@ class DashboardController extends \BaseController {
 	 */
 	public function index()
 	{
-		if(Auth::check()){
+		if(Auth::check() && Session::get('userType')!='SUPER_ADMIN'){
+      
+
 			$currentPage  =  "";
 			$mainMenu     =  "DASHBOARD";
 			
@@ -214,9 +216,20 @@ class DashboardController extends \BaseController {
 							  'todaysCustomerReg','todaysEnrolledCustomers','enrolledCustomers','totalIntrovisitCount', 'introVisitCount', 'allIntrovisits', 'todaysFollowup', 
 							  'todaysIntrovisit','activeRemindersCount',);
 			return View::make('pages.dashboard.upcoming',compact($viewData));
-		}else{
+     
+		}elseif(Auth::check() && Session::get('userType')=='SUPER_ADMIN'){
+
+      $currentPage  =  "";
+      $mainMenu     =  "DASHBOARD";
+
+      $viewData = array('currentPage','mainMenu');
+      return View::make('pages.dashboard.admindashboard',compact($viewData)); 
+      
+    }else{
+
 			return Redirect::action('VaultController@logout');
-		}
+		
+    }
 	}
 
 

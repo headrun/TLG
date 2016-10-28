@@ -30,7 +30,7 @@ Route::any('/calendar', 'CalenderController@index');
 
 Route::group(array('prefix' => 'courses'), function() {
 	Route::any('/add', "CoursesController@addCourses");
-        Route::any('/name_list', "CoursesController@courseNameList");
+    Route::any('/name_list', "CoursesController@courseNameList");
        
 });
 
