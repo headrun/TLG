@@ -3471,7 +3471,8 @@ $('#memberhsipchequeNumber').keyup(function(){
 	                                                    				<i class="material-icons"></i> 
 	                                                    					<span class="uk-text-muted uk-text-small">                                    Start Date: {{$membership->membership_start_date}}
 	                                                    						&nbsp; &nbsp;
-	                                                    						End Date: {{$membership->membership_end_date}}  
+	                                                    						End Date: {{$membership->membership_end_date}} 
+	                                                    						<span class="uk-text-right"><a class="uk-button uk-button-primary uk-button-small" target="_blank" href="{{url()}}/orders/Membershipprint/{{$membership->enc_order_id}}">Print</a></span> 
 	                                                    					</span>
 
 	                                                				</span>

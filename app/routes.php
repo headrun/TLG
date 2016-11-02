@@ -129,6 +129,15 @@ Route::group(array('prefix'=>'reports'),function(){
 });
 
 
+Route::group(array('prefix'=>'franchisee'),function(){
+
+	Route::any('/addfranchisee','FranchiseeController@addNewFranchisee');
+	Route::get('/franchiseelist','FranchiseeController@franchiseeList');
+});
+
+
+
+
 if(Auth::check()){
 
 
@@ -147,7 +156,9 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('updatepassword','UsersController@updatepassword');
     	Route::any('purchaseMembership','CustomersController@purchaseMembership');    
     	Route::any('getmembershiptypedetails','CustomersController@getmembershiptypedetails');
-        
+        Route::any('updateFranchisee','FranchiseeController@updateFranchisee');
+
+
         Route::group(array('prefix'=>'baseprice'),function(){
             Route::any('/deletebaseprice','PaymentsController@deletebaseprice');
             Route::any('/updatebaseprice','PaymentsController@updatebaseprice');

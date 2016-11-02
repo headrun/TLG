@@ -218,7 +218,7 @@ class DashboardController extends \BaseController {
 			return View::make('pages.dashboard.upcoming',compact($viewData));
      
 		}elseif(Auth::check() && Session::get('userType')=='SUPER_ADMIN'){
-
+      
       $currentPage  =  "";
       $mainMenu     =  "DASHBOARD";
 

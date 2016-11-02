@@ -13,6 +13,65 @@
         </div>
         <div class="menu_section">
             <ul>
+                <?php if(Session::get('userType') == 'SUPER_ADMIN'){?>
+                    <li id="DASHBOARD" title="DASHBOARD">
+                        <a href="{{url()}}/dashboard">
+                            <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
+                            <span class="menu_title">Dashboard</span>
+                        </a>
+                    </li>
+                    <li id="FRANCHISEE_MAIN">
+                        <a href="#">
+                            <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+                            <span class="menu_title">Franchisee</span>
+                        </a>
+                        <ul id="FRANCHISEE_MAIN_UL">
+                            <li id="NEWFRANCHISEE"><a href="{{url()}}/franchisee/addfranchisee">Add New Franchisee</a></li>
+                            <li id="LISTOFFRANCHISEE"><a href="{{url()}}/franchisee/franchiseelist">Franchisee List</a></li> 
+                        </ul>
+                    </li>
+
+                 
+                    
+                    <li id="COURSES_MENU_MAIN">
+                        <a href="#">
+                            <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+                            <span class="menu_title">Courses</span>
+                        </a>
+                        <ul id="COURSES_MENU_MAIN_UL">
+                           <li id="ADDCOURSE_LI"><a href="#">Add New Course</a></li>
+                           <li id="COURSELIST_LI"><a href="#">Course List</a></li>
+                        </ul>
+                    </li>
+                    <li id="CLASSES_MENU_MAIN">
+                        <a href="#">
+                            <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+                            <span class="menu_title">Classes</span>
+                        </a>
+                        <ul id="CLASSES_MAIN_UL">
+                           <li id="ADDNEWCLASS_LI"><a href="#">Add New Class</a></li>
+                           <li id="CLASSLIST_LI"><a href="#">Class List</a></li>
+                        </ul>
+                    </li>
+                    <li id="FREPORT_MENU_MAIN">
+                        <a href="#">
+                            <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
+                            <span class="menu_title">Reports</span>
+                        </a>
+                        <ul id="FREPORT_MAIN_UL">
+                           <li id="GENERATEREPORT_LI"><a href="#">Generate Report</a></li>
+                        </ul>
+                    </li>
+                    <li id="LOGOUT" title="Logout">
+                        <a href="{{url()}}/vault/logout">
+                            <span class="menu_icon"><i class="material-icons">forward</i></span>
+                            <span class="menu_title">Logout</span>
+                        </a>
+                    </li>
+                    
+                <?php }?>
+                    
+                <?php if(Session::get('userType')!='SUPER_ADMIN'){ ?>
                 <li id="DASHBOARD" title="Dashboard">
                    <a href="{{url()}}/dashboard">
                         <span class="menu_icon"><i class="material-icons">&#xE871;</i></span>
@@ -65,6 +124,7 @@
                  <li id="EVENTS_MAIN">
                  	<hr/>
                  </li>
+                 <?php } ?>
                 
                 <?php if(Session::get('userType') == 'ADMIN'){?>
                         <li id="EVENTS_MAIN">
@@ -93,31 +153,7 @@
 	                        <li id="ADD_USERS"><a href="{{url()}}/admin/users/add">Add User</a></li>
 	                    </ul>
 	                </li>
-                        <?php if(Session::get('userType') == 'SUPER_ADMIN'){?>
-	                 <li id="COURSES_MENU_MAIN">
-	                    <a href="#">
-	                        <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
-	                        <span class="menu_title">Courses</span>
-	                    </a>
-	                    <ul id="COURSES_MENU_MAIN_UL">
-	                       <!--  <li id="COURSES"><a href="{{url()}}/courses">Courses</a></li>
-	                        <li id="CLASSES"><a href="{{url()}}/classes">Classes</a></li> -->
-	                        <li id="COURSES_LI"><a href="{{url()}}/courses">Courses</a></li>
-	                    </ul>
-	                </li>
-	                 <li id="CLASSES_MAIN">
-	                    <a href="#">
-	                        <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
-	                        <span class="menu_title">Classes</span>
-	                    </a>
-	                    <ul id="CLASSES_MAIN_UL">
-	                       <!--  <li id="COURSES"><a href="{{url()}}/courses">Courses</a></li>
-	                        <li id="CLASSES"><a href="{{url()}}/classes">Classes</a></li> -->
-	                        <li id="CLASSES_LI"><a href="{{url()}}/classes">Classes</a></li>
-	                    </ul>
-	                </li>
-                        <?php }?>
-                        <li id="SEASONS_MENU_MAIN">
+                    <li id="SEASONS_MENU_MAIN">
 	                    <a href="#">
 	                        <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
 	                        <span class="menu_title">Seasons</span>
