@@ -145,18 +145,26 @@ if(Auth::check()){
 
 Route::group(array('prefix' => 'quick'), function() {
     
+	/* Super Admin related Ajax calls*/
+
+		Route::any('addFranchisee',"FranchiseeController@addFranchisee");
+        Route::any('updateFranchisee','FranchiseeController@updateFranchisee');
+        Route:: any('addAdminUser','UsersController@addAdminUser');
+
+
+
         /**
 *  --------------------------------------------------------------------------------------------------------------------------------------
 * Courses related Ajax calls
 *  --------------------------------------------------------------------------------------------------------------------------------------
-*/
+*/		
+
         Route::any('deleteCoursesMaster', "CoursesController@deleteCoursesMaster");
         Route::any('updateCoursesMaster', "CoursesController@updateCoursesMaster");	
         Route::any('InsertNewCoursesMaster', "CoursesController@InsertNewCoursesMaster"); 
         Route::any('updatepassword','UsersController@updatepassword');
     	Route::any('purchaseMembership','CustomersController@purchaseMembership');    
     	Route::any('getmembershiptypedetails','CustomersController@getmembershiptypedetails');
-        Route::any('updateFranchisee','FranchiseeController@updateFranchisee');
 
 
         Route::group(array('prefix'=>'baseprice'),function(){

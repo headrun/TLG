@@ -34,7 +34,7 @@
             data: {'franchisee_name':$('.fname').val(), 'franchisee_address':$('.faddress').val(),'ph_no':$('.fcontactno').val(),'email':$('.femail').val(),'franchisee_id':$('.f_id').val() },
 			dataType: 'json',
 			success: function(response){
-				console.log(response);
+				
 				if(response.status==='success'){
 					$('.update').removeClass('disabled');
 					$('.editmsg').html("<p class='uk-alert uk-alert-success'>Updated Successfully...</p>");
@@ -42,12 +42,11 @@
 						window.location.reload(1);
 					});
 					
-				}else{
+				}
 					$('.update').removeClass('disabled');
 					$('.editmsg').html("<p class='uk-alert uk-alert-danger'>Try again Later...</p>");
 
-				}
-            }
+			}
         });  
 	});
 </script>>
@@ -85,7 +84,7 @@
             <td class="email">{{$franchisee->franchisee_official_email}}</td>
             <td class="created_at">{{$franchisee->created_at}}</td>
             <td>
-            	<button class="btn btn-warning btn-xs franchiseeEdit" type="button" data-uk-modal="{target:'#my-id'}" >Edit</button>
+            	<button class="btn btn-warning btn-xs franchiseeEdit" type="button" data-uk-modal="{target:'#my-id'}" style=" color:black" ><i class="Small material-icons">mode_edit</i></button>
             </td>
 		</tr>
         @endforeach

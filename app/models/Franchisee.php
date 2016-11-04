@@ -23,8 +23,26 @@ class Franchisee extends \Eloquent {
 		return $franchisee;
 	}
 
+
+	public static function addNewFranchisee($inputs){
+		$franchisee= new Franchisee();
+		$franchisee->franchisee_name=$inputs['franchiseeName'];
+		$franchisee->franchisee_official_email=$inputs['franchiseeEmail'];
+		$franchisee->franchisee_phone=$inputs['franchiseePhno'];
+		$franchisee->franchisee_address=$inputs['franchiseeAddress'];
+		$franchisee->created_by=Session::get('userId');
+		$franchisee->created_at=date("Y-m-d H:i:s");
+		$franchisee->save();
+		return $franchisee;
+	}
+
+
 	public static function getFranchiseeList(){
 		return Franchisee::paginate(10);
+	}
+
+	public static function getFList(){
+		return Franchisee::select('id','franchisee_name')->get();
 	}
 	
 	

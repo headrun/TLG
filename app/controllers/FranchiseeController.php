@@ -21,7 +21,10 @@ class FranchiseeController extends \BaseController {
 
 			$currentPage  =  "NEWFRANCHISEE";
 			
-      		$viewData = array('currentPage','mainMenu');
+			$franchiseelist = Franchisee::getFList();
+			$courseList = CoursesMaster::getAllCourses();
+			
+      		$viewData = array('currentPage','mainMenu','franchiseelist','courseList');
       		return View::make('pages.franchisee.addfranchisee',compact($viewData)); 
       
 		}else{
@@ -64,8 +67,28 @@ class FranchiseeController extends \BaseController {
 			}
 		}else{
 
+			return Response::json(array('status'=>'failure'));
 		}
 	}
+
+	public static function addFranchisee(){
+		if(Auth::check() && Session::get('userType')==='SUPER_ADMIN'){
+			
+			$inputs=Input::all();
+			$newFranchisee=Franchisee::addNewFranchisee($inputs);
+			
+			if($newFranchisee){
+				return Response::json(array('status'=>'success'));
+			}
+
+			return Response::json(array('status'=>'failure'));
+		}
+
+		return Response::json(array('status'=>'failure'));
+	}
+
+
+	
 
 	public function index()
 	{

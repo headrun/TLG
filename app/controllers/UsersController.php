@@ -41,6 +41,18 @@ class UsersController extends \BaseController {
                 return Response::json(array('status'=>'failure')); 
             }
         }
+
+        public static function addAdminUser(){
+			if(Auth::check() && Session::get('userType')==='SUPER_ADMIN'){
+				$inputs=Input::all();
+				$AdminUser=User::createNewAdminUser($inputs);
+				if($AdminUser){
+					return Response::json(array('status'=>'success'));
+				}
+				return Response::json(array('status'=>'failure'));
+			}
+			return Response::json(array('status'=>'failure'));
+		}
 	/**
 	 * Display a listing of the resource.
 	 *
