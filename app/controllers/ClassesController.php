@@ -47,9 +47,6 @@ class ClassesController extends \BaseController {
 		if(isset($inputs['className']) && isset($inputs['franchiseeCourse'])){
 			
 			
-			/* echo '<pre>';
-			print_r($inputs);
-			exit(); */
 			
 			$classadd = Classes::addClasses($inputs);
 			if ($classadd == "exists") {
