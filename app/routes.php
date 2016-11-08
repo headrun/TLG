@@ -222,6 +222,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('getUniqueLocalityNames',"CustomersController@getUniqueLocality");
         Route::any('getUniqueApartmentNames',"CustomersController@getUniqueApartmentNames");
 	Route::any('deleteCustomer',"CustomersController@deleteCustomer");
+	Route::any('deleteMembership',"CustomersController@deleteMembership");
 	
 	/**
 	 *  --------------------------------------------------------------------------------------------------------------------------------------

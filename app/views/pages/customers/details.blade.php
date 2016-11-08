@@ -2419,6 +2419,60 @@ $('.deletecustomer').click(function(){
     }); 
 });
 
+
+$(".deletemembershipData").click(function() {
+	$('.deletemsg').html("<p class='uk-alert uk-alert-warning'>Please wait... Membership Data Deleting...</p>");
+	
+	$.ajax({
+		type: "POST",
+		url: "{{URL::to('/quick/deleteMembership')}}",
+        data: {'customer_id': customerId},
+		dataType: 'json',
+		success: function(response){
+			if(response.status=="success") {
+
+				if(response.deleted!=0){
+					$('.deletemsg').html("<p class='uk-alert uk-alert-success'>Membership Deleted...</p>");
+					$('deletemsg').show('slow');
+                	setTimeout(function(){
+                        $('.deletemsg').slideUp();
+                        $('.deletemsg').html(''); 
+                        $('.deletemsg').show('slow');
+                	},2000);
+                	$('.deletecustomerclose').click(function(event){
+                        event.preventDefault();
+                        window.location.reload(1);
+                	});
+                	$('#deletecustomerclose').click(function(event){
+                        event.preventDefault();
+                        window.location.reload(1);
+                	});
+            	}else{
+            		$('.deletemsg').html("<p class='uk-alert uk-alert-success'>No Membership Data to delete</p>");
+            		$('deletemsg').show('slow');
+                	setTimeout(function(){
+                        $('.deletemsg').slideUp();
+                        $('.deletemsg').html(''); 
+                        $('.deletemsg').show('slow');
+                	},2000);
+            	}
+			}else{
+				$('.deletemsg').html("<p class='uk-alert uk-alert-danger'>Sorry.. Error in Deleting Membership Data</p>");
+				setTimeout(function(){
+                        $('.deletemsg').slideUp();
+                        $('.deletemsg').html(''); 
+                        $('.deletemsg').show('slow');
+                    },2000);
+			}
+            
+        }
+    });
+
+    
+	});
+
+
+
 $('.membershipPurchase').click(function(){
 	$('.membershipPurchase').addClass('disabled');
 	$('.membershippurchasemsg').html("<p class='uk-alert-warning uk-alert'> Please wait....</p>");
@@ -2671,7 +2725,7 @@ $('#memberhsipchequeNumber').keyup(function(){
                             <?php if(Session::get('userType')=='ADMIN'){ ?>
                             <a class="md-fab md-fab-small md-fab-accent uk-alert-danger"  data-uk-modal="{target:'#my-id',bgclose:false}" id="deleteBtn"> <i class="material-icons">delete</i>
                             </a>
-                            <?php } ?>
+                            
                             
                                 <!-- This is the modal -->
                                 <div id="my-id" class="uk-modal">
@@ -2684,11 +2738,18 @@ $('#memberhsipchequeNumber').keyup(function(){
                                                 <div class="deletemsg"></div>
                                                 <div class="uk-grid" data-uk-grid-margin="">
                                                     
-                                                    <div class="uk-width-medium-1-1">
+                                                    <div class="uk-width-medium-1-2">
                                                         <button class="  center-block text-center uk-button uk-button-danger uk-button-large deletecustomer" style="font-size:12px;">
                                                             <i class="material-icons " style="color:white">delete</i> Customer
                                                         </button>
-                                                        <em class="uk-text-center-small center-block text-center " style="color:black;"> (with payments)</em>
+                                                        <em class="uk-text-center-small center-block text-center " style="color:black;"> (With Payments)</em>
+                                                    </div>
+                                                    <div class="uk-width-medium-1-2">
+                                                        <button class="  center-block text-center uk-button uk-button-danger uk-button-large deletemembershipData" style="font-size:12px;">
+                                                            <i class="material-icons " style="color:white">delete</i> Membership Data
+                                                        </button>
+                                                        <em class="uk-text-center-small center-block text-center " style="color:black;"> (Active Membership Only)</em>
+                                                        
                                                     </div>
                                                    
                                                 </div>
@@ -2700,7 +2761,7 @@ $('#memberhsipchequeNumber').keyup(function(){
                                             </div>
                                     </div>
                                 </div>
-
+                            <?php } ?>
                             
                         </div>
                         <div class="user_content">

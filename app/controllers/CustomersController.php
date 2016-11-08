@@ -334,6 +334,7 @@ class CustomersController extends \BaseController {
                         }
                         
                         //return the customer membership follolwup
+                        /*
                         $customer_membership_data= MembershipFollowup::where('customer_id','=',$id)
                                                                         ->get();
                         for($i=0;$i<count($customer_membership_data);$i++){
@@ -351,6 +352,7 @@ class CustomersController extends \BaseController {
                            $membership_followup_data[$i]['membership_end_date']=$Customer_membership_data->membership_end_date;
                         }
                         }
+                        */
                         $taxPercentage=  PaymentTax::getTaxPercentageForPayment();
                         $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
                         $birthday_base_price = BirthdayBasePrice::getBirthdaybasePrice();
@@ -730,6 +732,16 @@ class CustomersController extends \BaseController {
             }else{
                 return Response::json(array('status'=>'failure'));
             }
+        }
+		public static  function deleteMembership(){
+        	if((Auth::check()) && (Session::get('userType')=='ADMIN')){
+                 $inputs=Input::all();
+                 $deleted=CustomerMembership::where('membership_start_date','<=',Date('Y-m-d'))
+                  					 ->where('membership_end_date','>=',Date('Y-m-d'))
+                  					 ->delete();
+
+				 return Response::json(array('status'=>'success','deleted'=>$deleted));
+        	}	
         }
 		/**
 	 * Store a newly created resource in storage.
