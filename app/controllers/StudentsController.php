@@ -700,12 +700,12 @@ class StudentsController extends \BaseController {
                                     $paymentDuesInput[$i]['discount_amount']       = $discount_amount[1];
                                     $paymentDuesInput[$i]['discount_applied']      = $inputs['discountPercentage'];
                                 }
-                                if($inputs['second_class_discount_to_form']!=''){
+                                if(array_key_exists('second_class_discount_to_form', $inputs) && $inputs['second_class_discount_to_form']!=''){
                                     $discount_multipleclasses_amount                                = explode("-",$inputs['second_class_amount']);
                                     $paymentDuesInput[$i]['discount_multipleclasses_amount']        = $discount_multipleclasses_amount[1];
                                     $paymentDuesInput[$i]['discount_multipleclasses_applied']       = $inputs['second_class_discount_to_form'];
                                 }
-                                if($inputs['second_child_discount_to_form']!=''){
+                                if(array_key_exists('second_child_discount_to_form', $inputs) && $inputs['second_child_discount_to_form']!=''){
                                     $discount_sibling_amount                               = explode("-",$inputs['second_child_amount']);
                                     $paymentDuesInput[$i]['discount_sibling_amount']       = $discount_sibling_amount[1];
                                     $paymentDuesInput[$i]['discount_sibling_applied']      = $inputs['second_child_discount_to_form'];
@@ -874,12 +874,12 @@ class StudentsController extends \BaseController {
                                     $paymentDuesInput[$i]['discount_amount']            =   $discount_amount[1];
                                     $paymentDuesInput[$i]['discount_applied']           =   $inputs['discountPercentage'];
                                 }
-                                if($inputs['second_class_discount_to_form']!=''){
+                                if( array_key_exists('second_class_discount_to_form', $inputs) &&  $inputs['second_class_discount_to_form']!=''){
                                     $discount_multipleclasses_amount                               = explode("-",$inputs['second_class_amount']);
                                     $paymentDuesInput[$i]['discount_multipleclasses_amount']       = $discount_multipleclasses_amount[1];
                                     $paymentDuesInput[$i]['discount_multipleclasses_applied']      = $inputs['second_class_discount_to_form'];
                                 }
-                                if($inputs['second_child_discount_to_form']!=''){
+                                if(array_key_exists('second_child_discount_to_form', $inputs) && $inputs['second_child_discount_to_form']!=''){
                                     $discount_sibling_amount                               = explode("-",$inputs['second_child_amount']);
                                     $paymentDuesInput[$i]['discount_sibling_amount']       = $discount_sibling_amount[1];
                                     $paymentDuesInput[$i]['discount_sibling_applied']      = $inputs['second_child_discount_to_form'];
@@ -1434,7 +1434,9 @@ class StudentsController extends \BaseController {
                                 $commentText='Customer Enrolled '.$inputs['customerCommentTxtarea'];
                               
                                 
-                          } 
+              }else{
+              	$commentText='';
+              } 
                         
                         
                         //insert new followuphere

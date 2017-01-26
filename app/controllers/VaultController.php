@@ -32,7 +32,7 @@ class VaultController extends \BaseController {
 		}
 		else{
 			$inputs = Input::all();
-			if($inputs){
+			if($inputs && isset($inputs['email']) && isset($inputs['password'])){
 				if (Auth::attempt(array('email' => $inputs['email'], 'password' => $inputs['password'])))
 				{
 					$authenticatedUser = Auth::user();

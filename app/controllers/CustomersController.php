@@ -738,6 +738,7 @@ class CustomersController extends \BaseController {
                  $inputs=Input::all();
                  $deleted=CustomerMembership::where('membership_start_date','<=',Date('Y-m-d'))
                   					 ->where('membership_end_date','>=',Date('Y-m-d'))
+                  					 ->where('customer_id','=',$inputs['customer_id'])
                   					 ->delete();
 
 				 return Response::json(array('status'=>'success','deleted'=>$deleted));

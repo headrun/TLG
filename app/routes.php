@@ -430,63 +430,38 @@ Route::any('/getfullfranchiseedata','FranchiseeAdministration@getFullFranchiseeD
 
 Route::get('/test', function(){
    // return View::make( 'pages.error404');
-    echo Hash::make('welcome1');
-                          
+    echo Hash::make('uday');
+
+/*
+// first step
+    $orders= Orders::get();
+    for($i=0;$i<count($orders);$i++){
+    	$customer=Customers::find($orders[$i]['customer_id']);
+    	$order=Orders::find($orders[$i]['id']);
+    	$order->franchisee_id=$customer->franchisee_id;
+    	$order->save();
+    }
+    echo "done";
+ */
+
+///second step
+/* 
+	$franchisees = Franchisee::get();
+
+	for($i=0;$i<count($franchisees);$i++){
+		$orders=Orders::where('franchisee_id','=',$franchisees[$i]['id'])->get();
+		for($j=0;$j<count($orders);$j++){
+			$order=Orders::find($orders[$j]['id']);
+			$order->invoice_id=$j+1;
+			$order->save();
+		}
+	}
+	echo "done";
+*/
+
+//	return (Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
+
 die();
     
-    return StudentClasses::where('student_id','=','153')
-                                                ->where('statuy','=','enrolled')
-                                                 ->join('batches','student_classes.batch_id','=','batches.id')->get();
-    
-    
-    
-    
-    die();
-    $id=69;
-    $AttendanceYeardata=DB::select("SELECT DISTINCT(YEAR(enrollment_start_date)) as Y FROM student_classes ORDER BY Y");
-    
-    return $AttendanceYeardata[1];
-    $student_class_data=  StudentClasses::where('student_id','=',$id)
-                                          ->whereYear('enrollment_start_date','=','2016')
-                                          ->select('batch_id')->distinct('batch_id')->orderBy('batch_id')->get();
-    
-    
-    //$batches_data=  Batches::where('')
-    
-    
-    
-    die();
-    $base_price_no= Batches::find(130)->classes()->select('base_price_no')->get();
-    $base_price_no=$base_price_no[0]['base_price_no'];
-    echo $base_price_no;
-    die(); 
-    var_dump(ClassBasePrice::where('base_price_no','=',Batches::find(130)->classes()->base_price_no)->select('base_price')->get());
-    
-                       
-    $classes_count=  StudentClasses::where('student_id','=',88)
-                                        ->where('status','=','enrolled')
-                                        //->whereDate('enrollment_start_date','>=',date("Y-m-d"))
-                                        //->whereDate('enrollment_end_date','<=',date("Y-m-d"))
-                                        ->distinct('class_id')
-                                        ->count();
-    
-    var_dump($classes_count);
-    exit();
-    echo PaymentMaster::max('payment_no');
-      exit();
-
-    echo Batches::where('id','=','2')->select('class_amount')->get();
-    exit();
- $data=IntroVisit::join('students','student_id','=','students.id')
-                              ->where('introvisit.customer_id','=','44')
-                              ->get();
-                        var_dump($data);
-    exit();
-  
-                      //  for($i=0;$i<count($birthday_data);$i++){
-                      //      $customer_data= Customers::where('id','=',$birthday_data[$i]['customer_id'])->get();
-                      //      $birthday_data[$i]['customer_name']=  $customer_data[0]['customer_name'];
-                      //      $birthday_data[$i]['membership']=  CustomerMembership::where('customer_id','=',$birthday_data[$i]['customer_id'])->count();
-                     //       
-                     //   }
+ 
 });

@@ -31,7 +31,9 @@ class Orders extends \Eloquent {
 		if(isset($input['student_id'])){
 			$order->student_id      = $input['student_id'];
 		}
-		
+
+        $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
+
                 if(isset($input['payment_no'])){
                         $order->payment_no= $input['payment_no'];
                 }
@@ -63,6 +65,7 @@ class Orders extends \Eloquent {
 		
 		$order->amount          = $input['amount'];
 		$order->order_status    = $input['order_status'];
+        $order->franchisee_id=Session::get('franchiseId');
 		$order->created_by      = Session::get('userId');
                 if(isset($input['created_at'])){
                     $order->created_at=$input['created_at'];
@@ -87,8 +90,10 @@ class Orders extends \Eloquent {
 		$order = new Orders ();
 		$order->customer_id = $addbirthday ['customer_id'];
 		$order->student_id = $addbirthday ['student_id'];
+        $order->franchisee_id=Session::get('franchiseId');
 		$order->birthday_id = $addbirthday ['id'];
 		$order->payment_for = "birthday";
+        $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
                 if(isset($inputs['birthdayPaymentTypeRadio'])){
                     if($inputs['birthdayPaymentTypeRadio']=='cheque'){
                         if(isset($inputs['birthdayBankName'])){
@@ -137,8 +142,10 @@ class Orders extends \Eloquent {
                 $order = new Orders ();
 		$order->customer_id = $addbirthday ['customer_id'];
 		$order->student_id = $addbirthday ['student_id'];
+        $order->franchisee_id=Session::get('franchiseId');
 		$order->birthday_id = $addbirthday ['id'];
 		$order->payment_for = "birthday";
+        $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
                 if(isset($addPaymentDues['id'])){
                 $order->payment_dues_id=$addPaymentDues['id'];
                 }
@@ -167,8 +174,10 @@ class Orders extends \Eloquent {
         $order=new Orders();
         $order->customer_id=$paymentDuedata[0]['customer_id'];
         $order->student_id=$paymentDuedata[0]['student_id'];
+        $order->franchisee_id=Session::get('franchiseId');
         $order->birthday_id=$paymentDuedata[0]['birthday_id'];
         $order->payment_dues_id=$paymentDuedata[0]['id'];
+        $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
         $order->payment_for = "birthday";
         if(isset($inputs['paymentType'])){
         $order->payment_mode=$inputs['paymentType'];
@@ -214,6 +223,8 @@ class Orders extends \Eloquent {
         $order=new Orders();
         $order->customer_id= $paymentDuedata[0]['customer_id'];
         $order->student_id=$paymentDuedata[0]['student_id'];
+        $order->franchisee_id=Session::get('franchiseId');
+        $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
         $order->season_id=$paymentDuedata[0]['season_id'];
         $order->student_classes_id=$paymentDuedata[0]['student_class_id'];
         $order->amount=$paymentDuedata[0]['payment_due_amount'];
@@ -229,7 +240,9 @@ class Orders extends \Eloquent {
         $order=new Orders();
         $order->customer_id= $paymentDuedata[0]['customer_id'];
         $order->student_id=$paymentDuedata[0]['student_id'];
+        $order->franchisee_id=Session::get('franchiseId');
         $order->season_id=$paymentDuedata[0]['season_id'];
+        $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
         $order->student_classes_id=$paymentDuedata[0]['student_class_id'];
         $order->amount=$paymentDuedata[0]['payment_due_amount'];
         if(isset($inputs['paymentType'])){
@@ -254,7 +267,9 @@ class Orders extends \Eloquent {
         $order->customer_id= $paymentDuedata[0]['customer_id'];
         $order->student_id=$paymentDuedata[0]['student_id'];
         $order->season_id=$paymentDuedata[0]['season_id'];
+        $order->franchisee_id=Session::get('franchiseId');
         $order->student_classes_id=$paymentDuedata[0]['student_class_id'];
+        $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
         $order->amount=$paymentDuedata[0]['payment_due_amount'];
         if(isset($inputs['paymentType'])){
         $order->payment_mode=$inputs['paymentType'];
@@ -294,6 +309,8 @@ class Orders extends \Eloquent {
         $order = new Orders();
         $order -> customer_id = $inputs['customer_id'];
         $order -> payment_dues_id = $inputs['payment_due_id'];
+        $order->franchisee_id=Session::get('franchiseId');
+        $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
         $order -> payment_for = 'membership';
         $order -> membership_id = $inputs['membership_id'];
         $order -> membership_type = $inputs['membership_type_id'];

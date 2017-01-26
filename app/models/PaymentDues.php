@@ -25,11 +25,16 @@ class PaymentDues extends \Eloquent {
 		$paymentDues->batch_id             = $inputs['batch_id'];
 		$paymentDues->class_id             = $inputs['class_id'];
                 $paymentDues->student_class_id     = $inputs['student_class_id'];
-                if(isset($inputs['membership_id'])){
+                if(isset($inputs['membership_id']) && array_key_exists('membership_id',$inputs)){
+
                     $paymentDues->membership_id=$inputs['membership_id'];
                     $paymentDues->membership_type_id=$inputs['membership_type_id'];
                     $paymentDues->membership_amount=$inputs['membership_amount'];
+                    if(isset($inputs['membership_name']) && array_key_exists('membership_name',$inputs)){
+
                     $paymentDues->membership_name=$inputs['membership_name'];
+                    
+                    }
                 }
 		$paymentDues->payment_due_amount   = $inputs['payment_due_amount'];
                 if(isset($inputs['payment_due_amount_after_discount'])){

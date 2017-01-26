@@ -51,6 +51,12 @@ Log::useFiles(storage_path().'/logs/laravel.log');
 	Log::error($exception);
 });*/
 
+App::missing(function($e) {
+ $url = Request::fullUrl(); 
+ Log::warning("404 for URL: $url");
+ return Response::make('404 not found', 404); 
+});
+
 App::error(function(Exception $exception, $code)
 {
 //    return View::make( 'pages.error404');
