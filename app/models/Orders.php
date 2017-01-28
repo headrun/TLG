@@ -28,51 +28,51 @@ class Orders extends \Eloquent {
 		
 		$order->customer_id     = $input['customer_id'];
               
-		if(isset($input['student_id'])){
+		if(isset($input['student_id']) && array_key_exists('student_id',$input) && $input['student_id']!=''){
 			$order->student_id      = $input['student_id'];
 		}
 
-        $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
+    $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
 
-                if(isset($input['payment_no'])){
-                        $order->payment_no= $input['payment_no'];
-                }
+    if(isset($input['payment_no']) && array_key_exists('payment_no',$input) && $input['payment_no']!=''){
+      $order->payment_no= $input['payment_no'];
+    }
 		
 		$order->payment_for     = $input['payment_for'];
 		
-                if($input['payment_mode']=='cheque'){
-                    $order->payment_mode    = $input['payment_mode'];
-                    $order->bank_name       = $input['bank_name'];
-                    $order->cheque_number   = $input['cheque_number'];
-                }else if($input['payment_mode']=='card'){
-                    $order->payment_mode    = $input['payment_mode'];
-                    if($input['card_type']){
-                    $order->card_type       = $input['card_type'];
-                    
-                    }
-                    if(isset($input['bank_name'])){
-                    $order->bank_name       = $input['bank_name'];
-                    }
-                    if(isset($input['receipt_number'])){
-                    }
-                }else if($input['payment_mode']=='cash'){ //for cash
-                    $order->payment_mode    = $input['payment_mode'];
-                }
+    if(isset($input['payment_mode']) && array_key_exists('payment_mode',$input) && $input['payment_mode']!='' && $input['payment_mode']=='cheque'){
+      $order->payment_mode    = $input['payment_mode'];
+      $order->bank_name       = $input['bank_name'];
+      $order->cheque_number   = $input['cheque_number'];
+    }else if( isset($input['payment_mode']) && array_key_exists('payment_mode',$input) && $input['payment_mode']!='' && $input['payment_mode']=='card'){
+      $order->payment_mode    = $input['payment_mode'];
+      if(isset($input['payment_mode']) && array_key_exists('payment_mode',$input) && $input['payment_mode']!='' && $input['card_type']){
+        $order->card_type       = $input['card_type'];
+      }
+      if(isset($input['bank_name']) && array_key_exists('bank_name',$input) && $input['bank_name']!=''){
+        $order->bank_name       = $input['bank_name'];
+      }
+      if(isset($input['receipt_number'])){
+      }
+    }else if(isset($input['payment_mode']) && array_key_exists('payment_mode',$input) && $input['payment_mode']!='' && $input['payment_mode']=='cash'){ //for cash
+      $order->payment_mode    = $input['payment_mode'];
+    }
                 
-		if(isset($input['tax_amount'])){
-                    $order->tax_amount  =$input['tax_amount'];
-                 }
+		if(isset($input['tax_amount']) && array_key_exists('tax_amount',$input) && $input['tax_amount']!=''){
+      $order->tax_amount  =$input['tax_amount'];
+    }
 		
 		$order->amount          = $input['amount'];
 		$order->order_status    = $input['order_status'];
-        $order->franchisee_id=Session::get('franchiseId');
+    $order->franchisee_id   = Session::get('franchiseId');
 		$order->created_by      = Session::get('userId');
-                if(isset($input['created_at'])){
-                    $order->created_at=$input['created_at'];
-                }else{
-                $order->created_at      = date("Y-m-d H:i:s");
-                }
-                if(isset($input['membershipType'])){
+
+    if(isset($input['created_at']) && array_key_exists('created_at',$input) && $input['created_at']!=''){
+      $order->created_at=$input['created_at'];
+    }else{
+      $order->created_at      = date("Y-m-d H:i:s");
+    }
+    if((isset($input['membershipType'])) && (array_key_exists('membershipType',$input)) && ($input['membershipType']!='')){
 			$order->membership_type = $input['membershipType'];
 		}else{
 			$order->membership_type= null;

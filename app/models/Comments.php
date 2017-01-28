@@ -143,7 +143,9 @@ class Comments extends \Eloquent {
             $comments->created_at= date('Y-m-d H:i:s');
             $comments->log_text="Payment call for the kid";
             $comments->paymentfollowup_id=$inputs['paymentfollowup_id'];
-            $comments->reminder_date=$inputs['reminderDate'];
+            if(isset($inputs['reminderDate']) && array_key_exists('reminderDate',$inputs) ){
+                $comments->reminder_date=$inputs['reminderDate'];
+            }
             $comments->save();
             return $comments;
         }

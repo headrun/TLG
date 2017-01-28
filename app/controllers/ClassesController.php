@@ -195,108 +195,13 @@ class ClassesController extends \BaseController {
 		$ageMonth = Input::get('ageMonth');
 		$gender   = Input::get('gender');
 		$yearandMonth = Input::get('yearAndMonth');
-                if($yearandMonth >= 4){
-                     $classesMaster = ClassesMaster::select('id')->where("class_start_age", "<=", $yearandMonth)
-			->where("class_end_age", ">=", $yearandMonth)
-			->where("age_start_limit_unit", "=", "months")
-                        ->where("age_end_limit_unit", "=", "months")
-			->get();
-                }
-		
-                
-		/*
-		if($ageYear == 0){
-				
-			$classesMaster = ClassesMaster::select('id')->where("class_start_age", "<=", $ageMonth)
-			->where("class_end_age", ">=", $ageMonth)
-			->where("age_start_limit_unit", "=", "months")
-			->get();
-				
-				
-		}elseif(($ageYear > 0) &&($ageYear <= 3)){
-				
-			$yearandMonth = Input::get('yearAndMonth');
-			$classesMaster = ClassesMaster::select('id')->where("class_start_age", "<=", $yearandMonth)	
-			//$classesMaster = ClassesMaster::select('id')->where("class_start_age", "<=", number_format($yearandMonth, 1, '.', ''))
-			->where("class_end_age", ">=", $yearandMonth)
-			//->where("age_end_limit_unit", "=", 'years')
-                        ->where("age_start_limit_unit", "=", "months")
-			->where("age_end_limit_unit", "=", "months")
-			->get();
-			//dd(DB::getQueryLog());
-			//echo "1year";
-				
-		}
-		elseif(($ageYear >= 3) &&  ($ageYear <= 6) ){
-		
-			//$yearandMonth = (12+$ageMonth);
-				
-			$classesMaster = ClassesMaster::select('id')->where("class_start_age", "<=", $ageYear)
-			->where("class_end_age", ">=", $ageYear)
-			//->where("age_end_limit_unit", "=", 'years')
-			->where("age_end_limit_unit", "=", "years")
-                        ->where("age_start_limit_unit", "=", "years")
-			->get();
-		
-		
-                }
-		elseif(($ageYear >= 6) &&  $ageYear <=12 ){
-		
-			//$yearandMonth = (12+$ageMonth);
-				
-			$classesMaster = ClassesMaster::select('id')->where("class_start_age", "<=", $ageYear)
-			->where("class_end_age", ">=", $ageYear)
-			->where("age_end_limit_unit", "=", 'years')
-                        ->where("age_start_limit_unit", "=", "years")
-			//->where("age_end_limit_unit", "=", "months")
-			->get();
-		
-		
-		} *//*		
-		else if($ageYear ==3 && $ageYear <4){
-				
-			$classesMaster = ClassesMaster::select('id')
-			//->whereBetween('class_start_age',[3,4])
-			->where("class_start_age", "<=", 3)
-			->where("class_end_age", ">=", 4)
-			->where("age_start_limit_unit", "=", "years")
-			->get();
-			//echo $ageYear;
-			//dd(DB::getQueryLog());
-		
-		}
-		else if($ageYear >=4 && $ageYear<6){
-				
-			$classesMaster = ClassesMaster::select('id')
-			->whereBetween('class_start_age',[4,6])
-			//->where("class_start_age", "<", 6)
-			->where("class_end_age", "<", 6)
-			->where("age_start_limit_unit", "=", "years")
-			->get();
-			//echo $ageYear;
-			//dd(DB::getQueryLog());
-		
-		}else if($ageYear >= 6 && $ageYear<12){
-				
-			$classesMaster = ClassesMaster::select('id')
-			->whereBetween('class_start_age',[6,12])
-			/* ->where("class_start_age", "<=", $ageYear)
-			 ->where("class_end_age", ">=", $ageYear)
-			->where("age_start_limit_unit", "=", "years") */
-		//	->where("gender", "=", $gender)
-		//	->get();
-				
-			//dd(DB::getQueryLog());
-		
-		//}
-                /* else{
-		$classesMaster = ClassesMaster::select('id')->where("class_start_age", "<=", $ageYear)
-		->where("class_end_age", ">", $ageYear)
-		->where("age_start_limit_unit", "=", "years")
-		->get();
-		//dd(DB::getQueryLog());
-		} */
-		
+      if($yearandMonth >= 4){
+        $classesMaster = ClassesMaster::select('id')->where("class_start_age", "<=", $yearandMonth)
+																				->where("class_end_age", ">=", $yearandMonth)
+																				->where("age_start_limit_unit", "=", "months")
+                        								->where("age_end_limit_unit", "=", "months")
+																				->get();
+      }
 		$masterClassIDs = array();
 		$i = 0;
 		foreach($classesMaster->toArray() as $masterClass){
@@ -308,12 +213,13 @@ class ClassesController extends \BaseController {
 		
 		
 		$classesEligible = DB::table('classes')
-		->whereIn('class_master_id', $masterClassIDs)
-		->where('franchisee_id', '=', Session::get('franchiseId'))
-		->get();
+														->whereIn('class_master_id', $masterClassIDs)
+														->where('franchisee_id', '=', Session::get('franchiseId'))
+														->select('id','class_name')
+														->get();
 		
 		header('Access-Control-Allow-Origin: *');
-		return Response::json($classesEligible);
+		return Response::json(array('status'=>'success','data'=>$classesEligible));
 	}
         
         

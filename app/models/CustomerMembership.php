@@ -23,7 +23,8 @@ class CustomerMembership extends \Eloquent {
 		$customerMembership->status             = "active";
 		$customerMembership->action             = "default";
         $customerMembership->membership_start_date=$present_date->toDateString();
-            if(isset($inputs['membership_type_id'])){
+            if(isset($inputs['membership_type_id']) && array_key_exists('membership_type_id',$inputs) 
+                 && $inputs['membership_type_id']!=''){
                 $interval=  MembershipTypes::find($inputs['membership_type_id']);
                 $present_date=$present_date->addYears($interval->year_interval);
                 $customerMembership->membership_end_date=$present_date->toDateString();    

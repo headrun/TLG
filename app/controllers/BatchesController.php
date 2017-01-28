@@ -676,8 +676,8 @@ class BatchesController extends \BaseController {
                $endDate=new DateTime($batchData[$i]['preferred_end_time']);
                $batchData[$i]['preferred_time']=$startDate->format('G:i A');
                $batchData[$i]['preferred_end_time']=$endDate->format('G:i A');
-               $temp=User::find($batchData[$i]['lead_instructor']);
-               $batchData[$i]['Leadinstructor']=$temp->first_name.$temp->last_name;
+               $t1=User::find($batchData[$i]['lead_instructor']);
+               $batchData[$i]['Leadinstructor']=$t1->first_name.$t1->last_name;
 //               $batch_count=  StudentClasses::where('batch_id','=',$batchData[$i]['batch_id'])
 //                                              
 //                                              ->whereIn('status',array('enrolled','makeup'))

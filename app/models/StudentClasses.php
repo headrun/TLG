@@ -110,22 +110,26 @@ class StudentClasses extends \Eloquent {
 		
 		$StudentClasses = new StudentClasses();
 		$StudentClasses->student_id    = $input['studentId'];
-                $StudentClasses->season_id     = $input['seasonId'];
+    $StudentClasses->season_id     = $input['seasonId'];
 		$StudentClasses->class_id      = $input['classId'];		
 		$StudentClasses->enrollment_start_date  = $input['enrollment_start_date'];
 		$StudentClasses->enrollment_end_date  = $input['enrollment_end_date'];		
 		$StudentClasses->selected_sessions  = $input['selected_sessions'];
-                if(isset($input['introvisit_id'])){
-                    $StudentClasses->introvisit_id=$input['introvisit_id'];
-                }
-                if(isset($input['attendance_id'])){
-                    $StudentClasses->attendance_id=$input['attendance_id'];
-                }
-                if(isset($input['status'])){
-                    $StudentClasses->status=$input['status'];
-                }else{
-                    $StudentClasses->status="enrolled";
-                }
+      if(isset($input['introvisit_id']) && array_key_exists('introvisit_id',$input) && $input['introvisit_id']!=''){
+        
+        $StudentClasses->introvisit_id=$input['introvisit_id'];
+      }
+      if(isset($input['attendance_id']) && array_key_exists('attendance_id',$input) && $input['attendance_id']!=''){
+                    
+        $StudentClasses->attendance_id=$input['attendance_id'];
+      }
+      if(isset($input['status']) && array_key_exists('status',$input) && $input['status']!=''){
+        
+        $StudentClasses->status=$input['status'];
+      }else{
+                    
+        $StudentClasses->status="enrolled";
+      }
 		$StudentClasses->batch_id      = $input['batchId'];
 		$StudentClasses->created_by    = Session::get('userId');
 		$StudentClasses->created_at    = date("Y-m-d H:i:s");

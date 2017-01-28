@@ -854,9 +854,7 @@ $.ajax({
 
 function getEligibleClasses(){
     var yearAndMonth= (parseInt(ageYear*12)+parseInt(ageMonth));
-          //console.log(ageYear);
-          //console.log(ageMonth);
-          //console.log(yearAndMonth);
+          
 	$.ajax({
         type: "POST",
         url: "{{URL::to('/quick/eligibleClassess')}}",
@@ -866,15 +864,14 @@ function getEligibleClasses(){
         {
             
          // console.log(response);
-      	  $(".eligibleClassesCbx").empty("");
-          $string = '<option value=""></option>';
-      	  $.each(response, function (index, item) {
-      		  //console.log(index+" = "+item);
-      		  $string += '<option value='+item.id+'>'+item.class_name+'</option>';               
+          if(response.status=='success'){
+      	    $(".eligibleClassesCbx").empty("");
+            $string = '<option value=""></option>';
+      	    $.each(response.data, function (index, item) {
+      		    $string += '<option value='+item.id+'>'+item.class_name+'</option>';               
             });
-      	  $('.eligibleClassesCbx').append($string);
-          //$('.eligibleClassesCbx2').append($string);
-          //$('.eligibleClassesCbx3').append($string);
+      	    $('.eligibleClassesCbx').append($string);
+          }
         }
     });
 }

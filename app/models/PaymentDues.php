@@ -21,74 +21,93 @@ class PaymentDues extends \Eloquent {
 		$paymentDues->student_id           = $inputs['student_id'];
 		$paymentDues->season_id            = $inputs['seasonId'];
 		$paymentDues->customer_id          = $inputs['customer_id'];
-                $paymentDues->franchisee_id        = Session::get('franchiseId');
+    $paymentDues->franchisee_id        = Session::get('franchiseId');
 		$paymentDues->batch_id             = $inputs['batch_id'];
 		$paymentDues->class_id             = $inputs['class_id'];
-                $paymentDues->student_class_id     = $inputs['student_class_id'];
-                if(isset($inputs['membership_id']) && array_key_exists('membership_id',$inputs)){
+    $paymentDues->student_class_id     = $inputs['student_class_id'];
+      if(isset($inputs['membership_id']) && array_key_exists('membership_id',$inputs)
+        && $inputs['membership_id']!=''){
 
-                    $paymentDues->membership_id=$inputs['membership_id'];
-                    $paymentDues->membership_type_id=$inputs['membership_type_id'];
-                    $paymentDues->membership_amount=$inputs['membership_amount'];
-                    if(isset($inputs['membership_name']) && array_key_exists('membership_name',$inputs)){
+        $paymentDues->membership_id=$inputs['membership_id'];
+        $paymentDues->membership_type_id=$inputs['membership_type_id'];
+        $paymentDues->membership_amount=$inputs['membership_amount'];
+        if(isset($inputs['membership_name']) && array_key_exists('membership_name',$inputs)
+           && $inputs['membership_name']!=''){
 
-                    $paymentDues->membership_name=$inputs['membership_name'];
+          $paymentDues->membership_name=$inputs['membership_name'];
                     
-                    }
-                }
+        }
+      }
 		$paymentDues->payment_due_amount   = $inputs['payment_due_amount'];
-                if(isset($inputs['payment_due_amount_after_discount'])){
-                  $paymentDues->payment_due_amount_after_discount   = $inputs['payment_due_amount_after_discount'];
-                }
-                if(isset($inputs['tax'])){
-                    $paymentDues->tax_percentage=$inputs['tax'];
-                }
+      if(isset($inputs['payment_due_amount_after_discount']) && 
+         array_key_exists('payment_due_amount_after_discount',$inputs) && 
+         $inputs['payment_due_amount_after_discount']!=''){
+
+        $paymentDues->payment_due_amount_after_discount   = $inputs['payment_due_amount_after_discount'];
+      
+      }
+      if(isset($inputs['tax']) && array_key_exists('tax',$inputs) && $inputs['tax']!='' ){
+        $paymentDues->tax_percentage=$inputs['tax'];
+      }
 		$paymentDues->payment_type         = 'singlepay';
-                $paymentDues->payment_due_for      = 'enrollment';
+    $paymentDues->payment_due_for      = 'enrollment';
 		$paymentDues->payment_status       = $inputs['payment_status'];
 		$paymentDues->selected_sessions    = $inputs['selected_sessions'];
-                if(isset($inputs['payment_batch_amount'])){
-                    $paymentDues->payment_batch_amount=$inputs['payment_batch_amount'];
-                }
-                if(isset($inputs['discount_multipleclasses_amount'])){
-                $paymentDues->discount_multipleclasses_amount    = $inputs['discount_multipleclasses_amount'];
-                }
-                if(isset($inputs['discount_sibling_amount'])){
-                $paymentDues->discount_sibling_amount    = $inputs['discount_sibling_amount'];
-                }
-                if(isset($inputs['discount_sibling_applied'])){
-                 $paymentDues->discount_sibling_applied=$inputs['discount_sibling_applied'];
-                }
-                if(isset($inputs['discount_multipleclasses_applied'])){
-                 $paymentDues->discount_multipleclasses_applied=$inputs['discount_multipleclasses_applied'];
-                }
-                if(isset($inputs['discount_admin_amount'])){
-                 $paymentDues->discount_admin_amount=$inputs['discount_admin_amount'];
-                }else{
-                    $paymentDues->discount_admin_amount=0;
-                }
-                if(isset($inputs['each_class_cost'])){
-                  $paymentDues->each_class_amount=$inputs['each_class_cost'];
-                }
-                if(isset($inputs['selected_order_sessions'])){
-                $paymentDues->selected_order_sessions    = $inputs['selected_order_sessions'];
-                }
-                if(isset($inputs['start_order_date'])){
-                $paymentDues->start_order_date     =$inputs['start_order_date'];
-                }
-                if(isset($inputs['end_order_date'])){
-                $paymentDues->end_order_date=$inputs['end_order_date'];
-                }
-                if(isset($inputs['discount_amount'])){
-                $paymentDues->discount_amount=$inputs['discount_amount'];
-                }
-                $paymentDues->discount_applied     = $inputs['discount_applied'];
-		$paymentDues->created_by              = Session::get('userId');
-                if(isset($inputs['created_at'])){
+      if(isset($inputs['payment_batch_amount']) && array_key_exists('payment_batch_amount',$inputs) && $inputs['payment_batch_amount']!=''){
+
+         $paymentDues->payment_batch_amount=$inputs['payment_batch_amount'];
+      }
+      if(isset($inputs['discount_multipleclasses_amount']) && array_key_exists('discount_multipleclasses_amount',$inputs) && $inputs['discount_multipleclasses_amount']!=''){
+        
+        $paymentDues->discount_multipleclasses_amount    = $inputs['discount_multipleclasses_amount'];
+      }
+      if(isset($inputs['discount_sibling_amount']) && array_key_exists('discount_sibling_amount',$inputs) && $inputs['discount_sibling_amount']!=''){
+        
+        $paymentDues->discount_sibling_amount    = $inputs['discount_sibling_amount'];
+      }
+      if(isset($inputs['discount_sibling_applied']) && array_key_exists('discount_sibling_applied',$inputs) && $inputs['discount_sibling_applied']!=''){
+                 
+        $paymentDues->discount_sibling_applied=$inputs['discount_sibling_applied'];
+      }
+      if(isset($inputs['discount_multipleclasses_applied']) && array_key_exists('discount_multipleclasses_applied',$inputs) && $inputs['discount_multipleclasses_applied']!=''){
+        
+        $paymentDues->discount_multipleclasses_applied=$inputs['discount_multipleclasses_applied'];
+      }
+      if(isset($inputs['discount_admin_amount'])  && array_key_exists('discount_admin_amount',$inputs) && $inputs['discount_admin_amount']!=''){
+        
+        $paymentDues->discount_admin_amount=$inputs['discount_admin_amount'];
+      }else{
+        $paymentDues->discount_admin_amount=0;
+      }
+      if(isset($inputs['each_class_cost']) && array_key_exists('each_class_cost',$inputs) && $inputs['each_class_cost']!=''){
+        
+        $paymentDues->each_class_amount=$inputs['each_class_cost'];
+      }
+      if(isset($inputs['selected_order_sessions']) && array_key_exists('selected_order_sessions',$inputs) && $inputs['selected_order_sessions']!=''){
+
+        $paymentDues->selected_order_sessions    = $inputs['selected_order_sessions'];
+      }
+      if(isset($inputs['start_order_date']) && array_key_exists('start_order_date',$inputs) && $inputs['start_order_date']!=''){
+        
+        $paymentDues->start_order_date     =$inputs['start_order_date'];
+      }
+      if(isset($inputs['end_order_date']) && array_key_exists('end_order_date',$inputs) && $inputs['end_order_date']!='' ){
+          
+        $paymentDues->end_order_date=$inputs['end_order_date'];
+      }
+      if(isset($inputs['discount_amount']) && array_key_exists('discount_amount',$inputs) && $inputs['discount_amount']!=''){
+
+        $paymentDues->discount_amount=$inputs['discount_amount'];
+      }
+      
+      $paymentDues->discount_applied     = $inputs['discount_applied'];
+		  $paymentDues->created_by              = Session::get('userId');
+
+      if(isset($inputs['created_at']) && array_key_exists('created_at',$inputs) && $inputs['created_at']!=''){
                     $paymentDues->created_at = $inputs['created_at'];
-                }else{
-		$paymentDues->created_at              = date("Y-m-d H:i:s");
-                }
+      }else{
+		                $paymentDues->created_at              = date("Y-m-d H:i:s");
+      }
                 $paymentDues->save();
 		
 		return $paymentDues;

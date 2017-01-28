@@ -6,46 +6,46 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Crypt;
 class StudentsController extends \BaseController {
 
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function index()
-	{
-		//  for non enrolled kids
-		if(Auth::check())
-		{
-			$currentPage  =  "NONENROLLEDSTUDENTS";
-			$mainMenu     =  "STUDENTS_MAIN";
-			
-			$inputs = Input::all();
-			if (isset($inputs['customerId'])) {
-					
-				if (Students::addStudent($inputs)) {
-					Session::flash('msg', "Student added successfully.");
-				} else {
-					Session::flash('warning', "Student, Course Could not be added at the moment.");
-				}
-			}
-			$franchiseeId = Session::get('franchiseId');
-			$customers = Customers::getAllCustomersByFranchiseeId($franchiseeId);
-			$customersDD = Customers::getAllCustomersForDropdown($franchiseeId);
+  /**
+   * Display a listing of the resource.
+   *
+   * @return Response
+   */
+  public function index()
+  {
+    //  for non enrolled kids
+    if(Auth::check())
+    {
+      $currentPage  =  "NONENROLLEDSTUDENTS";
+      $mainMenu     =  "STUDENTS_MAIN";
+      
+      $inputs = Input::all();
+      if (isset($inputs['customerId'])) {
+          
+        if (Students::addStudent($inputs)) {
+          Session::flash('msg', "Student added successfully.");
+        } else {
+          Session::flash('warning', "Student, Course Could not be added at the moment.");
+        }
+      }
+      $franchiseeId = Session::get('franchiseId');
+      $customers = Customers::getAllCustomersByFranchiseeId($franchiseeId);
+      $customersDD = Customers::getAllCustomersForDropdown($franchiseeId);
                         
                         //getting nonenrolled students
-			$students = StudentClasses::getAllNonEnrolledStudents(Session::get('franchiseId'));
+      $students = StudentClasses::getAllNonEnrolledStudents(Session::get('franchiseId'));
                         
                         
                         
                         //return $students;
-			$dataToView = array("customers",'customersDD', 'students','currentPage', 'mainMenu');
-			return View::make('pages.students.nonenrolledstudentlist', compact($dataToView));
-			
-		}else{
-			return Redirect::action('VaultController@logout');
-		}
-		
-	}
+      $dataToView = array("customers",'customersDD', 'students','currentPage', 'mainMenu');
+      return View::make('pages.students.nonenrolledstudentlist', compact($dataToView));
+      
+    }else{
+      return Redirect::action('VaultController@logout');
+    }
+    
+  }
         
         public function enrolledstudents(){
             if(Auth::check()){
@@ -56,42 +56,42 @@ class StudentsController extends \BaseController {
                 $dataToView = array('students','currentPage', 'mainMenu');
                 return View::make('pages.students.enrolledstudentslist', compact($dataToView));
             }else{
-			return Redirect::action('VaultController@logout');
+      return Redirect::action('VaultController@logout');
             }
-		
+    
         }
-	public function addstudent(){
+  public function addstudent(){
             if(Auth::check()){
-		$inputs = Input::all();
-		$addStudentResult = Students::addStudent($inputs);
-		
-		header('Access-Control-Allow-Origin: *');
-		if($addStudentResult){
-			return Response::json(array("status"=>"success"));
-		}else{
-			return Response::json(array("status"=>"failed"));
-		}
+    $inputs = Input::all();
+    $addStudentResult = Students::addStudent($inputs);
+    
+    header('Access-Control-Allow-Origin: *');
+    if($addStudentResult){
+      return Response::json(array("status"=>"success"));
+    }else{
+      return Response::json(array("status"=>"failed"));
+    }
             }else{
                 return Response::json(array("status"=>"failed"));
             }
-	}
-	
-	
-	public function getStudentById(){
-		
-		$inputs = Input::all();
-		$id = $inputs['studentId'];
-		
-		$student = Students::getStudentById($id);
-		
-		header('Access-Control-Allow-Origin: *');
-		if($student){
-			return Response::json($student['0']);
-		}else{
-			return Response::json(array("status"=> "failed"));
-		}
-	}
-	
+  }
+  
+  
+  public function getStudentById(){
+    
+    $inputs = Input::all();
+    $id = $inputs['studentId'];
+    
+    $student = Students::getStudentById($id);
+    
+    header('Access-Control-Allow-Origin: *');
+    if($student){
+      return Response::json($student['0']);
+    }else{
+      return Response::json(array("status"=> "failed"));
+    }
+  }
+  
         public function getStudentDetailsByIdForBatches(){
             $inputs = Input::all();
             
@@ -99,35 +99,35 @@ class StudentsController extends \BaseController {
             $student[0]['ageYear']=(date_diff(date_create(date('Y-m-d',strtotime($student[0]['student_date_of_birth']))), date_create('today'))->y);
             $student[0]['ageMonth']=(date_diff(date_create(date('Y-m-d',strtotime($student[0]['student_date_of_birth']))), date_create('today'))->m);
             header('Access-Control-Allow-Origin: *');
-		if($student){
-			return Response::json($student['0']);
-		}else{
-			return Response::json(array("status"=> "failed"));
-		}
+    if($student){
+      return Response::json($student['0']);
+    }else{
+      return Response::json(array("status"=> "failed"));
+    }
             
         }
 
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function view($id)
-	{
-		if(Auth::check())
-		{
-			$currentPage  =  "STUDENTS_LIST";
-			$mainMenu     =  "STUDENTS_MAIN";
-			$student = Students::getStudentById($id);
-			$franchiseeCourses = Courses::getFranchiseCoursesList(Session::get('franchiseId'));
-			$studentEnrollments = StudentClasses::getStudentEnrollments($id);
-			$paymentDues = PaymentDues::getAllPaymentDuesByStudent($id);
-			$customermembership = CustomerMembership::getCustomerMembership($student['0']->customer_id);
+  /**
+   * Show the form for creating a new resource.
+   *
+   * @return Response
+   */
+  public function view($id)
+  {
+    if(Auth::check())
+    {
+      $currentPage  =  "STUDENTS_LIST";
+      $mainMenu     =  "STUDENTS_MAIN";
+      $student = Students::getStudentById($id);
+      $franchiseeCourses = Courses::getFranchiseCoursesList(Session::get('franchiseId'));
+      $studentEnrollments = StudentClasses::getStudentEnrollments($id);
+      $paymentDues = PaymentDues::getAllPaymentDuesByStudent($id);
+      $customermembership = CustomerMembership::getCustomerMembership($student['0']->customer_id);
                         
                         $scheduledIntroVisits = IntroVisit::getIntrovisitByStudentId($id);
-			$discountEligibility  = StudentClasses::discount($id, $student['0']->customer_id);
-			
+      $discountEligibility  = StudentClasses::discount($id, $student['0']->customer_id);
+      
                         //for dues
                       //  $order_due_data=Orders::getpendingPaymentsid($id);
                        $order_due_data=  PaymentDues::getAllDuebyStudentId($id);
@@ -191,7 +191,7 @@ class StudentsController extends \BaseController {
                                 $discount_second_child_elligible=0;
                             }
                         }
-							// Getting latest batches for showing in header of student tab
+              // Getting latest batches for showing in header of student tab
                       $latestEnrolledData=  StudentClasses::where('student_id','=',$id)
                                                             ->orderBy('created_at','desc')
                                                             ->limit(2)
@@ -232,36 +232,36 @@ class StudentsController extends \BaseController {
                         $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
                         $membershipTypesAll = MembershipTypes::getMembershipTypes();
                          //return $student[0]['id'];
-			$dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll',
+      $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll',
                                                                 'discountEnrollmentData','latestEnrolledData','taxPercentage','tax_data',
                                                                 'discount_second_class_elligible','discount_second_child_elligible','discount_second_child','discount_second_class',
-								'studentEnrollments','customermembership','paymentDues',
-								'scheduledIntroVisits', 'introvisit', 'discountEligibility','paidAmountdata','order_due_data',
+                'studentEnrollments','customermembership','paymentDues',
+                'scheduledIntroVisits', 'introvisit', 'discountEligibility','paidAmountdata','order_due_data',
                                                                 'payment_made_data','payments_master_details', 'AttendanceYeardata');
-			return View::make('pages.students.details',compact($dataToView));
-		}else{
-			return Redirect::action('VaultController@logout');
-		}
-	}
-	
+      return View::make('pages.students.details',compact($dataToView));
+    }else{
+      return Redirect::action('VaultController@logout');
+    }
+  }
+  
 
-	public function getAttendanceForStudent(){
-		$inputs = Input::all();
-		$sendDetails = Attendance::getAttendanceForStudent($inputs);
+  public function getAttendanceForStudent(){
+    $inputs = Input::all();
+    $sendDetails = Attendance::getAttendanceForStudent($inputs);
                 $totalsession=  StudentClasses::getAllClassCountByBatchId($inputs);
-		if($sendDetails){
-			return Response::json(array('status'=> "success", 'data'=> $sendDetails,'totalSession'=>$totalsession));
-		}else{
-			return Response::json(array('status'=> "failure",));
-		}
-	}
-	public function getBatchNameByYear(){
-		$inputs = Input::all();
-		$sendDetails = StudentClasses::select('batch_id')->where('enrollment_start_date', 'like', '%'.$inputs["year"].'%')
-									  ->where('student_id', '=', $inputs['studentId'])->distinct()->get();
+    if($sendDetails){
+      return Response::json(array('status'=> "success", 'data'=> $sendDetails,'totalSession'=>$totalsession));
+    }else{
+      return Response::json(array('status'=> "failure",));
+    }
+  }
+  public function getBatchNameByYear(){
+    $inputs = Input::all();
+    $sendDetails = StudentClasses::select('batch_id')->where('enrollment_start_date', 'like', '%'.$inputs["year"].'%')
+                    ->where('student_id', '=', $inputs['studentId'])->distinct()->get();
 
-		for ($i=0; $i < count($sendDetails); $i++) { 
-			$temp = Batches::where('id', '=', $sendDetails[$i]['batch_id'])->get();
+    for ($i=0; $i < count($sendDetails); $i++) { 
+      $temp = Batches::where('id', '=', $sendDetails[$i]['batch_id'])->get();
                         $timestamp = strtotime($temp[0]['start_date']);
                         $temp[0]['day']=date('l', $timestamp);
                         if($temp[0]['lead_instructor']!=0){
@@ -269,62 +269,62 @@ class StudentsController extends \BaseController {
                             $temp[0]['Leadinstructor']=$temp2->first_name.$temp2->last_name;
                         }
                         $name[]=$temp;
-		}
-		if($name){
-			return Response::json(array('status'=> "success", $name));
-		}else{
-			return Response::json(array('status'=> "failure",));
-		}
-	}
+    }
+    if($name){
+      return Response::json(array('status'=> "success", $name));
+    }else{
+      return Response::json(array('status'=> "failure",));
+    }
+  }
 
 
-	
-	public function saveKids() {
-		
-		$inputs = Input::all();
-		$updateStudent = Students::updateStudent($inputs);
-		header('Access-Control-Allow-Origin: *');
-		if($updateStudent){
-			return Response::json(array("status"=>"success"));
-		}else{
-			return Response::json(array("status"=>"failed"));
-		}
-	}
-	
-	
-	public function uploadProfilePicture(){
-		
-		$file = Input::file('profileImage');
-		$studentId = Input::get('studentId');
-		
-		$destinationPath = 'upload/profile/student/';
-		
-		$filename = $file->getClientOriginalName();		
-		$fileExtension = '.'.$file->getClientOriginalExtension();
-		
-				
-		$filename = 'student_profile_'.$studentId.'_medium'.$fileExtension;
-				
-		$result = Input::file('profileImage')->move($destinationPath, $filename);
-		
-		if($result){	
-				
-			$student = Students::find($studentId);
-			$student->profile_image = $filename;
-			$student->save();
-		
-		}
-		
-		Session::flash ( 'imageUploadMessage', "Profile picture updated successfully." );
-		return Redirect::to("/students/view/".$studentId);
-		
-		
-		
-	}
+  
+  public function saveKids() {
+    
+    $inputs = Input::all();
+    $updateStudent = Students::updateStudent($inputs);
+    header('Access-Control-Allow-Origin: *');
+    if($updateStudent){
+      return Response::json(array("status"=>"success"));
+    }else{
+      return Response::json(array("status"=>"failed"));
+    }
+  }
+  
+  
+  public function uploadProfilePicture(){
+    
+    $file = Input::file('profileImage');
+    $studentId = Input::get('studentId');
+    
+    $destinationPath = 'upload/profile/student/';
+    
+    $filename = $file->getClientOriginalName();   
+    $fileExtension = '.'.$file->getClientOriginalExtension();
+    
+        
+    $filename = 'student_profile_'.$studentId.'_medium'.$fileExtension;
+        
+    $result = Input::file('profileImage')->move($destinationPath, $filename);
+    
+    if($result){  
+        
+      $student = Students::find($studentId);
+      $student->profile_image = $filename;
+      $student->save();
+    
+    }
+    
+    Session::flash ( 'imageUploadMessage', "Profile picture updated successfully." );
+    return Redirect::to("/students/view/".$studentId);
+    
+    
+    
+  }
         
         
         public function enrollOldCustomer(){
-        	$inputs = Input::all();  
+          $inputs = Input::all();  
                 
                 $tax=PaymentTax::getTaxPercentageForPayment();
                 $tax=$tax->tax_percentage;
@@ -358,12 +358,12 @@ class StudentsController extends \BaseController {
             
             if($inputs['MembershipTypeForOld']!=''){
                 //                   adding record to membership table
-                    $customerMembershipInput['customer_id']		=	$inputs['oldCustomerId'];
-                    $customerMembershipInput['membership_type_id']=	$inputs['MembershipTypeForOld'];
+                    $customerMembershipInput['customer_id']   = $inputs['oldCustomerId'];
+                    $customerMembershipInput['membership_type_id']= $inputs['MembershipTypeForOld'];
                     $customerMembershipDetails=CustomerMembership::addMembership($customerMembershipInput);
-                    $paymentDuesInput['membership_id']		=	$customerMembershipDetails->id;
-                    $paymentDuesInput['membership_type_id']         =	$customerMembershipDetails->membership_type_id;
-                    $paymentDuesInput['membership_amount']          =	$inputs['MembershipAmountForOld'];
+                    $paymentDuesInput['membership_id']    = $customerMembershipDetails->id;
+                    $paymentDuesInput['membership_type_id']         = $customerMembershipDetails->membership_type_id;
+                    $paymentDuesInput['membership_amount']          = $inputs['MembershipAmountForOld'];
             }
             
             
@@ -463,14 +463,14 @@ class StudentsController extends \BaseController {
                     $totalAmountForAllBatch = '';
                     $paymentDueDetails = PaymentDues::where('payment_no', '=', $final_payment_master_no)->get();
                     for($i = 0; $i < count($paymentDueDetails); $i++){
-			$totalSelectedClasses = $totalSelectedClasses + $paymentDueDetails[$i]['selected_sessions'];
-			$getBatchNname[]  = Batches::where('id', '=', $paymentDueDetails[$i]['batch_id'])->get();
-			$getSeasonName[]  = Seasons::where('id', '=', $paymentDueDetails[$i]['season_id'])->get();
-			$selectedSessionsInEachBatch[] = $paymentDueDetails[$i]['selected_sessions'];
-			$classStartDate[] = $paymentDueDetails[$i]['start_order_date'];
-			$classEndDate[] = $paymentDueDetails[$i]['end_order_date'];
-			$totalAmountForEachBach[] = (int)$paymentDueDetails[$i]['payment_batch_amount'];
-			$totalAmountForAllBatch = $totalAmountForAllBatch + (int)$paymentDueDetails[$i]['payment_batch_amount'];
+      $totalSelectedClasses = $totalSelectedClasses + $paymentDueDetails[$i]['selected_sessions'];
+      $getBatchNname[]  = Batches::where('id', '=', $paymentDueDetails[$i]['batch_id'])->get();
+      $getSeasonName[]  = Seasons::where('id', '=', $paymentDueDetails[$i]['season_id'])->get();
+      $selectedSessionsInEachBatch[] = $paymentDueDetails[$i]['selected_sessions'];
+      $classStartDate[] = $paymentDueDetails[$i]['start_order_date'];
+      $classEndDate[] = $paymentDueDetails[$i]['end_order_date'];
+      $totalAmountForEachBach[] = (int)$paymentDueDetails[$i]['payment_batch_amount'];
+      $totalAmountForAllBatch = $totalAmountForAllBatch + (int)$paymentDueDetails[$i]['payment_batch_amount'];
                     }   
                     $getTermsAndConditions = TermsAndConditions::where('id', '=', (TermsAndConditions::max('id')))->get();
                     $getCustomerName = Customers::select('customer_name','customer_email')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
@@ -483,608 +483,652 @@ class StudentsController extends \BaseController {
                         'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName','getTermsAndConditions',
                         'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode');
                     Mail::send('emails.account.enrollment', $data, function($msg) use ($data){
-					
-				$msg->from(Config::get('constants.EMAIL_ID'), Config::get('constants.EMAIL_NAME'));
-				$msg->to($data['getCustomerName'][0]['customer_email'], $data['getCustomerName'][0]['customer_name'])->subject('The Little Gym - Kids Enrollment Successful');
-			
-			});
+          
+        $msg->from(Config::get('constants.EMAIL_ID'), Config::get('constants.EMAIL_NAME'));
+        $msg->to($data['getCustomerName'][0]['customer_email'], $data['getCustomerName'][0]['customer_name'])->subject('The Little Gym - Kids Enrollment Successful');
+      
+      });
                 }
                 if ($sendCommentsToInsert) {
                    return Redirect::to("/students/view/".$oldStudentId);
                 }
         }
         
-        public function enrollKid2(){
-		$inputs = Input::all();
-                $final_payment_master_no;
-		//return Response::json(array('status'=>'success','inputs'=>$inputs));
-                $getEstimateDetails =  Estimate::where('estimate_master_no', '=', $inputs['estimate_master_no'])
-										->where('is_cancelled', '!=', '1')
-										->where('franchise_id', '=', Session::get('franchiseId'))
-										->get();
+public function enrollKid2(){
+  if(Auth::check()){
+    DB::beginTransaction();
+    try {
+      $inputs = Input::all();
+      $final_payment_master_no;
+      $getEstimateDetails= Estimate::where('estimate_master_no', '=', $inputs['estimate_master_no'])
+                                     ->where('is_cancelled', '!=', '1')
+                                     ->where('franchise_id', '=', Session::get('franchiseId'))
+                                     ->get();
                 // getting the tax for particular franchisee
-                $tax=PaymentTax::getTaxPercentageForPayment();
-                $tax=$tax->tax_percentage;
+      $tax=PaymentTax::getTaxPercentageForPayment();
+      $tax=$tax->tax_percentage;
                 //** checking if it is a one batch **//
-                if(count($getEstimateDetails) == 1){
+      if(count($getEstimateDetails) == 1){
                     
-                    $batch_data=  BatchSchedule::where('batch_id','=',$getEstimateDetails[0]['batch_id'])
-                                                 ->where('schedule_date','>=',$getEstimateDetails[0]['enroll_start_date'])
-                                                 ->where('franchisee_id','=',Session::get('franchiseId'))
-                                                 ->where('season_id','=',$getEstimateDetails[0]['season_id'])
-                                                 ->where('holiday','!=',1)  
-                                                 ->take($getEstimateDetails[0]['no_of_opted_classes'])
-                                                 ->get();
+        $batch_data=  BatchSchedule::
+                                where('batch_id','=',$getEstimateDetails[0]['batch_id'])
+                                ->where('schedule_date','>=',$getEstimateDetails[0]['enroll_start_date'])
+                                ->where('franchisee_id','=',Session::get('franchiseId'))
+                                ->where('season_id','=',$getEstimateDetails[0]['season_id'])
+                                ->where('holiday','!=',1)  
+                                ->take($getEstimateDetails[0]['no_of_opted_classes'])
+                                ->get();
                     
-                    $studentClasses['classId']               = $getEstimateDetails[0]['class_id'];
-                    $studentClasses['batchId']               = $getEstimateDetails[0]['batch_id'];
-                    $studentClasses['studentId']             = $getEstimateDetails[0]['student_id'];
-                    $studentClasses['selected_sessions']     = $getEstimateDetails[0]['no_of_opted_classes'];
-                    $studentClasses['seasonId']              = $getEstimateDetails[0]['season_id'];
-                    $singleBatchstartDate=Carbon::createFromFormat('Y-m-d', $getEstimateDetails[0]['enroll_start_date']);
-                    $studentClasses['enrollment_start_date'] = $getEstimateDetails[0]['enroll_start_date'];
-                    $studentClasses['enrollment_end_date']   = $getEstimateDetails[0]['enroll_end_date'];
-                    $singleBatchendDate=Carbon::createFromFormat('Y-m-d', $getEstimateDetails[0]['enroll_end_date']);
-                    $insertDataToStudentClassTable           = StudentClasses::addStudentClass($studentClasses);
+        $studentClasses['classId']               = $getEstimateDetails[0]['class_id'];
+        $studentClasses['batchId']               = $getEstimateDetails[0]['batch_id'];
+        $studentClasses['studentId']             = $getEstimateDetails[0]['student_id'];
+        $studentClasses['selected_sessions']     = $getEstimateDetails[0]['no_of_opted_classes'];
+        $studentClasses['seasonId']              = $getEstimateDetails[0]['season_id'];
+        $singleBatchstartDate=
+                        Carbon::createFromFormat('Y-m-d', $getEstimateDetails[0]['enroll_start_date']);
+        $studentClasses['enrollment_start_date'] = $getEstimateDetails[0]['enroll_start_date'];
+        $studentClasses['enrollment_end_date']   = $getEstimateDetails[0]['enroll_end_date'];
+        $singleBatchendDate=Carbon::createFromFormat('Y-m-d', $getEstimateDetails[0]['enroll_end_date']);
+        $insertDataToStudentClassTable           = StudentClasses::addStudentClass($studentClasses);
                         /* inserting into student class table is completed for single pay */
                         /* Working on preparing to payment due table for single pay */
 
-                    $paymentDuesInput['student_id']        = $insertDataToStudentClassTable['student_id'];
-                    $paymentDuesInput['customer_id']       = $getEstimateDetails[0]['customer_id'];
-                    $paymentDuesInput['batch_id']          = $insertDataToStudentClassTable['batch_id'];
-                    $paymentDuesInput['class_id']          = $insertDataToStudentClassTable['class_id'];
-                    $paymentDuesInput['selected_sessions'] = $insertDataToStudentClassTable['selected_sessions'];
-                    $paymentDuesInput['seasonId']          = $insertDataToStudentClassTable['season_id'];
-                    $paymentDuesInput['student_class_id']  = $insertDataToStudentClassTable['id'];
-                    $paymentDuesInput['each_class_cost']   = $getEstimateDetails[0]['base_price'];
+        $paymentDuesInput['student_id']        = $insertDataToStudentClassTable['student_id'];
+        $paymentDuesInput['customer_id']       = $getEstimateDetails[0]['customer_id'];
+        $paymentDuesInput['batch_id']          = $insertDataToStudentClassTable['batch_id'];
+        $paymentDuesInput['class_id']          = $insertDataToStudentClassTable['class_id'];
+        $paymentDuesInput['selected_sessions'] = $insertDataToStudentClassTable['selected_sessions'];
+        $paymentDuesInput['seasonId']          = $insertDataToStudentClassTable['season_id'];
+        $paymentDuesInput['student_class_id']  = $insertDataToStudentClassTable['id'];
+        $paymentDuesInput['each_class_cost']   = $getEstimateDetails[0]['base_price'];
                     
                 //** checking for Membership **//
-                if(isset($inputs['membershipType'])){
-                	//** create membership for customer **//
-                        $customerMembershipInput['customer_id']		=	$getEstimateDetails[0]['customer_id'];
-                        $customerMembershipInput['membership_type_id']=	$inputs['membershipType'];
-                        $customerMembershipDetails=CustomerMembership::addMembership($customerMembershipInput);
-                        $paymentDuesInput['membership_id']		=	$customerMembershipDetails->id;
-                        $paymentDuesInput['membership_type_id']         =	$customerMembershipDetails->membership_type_id;
-                        $temp=MembershipTypes::find($customerMembershipDetails->membership_type_id);
-                        $paymentDuesInput['membership_name']            =       $temp->description;
-                        $paymentDuesInput['membership_amount']          =	$inputs['membershipAmount'];
-                }
+        if(isset($inputs['membershipType']) && array_key_exists('membershipType',$inputs) 
+           && $inputs['membershipType']!=''){
+                  //** create membership for customer **//
+          $customerMembershipInput['customer_id']   = $getEstimateDetails[0]['customer_id'];
+          $customerMembershipInput['membership_type_id']= $inputs['membershipType'];
+          $customerMembershipDetails=CustomerMembership::addMembership($customerMembershipInput);
+          $paymentDuesInput['membership_id'] = $customerMembershipDetails->id;
+          $paymentDuesInput['membership_type_id']=$customerMembershipDetails->membership_type_id;
+          $temp=MembershipTypes::find($customerMembershipDetails->membership_type_id);
+          $paymentDuesInput['membership_name']            =       $temp->description;
+          $paymentDuesInput['membership_amount']          = $inputs['membershipAmount'];
+        }
                 
                 //** checking for discounts **//
-                if(isset($inputs['discountTextBox'])){
-                    $discount_amount = explode("-",$inputs['discountTextBox']);
-                    $paymentDuesInput['discount_applied']       = $inputs['discountPercentage'];
-                    $paymentDuesInput['discount_amount']        = $discount_amount[1];
-                }
-                if(isset($inputs['second_child_discount_to_form']) && $inputs['second_child_discount_to_form']!=''){
-                    $explodedDiscountAmount=explode("-",$inputs['second_child_amount']);
-                    $paymentDuesInput['discount_sibling_applied'] = $inputs['second_child_discount_to_form']; 
-                    $paymentDuesInput['discount_sibling_amount']  = $explodedDiscountAmount[1];
-                }
-                if(isset($inputs['second_class_discount_to_form']) && $inputs['second_class_discount_to_form']!=''){
-                    $explodedDiscountAmount=explode("-",$inputs['second_class_amount']);
-                    $paymentDuesInput['discount_multipleclasses_applied'] = $inputs['second_class_discount_to_form']; 
-                    $paymentDuesInput['discount_multipleclasses_amount']  = $explodedDiscountAmount[1];
-                }
-                if(isset($inputs['admin_discount_amount'])){
-                    $paymentDuesInput['discount_admin_amount']=$inputs['admin_discount_amount'];
-                }
+        if(isset($inputs['discountTextBox']) && array_key_exists('discountTextBox',$inputs) 
+           && $inputs['discountTextBox']!=''){
+
+          $discount_amount = explode("-",$inputs['discountTextBox']);
+          $paymentDuesInput['discount_applied']       = $inputs['discountPercentage'];
+          $paymentDuesInput['discount_amount']        = $discount_amount[1];
+        }
+
+        if(isset($inputs['second_child_discount_to_form']) && 
+            array_key_exists('second_child_discount_to_form',$inputs) && 
+            $inputs['second_child_discount_to_form']!=''){
+
+          $explodedDiscountAmount=explode("-",$inputs['second_child_amount']);
+          $paymentDuesInput['discount_sibling_applied'] = $inputs['second_child_discount_to_form']; 
+          $paymentDuesInput['discount_sibling_amount']  = $explodedDiscountAmount[1];
                 
-                $paymentDuesInput['payment_due_amount']                     = $inputs['singlePayAmount'];
-                $paymentDuesInput['payment_due_amount_after_discount']      = $inputs['grandTotal'];
-                $paymentDuesInput['payment_status']                         = "paid";
-                $paymentDuesInput['selected_order_sessions']                = $getEstimateDetails[0]['no_of_opted_classes'];
-                $paymentDuesInput['start_order_date']                       = $insertDataToStudentClassTable['enrollment_start_date'];
-                $paymentDuesInput['end_order_date']                         = $insertDataToStudentClassTable['enrollment_end_date'];
-                $paymentDuesInput['payment_batch_amount']                   = $paymentDuesInput['selected_order_sessions']*$paymentDuesInput['each_class_cost'];
-                $paymentDuesInput['tax']                                    = $tax;
+        }
+
+        if(isset($inputs['second_class_discount_to_form'])  &&  
+           array_key_exists('second_class_discount_to_form',$inputs) && 
+           $inputs['second_class_discount_to_form']!=''){
+
+          $explodedDiscountAmount=explode("-",$inputs['second_class_amount']);
+          $paymentDuesInput['discount_multipleclasses_applied'] = $inputs['second_class_discount_to_form']; 
+          $paymentDuesInput['discount_multipleclasses_amount']  = $explodedDiscountAmount[1];
+        }
+
+        if(isset($inputs['admin_discount_amount']) &&
+           array_key_exists('admin_discount_amount',$inputs) && 
+           $inputs['admin_discount_amount']!=''){
+
+          $paymentDuesInput['discount_admin_amount']=$inputs['admin_discount_amount'];
+        }
                 
-                $sendPaymentDetailsToInsert = PaymentDues::createPaymentDues($paymentDuesInput);
+        $paymentDuesInput['payment_due_amount']                     = $inputs['singlePayAmount'];
+        $paymentDuesInput['payment_due_amount_after_discount']      = $inputs['grandTotal'];
+        $paymentDuesInput['payment_status']                         = "paid";
+        $paymentDuesInput['selected_order_sessions']     = $getEstimateDetails[0]['no_of_opted_classes'];
+        $paymentDuesInput['start_order_date']  = $insertDataToStudentClassTable['enrollment_start_date'];
+        $paymentDuesInput['end_order_date']    = $insertDataToStudentClassTable['enrollment_end_date'];
+        $paymentDuesInput['payment_batch_amount'] = $paymentDuesInput['selected_order_sessions']*$paymentDuesInput['each_class_cost'];
+        $paymentDuesInput['tax']                                    = $tax;
+                
+        $sendPaymentDetailsToInsert = PaymentDues::createPaymentDues($paymentDuesInput);
                 
                 /* inserting into payment Due table is completed for single pay */
                     /* Working on preparing to payment master table for single pay */
-                $sendPaymentMasterDetailsToInsert = PaymentMaster::createPaymentMaster($sendPaymentDetailsToInsert);
+        $sendPaymentMasterDetailsToInsert = PaymentMaster::createPaymentMaster($sendPaymentDetailsToInsert);
 
                     /* inserting into payment Master table is completed for single pay */
                     /* Working on preparing to Orders table for single pay */
 
-                    $order['customer_id']     = $inputs['customerId'];
-                    $order['student_id']      = $insertDataToStudentClassTable['student_id'];
-                    $order['student_classes_id'] = $insertDataToStudentClassTable['id'];
-                    if($inputs['paymentTypeRadio'] == "card"){
-                    	$order['payment_mode']    = $inputs['paymentTypeRadio'];	
-                    	$order['card_last_digit'] = $inputs['card4digits'];
-                    	$order['card_type']       = $inputs['cardType'];
-                    	$order['bank_name']       = $inputs['cardBankName'];
-                    	$order['receipt_number']       = $inputs['cardRecieptNumber'];
-                    }elseif($inputs['paymentTypeRadio'] == "cheque"){
-                    	$order['payment_mode']    = $inputs['paymentTypeRadio'];	
-                    	$order['bank_name']       = $inputs['bankName'];
-                    	$order['cheque_number']       = $inputs['chequeNumber'];
+        $order['customer_id']     = $inputs['customerId'];
+        $order['student_id']      = $insertDataToStudentClassTable['student_id'];
+        $order['student_classes_id'] = $insertDataToStudentClassTable['id'];
+        if(isset($inputs['paymentTypeRadio']) && (array_key_exists('paymentTypeRadio',$inputs))
+           && ($inputs['paymentTypeRadio'] == "card")){
 
-                	}elseif($inputs['paymentTypeRadio'] == "cash"){
-                    	$order['payment_mode']    = $inputs['paymentTypeRadio'];	
-                    }
+          $order['payment_mode']    = $inputs['paymentTypeRadio'];  
+          $order['card_last_digit'] = $inputs['card4digits'];
+          $order['card_type']       = $inputs['cardType'];
+          $order['bank_name']       = $inputs['cardBankName'];
+                      $order['receipt_number']       = $inputs['cardRecieptNumber'];
+        }elseif(isset($inputs['paymentTypeRadio']) && (array_key_exists('paymentTypeRadio',$inputs)) && 
+          ($inputs['paymentTypeRadio'] == "cheque")){
+          $order['payment_mode']    = $inputs['paymentTypeRadio'];  
+          $order['bank_name']       = $inputs['bankName'];
+          $order['cheque_number']       = $inputs['chequeNumber'];
+
+        }elseif(isset($inputs['paymentTypeRadio']) && (array_key_exists('paymentTypeRadio',$inputs)) && ($inputs['paymentTypeRadio'] == "cash")){
+          $order['payment_mode']    = $inputs['paymentTypeRadio'];  
+        }
                     
-                    $order['payment_for']     = "enrollment";
-                    $order['payment_no']   = $sendPaymentMasterDetailsToInsert['payment_no'];
-                    $order['payment_dues_id']   = $sendPaymentDetailsToInsert['id'];
-                    $order['amount'] = $inputs['singlePayAmount'];
-                    $order['order_status'] = "completed";
+        $order['payment_for']     = "enrollment";
+        $order['payment_no']   = $sendPaymentMasterDetailsToInsert['payment_no'];
+        $order['payment_dues_id']   = $sendPaymentDetailsToInsert['id'];
+        $order['amount'] = $inputs['singlePayAmount'];
+        $order['order_status'] = "completed";
                                       
-                    $sendOrderDetailsToInsert = Orders::createOrder($order);
+        $sendOrderDetailsToInsert = Orders::createOrder($order);
                     
                     
-                    $update_payment_due = PaymentDues::find($sendPaymentDetailsToInsert->id);
-                    $update_payment_due->payment_no=$sendPaymentMasterDetailsToInsert->payment_no;
-                    $final_payment_master_no=$sendPaymentMasterDetailsToInsert->payment_no;
-                    $update_payment_due->save();
+        $update_payment_due = PaymentDues::find($sendPaymentDetailsToInsert->id);
+        $update_payment_due->payment_no=$sendPaymentMasterDetailsToInsert->payment_no;
+        $final_payment_master_no=$sendPaymentMasterDetailsToInsert->payment_no;
+        $update_payment_due->save();
 
-                    $updatePaymentMasterTable = PaymentMaster::find($sendPaymentMasterDetailsToInsert->id);
-                    $updatePaymentMasterTable->order_id = $sendOrderDetailsToInsert->id;
-                    $updatePaymentMasterTable->save();
+        $updatePaymentMasterTable = PaymentMaster::find($sendPaymentMasterDetailsToInsert->id);
+        $updatePaymentMasterTable->order_id = $sendOrderDetailsToInsert->id;
+        $updatePaymentMasterTable->save();
                 
                     //** working on the payment_followups **//
                     
-                    if(count($batch_data) >= 5){
-                        $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
+        if(count($batch_data) >= 5){
+          $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
                         //creating logs/followup for first payment
-                        $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
-                        $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
-                        $customer_log_data['franchisee_id']=Session::get('franchiseId');
-                        $customer_log_data['paymentfollowup_id']=$payment_followup_data1->id;
-                        $customer_log_data['followup_type']='PAYMENT';
-                        $customer_log_data['followup_status']='REMINDER_CALL';
-                        $customer_log_data['comment_type']='VERYINTERESTED';
-                        $customer_log_data['reminderDate']=$batch_data[count($batch_data)-2]['schedule_date'];
-                        Comments::addSinglePayComment($customer_log_data);
-                    }
-		
+          $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
+          $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
+          $customer_log_data['franchisee_id']=Session::get('franchiseId');
+          $customer_log_data['paymentfollowup_id']=$payment_followup_data1->id;
+          $customer_log_data['followup_type']='PAYMENT';
+          $customer_log_data['followup_status']='REMINDER_CALL';
+          $customer_log_data['comment_type']='VERYINTERESTED';
+          $customer_log_data['reminderDate']=$batch_data[count($batch_data)-2]['schedule_date'];
+          Comments::addSinglePayComment($customer_log_data);
+        }
+    
 
-		
-            	                
-		//** checking if it is a 2 batch **//
-		}elseif (count($getEstimateDetails) == 2) {
-                        for($i=0;$i<2;$i++){
-                         $batch_data[$i]=BatchSchedule::where('batch_id','=',$getEstimateDetails[$i]['batch_id'])
-                                                 ->where('schedule_date','>=',$getEstimateDetails[$i]['enroll_start_date'])
-                                                 ->where('franchisee_id','=',Session::get('franchiseId'))
-                                                 ->where('season_id','=',$getEstimateDetails[$i]['season_id'])
-                                                 ->where('holiday','!=',1)  
-                                                 ->take($getEstimateDetails[$i]['no_of_opted_classes'])
-                                                 ->get();
+    
+                              
+    //** checking if it is a 2 batch **//
+    }elseif (count($getEstimateDetails) == 2) {
+      for($i=0;$i<2;$i++){
+        $batch_data[$i]=BatchSchedule::where('batch_id','=',$getEstimateDetails[$i]['batch_id'])
+                                       ->where('schedule_date','>=',$getEstimateDetails[$i]['enroll_start_date'])
+                                       ->where('franchisee_id','=',Session::get('franchiseId'))
+                                       ->where('season_id','=',$getEstimateDetails[$i]['season_id'])
+                                       ->where('holiday','!=',1)  
+                                       ->take($getEstimateDetails[$i]['no_of_opted_classes'])
+                                       ->get();
                     
-                        }
-			
-				
-                            for ($i=0; $i<2 ; $i++) { 
-                                $studentClasses[$i]['classId']               = $getEstimateDetails[$i]['class_id'];
-                                $studentClasses[$i]['batchId']               = $getEstimateDetails[$i]['batch_id'];
-                                $studentClasses[$i]['studentId']             = $getEstimateDetails[$i]['student_id'];
-                                $studentClasses[$i]['selected_sessions']     = $getEstimateDetails[$i]['no_of_opted_classes'];
-                                $studentClasses[$i]['seasonId']              = $getEstimateDetails[$i]['season_id'];
-                                $singleBatchstartDate=Carbon::createFromFormat('Y-m-d', $getEstimateDetails[$i]['enroll_start_date']);
-                                $studentClasses[$i]['enrollment_start_date'] = $getEstimateDetails[$i]['enroll_start_date'];
-                                $studentClasses[$i]['enrollment_end_date']   = $getEstimateDetails[$i]['enroll_end_date'];
-                                $singleBatchendDate=Carbon::createFromFormat('Y-m-d', $getEstimateDetails[$i]['enroll_end_date']);
-                                $insertDataToStudentClassTable               =  StudentClasses::addStudentClass($studentClasses[$i]);
-                  	
-                                $paymentDuesInput[$i]['student_id']          = $insertDataToStudentClassTable['student_id'];
-                                $paymentDuesInput[$i]['customer_id']         = $inputs['customerId'];
-                                $paymentDuesInput[$i]['batch_id']            = $insertDataToStudentClassTable['batch_id'];
-                                $paymentDuesInput[$i]['class_id']            = $insertDataToStudentClassTable['class_id'];
-                                $paymentDuesInput[$i]['selected_sessions']   = $insertDataToStudentClassTable['selected_sessions'];
-                                $paymentDuesInput[$i]['seasonId']            = $insertDataToStudentClassTable['season_id'];
-                                $paymentDuesInput[$i]['student_class_id']    = $insertDataToStudentClassTable['id'];
-                                $paymentDuesInput[$i]['each_class_cost']     = $getEstimateDetails[$i]['base_price'];
+      }
+      for ($i=0; $i<2 ; $i++) { 
+        $studentClasses[$i]['classId']               = $getEstimateDetails[$i]['class_id'];
+        $studentClasses[$i]['batchId']               = $getEstimateDetails[$i]['batch_id'];
+        $studentClasses[$i]['studentId']             = $getEstimateDetails[$i]['student_id'];
+        $studentClasses[$i]['selected_sessions']     = $getEstimateDetails[$i]['no_of_opted_classes'];
+        $studentClasses[$i]['seasonId']              = $getEstimateDetails[$i]['season_id'];
+        $singleBatchstartDate=
+                        Carbon::createFromFormat('Y-m-d', $getEstimateDetails[$i]['enroll_start_date']);
+        $studentClasses[$i]['enrollment_start_date'] = $getEstimateDetails[$i]['enroll_start_date'];
+        $studentClasses[$i]['enrollment_end_date']   = $getEstimateDetails[$i]['enroll_end_date'];
+        $singleBatchendDate=
+                        Carbon::createFromFormat('Y-m-d', $getEstimateDetails[$i]['enroll_end_date']);
+        $insertDataToStudentClassTable           =  StudentClasses::addStudentClass($studentClasses[$i]);
+                    
+        $paymentDuesInput[$i]['student_id']          = $insertDataToStudentClassTable['student_id'];
+        $paymentDuesInput[$i]['customer_id']         = $inputs['customerId'];
+        $paymentDuesInput[$i]['batch_id']            = $insertDataToStudentClassTable['batch_id'];
+        $paymentDuesInput[$i]['class_id']            = $insertDataToStudentClassTable['class_id'];
+        $paymentDuesInput[$i]['selected_sessions'] = $insertDataToStudentClassTable['selected_sessions'];
+        $paymentDuesInput[$i]['seasonId']            = $insertDataToStudentClassTable['season_id'];
+        $paymentDuesInput[$i]['student_class_id']    = $insertDataToStudentClassTable['id'];
+        $paymentDuesInput[$i]['each_class_cost']     = $getEstimateDetails[$i]['base_price'];
                                 
                                 //** working on the customer_membership **//
-                                if(isset($inputs['membershipType'])){
+        if(isset($inputs['membershipType']) && array_key_exists('membershipType',$inputs) && 
+           $inputs['membershipType']!=''){
                                     //** create membership for customer **//
-                                    $customerMembershipInput['customer_id']		=	$getEstimateDetails[$i]['customer_id'];
-                                    $customerMembershipInput['membership_type_id']      =	$inputs['membershipType'];
-                                    $customerMembershipDetails=CustomerMembership::addMembership($customerMembershipInput);
+          $customerMembershipInput['customer_id']   = $getEstimateDetails[$i]['customer_id'];
+          $customerMembershipInput['membership_type_id']      = $inputs['membershipType'];
+          $customerMembershipDetails=CustomerMembership::addMembership($customerMembershipInput);
 
-                                    $paymentDuesInput[$i]['membership_id']		=	$customerMembershipDetails->id;
-                                    $paymentDuesInput[$i]['membership_type_id']         =	$customerMembershipDetails->membership_type_id;
-                                    $paymentDuesInput[$i]['membership_amount']          =	$inputs['membershipAmount'];
-                                    $temp=MembershipTypes::find($customerMembershipDetails->membership_type_id);
-                                    $paymentDuesInput['membership_name']            =       $temp->description;
-                                    
-                                    
-                                }
+          $paymentDuesInput[$i]['membership_id']    = $customerMembershipDetails->id;
+          $paymentDuesInput[$i]['membership_type_id'] = $customerMembershipDetails->membership_type_id;
+          $paymentDuesInput[$i]['membership_amount']          = $inputs['membershipAmount'];
+          $temp=MembershipTypes::find($customerMembershipDetails->membership_type_id);
+          $paymentDuesInput['membership_name']       =       $temp->description;
+        }
                                 //** checking for discounts **//
-                                if($inputs['discountPercentage']!=''){
-                                    $discount_amount                               = explode("-",$inputs['discountTextBox']);
-                                    $paymentDuesInput[$i]['discount_amount']       = $discount_amount[1];
-                                    $paymentDuesInput[$i]['discount_applied']      = $inputs['discountPercentage'];
-                                }
-                                if(array_key_exists('second_class_discount_to_form', $inputs) && $inputs['second_class_discount_to_form']!=''){
-                                    $discount_multipleclasses_amount                                = explode("-",$inputs['second_class_amount']);
-                                    $paymentDuesInput[$i]['discount_multipleclasses_amount']        = $discount_multipleclasses_amount[1];
-                                    $paymentDuesInput[$i]['discount_multipleclasses_applied']       = $inputs['second_class_discount_to_form'];
-                                }
-                                if(array_key_exists('second_child_discount_to_form', $inputs) && $inputs['second_child_discount_to_form']!=''){
-                                    $discount_sibling_amount                               = explode("-",$inputs['second_child_amount']);
-                                    $paymentDuesInput[$i]['discount_sibling_amount']       = $discount_sibling_amount[1];
-                                    $paymentDuesInput[$i]['discount_sibling_applied']      = $inputs['second_child_discount_to_form'];
-                                }
+        if(isset($inputs['discountPercentage']) && array_key_exists('discountPercentage',$inputs) && $inputs['discountPercentage']!=''){
+            
+            $discount_amount                               = explode("-",$inputs['discountTextBox']);
+            $paymentDuesInput[$i]['discount_amount']       = $discount_amount[1];
+            $paymentDuesInput[$i]['discount_applied']      = $inputs['discountPercentage'];
+        }
+
+        if(isset($inputs['second_class_discount_to_form']) && 
+           array_key_exists('second_class_discount_to_form', $inputs) && 
+           $inputs['second_class_discount_to_form']!=''){
+
+          $discount_multipleclasses_amount      = explode("-",$inputs['second_class_amount']);
+          $paymentDuesInput[$i]['discount_multipleclasses_amount'] = $discount_multipleclasses_amount[1];
+          $paymentDuesInput[$i]['discount_multipleclasses_applied']= 
+                                                            $inputs['second_class_discount_to_form'];
+        }
+        if(isset($inputs['second_child_discount_to_form']) && 
+           array_key_exists('second_child_discount_to_form', $inputs) && 
+           $inputs['second_child_discount_to_form']!=''){
+
+          $discount_sibling_amount   = explode("-",$inputs['second_child_amount']);
+          $paymentDuesInput[$i]['discount_sibling_amount']    = $discount_sibling_amount[1];
+          $paymentDuesInput[$i]['discount_sibling_applied']   = $inputs['second_child_discount_to_form'];
+        }
+        
+        $paymentDuesInput[$i]['payment_due_amount']   = $inputs['singlePayAmount'];
+        $paymentDuesInput[$i]['payment_due_amount_after_discount']  = $inputs['grandTotal'];
+        $paymentDuesInput[$i]['payment_status']                     = "paid";
+        $paymentDuesInput[$i]['selected_order_sessions']= $getEstimateDetails[$i]['no_of_opted_classes'];
+        $paymentDuesInput[$i]['start_order_date']=
+                                                $insertDataToStudentClassTable['enrollment_start_date'];
+        $paymentDuesInput[$i]['end_order_date']= $insertDataToStudentClassTable['enrollment_end_date'];
+        $paymentDuesInput[$i]['payment_batch_amount']= $paymentDuesInput[$i]['selected_order_sessions']*$paymentDuesInput[$i]['each_class_cost'];
+        $paymentDuesInput[$i]['tax']= $tax;
                                 
-                                $paymentDuesInput[$i]['payment_due_amount']                 = $inputs['singlePayAmount'];
-                                $paymentDuesInput[$i]['payment_due_amount_after_discount']  = $inputs['grandTotal'];
-                                $paymentDuesInput[$i]['payment_status']                     = "paid";
-                                $paymentDuesInput[$i]['selected_order_sessions']            = $getEstimateDetails[$i]['no_of_opted_classes'];
-                                $paymentDuesInput[$i]['start_order_date']                   = $insertDataToStudentClassTable['enrollment_start_date'];
-                                $paymentDuesInput[$i]['end_order_date']                     = $insertDataToStudentClassTable['enrollment_end_date'];
-                                $paymentDuesInput[$i]['payment_batch_amount']               = $paymentDuesInput[$i]['selected_order_sessions']*$paymentDuesInput[$i]['each_class_cost'];
-                                $paymentDuesInput[$i]['tax']                                = $tax;
+        $sendPaymentDetailsToInsert = PaymentDues::createPaymentDues($paymentDuesInput[$i]);
                                 
-                                $sendPaymentDetailsToInsert = PaymentDues::createPaymentDues($paymentDuesInput[$i]);
-                                
-                                //return Response::json(array('status'=>'success','inputs'=>$sendPaymentDetailsToInsert));              
-                                /* inserting into payment Due table is completed for single pay[2batch] */
-                                /* Working on preparing to payment master table for single pay [2 batch]*/
-                                if($i == 0){
-                                	$sendPaymentMasterDetailsToInsert1      = PaymentMaster::createPaymentMaster($sendPaymentDetailsToInsert);
+        if($i == 0){
+          $sendPaymentMasterDetailsToInsert1 = 
+                                 PaymentMaster::createPaymentMaster($sendPaymentDetailsToInsert);
                                         //** updating back to paymentDues **//
-                                        $update_payment_due                     = PaymentDues::find($sendPaymentDetailsToInsert->id);
-                                        $update_payment_due->payment_no=$sendPaymentMasterDetailsToInsert1->payment_no;
-                                        $update_payment_due->save();
+          $update_payment_due = PaymentDues::find($sendPaymentDetailsToInsert->id);
+          $update_payment_due->payment_no=$sendPaymentMasterDetailsToInsert1->payment_no;
+          $update_payment_due->save();
 
 
-                                }else{
+        }else{
                                         //** creating the payment_master with same payment_no **//
-                                	$sendPaymentMasterDetailsToInsert2 = PaymentMaster::createPaymentMasterWithSamePaymentNo($sendPaymentDetailsToInsert, $sendPaymentMasterDetailsToInsert1['payment_no']);
-                                	
-                                	//return Response::json(array('status'=>'success','inputs'=>$sendPaymentMasterDetailsToInsert2));
+          $sendPaymentMasterDetailsToInsert2 = PaymentMaster::createPaymentMasterWithSamePaymentNo($sendPaymentDetailsToInsert, $sendPaymentMasterDetailsToInsert1['payment_no']);
+                                  
+                                  //return Response::json(array('status'=>'success','inputs'=>$sendPaymentMasterDetailsToInsert2));
 
                                         //updating payment_dues
-                                	$update_payment_due1 = PaymentDues::find($sendPaymentDetailsToInsert->id);
-                                        $update_payment_due1->payment_no=$sendPaymentMasterDetailsToInsert2['payment_no'];
-                                        $final_payment_master_no=$sendPaymentMasterDetailsToInsert2['payment_no'];
-                                        $update_payment_due1->save();
+          $update_payment_due1 = PaymentDues::find($sendPaymentDetailsToInsert->id);
+          $update_payment_due1->payment_no=$sendPaymentMasterDetailsToInsert2['payment_no'];
+          $final_payment_master_no=$sendPaymentMasterDetailsToInsert2['payment_no'];
+          $update_payment_due1->save();
                                         
                                         //updating order_id to payment_master for 1st batch
-                		        $updateOrderNoInMaster = PaymentMaster::find($sendPaymentMasterDetailsToInsert1->id);
-                		        $updateOrderNoInMaster->order_id = $sendOrderDetailsToInsert->id;
-                		        $updateOrderNoInMaster->save();
+          $updateOrderNoInMaster = PaymentMaster::find($sendPaymentMasterDetailsToInsert1->id);
+          $updateOrderNoInMaster->order_id = $sendOrderDetailsToInsert->id;
+          $updateOrderNoInMaster->save();
                                         
                                         //updating order_id to payment_master for 2nd batch
-                                        $updateOrderNoInMaster1 = PaymentMaster::find($sendPaymentMasterDetailsToInsert2->id);
-                		        $updateOrderNoInMaster1->order_id = $sendOrderDetailsToInsert->id;
-                		        $updateOrderNoInMaster1->save();
+          $updateOrderNoInMaster1 = PaymentMaster::find($sendPaymentMasterDetailsToInsert2->id);
+          $updateOrderNoInMaster1->order_id = $sendOrderDetailsToInsert->id;
+          $updateOrderNoInMaster1->save();
 
-                		}
+        }
                                 /* inserting into payment Master table is completed for single pay */
-                                if($i == 0){
-                                    $order['customer_id']     = $inputs['customerId'];
-                                    $order['student_id']      = $insertDataToStudentClassTable['student_id'];
-                                    $order['seasonId']        = $insertDataToStudentClassTable['season_id'];
-                                    $order['student_classes_id'] = $insertDataToStudentClassTable['id'];
-                                		//$order[$i]['payment_mode']    = $inputs['paymentTypeRadio'];
+        if($i == 0){
+          $order['customer_id']     = $inputs['customerId'];
+          $order['student_id']      = $insertDataToStudentClassTable['student_id'];
+          $order['seasonId']        = $insertDataToStudentClassTable['season_id'];
+          $order['student_classes_id'] = $insertDataToStudentClassTable['id'];
+                                    //$order[$i]['payment_mode']    = $inputs['paymentTypeRadio'];
 
-                                    if($inputs['paymentTypeRadio'] == "card"){
-                                    	$order['payment_mode']    = $inputs['paymentTypeRadio'];	
-                                    	$order['card_last_digit'] = $inputs['card4digits'];
-                                    	$order['card_type']       = $inputs['cardType'];
-                                    	$order['bank_name']       = $inputs['cardBankName'];
-                                    	$order['receipt_number']  = $inputs['cardRecieptNumber'];
-                                    }elseif($inputs['paymentTypeRadio'] == "cheque"){
-                                    	$order['payment_mode']    = $inputs['paymentTypeRadio'];	
-                                    	$order['bank_name']       = $inputs['bankName'];
-                                    	$order['cheque_number']   = $inputs['chequeNumber'];
-                                    }elseif($inputs['paymentTypeRadio'] == "cash"){
-        		                $order['payment_mode']    = $inputs['paymentTypeRadio'];	
-                		    }
+          if( isset($inputs['paymentTypeRadio']) && (array_key_exists('paymentTypeRadio',$inputs))
+           && $inputs['paymentTypeRadio'] == "card"){
+            $order['payment_mode']    = $inputs['paymentTypeRadio'];  
+            $order['card_last_digit'] = $inputs['card4digits'];
+            $order['card_type']       = $inputs['cardType'];
+            $order['bank_name']       = $inputs['cardBankName'];
+            $order['receipt_number']  = $inputs['cardRecieptNumber'];
+          }elseif( isset($inputs['paymentTypeRadio']) && (array_key_exists('paymentTypeRadio',$inputs))
+           && $inputs['paymentTypeRadio'] == "cheque"){
+            $order['payment_mode']    = $inputs['paymentTypeRadio'];  
+            $order['bank_name']       = $inputs['bankName'];
+            $order['cheque_number']   = $inputs['chequeNumber'];
+          }elseif( isset($inputs['paymentTypeRadio']) && (array_key_exists('paymentTypeRadio',$inputs))
+           && $inputs['paymentTypeRadio'] == "cash"){
+            $order['payment_mode']    = $inputs['paymentTypeRadio'];  
+          }
 
-                                    $order['payment_for']     = "enrollment";
-                                    $order['payment_no']   = $sendPaymentMasterDetailsToInsert1['payment_no'];
-		                    $order['payment_dues_id']   = $sendPaymentDetailsToInsert['id'];
-        		            $order['amount'] = $inputs['singlePayAmount'];
-                		    $order['order_status'] = "completed";
-                                    $sendOrderDetailsToInsert = Orders::createOrder($order);
-                                }
-		            }
+            $order['payment_for']     = "enrollment";
+            $order['payment_no']   = $sendPaymentMasterDetailsToInsert1['payment_no'];
+            $order['payment_dues_id']   = $sendPaymentDetailsToInsert['id'];
+            $order['amount'] = $inputs['singlePayAmount'];
+            $order['order_status'] = "completed";
+            $sendOrderDetailsToInsert = Orders::createOrder($order);
+        }
+      }
                             
                             
                     //** working on the payment_followups **//
                     
-                    if((count($batch_data[0]) + count($batch_data[1])) >= 5){
-                        $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
+      if((count($batch_data[0]) + count($batch_data[1])) >= 5){
+        $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
                         //creating logs/followup for first payment
-                        $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
-                        $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
-                        $customer_log_data['franchisee_id']=Session::get('franchiseId');
-                        $customer_log_data['paymentfollowup_id']=$payment_followup_data1->id;
-                        $customer_log_data['followup_type']='PAYMENT';
-                        $customer_log_data['followup_status']='REMINDER_CALL';
-                        $customer_log_data['comment_type']='VERYINTERESTED';
-                        if(count($batch_data[1])>=3){
-                        $customer_log_data['reminderDate']=$batch_data[1][count($batch_data[1])-2]['schedule_date'];
-                        }else{
-                            if(count($batch_data[1])==2){
-                                 $customer_log_data['reminderDate']=$batch_data[0][count($batch_data[0])-1]['schedule_date'];
-                            }
-                        }
+        $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
+        $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
+        $customer_log_data['franchisee_id']=Session::get('franchiseId');
+        $customer_log_data['paymentfollowup_id']=$payment_followup_data1->id;
+        $customer_log_data['followup_type']='PAYMENT';
+        $customer_log_data['followup_status']='REMINDER_CALL';
+        $customer_log_data['comment_type']='VERYINTERESTED';
+        if(count($batch_data[1])>=3){
+          $customer_log_data['reminderDate']=$batch_data[1][count($batch_data[1])-2]['schedule_date'];
+        }else{
+          if(count($batch_data[1])==2){
+            $customer_log_data['reminderDate']=$batch_data[0][count($batch_data[0])-1]['schedule_date'];
+          }
+        }
                         Comments::addSinglePayComment($customer_log_data);
-                    }
-		
+      }
+    
 
-		            
-		//** checking if it is a 3 batch **//
-                }elseif (count($getEstimateDetails) == 3) {
+                
+    //** checking if it is a 3 batch **//
+    }elseif (count($getEstimateDetails) == 3) {
                          
-                            for($i=0;$i<3;$i++){
-                                $batch_data[$i]=BatchSchedule::where('batch_id','=',$getEstimateDetails[$i]['batch_id'])
-                                                 ->where('schedule_date','>=',$getEstimateDetails[$i]['enroll_start_date'])
-                                                 ->where('franchisee_id','=',Session::get('franchiseId'))
-                                                 ->where('season_id','=',$getEstimateDetails[$i]['season_id'])
-                                                 ->where('holiday','!=',1)  
-                                                 ->take($getEstimateDetails[$i]['no_of_opted_classes'])
-                                                 ->get();
-                            }
+      for($i=0;$i<3;$i++){
+        $batch_data[$i]=BatchSchedule::
+                                where('batch_id','=',$getEstimateDetails[$i]['batch_id'])
+                              ->where('schedule_date','>=',$getEstimateDetails[$i]['enroll_start_date'])
+                              ->where('franchisee_id','=',Session::get('franchiseId'))
+                              ->where('season_id','=',$getEstimateDetails[$i]['season_id'])
+                              ->where('holiday','!=',1)  
+                              ->take($getEstimateDetails[$i]['no_of_opted_classes'])
+                              ->get();
+      }
                     
                     
                     
-				//return Response::json(array('status'=>'vasu', $inputs));
-                            for ($i=0; $i<3 ; $i++) { 
-                                $studentClasses[$i]['classId']               = $getEstimateDetails[$i]['class_id'];
-                                $studentClasses[$i]['batchId']               = $getEstimateDetails[$i]['batch_id'];
-                                $studentClasses[$i]['studentId']             = $getEstimateDetails[$i]['student_id'];
-                                $studentClasses[$i]['selected_sessions']     = $getEstimateDetails[$i]['no_of_opted_classes'];
-                                $studentClasses[$i]['seasonId']              = $getEstimateDetails[$i]['season_id'];
-                                $singleBatchstartDate=Carbon::createFromFormat('Y-m-d', $getEstimateDetails[$i]['enroll_start_date']);
-                                $studentClasses[$i]['enrollment_start_date'] = $getEstimateDetails[$i]['enroll_start_date'];
-                                $studentClasses[$i]['enrollment_end_date']   = $getEstimateDetails[$i]['enroll_end_date'];
-                                $singleBatchendDate=Carbon::createFromFormat('Y-m-d', $getEstimateDetails[$i]['enroll_end_date']);
-                                $insertDataToStudentClassTable               = StudentClasses::addStudentClass($studentClasses[$i]);
-                  	
-                                $paymentDuesInput[$i]['student_id']        = $insertDataToStudentClassTable['student_id'];
+        //return Response::json(array('status'=>'vasu', $inputs));
+      for ($i=0; $i<3 ; $i++) { 
+        $studentClasses[$i]['classId']               = $getEstimateDetails[$i]['class_id'];
+        $studentClasses[$i]['batchId']               = $getEstimateDetails[$i]['batch_id'];
+        $studentClasses[$i]['studentId']             = $getEstimateDetails[$i]['student_id'];
+        $studentClasses[$i]['selected_sessions']     = $getEstimateDetails[$i]['no_of_opted_classes'];
+        $studentClasses[$i]['seasonId']              = $getEstimateDetails[$i]['season_id'];
+        $singleBatchstartDate=
+                      Carbon::createFromFormat('Y-m-d', $getEstimateDetails[$i]['enroll_start_date']);
+        $studentClasses[$i]['enrollment_start_date'] = $getEstimateDetails[$i]['enroll_start_date'];
+        $studentClasses[$i]['enrollment_end_date']   = $getEstimateDetails[$i]['enroll_end_date'];
+        $singleBatchendDate=
+                      Carbon::createFromFormat('Y-m-d', $getEstimateDetails[$i]['enroll_end_date']);
+        $insertDataToStudentClassTable         = StudentClasses::addStudentClass($studentClasses[$i]);
+                    
+        $paymentDuesInput[$i]['student_id']        = $insertDataToStudentClassTable['student_id'];
                                 //return Response::json(array('status'=>'success','inputs'=>$paymentDuesInput));
-                                $paymentDuesInput[$i]['customer_id']       = $inputs['customerId'];
-                                $paymentDuesInput[$i]['batch_id']          = $insertDataToStudentClassTable['batch_id'];
-                                $paymentDuesInput[$i]['class_id']          = $insertDataToStudentClassTable['class_id'];
-                                $paymentDuesInput[$i]['selected_sessions'] = $insertDataToStudentClassTable['selected_sessions'];
-                                $paymentDuesInput[$i]['seasonId']          = $insertDataToStudentClassTable['season_id'];
+        $paymentDuesInput[$i]['customer_id']       = $inputs['customerId'];
+        $paymentDuesInput[$i]['batch_id']          = $insertDataToStudentClassTable['batch_id'];
+        $paymentDuesInput[$i]['class_id']          = $insertDataToStudentClassTable['class_id'];
+        $paymentDuesInput[$i]['selected_sessions'] = $insertDataToStudentClassTable['selected_sessions'];
+        $paymentDuesInput[$i]['seasonId']          = $insertDataToStudentClassTable['season_id'];
                                               
                                 
-                                $paymentDuesInput[$i]['student_class_id']  = $insertDataToStudentClassTable['id'];
-                                $paymentDuesInput[$i]['each_class_cost']   = $getEstimateDetails[$i]['base_price'];
+        $paymentDuesInput[$i]['student_class_id']  = $insertDataToStudentClassTable['id'];
+        $paymentDuesInput[$i]['each_class_cost']   = $getEstimateDetails[$i]['base_price'];
                                  
-                                
+        if(isset($inputs['membershipType'])){
 
-
-                                if(isset($inputs['membershipType'])){
                                     //** create membership for customer **//
-                                    $customerMembershipInput['customer_id']		=	$getEstimateDetails[$i]['customer_id'];
-                                    $customerMembershipInput['membership_type_id']      =	$inputs['membershipType'];
-                                    $customerMembershipDetails=CustomerMembership::addMembership($customerMembershipInput);
+          $customerMembershipInput['customer_id']   = $getEstimateDetails[$i]['customer_id'];
+          $customerMembershipInput['membership_type_id']      = $inputs['membershipType'];
+          $customerMembershipDetails=CustomerMembership::addMembership($customerMembershipInput);
 
-                                    $paymentDuesInput[$i]['membership_id']		=	$customerMembershipDetails->id;
-                                    $paymentDuesInput[$i]['membership_type_id']         =	$customerMembershipDetails->membership_type_id;
-                                    $paymentDuesInput[$i]['membership_amount']          =	$inputs['membershipAmount'];
-                                    $temp=MembershipTypes::find($customerMembershipDetails->membership_type_id);
-                                    $paymentDuesInput['membership_name']            =       $temp->description;
+          $paymentDuesInput[$i]['membership_id']    = $customerMembershipDetails->id;
+          $paymentDuesInput[$i]['membership_type_id']= $customerMembershipDetails->membership_type_id;
+          $paymentDuesInput[$i]['membership_amount']          = $inputs['membershipAmount'];
+          $temp=MembershipTypes::find($customerMembershipDetails->membership_type_id);
+          $paymentDuesInput['membership_name']            =       $temp->description;
                                     
-                                }
+        }
                                 //** checking for discounts **//
-                                if($inputs['discountPercentage']!=''){
-                                    $discount_amount                                    =   explode("-",$inputs['discountTextBox']);
-                                    $paymentDuesInput[$i]['discount_amount']            =   $discount_amount[1];
-                                    $paymentDuesInput[$i]['discount_applied']           =   $inputs['discountPercentage'];
-                                }
-                                if( array_key_exists('second_class_discount_to_form', $inputs) &&  $inputs['second_class_discount_to_form']!=''){
-                                    $discount_multipleclasses_amount                               = explode("-",$inputs['second_class_amount']);
-                                    $paymentDuesInput[$i]['discount_multipleclasses_amount']       = $discount_multipleclasses_amount[1];
-                                    $paymentDuesInput[$i]['discount_multipleclasses_applied']      = $inputs['second_class_discount_to_form'];
-                                }
-                                if(array_key_exists('second_child_discount_to_form', $inputs) && $inputs['second_child_discount_to_form']!=''){
-                                    $discount_sibling_amount                               = explode("-",$inputs['second_child_amount']);
-                                    $paymentDuesInput[$i]['discount_sibling_amount']       = $discount_sibling_amount[1];
-                                    $paymentDuesInput[$i]['discount_sibling_applied']      = $inputs['second_child_discount_to_form'];
-                                }
+        if($inputs['discountPercentage']!=''){
+          $discount_amount                     =   explode("-",$inputs['discountTextBox']);
+          $paymentDuesInput[$i]['discount_amount']            =   $discount_amount[1];
+          $paymentDuesInput[$i]['discount_applied']           =   $inputs['discountPercentage'];
+        }
+        if( isset($inputs['second_class_discount_to_form']) && array_key_exists('second_class_discount_to_form', $inputs) &&  $inputs['second_class_discount_to_form']!=''){
+                                    
+          $discount_multipleclasses_amount         = explode("-",$inputs['second_class_amount']);
+          $paymentDuesInput[$i]['discount_multipleclasses_amount'] = $discount_multipleclasses_amount[1];
+          $paymentDuesInput[$i]['discount_multipleclasses_applied']= 
+                                                        $inputs['second_class_discount_to_form'];
+        }
+        if(isset($inputs['second_class_discount_to_form']) && array_key_exists('second_child_discount_to_form', $inputs) && $inputs['second_child_discount_to_form']!=''){
+                                    
+          $discount_sibling_amount  = explode("-",$inputs['second_child_amount']);
+          $paymentDuesInput[$i]['discount_sibling_amount']       = $discount_sibling_amount[1];
+          $paymentDuesInput[$i]['discount_sibling_applied']      = $inputs['second_child_discount_to_form'];
+        }
                                 
                                
                                 
                                 
-                                $paymentDuesInput[$i]['payment_due_amount_after_discount']  = $inputs['grandTotal'];
-                                $paymentDuesInput[$i]['payment_status']                     = "paid";
-                                $paymentDuesInput[$i]['selected_order_sessions']            = $getEstimateDetails[$i]['no_of_opted_classes'];
-                                $paymentDuesInput[$i]['start_order_date']                   = $insertDataToStudentClassTable['enrollment_start_date'];
-                                $paymentDuesInput[$i]['end_order_date']                     = $insertDataToStudentClassTable['enrollment_end_date'];
-                                $paymentDuesInput[$i]['payment_batch_amount']               = $paymentDuesInput[$i]['selected_order_sessions']*$paymentDuesInput[$i]['each_class_cost'];
-                                $paymentDuesInput[$i]['payment_due_amount']                 = $inputs['singlePayAmount'];
-                                $paymentDuesInput[$i]['tax']                                = $tax;
+        $paymentDuesInput[$i]['payment_due_amount_after_discount']  = $inputs['grandTotal'];
+        $paymentDuesInput[$i]['payment_status']                     = "paid";
+        $paymentDuesInput[$i]['selected_order_sessions']            = $getEstimateDetails[$i]['no_of_opted_classes'];
+        $paymentDuesInput[$i]['start_order_date']                   = $insertDataToStudentClassTable['enrollment_start_date'];
+        $paymentDuesInput[$i]['end_order_date']                     = $insertDataToStudentClassTable['enrollment_end_date'];
+        $paymentDuesInput[$i]['payment_batch_amount']               = $paymentDuesInput[$i]['selected_order_sessions']*$paymentDuesInput[$i]['each_class_cost'];
+        $paymentDuesInput[$i]['payment_due_amount']                 = $inputs['singlePayAmount'];
+        $paymentDuesInput[$i]['tax']                                = $tax;
                                 
-                                $sendPaymentDetailsToInsert = PaymentDues::createPaymentDues($paymentDuesInput[$i]);
+        $sendPaymentDetailsToInsert = PaymentDues::createPaymentDues($paymentDuesInput[$i]);
                                 
                                 /* inserting into payment Due table is completed for single pay[2batch] */
                                 /* Working on preparing to payment master table for single pay [2 batch]*/
-                                if($i == 0){
-                                    $sendPaymentMasterDetailsToInsert1          = PaymentMaster::createPaymentMaster($sendPaymentDetailsToInsert);
+        if($i == 0){
+          $sendPaymentMasterDetailsToInsert1   = PaymentMaster::createPaymentMaster($sendPaymentDetailsToInsert);
                                     //** updating back to payment_due **//
-                                    $update_payment_due = PaymentDues::find($sendPaymentDetailsToInsert->id);
-        		            $update_payment_due->payment_no=$sendPaymentMasterDetailsToInsert1->payment_no;
-                		    $update_payment_due->save();
+            $update_payment_due = PaymentDues::find($sendPaymentDetailsToInsert->id);
+            $update_payment_due->payment_no=$sendPaymentMasterDetailsToInsert1->payment_no;
+            $update_payment_due->save();
 
 
-                                }else{
-                                	$sendPaymentMasterDetailsToInsert2 = PaymentMaster::createPaymentMasterWithSamePaymentNo($sendPaymentDetailsToInsert, $sendPaymentMasterDetailsToInsert1->payment_no);
-                                	//** updating back to paymentdues **//
-                                	$update_payment_due1 = PaymentDues::find($sendPaymentDetailsToInsert->id);
-                                        $update_payment_due1->payment_no=$sendPaymentMasterDetailsToInsert2->payment_no;//$sendPaymentMasterDetailsToInsert2->payment_no;
-                                        $final_payment_master_no=$sendPaymentMasterDetailsToInsert2->payment_no;
-                                        $update_payment_due1->save();
+        }else{
+          $sendPaymentMasterDetailsToInsert2 = PaymentMaster::createPaymentMasterWithSamePaymentNo($sendPaymentDetailsToInsert, $sendPaymentMasterDetailsToInsert1->payment_no);
+                                  //** updating back to paymentdues **//
+          $update_payment_due1 = PaymentDues::find($sendPaymentDetailsToInsert->id);
+          $update_payment_due1->payment_no=$sendPaymentMasterDetailsToInsert2->payment_no;//$sendPaymentMasterDetailsToInsert2->payment_no;
+          $final_payment_master_no=$sendPaymentMasterDetailsToInsert2->payment_no;
+          $update_payment_due1->save();
                                          
                                             //**updating payment_no to order table **// 
-                                            $updateOrderNoInMaster = PaymentMaster::find($sendPaymentMasterDetailsToInsert1->id);
-                                            $updateOrderNoInMaster->order_id = $sendOrderDetailsToInsert->id;
-                                            $updateOrderNoInMaster->save();
+          $updateOrderNoInMaster = PaymentMaster::find($sendPaymentMasterDetailsToInsert1->id);
+          $updateOrderNoInMaster->order_id = $sendOrderDetailsToInsert->id;
+          $updateOrderNoInMaster->save();
                                          
                                          
                                         //**  updating payment master the order_table **//
-                                        $updateOrderNoInMaster1 = PaymentMaster::find($sendPaymentMasterDetailsToInsert2->id);
-                                        $updateOrderNoInMaster1->order_id = $sendOrderDetailsToInsert->id;
-                		        $updateOrderNoInMaster1->save();
+          $updateOrderNoInMaster1 = PaymentMaster::find($sendPaymentMasterDetailsToInsert2->id);
+          $updateOrderNoInMaster1->order_id = $sendOrderDetailsToInsert->id;
+          $updateOrderNoInMaster1->save();
 
-                                }
+        }
                                 /* inserting into payment Master table is completed for single pay */
                                 /* Working on preparing to Orsers table for single pay */
-                                if($i == 0){
-                                		$order['customer_id']     = $inputs['customerId'];
-                                		$order['student_id']      = $insertDataToStudentClassTable['student_id'];
-                                		$order['seasonId']        = $insertDataToStudentClassTable['season_id'];
-                                		$order['student_classes_id'] = $insertDataToStudentClassTable['id'];
-                                		//$order[$i]['payment_mode']    = $inputs['paymentTypeRadio'];
+        if($i == 0){
+          $order['customer_id']     = $inputs['customerId'];
+          $order['student_id']      = $insertDataToStudentClassTable['student_id'];
+          $order['seasonId']        = $insertDataToStudentClassTable['season_id'];
+          $order['student_classes_id'] = $insertDataToStudentClassTable['id'];
+                                    //$order[$i]['payment_mode']    = $inputs['paymentTypeRadio'];
 
-                                		if($inputs['paymentTypeRadio'] == "card"){
-                                    		$order['payment_mode']    = $inputs['paymentTypeRadio'];	
-                                    		$order['card_last_digit'] = $inputs['card4digits'];
-                                    		$order['card_type']       = $inputs['cardType'];
-                                    		$order['bank_name']       = $inputs['cardBankName'];
-                                    		$order['receipt_number']  = $inputs['cardRecieptNumber'];
+          if( isset($inputs['paymentTypeRadio']) && (array_key_exists('paymentTypeRadio',$inputs))
+           && $inputs['paymentTypeRadio'] == "card"){
+                                        $order['payment_mode']    = $inputs['paymentTypeRadio'];  
+                                        $order['card_last_digit'] = $inputs['card4digits'];
+                                        $order['card_type']       = $inputs['cardType'];
+                                        $order['bank_name']       = $inputs['cardBankName'];
+                                        $order['receipt_number']  = $inputs['cardRecieptNumber'];
 
-                                		}elseif($inputs['paymentTypeRadio'] == "cheque"){
-                                    		$order['payment_mode']    = $inputs['paymentTypeRadio'];	
-                                    		$order['bank_name']       = $inputs['bankName'];
-                                    		$order['cheque_number']   = $inputs['chequeNumber'];
+          }elseif( isset($inputs['paymentTypeRadio']) && (array_key_exists('paymentTypeRadio',$inputs))
+             && $inputs['paymentTypeRadio'] == "cheque"){
+                                        $order['payment_mode']    = $inputs['paymentTypeRadio'];  
+                                        $order['bank_name']       = $inputs['bankName'];
+                                        $order['cheque_number']   = $inputs['chequeNumber'];
 
-		                                }elseif($inputs['paymentTypeRadio'] == "cash"){
-        		                            $order['payment_mode']    = $inputs['paymentTypeRadio'];	
-                		                }
+          }elseif(isset($inputs['paymentTypeRadio']) && (array_key_exists('paymentTypeRadio',$inputs))
+           && $inputs['paymentTypeRadio'] == "cash"){
+                                        $order['payment_mode']    = $inputs['paymentTypeRadio'];  
+          }
 
 
-                        		        $order['payment_for']     = "enrollment";
-                                		$order['payment_no']   = $sendPaymentMasterDetailsToInsert1['payment_no'];
-		                                $order['payment_dues_id']   = $sendPaymentDetailsToInsert['id'];
-        		                        $order['amount'] = $inputs['singlePayAmount'];
-                		                $order['order_status'] = "completed";
-                        		        
+          $order['payment_for']     = "enrollment";
+          $order['payment_no']   = $sendPaymentMasterDetailsToInsert1['payment_no'];
+          $order['payment_dues_id']   = $sendPaymentDetailsToInsert['id'];
+          $order['amount'] = $inputs['singlePayAmount'];
+          $order['order_status'] = "completed";
+          $sendOrderDetailsToInsert = Orders::createOrder($order);
 
-		                                $sendOrderDetailsToInsert = Orders::createOrder($order);
-
-		                        }
-		                        
+        }
+                            
                                                             
-			}
-			//** working on the payment_followups **//
+      }
+      //** working on the payment_followups **//
                     
-                    if((count($batch_data[0]) + count($batch_data[1])+ count($batch_data[2])) >= 5){
-                        $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
+      if((count($batch_data[0]) + count($batch_data[1])+ count($batch_data[2])) >= 5){
+        $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
                         //creating logs/followup for first payment
-                        $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
-                        $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
-                        $customer_log_data['franchisee_id']=Session::get('franchiseId');
-                        $customer_log_data['paymentfollowup_id']=$payment_followup_data1->id;
-                        $customer_log_data['followup_type']='PAYMENT';
-                        $customer_log_data['followup_status']='REMINDER_CALL';
-                        $customer_log_data['comment_type']='VERYINTERESTED';
+        $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
+        $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
+        $customer_log_data['franchisee_id']=Session::get('franchiseId');
+        $customer_log_data['paymentfollowup_id']=$payment_followup_data1->id;
+        $customer_log_data['followup_type']='PAYMENT';
+        $customer_log_data['followup_status']='REMINDER_CALL';
+        $customer_log_data['comment_type']='VERYINTERESTED';
                         
-                        $customer_log_data['reminderDate']=$batch_data[2][count($batch_data[2])-2]['schedule_date'];
-                        if(count($batch_data[2])>=3){
-                        $customer_log_data['reminderDate']=$batch_data[2][count($batch_data[2])-2]['schedule_date'];
-                        }else{
-                            if(count($batch_data[2])==2){
-                                 $customer_log_data['reminderDate']=$batch_data[1][count($batch_data[0])-1]['schedule_date'];
-                            }
-                        }
+        $customer_log_data['reminderDate']=$batch_data[2][count($batch_data[2])-2]['schedule_date'];
+        if(count($batch_data[2])>=3){
+          $customer_log_data['reminderDate']=$batch_data[2][count($batch_data[2])-2]['schedule_date'];
+        }else{
+          if(count($batch_data[2])==2){
+            $customer_log_data['reminderDate']=$batch_data[1][count($batch_data[0])-1]['schedule_date'];
+          }
+        }
                         
-                        Comments::addSinglePayComment($customer_log_data);
-                    }
-                    
-                        
-		}
-                $customer_data= Customers::find($inputs['customerId']);
+        Comments::addSinglePayComment($customer_log_data);
+      }
+    }
+    DB::commit();
+    
+    $customer_data= Customers::find($inputs['customerId']);
                 
                // return Response::json(array("status"=>"success",'printUrl'=>''));
                 
-                if(isset($inputs['emailOption']) && $inputs['emailOption'] == 'yes' && $customer_data->customer_email!=''){
-                    $totalSelectedClasses = '';
-                    $totalAmountForAllBatch = '';
-                    $paymentDueDetails = PaymentDues::where('payment_no', '=', $final_payment_master_no)->get();
-                    for($i = 0; $i < count($paymentDueDetails); $i++){
-			$totalSelectedClasses = $totalSelectedClasses + $paymentDueDetails[$i]['selected_sessions'];
-			$getBatchNname[]  = Batches::where('id', '=', $paymentDueDetails[$i]['batch_id'])->get();
-			$getSeasonName[]  = Seasons::where('id', '=', $paymentDueDetails[$i]['season_id'])->get();
-			$selectedSessionsInEachBatch[] = $paymentDueDetails[$i]['selected_sessions'];
-			$classStartDate[] = $paymentDueDetails[$i]['start_order_date'];
-			$classEndDate[] = $paymentDueDetails[$i]['end_order_date'];
-			$totalAmountForEachBach[] = (int)$paymentDueDetails[$i]['payment_batch_amount'];
-			$totalAmountForAllBatch = $totalAmountForAllBatch + (int)$paymentDueDetails[$i]['payment_batch_amount'];
-                    }   
+    if(isset($inputs['emailOption']) && $inputs['emailOption'] == 'yes' && $customer_data->customer_email!=''){
                     
-                    $getTermsAndConditions = TermsAndConditions::where('id', '=', (TermsAndConditions::max('id')))->get();
-                    $getCustomerName = Customers::select('customer_name','customer_lastname','customer_email')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
+      $totalSelectedClasses = '';
+      $totalAmountForAllBatch = '';
+      $paymentDueDetails = PaymentDues::where('payment_no', '=', $final_payment_master_no)->get();
+      for($i = 0; $i < count($paymentDueDetails); $i++){
+        $totalSelectedClasses = $totalSelectedClasses + $paymentDueDetails[$i]['selected_sessions'];
+        $getBatchNname[]  = Batches::where('id', '=', $paymentDueDetails[$i]['batch_id'])->get();
+        $getSeasonName[]  = Seasons::where('id', '=', $paymentDueDetails[$i]['season_id'])->get();
+        $selectedSessionsInEachBatch[] = $paymentDueDetails[$i]['selected_sessions'];
+        $classStartDate[] = $paymentDueDetails[$i]['start_order_date'];
+        $classEndDate[] = $paymentDueDetails[$i]['end_order_date'];
+        $totalAmountForEachBach[] = (int)$paymentDueDetails[$i]['payment_batch_amount'];
+        $totalAmountForAllBatch = $totalAmountForAllBatch + (int)$paymentDueDetails[$i]['payment_batch_amount'];
+      }   
+                    
+      $getTermsAndConditions = TermsAndConditions::where('id', '=', (TermsAndConditions::max('id')))->get();
+      $getCustomerName = Customers::select('customer_name','customer_lastname','customer_email')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
                     //return Response::json(array($getCustomerName));
-                    $getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
-                    $paymentMode = Orders::where('payment_no', '=', $final_payment_master_no)->get();
-                    if($paymentDueDetails[0]['membership_type_id']!=0){
-                      $membership_data= MembershipTypes::find($paymentDueDetails[0]['membership_type_id']);
-                      $paymentDueDetails[0]['membership_type']=$membership_data->description;
-                    }
-                    $franchisee_name=Franchisee::find(Session::get('franchiseId'));
-                    $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
-                    $data = compact('totalSelectedClasses', 'getBatchNname','tax_data',
+      $getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
+      $paymentMode = Orders::where('payment_no', '=', $final_payment_master_no)->get();
+      if($paymentDueDetails[0]['membership_type_id']!=0){
+        $membership_data= MembershipTypes::find($paymentDueDetails[0]['membership_type_id']);
+        $paymentDueDetails[0]['membership_type']=$membership_data->description;
+      }
+        $franchisee_name=Franchisee::find(Session::get('franchiseId'));
+        $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
+        $data = compact('totalSelectedClasses', 'getBatchNname','tax_data',
                         'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate','franchisee_name',
                         'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName','getTermsAndConditions',
                         'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode');
-                    Mail::send('emails.account.enrollment', $data, function($msg) use ($data){
-					
-				$msg->from(Config::get('constants.EMAIL_ID'), Config::get('constants.EMAIL_NAME'));
-				$msg->to($data['getCustomerName'][0]['customer_email'], $data['getCustomerName'][0]['customer_name'])->subject('The Little Gym - Kids Enrollment Successful');
-			
-			});
-                }
+        Mail::send('emails.account.enrollment', $data, function($msg) use ($data){
+          
+        $msg->from(Config::get('constants.EMAIL_ID'), Config::get('constants.EMAIL_NAME'));
+        $msg->to($data['getCustomerName'][0]['customer_email'], $data['getCustomerName'][0]['customer_name'])->subject('The Little Gym - Kids Enrollment Successful');
+      
+        });
+      }
                 
-                if(isset($inputs['invoicePrintOption']) && $inputs['invoicePrintOption'] == 'yes'){
+      if(isset($inputs['invoicePrintOption']) && $inputs['invoicePrintOption'] == 'yes'){
                     
                     
-			$printUrl = url().'/orders/print/'.Crypt::encrypt($final_payment_master_no);
-		}else{
-			$printUrl = "";
-		}
-		
-                
-                if($final_payment_master_no){
-			return Response::json(array("status"=>"success", "printUrl"=>$printUrl));
-		}else{
-			return Response::json(array("status"=>"failed"));
-            	}
-	}
+        $printUrl = url().'/orders/print/'.Crypt::encrypt($final_payment_master_no);
+      }else{
+        $printUrl = "";
+      }
+    
+          
+    if($final_payment_master_no){
+      return Response::json(array("status"=>"success", "printUrl"=>$printUrl));
+    }
+    }catch (\Exception $e) {
+      DB::rollback();
+      return Response::json(array("status"=>"failed"));
+    }
+  }else{
+    return Response::json(array("status"=>"failed"));
+  }
+}
         
-	public function checkenrollmentExists(){
-		
-		$inputs = Input::all();
-		$studentId = $inputs['studentId'];
-		$classId   = $inputs['classId'];
-		
-		$enrolledClassForStudent = StudentClasses::where("student_id","=",$studentId)
-		->where("class_id","=",$classId)->get();
-		
-		if(isset($enrolledClassForStudent['0'])){
-			return Response::json(array("status"=>"exist"));
-		}
-		return Response::json(array("status"=>"clear"));
-	}
-	
-	
-	
-	public function addbirthdayParty(){
-		
-		$inputs = Input::all();
+  public function checkenrollmentExists(){
+    
+    $inputs = Input::all();
+    $studentId = $inputs['studentId'];
+    $classId   = $inputs['classId'];
+    
+    $enrolledClassForStudent = StudentClasses::where("student_id","=",$studentId)
+    ->where("class_id","=",$classId)->get();
+    
+    if(isset($enrolledClassForStudent['0'])){
+      return Response::json(array("status"=>"exist"));
+    }
+    return Response::json(array("status"=>"clear"));
+  }
+  
+  
+  
+  public function addbirthdayParty(){
+    
+    $inputs = Input::all();
                
                 if($inputs['remainingAmount'] >=0){
                 
                     $taxAmtapplied=$inputs['taxAmount'];
                 if($inputs['membershipType'] != "" && $inputs['membershipPriceBday'] !=0 ){
-			$membershipInput['customer_id']        = $inputs['customerId'];
-			$membershipInput['membership_type_id'] = $inputs['membershipType'];
-			$customerMembershipData=CustomerMembership::addMembership($membershipInput);
+      $membershipInput['customer_id']        = $inputs['customerId'];
+      $membershipInput['membership_type_id'] = $inputs['membershipType'];
+      $customerMembershipData=CustomerMembership::addMembership($membershipInput);
                         if($customerMembershipData->membership_type_id==1){
                         $followupMembershipData=  Comments::addFollowupForMembership($customerMembershipData);
                         }
-		}
+    }
                 $addBirthday =  BirthdayParties::addbirthdayParty($inputs);
                     if(isset($customerMembershipData)){
                     $addBirthday['membership_id']=$customerMembershipData->id;
@@ -1130,20 +1174,20 @@ class StudentsController extends \BaseController {
                 }
                 
                 if(isset($inputs['invoicePrintOption']) && $inputs['invoicePrintOption'] == 'yes'){
-			$printUrl = url().'/orders/Bprint/'.Crypt::encrypt($addBirthdayOrder);
+      $printUrl = url().'/orders/Bprint/'.Crypt::encrypt($addBirthdayOrder);
                         //$printUrl = url().'/orders/Bprint/'.$addBirthdayOrder;
                         
-		}else{
-			$printUrl = "";
-		}
+    }else{
+      $printUrl = "";
+    }
                     
                 //header('Access-Control-Allow-Origin: *');
-		if($addBirthdayOrder){
-			return Response::json(array("status"=>"success","printUrl"=>$printUrl));
-		}
-		return Response::json(array("status"=>"failed"));
-	}
-	
+    if($addBirthdayOrder){
+      return Response::json(array("status"=>"success","printUrl"=>$printUrl));
+    }
+    return Response::json(array("status"=>"failed"));
+  }
+  
         public function createPendingorder(){
             $inputs = Input::all();
             $taxamount=$inputs['taxamount'];
@@ -1195,33 +1239,33 @@ class StudentsController extends \BaseController {
                return Response::json(array("status"=>"success","printurl"=>$print_url));
              }
         }
-	public function checkExistingBirthdayParty(){
-		
-		$inputs = Input::all();
-		$existingBirthdayParties = BirthdayParties::checkWhetherBirthdayPartyExists($inputs['kidsSelect']);
-		if($existingBirthdayParties){
-			return Response::json(array("status"=>"exist"));
-		}
-		return Response::json(array("status"=>"clear"));
-		
-	}
-	
-	
-	public function getStudentsByBatch(){
-		
-		$inputs = Input::all();
-		
-		$batchId       = $inputs['batchId'];
-		$selectedDate  = $inputs['selectedDate'];
-		
-		$studentsByBatchId = StudentClasses::getStudentByBatchId($batchId, $selectedDate);
-		
-		if($studentsByBatchId){
-			
-			$attendanceArray = array();
-			$i = 0;
-			foreach ($studentsByBatchId as $studentAttendance){
-				$attendanceArray[$i]['studentName'] = $studentAttendance->Students->student_name;
+  public function checkExistingBirthdayParty(){
+    
+    $inputs = Input::all();
+    $existingBirthdayParties = BirthdayParties::checkWhetherBirthdayPartyExists($inputs['kidsSelect']);
+    if($existingBirthdayParties){
+      return Response::json(array("status"=>"exist"));
+    }
+    return Response::json(array("status"=>"clear"));
+    
+  }
+  
+  
+  public function getStudentsByBatch(){
+    
+    $inputs = Input::all();
+    
+    $batchId       = $inputs['batchId'];
+    $selectedDate  = $inputs['selectedDate'];
+    
+    $studentsByBatchId = StudentClasses::getStudentByBatchId($batchId, $selectedDate);
+    
+    if($studentsByBatchId){
+      
+      $attendanceArray = array();
+      $i = 0;
+      foreach ($studentsByBatchId as $studentAttendance){
+        $attendanceArray[$i]['studentName'] = $studentAttendance->Students->student_name;
                                 $attendanceArray[$i]['student_classes_id']= $studentAttendance->id;
                                 $attendanceArray[$i]['introvisit_id']= $studentAttendance->introvisit_id;
                                 if($studentAttendance->status==='makeup'){
@@ -1230,50 +1274,50 @@ class StudentsController extends \BaseController {
                                     $attendanceArray[$i]['studentName']=$attendanceArray[$i]['studentName'].' [Introvisit]';
                                 }
                                     
-				$attendanceArray[$i]['studentId']   = $studentAttendance->Students->id;
-				$studentAttendanceRecord = Attendance::getDaysAttendanceForStudent($studentAttendance->Students->id, $batchId,  $selectedDate);
-				
-				if($studentAttendanceRecord){
-					
-					$attendanceArray[$i]['isAttendanceEntered'] = 'yes';
-					$attendanceArray[$i]['attendanceStatus'] = $studentAttendanceRecord->status;
-					
-				}else{
-					$attendanceArray[$i]['isAttendanceEntered'] = 'no';
-					
-				}
-				
-				$i++;
-			}
-			//print_r($attendanceArray);
-			return Response::json(array("status"=>"success", 'result'=>$attendanceArray));
-		}
-		return Response::json(array("status"=>"failed"));
-		
-	}
-	
-	
-	
-	public function addStudentAttendance(){
-		
-		$inputs = Input::all();
+        $attendanceArray[$i]['studentId']   = $studentAttendance->Students->id;
+        $studentAttendanceRecord = Attendance::getDaysAttendanceForStudent($studentAttendance->Students->id, $batchId,  $selectedDate);
+        
+        if($studentAttendanceRecord){
+          
+          $attendanceArray[$i]['isAttendanceEntered'] = 'yes';
+          $attendanceArray[$i]['attendanceStatus'] = $studentAttendanceRecord->status;
+          
+        }else{
+          $attendanceArray[$i]['isAttendanceEntered'] = 'no';
+          
+        }
+        
+        $i++;
+      }
+      //print_r($attendanceArray);
+      return Response::json(array("status"=>"success", 'result'=>$attendanceArray));
+    }
+    return Response::json(array("status"=>"failed"));
+    
+  }
+  
+  
+  
+  public function addStudentAttendance(){
+    
+    $inputs = Input::all();
                 //return Response::json(array("status"=>$inputs));
-		for($i =0; $i<$inputs['totalStudents'];$i++){
-			
-			$isAttendanceExists = Attendance::getDaysAttendanceForStudent($inputs['student_'.$i], $inputs['batch_'.$i], $inputs['attendanceDate_'.$i]);
-			if($isAttendanceExists){
+    for($i =0; $i<$inputs['totalStudents'];$i++){
+      
+      $isAttendanceExists = Attendance::getDaysAttendanceForStudent($inputs['student_'.$i], $inputs['batch_'.$i], $inputs['attendanceDate_'.$i]);
+      if($isAttendanceExists){
 
-				$isAttendanceExists->status = $inputs['attendance_for_user'.$i];
-				$isAttendanceExists->save();
-				
-			}else{
-				
-				$attendanceData = new Attendance();
-				$attendanceData->attendance_date = $inputs['attendanceDate_'.$i];
-				$attendanceData->batch_id        = $inputs['batch_'.$i];
-				$attendanceData->student_id      = $inputs['student_'.$i];
+        $isAttendanceExists->status = $inputs['attendance_for_user'.$i];
+        $isAttendanceExists->save();
+        
+      }else{
+        
+        $attendanceData = new Attendance();
+        $attendanceData->attendance_date = $inputs['attendanceDate_'.$i];
+        $attendanceData->batch_id        = $inputs['batch_'.$i];
+        $attendanceData->student_id      = $inputs['student_'.$i];
                                 $attendanceData->introvisit_id   = $inputs['introvisit_id'.$i];
-				$attendanceData->status          = $inputs['attendance_for_user'.$i];
+        $attendanceData->status          = $inputs['attendance_for_user'.$i];
                                 $attendanceData->student_classes_id = $inputs['student_class_id'.$i];
                                 if($inputs['attendance_for_user'.$i]==='EA'){
                                     //** Add description for Excused Absent **// 
@@ -1325,20 +1369,20 @@ class StudentsController extends \BaseController {
                                     $attendanceData->description_absent ='';
                                 }
                                 
-				$attendanceData->save();
-				
-			}
-			
-		}
-		return Response::json(array("status"=>"success"));
-	}
-	
-	
-	public function addIntroVisit(){
-		
-		$inputs = Input::all();
+        $attendanceData->save();
+        
+      }
+      
+    }
+    return Response::json(array("status"=>"success"));
+  }
+  
+  
+  public function addIntroVisit(){
+    
+    $inputs = Input::all();
                 
-		
+    
             if(
                    StudentClasses::where('student_id','=',$inputs['studentIdIntroVisit'])
                                    ->where('season_id','=',$inputs['seasonId'])
@@ -1351,10 +1395,10 @@ class StudentsController extends \BaseController {
                       
                       return Response::json(array('status'=>'exists'));
                 }else{
-		
-	
-		$result = IntroVisit::addSchedule($inputs);
-		$student_class_input['studentId']=$inputs['studentIdIntroVisit'];
+    
+  
+    $result = IntroVisit::addSchedule($inputs);
+    $student_class_input['studentId']=$inputs['studentIdIntroVisit'];
                 $student_class_input['seasonId']=$inputs['seasonId'];
                 $student_class_input['introvisit_id']=$result->id;
                 $student_class_input['classId']=$inputs['eligibleClassesCbx'];
@@ -1364,16 +1408,16 @@ class StudentsController extends \BaseController {
                 $student_class_input['status']='introvisit';
                 $student_class_input['batchId']=$inputs['introbatchCbx'];
                 $student_class_data=  StudentClasses::addStudentClass($student_class_input);
-		
+    
                 $commentsInput['customerId']     = $inputs['customerId'];
                 $commentsInput['student_id']     = $inputs['studentIdIntroVisit'];
                 $commentsInput['introvisit_id']  = $result->id;
-		$commentsInput['commentText']    = Config::get('constants.IV_SCHEDULED_COMMENT').'  '.$inputs['customerCommentTxtarea'];
+    $commentsInput['commentText']    = Config::get('constants.IV_SCHEDULED_COMMENT').'  '.$inputs['customerCommentTxtarea'];
                 $commentsInput['commentStatus']  = 'ACTIVE/SCHEDULED';
-		$commentsInput['commentType']    = $inputs['commentType'];
+    $commentsInput['commentType']    = $inputs['commentType'];
                 $commentsInput['followupType']    = $inputs['followupType'];
-		//$commentsInput['reminderDate']   = date('Y-m-d', strtotime($inputs['reminderTxtBox']));
-		$iv_date=Carbon::createFromFormat('m/d/Y',$inputs['introVisitTxtBox']);
+    //$commentsInput['reminderDate']   = date('Y-m-d', strtotime($inputs['reminderTxtBox']));
+    $iv_date=Carbon::createFromFormat('m/d/Y',$inputs['introVisitTxtBox']);
                 if($iv_date->eq(carbon::now())){
                 Comments::addComments($commentsInput);
                 }else{
@@ -1382,19 +1426,19 @@ class StudentsController extends \BaseController {
                   Comments::addComments($commentsInput);
                 }
                 
-		
-		if($result){
-			return Response::json(array("status"=>"success"));
-		}
-		return Response::json(array("status"=>"failed"));
-		
+    
+    if($result){
+      return Response::json(array("status"=>"success"));
+    }
+    return Response::json(array("status"=>"failed"));
+    
             }
-	}
-	
-	public function editIntroVisit(){
-	
-		$inputs = Input::all();
-	
+  }
+  
+  public function editIntroVisit(){
+  
+    $inputs = Input::all();
+  
                     if(($inputs['iveditAction']!=' ')){
                     $introvisit_data_make_reminder_null= Comments::where('introvisit_id','=',$inputs['iv_id'])
                                                ->update(array('reminder_date'=>Null,));
@@ -1408,40 +1452,40 @@ class StudentsController extends \BaseController {
                       
                           if($inputs['ivstatus']=='ATTENDED/CELEBRATED'){
                               $commentText = Config::get('constants.IV_ATTENDED_COMMENT').'on '.date('Y-m-d').' '.$inputs['customerCommentTxtarea'];
-				
+        
                           }elseif($inputs['ivstatus']== 'REMINDER_CALL'){
-				
-				$commentText = "Reminder call  ".'on  '.date('Y-m-d', strtotime($inputs['reminder-date'])).' '.$inputs['customerCommentTxtarea'];
-				
-		 	  }elseif($inputs['ivstatus']== 'FOLLOW_CALL'){
-				
-				$commentText = 'FOLLOW CALL on '.date('Y-m-d', strtotime($inputs['reminder-date'])).$inputs['customerCommentTxtarea'];
-                		
-			  }elseif($inputs['ivstatus']== 'CALL_SPOUSE'){
-				
-				$commentText = "CALL SPOUSE Call  ".'on  '.date('Y-m-d', strtotime($inputs['reminder-date'])).' '.$inputs['customerCommentTxtarea'];
-				
-		 	  }elseif($inputs['ivstatus']== 'NOT_AVAILABLE'){
-				
-				$commentText = "NOT_AVAILABLE  ".'on  '.date('Y-m-d', strtotime($inputs['reminder-date'])).' '.$inputs['customerCommentTxtarea'];
-				
-		 	  }elseif($inputs['ivstatus']== 'NOT_INTERESTED'){
-				
-				$commentText = "Customer Not Interested  ".' -'.$inputs['customerCommentTxtarea'];
+        
+        $commentText = "Reminder call  ".'on  '.date('Y-m-d', strtotime($inputs['reminder-date'])).' '.$inputs['customerCommentTxtarea'];
+        
+        }elseif($inputs['ivstatus']== 'FOLLOW_CALL'){
+        
+        $commentText = 'FOLLOW CALL on '.date('Y-m-d', strtotime($inputs['reminder-date'])).$inputs['customerCommentTxtarea'];
+                    
+        }elseif($inputs['ivstatus']== 'CALL_SPOUSE'){
+        
+        $commentText = "CALL SPOUSE Call  ".'on  '.date('Y-m-d', strtotime($inputs['reminder-date'])).' '.$inputs['customerCommentTxtarea'];
+        
+        }elseif($inputs['ivstatus']== 'NOT_AVAILABLE'){
+        
+        $commentText = "NOT_AVAILABLE  ".'on  '.date('Y-m-d', strtotime($inputs['reminder-date'])).' '.$inputs['customerCommentTxtarea'];
+        
+        }elseif($inputs['ivstatus']== 'NOT_INTERESTED'){
+        
+        $commentText = "Customer Not Interested  ".' -'.$inputs['customerCommentTxtarea'];
                                 
-				
-		 	  }elseif($inputs['ivstatus']== 'ENROLLED'){
+        
+        }elseif($inputs['ivstatus']== 'ENROLLED'){
                                 $commentText='Customer Enrolled '.$inputs['customerCommentTxtarea'];
                               
                                 
               }else{
-              	$commentText='';
+                $commentText='';
               } 
                         
                         
                         //insert new followuphere
                            
-			$commentsInput['customerId']     = $introvisit['customer_id'];
+      $commentsInput['customerId']     = $introvisit['customer_id'];
                         $commentsInput['student_id']     = $introvisit['student_id'];
                         $commentsInput['introvisit_id']  = $introvisit['introvisit_id'];
                        
@@ -1451,8 +1495,8 @@ class StudentsController extends \BaseController {
                         $commentsInput['commentStatus']= $inputs['ivstatus'];
                         $commentsInput['commentType']   = $inputs['iveditAction']; 
                            
-			$commentsInput['commentText']    = $commentText;
-		      	
+      $commentsInput['commentText']    = $commentText;
+            
                         if($inputs['ivstatus']!= 'ENROLLED'){
                             if($inputs['ivstatus']!= 'NOT_INTERESTED'){
                                if(isset($inputs['reminder-date'])){
@@ -1465,15 +1509,15 @@ class StudentsController extends \BaseController {
                         //    $iv->
                         //}
                        //return Response::json(array("status",$commentsInput));
-	                
+                  
                        Comments::addComments($commentsInput);
                         
                        }
                        
                        
                     }
-	return Response::json(array("status"=>"success"));
-	}
+  return Response::json(array("status"=>"success"));
+  }
 
         public function editBirthdayCelebrationFollowup(){
             $inputs=Input::all();
@@ -1489,42 +1533,42 @@ class StudentsController extends \BaseController {
                       
                           if($inputs['birthdaystatusSelect']=='ATTENDED/CELEBRATED'){
                               $commentText = "Birthday Celebrated ".'on '.date('Y-m-d').'for kid '.$student_data['student_name'].$inputs['birthdayCommentTxtarea'];
-				
+        
                           }elseif($inputs['birthdaystatusSelect']== 'REMINDER_CALL'){
-				
-				$commentText = "Reminder call  ".'on  '.date('Y-m-d', strtotime($inputs['birthdayReminderDate'])).' '.$inputs['birthdayCommentTxtarea'];
-				
-		 	  }elseif($inputs['birthdaystatusSelect']== 'FOLLOW_CALL'){
-				
-				$commentText = 'birthdayFollow CALL on '.date('Y-m-d', strtotime($inputs['birthdayReminderDate'])).$inputs['birthdayCommentTxtarea'];
-                		
-			  }elseif($inputs['birthdaystatusSelect']== 'CALL_SPOUSE'){
-				
-				$commentText = "CALL SPOUSE  ".'on  '.date('Y-m-d', strtotime($inputs['birthdayReminderDate'])).' '.$inputs['birthdayCommentTxtarea'];
-				
-		 	  }elseif($inputs['birthdaystatusSelect']== 'NOT_AVAILABLE'){
-				
-				$commentText = "NOT_AVAILABLE  ".'on  '.date('Y-m-d', strtotime($inputs['birthdayReminderDate'])).' '.$inputs['birthdayCommentTxtarea'];
-				
-		 	  }elseif($inputs['birthdaystatusSelect']== 'NOT_INTERESTED'){
-				
-				$commentText = "Customer Not Interested  ".' -'.$inputs['birthdayCommentTxtarea'];
+        
+        $commentText = "Reminder call  ".'on  '.date('Y-m-d', strtotime($inputs['birthdayReminderDate'])).' '.$inputs['birthdayCommentTxtarea'];
+        
+        }elseif($inputs['birthdaystatusSelect']== 'FOLLOW_CALL'){
+        
+        $commentText = 'birthdayFollow CALL on '.date('Y-m-d', strtotime($inputs['birthdayReminderDate'])).$inputs['birthdayCommentTxtarea'];
+                    
+        }elseif($inputs['birthdaystatusSelect']== 'CALL_SPOUSE'){
+        
+        $commentText = "CALL SPOUSE  ".'on  '.date('Y-m-d', strtotime($inputs['birthdayReminderDate'])).' '.$inputs['birthdayCommentTxtarea'];
+        
+        }elseif($inputs['birthdaystatusSelect']== 'NOT_AVAILABLE'){
+        
+        $commentText = "NOT_AVAILABLE  ".'on  '.date('Y-m-d', strtotime($inputs['birthdayReminderDate'])).' '.$inputs['birthdayCommentTxtarea'];
+        
+        }elseif($inputs['birthdaystatusSelect']== 'NOT_INTERESTED'){
+        
+        $commentText = "Customer Not Interested  ".' -'.$inputs['birthdayCommentTxtarea'];
                                 
-				
-		 	  }
+        
+        }
                         
                         
                         //insert new followuphere
                            
-			$commentsInput['customerId']     = $bithday_celebration['customer_id'];
+      $commentsInput['customerId']     = $bithday_celebration['customer_id'];
                         $commentsInput['student_id']     = $bithday_celebration['student_id'];
                         $commentsInput['birthday_id']  = $bithday_celebration['birthday_id'];
                         $commentsInput['followupType']  = $bithday_celebration['followup_type'];
                         $commentsInput['commentStatus']= $inputs['birthdaystatusSelect'];
                         $commentsInput['commentType']   = $inputs['birthdayAction']; 
                            
-			$commentsInput['commentText']    = $commentText;
-		      	
+      $commentsInput['commentText']    = $commentText;
+            
                         if($inputs['birthdaystatusSelect']!= 'ATTENDED/CELEBRATED'){
                             if($inputs['birthdaystatusSelect']!= 'NOT_INTERESTED'){
                                if(isset($inputs['birthdayReminderDate'])){
@@ -1773,11 +1817,11 @@ class StudentsController extends \BaseController {
             }
             return Response::json(array('status'=>'success','data'=>$data));
         }
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
+  /**
+   * Store a newly created resource in storage.
+   *
+   * @return Response
+   */
         
         
         public static function getStudentsByCustomerid(){
@@ -1892,20 +1936,20 @@ class StudentsController extends \BaseController {
 
             if($inputs['followup_status']=='ACTIVE/SCHEDULED'){
                 $commentText = "Active call  ".'on  '.date('Y-m-d', strtotime($inputs['rDate'])).' '.$inputs['customer_text_area'];
-				
+        
             }elseif($inputs['followup_status']=='REMINDER_CALL'){
                 $commentText = "Reminder call  ".'on  '.date('Y-m-d', strtotime($inputs['rDate'])).' '.$inputs['customer_text_area'];
-				
+        
                 
             }elseif($inputs['followup_status']=='FOLLOW_CALL'){
                 $commentText = "Follow call  ".'on  '.date('Y-m-d', strtotime($inputs['rDate'])).' '.$inputs['customer_text_area'];
-		
+    
             }elseif($inputs['followup_status']=='CALL_SPOUSE'){
                 $commentText = "Call Spouse ".'on  '.date('Y-m-d', strtotime($inputs['rDate'])).' '.$inputs['customer_text_area'];
-		                
+                    
             }elseif($inputs['followup_status']=='NOT_AVAILABLE'){
                 $commentText = "Not Available  ".'on  '.date('Y-m-d').' '.$inputs['customer_text_area'];
-		        
+            
             }elseif($inputs['followup_status']=='CLOSE_CALL'){
                 $commentText="Followupcall closed on ".date('Y-m-d').' '.$inputs['customer_text_area'];
             }
@@ -1917,8 +1961,8 @@ class StudentsController extends \BaseController {
                         $commentsInput['commentStatus']= $inputs['followup_status'];
                         $commentsInput['commentType']   = $inputs['comment_type']; 
                            
-			$commentsInput['commentText']    = $commentText;
-		      	
+      $commentsInput['commentText']    = $commentText;
+            
                         
                             if($inputs['followup_status']!= 'CLOSE_CALL'){
                                if(isset($inputs['rDate'])){
@@ -1944,20 +1988,20 @@ class StudentsController extends \BaseController {
 
             if($inputs['followup_status']=='ACTIVE/SCHEDULED'){
                 $commentText = "Active call  ".'on  '.date('Y-m-d', strtotime($inputs['rDate'])).' '.$inputs['customer_text_area'];
-				
+        
             }elseif($inputs['followup_status']=='REMINDER_CALL'){
                 $commentText = "Reminder call  ".'on  '.date('Y-m-d', strtotime($inputs['rDate'])).' '.$inputs['customer_text_area'];
-				
+        
                 
             }elseif($inputs['followup_status']=='FOLLOW_CALL'){
                 $commentText = "Follow call  ".'on  '.date('Y-m-d', strtotime($inputs['rDate'])).' '.$inputs['customer_text_area'];
-		
+    
             }elseif($inputs['followup_status']=='CALL_SPOUSE'){
                 $commentText = "Call Spouse ".'on  '.date('Y-m-d', strtotime($inputs['rDate'])).' '.$inputs['customer_text_area'];
-		                
+                    
             }elseif($inputs['followup_status']=='NOT_AVAILABLE'){
                 $commentText = "Not Available  ".'on  '.date('Y-m-d').' '.$inputs['customer_text_area'];
-		        
+            
             }elseif($inputs['followup_status']=='CLOSE_CALL'){
                 $commentText="Followupcall closed on ".date('Y-m-d').' '.$inputs['customer_text_area'];
             }
@@ -1969,8 +2013,8 @@ class StudentsController extends \BaseController {
                         $commentsInput['commentStatus']= $inputs['followup_status'];
                         $commentsInput['commentType']   = $inputs['comment_type']; 
                            
-			$commentsInput['commentText']    = $commentText;
-		      	
+      $commentsInput['commentText']    = $commentText;
+            
                         
                             if($inputs['followup_status']!= 'CLOSE_CALL'){
                                if(isset($inputs['rDate'])){
@@ -2000,20 +2044,20 @@ class StudentsController extends \BaseController {
 
             if($inputs['followup_status']=='ACTIVE/SCHEDULED'){
                 $commentText = "Active call  ".'on  '.date('Y-m-d', strtotime($inputs['rDate'])).' '.$inputs['customer_text_area'];
-				
+        
             }elseif($inputs['followup_status']=='REMINDER_CALL'){
                 $commentText = "Reminder call  ".'on  '.date('Y-m-d', strtotime($inputs['rDate'])).' '.$inputs['customer_text_area'];
-				
+        
                 
             }elseif($inputs['followup_status']=='FOLLOW_CALL'){
                 $commentText = "Follow call  ".'on  '.date('Y-m-d', strtotime($inputs['rDate'])).' '.$inputs['customer_text_area'];
-		
+    
             }elseif($inputs['followup_status']=='CALL_SPOUSE'){
                 $commentText = "Call Spouse ".'on  '.date('Y-m-d', strtotime($inputs['rDate'])).' '.$inputs['customer_text_area'];
-		                
+                    
             }elseif($inputs['followup_status']=='NOT_AVAILABLE'){
                 $commentText = "Not Available  ".'on  '.date('Y-m-d').' '.$inputs['customer_text_area'];
-		        
+            
             }elseif($inputs['followup_status']=='CLOSE_CALL'){
                 $commentText="Followupcall closed on ".date('Y-m-d').' '.$inputs['customer_text_area'];
             }
@@ -2025,8 +2069,8 @@ class StudentsController extends \BaseController {
                         $commentsInput['commentStatus']= $inputs['followup_status'];
                         $commentsInput['commentType']   = $inputs['comment_type']; 
                            
-			$commentsInput['commentText']    = $commentText;
-		      	
+      $commentsInput['commentText']    = $commentText;
+            
                         
                             if($inputs['followup_status']!= 'CLOSE_CALL'){
                                if(isset($inputs['rDate'])){
@@ -2055,14 +2099,14 @@ class StudentsController extends \BaseController {
             
             if($inputs['enrollmentstatus']=='REMINDER_CALL'){
                 $commentText = "Reminder call  ".'on  '.date('Y-m-d', strtotime($inputs['reminder-date'])).' '.$inputs['customerCommentTxtarea'];
-				
+        
                 
             }elseif($inputs['enrollmentstatus']=='FOLLOW_CALL'){
                 $commentText = "Follow call  ".'on  '.date('Y-m-d', strtotime($inputs['reminder-date'])).' '.$inputs['customerCommentTxtarea'];
-		
+    
             }elseif($inputs['enrollmentstatus']=='CALL_SPOUSE'){
                 $commentText = "Call Spouse ".'on  '.date('Y-m-d', strtotime($inputs['reminder-date'])).' '.$inputs['customerCommentTxtarea'];
-		                
+                    
             }elseif($inputs['enrollmentstatus']=='NOT_AVAILABLE'){
                 $commentText = "Not Available  ".'on  '.date('Y-m-d').' '.$inputs['customerCommentTxtarea'];
             }elseif($inputs['enrollmentstatus']=='NOT_INTERESTED'){
@@ -2079,8 +2123,8 @@ class StudentsController extends \BaseController {
                         $commentsInput['commentStatus']  = $inputs['enrollmentstatus'];
                         $commentsInput['commentType']    = $inputs['enrollmenteditAction']; 
                            
-			$commentsInput['commentText']    = $commentText;
-		      	
+      $commentsInput['commentText']    = $commentText;
+            
                        
                             if(($inputs['enrollmentstatus']!= 'CLOSE_CALL')){
                                 if(($inputs['enrollmentstatus']!= 'NOT_INTERESTED')){
@@ -2418,57 +2462,57 @@ class StudentsController extends \BaseController {
         }
         
         
-	public function store()
-	{
-		//
-	}
+  public function store()
+  {
+    //
+  }
 
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
+  /**
+   * Display the specified resource.
+   *
+   * @param  int  $id
+   * @return Response
+   */
+  public function show($id)
+  {
+    //
+  }
 
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
+  /**
+   * Show the form for editing the specified resource.
+   *
+   * @param  int  $id
+   * @return Response
+   */
+  public function edit($id)
+  {
+    //
+  }
 
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
+  /**
+   * Update the specified resource in storage.
+   *
+   * @param  int  $id
+   * @return Response
+   */
+  public function update($id)
+  {
+    //
+  }
 
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
-	}
+  /**
+   * Remove the specified resource from storage.
+   *
+   * @param  int  $id
+   * @return Response
+   */
+  public function destroy($id)
+  {
+    //
+  }
 
 }
