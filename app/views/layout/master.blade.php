@@ -60,6 +60,13 @@
 		    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 		    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 		}
+
+    #commonSearchTxt::selection {
+      #commonSearchTxt::placeholder{
+        color:white;  
+      }
+      
+    }
 	
 	</style>
 	 
@@ -84,15 +91,15 @@
                 <div class="" style="display: block; padding-top:10px;">
 		            <!-- <i class="md-icon header_main_search_close material-icons">&#xE5CD;</i> -->
 		            <form class="uk-form" id="profileSearchForm" action="{{url()}}/quick/navigateToProfile" method="post">
-		                <input type="text" id="commonSearchTxt" name="term" class="headerSearchInput" />
+		                <input type="text" id="commonSearchTxt" name="term" class="headerSearchInput" placeholder="Search" />
 		                <input type="hidden"  id="idCommonSearchTxt" name="idCommonSearchTxt" class="" />
-		                <button id="profileSearchFormSubmitBtn" class="buttonSearch uk-button-link" type="submit">
+		                <button  style="display: none;" id="profileSearchFormSubmitBtn" class="buttonSearch uk-button-link" type="submit">
 		                	<i class="md-icon material-icons" style="color: #FFF;">&#xE8B6;</i>
 		                </button>
 		            </form>
 		</div>
                 <div class="" style="display: block; padding-top:10px; color: white;">
-                    {{ Session::get('firstName') }}{{ Session::get('lastName') }}
+                    
                 </div>
                 <div class="uk-navbar-flip">
                     <ul class="uk-navbar-nav user_actions">
@@ -110,11 +117,12 @@
                         <!-- <li><a href="#" id="main_search_btn" class="user_action_icon"><i class="material-icons md-24 md-light">&#xE8B6;</i></a></li> -->
                         
                         <li data-uk-dropdown="{mode:'click'}">
-                            <a href="#" class="user_action_image" style="margin-top: -40px;">
+                            <a href="#" class="user_action_image" style="margin-top: -20px;">
+                             <label style="padding: 5px;">{{ Session::get('firstName') }} {{ Session::get('lastName') }}</label>
                                 <img class="md-user-image" src="{{url()}}/assets/img/avatars/avatar_11_tn.png" alt="" title={{ Session::get('firstName') }}{{ Session::get('lastName') }}  /> 
                             
                             </a>
-                            <div class="uk-dropdown uk-dropdown-small uk-dropdown-flip">
+                            <div class="uk-dropdown uk-dropdown-small uk-dropdown-flip" style="float:right">
                                 <ul class="uk-nav js-uk-prevent">
                                     <!-- <li><a href="page_user_profile.html">My profile</a></li>
                                     <li><a href="page_settings.html">Settings</a></li> -->
@@ -231,12 +239,15 @@
     <script>
 	 	$( "#commonSearchTxt" ).autocomplete({
 	        source: "{{url()}}/quick/customerStudentSearch",
-	        minLength: 2,
+	        minLength: 3,
 	        select: function( event, ui ) {
 
 	        	$( "#commonSearchTxt" ).val(ui.item.value);
 	        	$( "#idCommonSearchTxt" ).val(ui.item.id);
-
+            event.preventDefault();
+            if($("#idCommonSearchTxt").val() != ""){
+            $("#profileSearchForm").submit();
+            }
 		        
 	          console.log( ui.item ?
 	            "Selected: " + ui.item.value + " aka " + ui.item.id :
@@ -245,6 +256,10 @@
 	      });
 
 
+    $("#profileSearchFormSubmitBtn").click(function (event){
+      event.preventDefault();      
+    });
+    /*
 	 	$("#profileSearchFormSubmitBtn").click(function (event){
 
 		 	event.preventDefault();
@@ -259,6 +274,7 @@
 
 
 		})
+    */
 
 
 	</script>
