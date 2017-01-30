@@ -430,10 +430,33 @@ Route::any('/getfullfranchiseedata','FranchiseeAdministration@getFullFranchiseeD
 
 Route::get('/test', function(){
    // return View::make( 'pages.error404');
-    echo Hash::make('uday');
+    //echo Hash::make('uday');
+$franchiseeId = Session::get('franchiseId');
+    $present_date=Carbon::now();
+ return DB::select(DB::raw("SELECT *
+                                                FROM student_classes INNER JOIN students ON student_classes.student_id = students.id
+                                                WHERE student_classes.created_at= '".$present_date->toDateString()."' AND students.franchisee_id='".$franchiseeId."' AND student_classes.status='enrolled'")
+                                  
+                                   );
+
 
 /*
-// first step
+//for adding franchisee_id in customer_membership
+
+$customer_mem=CustomerMembership::get();
+for($i=0;$i<count($customer_mem);$i++){
+	$customer=Customers::find($customer_mem[$i]['customer_id']);
+	$mem=CustomerMembership::find($customer_mem[$i]['id']);
+	$mem->franchisee_id=$customer->franchisee_id;
+	$mem->save();
+} 
+echo "done";
+
+*/
+
+/*
+
+// first step for adding franchisee_id in ordertable
     $orders= Orders::get();
     for($i=0;$i<count($orders);$i++){
     	$customer=Customers::find($orders[$i]['customer_id']);
@@ -444,7 +467,7 @@ Route::get('/test', function(){
     echo "done";
  */
 
-///second step
+///second step for adding franchisee_wise invoice id
 /* 
 	$franchisees = Franchisee::get();
 

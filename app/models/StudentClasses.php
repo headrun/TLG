@@ -148,11 +148,10 @@ class StudentClasses extends \Eloquent {
 		$franchiseeId = Session::get('franchiseId');
 		$present_date=Carbon::now();
 		$enrolledCustomers = 
-                        DB::select(DB::raw("SELECT count(id) as enrollmentno from students where id IN (SELECT distinct (students.id)
-                         FROM student_classes INNER JOIN students ON student_classes.student_id = students.id
-                         WHERE students.franchisee_id = ".$franchiseeId." AND enrollment_start_date <= '".$present_date->toDateString().
-                         "' AND enrollment_end_date >='".$present_date->toDateString()."' AND student_classes.status 
-                         IN ('enrolled','transferred_class'))"));
+                        DB::select(DB::raw("SELECT count(distinct(student_classes.student_id)) as enrollmentno
+                                                FROM student_classes INNER JOIN students ON student_classes.student_id = students.id
+                                                WHERE  students.franchisee_id='".$franchiseeId."' AND student_classes.status='enrolled' AND enrollment_end_date > '".$present_date->toDateString()."'")
+                                  );
                                   
 		$enrolledCustomers=$enrolledCustomers[0]->enrollmentno;	
                 if($enrolledCustomers){
@@ -161,16 +160,14 @@ class StudentClasses extends \Eloquent {
 		return false;
 	}
 	
-        static function getTodaysEnrolledCustomers(){
-            $franchiseeId = Session::get('franchiseId');
-            $present_date=Carbon::now();
+  static function getTodaysEnrolledCustomers(){
+    $franchiseeId = Session::get('franchiseId');
+    $present_date=Carbon::now();
 		$todaysEnrolledCustomers = 
-                        DB::select(DB::raw("SELECT count(distinct (students.id)) as enrollmentno
+                        DB::select(DB::raw("SELECT count(distinct(student_classes.student_id)) as enrollmentno
                                                 FROM student_classes INNER JOIN students ON student_classes.student_id = students.id
-                                                WHERE student_classes.created_at= ".$present_date->toDateString()." AND students.franchisee_id=".$franchiseeId." AND student_classes.status 
-                                                IN ('enrolled','transferred_class')")
-                                  
-                                   );
+                                                WHERE student_classes.created_at like '".$present_date->toDateString()."%' AND students.franchisee_id='".$franchiseeId."' AND student_classes.status='enrolled' AND enrollment_end_date > '".$present_date->toDateString()."'")
+                                  );
 		$todaysEnrolledCustomers=$todaysEnrolledCustomers[0]->enrollmentno;	
                 if($todaysEnrolledCustomers){ 
                     return $todaysEnrolledCustomers;

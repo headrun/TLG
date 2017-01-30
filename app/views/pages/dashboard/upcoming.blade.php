@@ -368,7 +368,7 @@
                             <!--<center><h2 class="uk-margin-remove"><span class="countUpMe">{{$reminderCount}}<noscript>64</noscript></span></h2></center>-->
                             <div class = "row" style = "">
                                 <div class = "col-md-12">  
-                                    <center><span class="uk-text-muted uk-text-small">Till now</span></center>
+                                    <center><span class="uk-text-muted uk-text-small">Today</span></center>
                                     <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$reminderCount}}<noscript>64</noscript></span></h2></center>
                                 </div>
                             </div>

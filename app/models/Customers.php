@@ -198,16 +198,16 @@ class Customers extends \Eloquent {
 	static function getCustomerCount(){
 		
 		return Customers::where('franchisee_id', '=',  Session::get('franchiseId'))
-						->count();
+						          ->count();
 	}
 	
 	static function getEnrolledCustomerCount(){
 	
 		return Customers::count();
 	}
-        static function getCustomertodaysRegCount(){
-            		return Customers::whereDate('created_at', '=',  date("Y-m-d"))
-                                                ->where('franchisee_id', '=',  Session::get('franchiseId'))
-						->count();
-        }        
+  static function getCustomertodaysRegCount(){
+    return Customers::whereDate('created_at', '=',  date("Y-m-d"))
+                      ->where('franchisee_id', '=',  Session::get('franchiseId'))
+						          ->count();
+  }        
 }

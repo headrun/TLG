@@ -20,6 +20,7 @@ class CustomerMembership extends \Eloquent {
 		$customerMembership = new CustomerMembership();
 		$customerMembership->customer_id        = $inputs['customer_id'];
 		$customerMembership->membership_type_id = $inputs['membership_type_id'];
+    $customerMembership->franchisee_id =      Session::get('franchiseId');
 		$customerMembership->status             = "active";
 		$customerMembership->action             = "default";
         $customerMembership->membership_start_date=$present_date->toDateString();
@@ -45,35 +46,29 @@ class CustomerMembership extends \Eloquent {
 						
 	}
          static function getMembertodaysRegCount(){
-            return CustomerMembership::join('customers', 'customer_membership.customer_id', '=', 'customers.id')
-                                            ->whereDate('customer_membership.created_at', '=',  date("Y-m-d"))                                         
-					    ->where('customers.franchisee_id', '=',  Session::get('franchiseId'))
-					    ->count();
+            return CustomerMembership::
+                                        whereDate('created_at', '=',  date("Y-m-d"))
+					                              ->where('franchisee_id', '=',  Session::get('franchiseId'))
+                                                  ->where('membership_end_date','>=',date('Y-m-d') )
+					                              ->count();
         }
         static function getMemberCount(){
-            return CustomerMembership::join('customers', 'customer_membership.customer_id', '=', 'customers.id')                                       
-                                            ->where('customers.franchisee_id', '=',  Session::get('franchiseId'))
-                                            ->count();
+            return CustomerMembership::                                       
+                                        where('franchisee_id', '=',  Session::get('franchiseId'))
+                                        ->where('membership_end_date','>=',date('Y-m-d') )
+                                        ->count();
         
         }
         static function getNonMembertodaysRegCount(){
 //            
-                            
-                           $s=DB::table('customers')
-                                ->leftJoin('customer_membership', 'customer_id', '=', 'customers.id')        
-                                ->whereDate('customers.created_at', '=',  date("Y-m-d"))     
-                                ->where('customers.franchisee_id','=',Session::get('franchiseId'))
-                                ->where('membership_type_id','=',null)
-                                ->count('customers.id');    
-                       return $s; 
+          return        DB::select(DB::raw("select count(id) as total from customers where franchisee_id='".Session::get('franchiseId')."' and created_at like '".date('Y-m-d')."%' and id not in (select customer_id from customer_membership where franchisee_id='".Session::get('franchiseId')."'  and membership_end_date >= '".date('Y-m-d')."')"));
+
+                  
                     }
         static function getNonMemberCount(){
-                            $s=DB::table('customers')
-                                ->leftJoin('customer_membership', 'customer_id', '=', 'customers.id')
-                                ->where('customers.franchisee_id', '=',  Session::get('franchiseId'))
-                                ->where('membership_type_id','=',null)
-                                ->count('customers.id');    
-                       return $s; 
+                return         DB::select(DB::raw("select count(id) as total from customers where franchisee_id='".Session::get('franchiseId')."'and id not in (select customer_id from customer_membership where franchisee_id='".Session::get('franchiseId')."' and membership_end_date >= '".date('Y-m-d')."') "));
+    
+                       
         }
 
         static function getCustomerMembershipDetails($customerId){

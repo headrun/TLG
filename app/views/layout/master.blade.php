@@ -118,11 +118,11 @@
                         
                         <li data-uk-dropdown="{mode:'click'}">
                             <a href="#" class="user_action_image" style="margin-top: -20px;">
-                             <label style="padding: 5px;">{{ Session::get('firstName') }} {{ Session::get('lastName') }}</label>
+                             <label style="padding: 5px;">{{ Session::get('firstName') }}{{ Session::get('lastName') }}</label>
                                 <img class="md-user-image" src="{{url()}}/assets/img/avatars/avatar_11_tn.png" alt="" title={{ Session::get('firstName') }}{{ Session::get('lastName') }}  /> 
                             
                             </a>
-                            <div class="uk-dropdown uk-dropdown-small uk-dropdown-flip" style="float:right">
+                            <div class="uk-dropdown uk-dropdown-small uk-dropdown-flip">
                                 <ul class="uk-nav js-uk-prevent">
                                     <!-- <li><a href="page_user_profile.html">My profile</a></li>
                                     <li><a href="page_settings.html">Settings</a></li> -->

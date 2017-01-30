@@ -18,9 +18,11 @@ class DashboardController extends \BaseController {
 
 			$currentPage  =  "";
 			$mainMenu     =  "DASHBOARD";
-			
+			  
+
+
                         //customers or Inquiries
-                        $todaysCustomerReg= Customers::getCustomertodaysRegCount();                        
+                        $todaysCustomerReg= Customers::getCustomertodaysRegCount();
                         $customerCount = Customers::getCustomerCount();
                         
                         //Members or Family Members
@@ -30,6 +32,13 @@ class DashboardController extends \BaseController {
                         //Non Members or prospects
                         $todaysNonmemberReg= CustomerMembership::getNonMembertodaysRegCount();
                         $NonmembersCount= CustomerMembership::getNonMemberCount();
+                        foreach($todaysNonmemberReg as $emp){
+                           $todaysNonmemberReg = $emp->total;
+                        }
+                        foreach($NonmembersCount as $emp){
+                           $NonmembersCount = $emp->total;
+
+                        }
                         
                         //Enrolled customers(kids)
                         $todaysEnrolledCustomers=StudentClasses::getTodaysEnrolledCustomers();
@@ -63,9 +72,9 @@ class DashboardController extends \BaseController {
                                                      FROM student_classes INNER JOIN students ON student_classes.student_id = students.id
                                                      WHERE students.franchisee_id = ".Session::get('franchiseId').
                                                      " AND class_id IN (select id from classes where course_id =".$course->id .")".
-                                                     " AND enrollment_start_date <= '".$present_date->toDateString().
-                                                     "' AND enrollment_end_date >= '".$present_date->toDateString().
-                                                     "' AND student_classes.status IN ('enrolled','transferred_class')"));
+                                                     /*" AND enrollment_start_date <= '".$present_date->toDateString().
+                                                     "' AND enrollment_end_date >= '".$present_date->toDateString().*/
+                                                     " AND student_classes.status IN ('enrolled')"));
                           $course->totalno=$temp[0]->totalno;
                           
                         }
