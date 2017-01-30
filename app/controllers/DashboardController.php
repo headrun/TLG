@@ -67,6 +67,7 @@ class DashboardController extends \BaseController {
 			                  //for courses
                         $courses=Courses::where('franchisee_id','=',Session::get('franchiseId'))->select('course_name','id')->get();
                         $present_date=Carbon::now();
+                        $totalclasses=0;
                         foreach($courses as $course){
                           $temp= DB::select(DB::raw("SELECT count(distinct(student_classes.id)) as totalno
                                                      FROM student_classes INNER JOIN students ON student_classes.student_id = students.id
@@ -76,7 +77,7 @@ class DashboardController extends \BaseController {
                                                      "' AND enrollment_end_date >= '".$present_date->toDateString().*/
                                                      " AND student_classes.status IN ('enrolled')"));
                           $course->totalno=$temp[0]->totalno;
-                          
+                          $totalclasses+=$temp[0]->totalno;
                         }
                        
                         
@@ -223,7 +224,7 @@ class DashboardController extends \BaseController {
                                                             'totalbpartyCount','todaysbpartycount',
                                                            'courses','futurefollowups',
 							  'todaysCustomerReg','todaysEnrolledCustomers','enrolledCustomers','totalIntrovisitCount', 'introVisitCount', 'allIntrovisits', 'todaysFollowup', 
-							  'todaysIntrovisit','activeRemindersCount',);
+							  'todaysIntrovisit','activeRemindersCount','totalclasses');
 			return View::make('pages.dashboard.upcoming',compact($viewData));
      
 		}elseif(Auth::check() && Session::get('userType')=='SUPER_ADMIN'){

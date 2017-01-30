@@ -424,6 +424,7 @@
                                         @foreach($courses as $course)
                                         <h5><span class="uk-text-muted uk-text-small_"><span>{{$course->course_name}} :</span><b>{{$course->totalno}} &nbsp;&nbsp;</b></span></h5>
                                         @endforeach
+                                        <h5><span class="uk-text-muted uk-text-small_"><span>Total :</span><b>{{$totalclasses}} &nbsp;&nbsp;</b></span></h5>
                                 </div>
                             </div>
                             
