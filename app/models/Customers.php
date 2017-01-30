@@ -124,11 +124,12 @@ class Customers extends \Eloquent {
         }
         
 	static function getAllCustomerMembersByFranchiseeId($franchiseeId){
-                $presentdate=  Carbon::now();
-		$customer_members=  CustomerMembership::where('membership_start_date','<=',$presentdate->toDateString())
-                                                        ->where('membership_end_date','>=',$presentdate->toDateString())
-                                                        ->select('customer_id')
-                                                        ->get();
+    $presentdate=  Carbon::now();
+		$customer_members=  CustomerMembership::
+                                      where('membership_start_date','<=',$presentdate->toDateString())
+                                      ->where('membership_end_date','>=',$presentdate->toDateString())
+                                      ->select('customer_id')
+                                      ->get();
                
                 $id;
                 foreach($customer_members as $c){
