@@ -36,7 +36,9 @@ class IntroVisit extends \Eloquent {
 		//$introVisit->status             = 'ACTIVE/SCHEDULED';
 		
 		$introVisit->franchisee_id      = Session::get('franchiseId');		
-		$introVisit->iv_date            = date('Y-m-d',strtotime($inputs['introVisitTxtBox']));
+		if(isset($inputs['introVisitTxtBox']) && $inputs['introVisitTxtBox'] !=''){
+			$introVisit->iv_date            = date('Y-m-d',strtotime($inputs['introVisitTxtBox']));
+		}
 		$introVisit->created_by         = Session::get('userId');
 		$introVisit->created_at         = date("Y-m-d H:i:s");
 		$introVisit->save();

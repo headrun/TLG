@@ -2651,8 +2651,7 @@ $('#memberhsipchequeNumber').keyup(function(){
             <div class="uk-grid" data-uk-grid-margin data-uk-grid-match id="user_profile">
                 <div class="uk-width-large-10-10">
                 
-                	<h4>Customer Details</h4>
-                    <div class="md-card">
+                	<div class="md-card">
                         <div class="user_heading">
                             
                             <div class="user_heading_avatar">
@@ -4256,6 +4255,22 @@ $('#memberhsipchequeNumber').keyup(function(){
 				            </div>		
 				            		            				            
 				        </div>
+                <div class="uk-grid" data-uk-grid-margin>
+                          <div class="uk-width-medium-1-2"> 
+                          <div class="parsley-row form-group">
+                          <label for="altMobileNo">Alternate Mobile No</label>
+                          {{Form::text('altMobileNo', $customer->alt_mobile_no,array('id'=>'altMobileNo',"onkeypress"=>"return isNumberKey(event);", 'maxlength'=>'10',  'minlength'=>'10', 'pattern'=>'\d*', 'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
+                         </div>
+                    </div>    
+                    <div class="uk-width-medium-1-2">    
+                          <div class="parsley-row form-group">
+                          <label for="landlineNo">Landline No</label>
+                          
+                          {{Form::text('landlineNo', $customer->landline_no,array('id'=>'landlineNo','class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
+                         </div>
+                    </div>  
+                    <br clear="all"/><br clear="all"/><br clear="all"/>
+           </div> 
 				        <br clear="all"/><br clear="all"/>
 				        <div class="uk-grid" data-uk-grid-margin>
 				        	<div class="uk-width-medium-1-3">

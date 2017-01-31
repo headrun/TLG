@@ -34,10 +34,22 @@ class Customers extends \Eloquent {
 	
 	static function addCustomers($inputs){
 		
-		if(! Customers::where('mobile_no','=',$inputs['customerMobile'])
-                              ->where('customer_email','=',$inputs['customerEmail'])
-                              ->exists()
-                   ){
+		if(! ((Customers::where('mobile_no','=',$inputs['customerMobile'])
+                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                    ->exists()
+          )||(Customers::where('alt_mobile_no','=',$inputs['customerMobile'])
+                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                    ->exists()
+          )||(Customers::where('alt_mobile_no','=',$inputs['altMobileNo'])
+                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                    ->exists()
+					)||(Customers::where('mobile_no','=',$inputs['altMobileNo'])
+                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                    ->exists()
+          )
+				 )
+
+      ){
 		
 		$customer = new Customers();
 		$customer->franchisee_id  = Session::get('franchiseId');
@@ -45,8 +57,8 @@ class Customers extends \Eloquent {
                 $customer->customer_lastname=ucfirst($inputs['customerLastName']);
 		$customer->customer_email = $inputs['customerEmail'];
 		$customer->mobile_no      = $inputs['customerMobile'];
-                $customer->alt_mobile_no  = $inputs['altMobileNo'];
-                $customer->landline_no    = $inputs['landlineNo'];
+    $customer->alt_mobile_no  = $inputs['altMobileNo'];
+    $customer->landline_no    = $inputs['landlineNo'];
 		$customer->building       = $inputs['building'];		
 		$customer->apartment_name = $inputs['apartment'];
 		$customer->lane           = $inputs['lane'];
@@ -82,7 +94,9 @@ class Customers extends \Eloquent {
 		$customer = Customers::find($inputs['customerId']);
 		$customer->franchisee_id  = Session::get('franchiseId');
 		$customer->customer_name  = $inputs['customerName'];
-                $customer->customer_lastname  = $inputs['customerLastName'];
+    $customer->customer_lastname  = $inputs['customerLastName'];
+		$customer->alt_mobile_no  = $inputs['altMobileNo'];
+    $customer->landline_no    = $inputs['landlineNo'];
 		$customer->customer_email = $inputs['customerEmail'];
 		$customer->mobile_no      = $inputs['customerMobile'];
 		$customer->building       = $inputs['building'];

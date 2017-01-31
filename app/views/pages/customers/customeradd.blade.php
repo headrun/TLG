@@ -206,9 +206,11 @@ $("#source").change(function (){
 	if($(this).val() == 'events'){
 		$( "#eventsdiv" ).show();
 		$("#events").prop('required','true');
+		$("#submitMsgDiv").show();
 	}else{
 		$( "#eventsdiv" ).hide();
 		$("#events").prop('required','false');
+		$("#submitMsgDiv").hide();
 	}
 	
 })
@@ -471,7 +473,7 @@ $(document).ready(function(){
 				                 	{{ Form::select('source', array('' => '', 'word of mouth' => 'Word of Mouth', 'grass roots' => 'Grassroots', 'walkin' => 'Walkin', 'events' => 'Events','social media'=>'Social media','business dev - schools apart'=>'Business dev - schools apart','internal marketing'=>'Internal marketing','external grass root events'=>'External grass root events','business partnerships'=>'Business partnerships','internal events'=>'Internal events','PR'=>'PR','sales and telemarketing'=>'Sales and telemarketing','mass marketing'=>'Mass marketing','service calls'=>'Service calls'), null ,array('id'=>'source', 'class' => 'input-sm md-input',"placeholder"=>"Institution type", "style"=>'padding:0px; font-weight:bold;color: #727272;')) }}
 				                 </div>
 				            </div> 
-				            <br clear="all"/><br clear="all"/>
+				            <br clear="all"/>
 			           </div>
 			           <div class="uk-grid" data-uk-grid-margin id="eventsdiv">
 				        	<br clear="all"/>
@@ -507,9 +509,13 @@ $(document).ready(function(){
 				            <br clear="all"/>
 			            </div> -->
                                   
+                         <br clear="all">
                                   
-                                  
-			            <div id="submitMsgDiv"></div>
+			            <div id="submitMsgDiv" style="display:none"> 
+			            	<div class="uk-alert uk-alert-warning">
+			            		Please type the events to proceed
+			            	</div>
+			            </div>
 			            
 						<div class="uk-grid" data-uk-grid-margin>
                         	<div id="commentMsgDiv">
@@ -536,7 +542,7 @@ $(document).ready(function(){
 				         </div>	 
 				         
 		      		         
-				         <br clear="all"/><br clear="all"/>
+				      
 				         <!--
                                          <h4>Membership details</h4>
 				         <br clear="all"/>
