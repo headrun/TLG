@@ -703,18 +703,20 @@ public function enrollKid2(){
         $paymentDuesInput[$i]['each_class_cost']     = $getEstimateDetails[$i]['base_price'];
                                 
                                 //** working on the customer_membership **//
-        if(isset($inputs['membershipType']) && array_key_exists('membershipType',$inputs) && 
-           $inputs['membershipType']!=''){
+        if($i==0){
+          if(isset($inputs['membershipType']) && array_key_exists('membershipType',$inputs) && 
+            $inputs['membershipType']!=''){
                                     //** create membership for customer **//
-          $customerMembershipInput['customer_id']   = $getEstimateDetails[$i]['customer_id'];
-          $customerMembershipInput['membership_type_id']      = $inputs['membershipType'];
-          $customerMembershipDetails=CustomerMembership::addMembership($customerMembershipInput);
+            $customerMembershipInput['customer_id']   = $getEstimateDetails[$i]['customer_id'];
+            $customerMembershipInput['membership_type_id']      = $inputs['membershipType'];
+            $customerMembershipDetails=CustomerMembership::addMembership($customerMembershipInput);
 
-          $paymentDuesInput[$i]['membership_id']    = $customerMembershipDetails->id;
-          $paymentDuesInput[$i]['membership_type_id'] = $customerMembershipDetails->membership_type_id;
-          $paymentDuesInput[$i]['membership_amount']          = $inputs['membershipAmount'];
-          $temp=MembershipTypes::find($customerMembershipDetails->membership_type_id);
-          $paymentDuesInput['membership_name']       =       $temp->description;
+            $paymentDuesInput[$i]['membership_id']    = $customerMembershipDetails->id;
+            $paymentDuesInput[$i]['membership_type_id'] = $customerMembershipDetails->membership_type_id;
+            $paymentDuesInput[$i]['membership_amount']          = $inputs['membershipAmount'];
+             $temp=MembershipTypes::find($customerMembershipDetails->membership_type_id);
+            $paymentDuesInput['membership_name']       =       $temp->description;
+          }
         }
                                 //** checking for discounts **//
         if(isset($inputs['discountPercentage']) && array_key_exists('discountPercentage',$inputs) && $inputs['discountPercentage']!=''){
