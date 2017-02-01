@@ -105,7 +105,6 @@ class DashboardController extends \BaseController {
                                                                     ->select('student_id')
                                                                     ->get();
                         
-                                                    
                         for($i=0;$i<count($birthday_celebration_data);$i++){
                            $student_id[$i]=$birthday_celebration_data[$i]['student_id'];
                         }
@@ -121,8 +120,6 @@ class DashboardController extends \BaseController {
                                                   ->where('franchisee_id','=',Session::get('franchiseId'))
                                                   ->orderBy(DB::raw('DAY(student_date_of_birth)'))
                                                   -> get();
-                        
-                       
                       
                         for($i=0;$i<count($birthday_data);$i++){
                             $customer_data= Customers::where('id','=',$birthday_data[$i]['customer_id'])->get();
@@ -203,6 +200,7 @@ class DashboardController extends \BaseController {
                         $birthdayPresentWeek=BirthdayParties::
                                                               where('birthday_party_date','>=',$presentdate->toDateString())
                                                               ->where('birthday_party_date','<=',$weeekdate->toDateString())
+                                                              ->orderBy('birthday_party_date', 'DESC')
                                                               ->get();
                         for($i=0;$i<count($birthdayPresentWeek);$i++){
                           $customer_data=Customers::where('id','=',$birthdayPresentWeek[$i]['customer_id'])->get();
@@ -215,7 +213,7 @@ class DashboardController extends \BaseController {
                         
                         $expiringbatch= Batches::getExpiringBatchData();
                         
-                        
+                        //return $birthday_data; die();
 			$viewData = array('currentPage', 'mainMenu', 'expiringbatch',
                                                            'birthday_data','birthday_data_month','birthday_month_startdays','birthdayPresentWeek',
                                                            'todaysMemberReg','membersCount',

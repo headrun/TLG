@@ -182,7 +182,7 @@ $(document).ready(function() {
 			}
 			
 		},
-		gotoDate: eventArray[0].start,
+		//gotoDate: eventArray[0].start,
 		
 		events:eventArray 
 
@@ -235,7 +235,9 @@ $(document).ready(function() {
 		] */,			
 	});
 	
-	$('#calendar').fullCalendar('gotoDate', eventArray[0].start);
+	//console.log(eventArray);
+	//'gotoDate', eventArray[0].start
+	$('#calendar').fullCalendar('gotoDate', date);
 });
 
 var ajaxUrl = "{{url()}}/quick/";

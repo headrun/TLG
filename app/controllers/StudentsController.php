@@ -1117,6 +1117,7 @@ public function enrollKid2(){
   public function addbirthdayParty(){
     
     $inputs = Input::all();
+    return $inputs; die();
                
                 if($inputs['remainingAmount'] >=0){
                 

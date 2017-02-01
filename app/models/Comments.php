@@ -203,7 +203,7 @@ class Comments extends \Eloquent {
 		$today = date('Y-m-d');
 		return Comments::with('Customers')->where("franchisee_id", "=", Session::get('franchiseId'))
 		->where("reminder_date", "!=", "NULL")
-		//->where("comment_type", "=", "followup")
+		//->where("comment_type", "=", "followup") 
 		//->where("reminder_status", "=", "active")
                 ->whereDate("reminder_date", "<", $today)
 		->orderBy('reminder_date', 'ASC')

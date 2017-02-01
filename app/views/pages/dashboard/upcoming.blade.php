@@ -58,7 +58,8 @@
             return nRow;
         },
         "iDisplayLength": 10,
-        "lengthMenu": [ 10, 50, 100, 150, 200 ]
+        "lengthMenu": [ 10, 50, 100, 150, 200 ],
+        "order": [[ 3, "desc" ]],
     });    
     $("#followupTable").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
@@ -94,7 +95,8 @@
             return nRow;
         },
         "iDisplayLength": 10,
-        "lengthMenu": [ 10, 50, 100, 150, 200 ]
+        "lengthMenu": [ 10, 50, 100, 150, 200 ],
+        "order": [[ 3, "desc" ]]
     });
     $("#followupPending").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
@@ -112,7 +114,8 @@
             return nRow;
         },
         "iDisplayLength": 10,
-        "lengthMenu": [ 10, 50, 100, 150, 200 ]
+        "lengthMenu": [ 10, 50, 100, 150, 200 ],
+        "order": [[ 3, "desc" ]]
     });
         $("#birthdayLog").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
@@ -130,7 +133,8 @@
             return nRow;
         },
         "iDisplayLength": 10,
-        "lengthMenu": [ 10, 50, 100, 150, 200 ]
+        "lengthMenu": [ 10, 50, 100, 150, 200 ],
+        "order": [[ 3, "desc" ]]
     });
     
      $("#birthdayCelebrationTable").DataTable({
@@ -149,7 +153,8 @@
             return nRow;
         },
         "iDisplayLength": 10,
-        "lengthMenu": [ 10, 50, 100, 150, 200 ]
+        "lengthMenu": [ 10, 50, 100, 150, 200 ],
+        "order": [[ 3, "desc" ]]
     });
     
     $("#classesExpiringTable").DataTable({
@@ -168,7 +173,8 @@
             return nRow;
         },
         "iDisplayLength": 10,
-        "lengthMenu": [ 10, 50, 100, 150, 200 ]
+        "lengthMenu": [ 10, 50, 100, 150, 200 ],
+        "order": [[ 1, "desc" ]],
     });
 
     
@@ -609,11 +615,11 @@
                                       
                                         
            <?php 
+
             for($i=0;$i<count($birthday_data_month);$i++){
               if(isset($birthday_data_month[$i][0])){
                 for($j=0;$j<count($birthday_data_month[$i]);$j++){
                 ?>   
-                
                     <tr>
                                             <td>
                                                 {{$birthday_data_month[$i][$j]['customer_name']}}

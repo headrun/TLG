@@ -1750,9 +1750,9 @@ $("#introVisitTxtBox").kendoDatePicker({
 });
 
 $('#addIntroVisitSubmit').click(function(){
-    if(($('#eligibleClassIntro').val()=='')||($('#introbatchCbx').val()=='')||($('#introVisitTxtBox').val()=='')||
+    if(($('#eligibleClassIntro').val()=='')||($('#introbatchCbx').val()=='')||($('#introVisitTxtBox').val()=='' )||
        ($('#followupcalllTypeCbx').val()=='')||($('#followupQualityTypeCbx').val()=='')||($('#eligibleClassIntro').val()=='')||
-       ($('#customerCommentTxt').val()=='')){
+       ($('#customerCommentTxt').val()=='' || !isValidDate($('#introVisitTxtBox').val()))){
        // console.log('validation error');
         $("#Msg").html('<p class="uk-alert uk-alert-danger">Please select all required fields </p>');
     }else{
@@ -1921,16 +1921,47 @@ function getEnrollmentData(paymentfollowupId){
              });      
 }
 
+function isValidDate(date)
+{
+    var matches = /^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/.exec(date);
+    if (matches == null) return false;
+    var d = matches[2];
+    var m = matches[1] - 1;
+    var y = matches[3];
+    var composedDate = new Date(y, m, d);
+    return true;
+}
+
+
+$(document).on('change', '#remindDate',function(){
+	if($('#remindDate').val() != ''){
+	    if(!isValidDate($('#remindDate').val())) {
+	       $('#followupMsdDiv').html('<p class="uk-alert uk-alert-warning"> Invalid date format or date should be future date. </p>');
+	       $('#remindDate').focus();
+	       $('#addOtherFollowupSubmit').attr('disabled',true);
+	       
+	    }else{
+	    	$('#addOtherFollowupSubmit').attr('disabled',false);
+	    	$('#followupMsdDiv').html('');
+	    }
+	}
+	
+});
 
 
 
 $('#addOtherFollowupSubmit').click(function(e){
-   e.preventDefault();       
+   e.preventDefault();    
+   var curdate    = new Date();
+   var reminderDate = new Date($('#remindDate').val());
   if(($('#SeasonsCbx').val()=='')||($('#followupkidCbx').val()=='')||
-     ($('#followupcalllTypeCbx').val()=='')||($('#followupQualityTypeCbx').val()=='')||
-     ($('#otherCommentTxtarea').val()=='')||($('#remindDate').val()=='')){
+     ($('#followupcalllTypeCbx').val()=='')||
+     ($('#followupQualityTypeCbx').val()=='')||
+     ($('#otherCommentTxtarea').val()=='')||
+     ($('#remindDate').val()=='') || 
+     (reminderDate < curdate)){
       //error
-      $('#followupMsg').html('<p class="uk-alert uk-alert-warning"> please select all the details to add followup.</p>');
+      $('#followupMsg').html('<p class="uk-alert uk-alert-warning"> please fill all the fields with proper details to add followup.</p>');
       
   }else{
       //add followup
@@ -2135,7 +2166,7 @@ $('#saveComplaintBtn').click(function(){
 
 $('#saveRetentionBtn').click(function(){
  if(($('#retentionstatusSelect').val()!='') && ($('#retentioneditActionSelect').val()!='') && 
-         ($('#retentioncustomerCommentTxtarea').val()!='')){
+         ($('#retentioncustomerCommentTxtarea').val()!='' && $('#rmDate'),val() != '')){
        //call ajax
        
            $.ajax({
@@ -4042,7 +4073,7 @@ $('#memberhsipchequeNumber').keyup(function(){
                                                                       <button type="submit" class="btn btn-primary otherFollowups" style="display:none; float:right"
 										id="addOtherFollowupSubmit">Add Followups</button> 
                                                                   </div>
-                                                                  
+                                        <div id="followupMsdDiv"></div>
                                                                           
                                                                   
                                                                   
