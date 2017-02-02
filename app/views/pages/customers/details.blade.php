@@ -3035,7 +3035,7 @@ $('#memberhsipchequeNumber').keyup(function(){
 													<div class="uk-width-medium-1-2">
 														<div class="parsley-row" style="margin-top: -23px;">
 															<label for="birthdayMonth">Select Birthday Month<span
-																class="req">*</span></label> <br/>(MM/DD/YYYY)<br clear="all" />
+																class="req">*</span></label> <br/>(Month  Year)<br clear="all" />
 															{{Form::text('birthdayMonth',
 															null,array('id'=>'birthdayMonth','required', 'class' => ''))}}
 														</div>
