@@ -53,7 +53,7 @@ class Customers extends \Eloquent {
                     ->exists()
           )
 
-        ){
+        )){
 		
 		$customer = new Customers();
 		$customer->franchisee_id  = Session::get('franchiseId');

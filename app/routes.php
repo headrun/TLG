@@ -431,15 +431,17 @@ Route::any('/getfullfranchiseedata','FranchiseeAdministration@getFullFranchiseeD
 Route::get('/test', function(){
    // return View::make( 'pages.error404');
     //echo Hash::make('uday');
-$franchiseeId = Session::get('franchiseId');
-    $present_date=Carbon::now();
- return DB::select(DB::raw("SELECT *
-                                                FROM student_classes INNER JOIN students ON student_classes.student_id = students.id
-                                                WHERE student_classes.created_at= '".$present_date->toDateString()."' AND students.franchisee_id='".$franchiseeId."' AND student_classes.status='enrolled'")
-                                  
-                                   );
-
-
+/*
+$student_classes=StudentClasses::get();
+// for franchisee_id
+for($i=0;$i<count($student_classes);$i++){
+	$customer=Students::find($student_classes[$i]['student_id']);
+	$mem=StudentClasses::find($student_classes[$i]['id']);
+	$mem->franchisee_id=$customer->franchisee_id;
+	$mem->save();
+} 
+*/
+echo "done";
 /*
 //for adding franchisee_id in customer_membership
 
