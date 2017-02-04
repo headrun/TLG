@@ -891,7 +891,8 @@ public function enrollKid2(){
         $paymentDuesInput[$i]['each_class_cost']   = $getEstimateDetails[$i]['base_price'];
                                 
         if($i==0){ 
-        if(isset($inputs['membershipType'])){
+        if(isset($inputs['membershipType']) && array_key_exists('membershipType',$inputs) && 
+            $inputs['membershipType']!=''){
 
                                     //** create membership for customer **//
           $customerMembershipInput['customer_id']   = $getEstimateDetails[$i]['customer_id'];
