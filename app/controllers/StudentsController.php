@@ -889,7 +889,8 @@ public function enrollKid2(){
                                 
         $paymentDuesInput[$i]['student_class_id']  = $insertDataToStudentClassTable['id'];
         $paymentDuesInput[$i]['each_class_cost']   = $getEstimateDetails[$i]['base_price'];
-                                 
+                                
+        if($i==0){ 
         if(isset($inputs['membershipType'])){
 
                                     //** create membership for customer **//
@@ -903,6 +904,7 @@ public function enrollKid2(){
           $temp=MembershipTypes::find($customerMembershipDetails->membership_type_id);
           $paymentDuesInput['membership_name']            =       $temp->description;
                                     
+        }
         }
                                 //** checking for discounts **//
         if($inputs['discountPercentage']!=''){
