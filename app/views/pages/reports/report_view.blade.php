@@ -26,10 +26,10 @@
 <script type="text/javascript">
 ;(function($) {
     $(document).ready(function() {
-    $('#reportGenerateStartdate').kendoDatePicker( {format: "yyyy-MM-dd"});
-    $('#reportGenerateenddate').kendoDatePicker({format: "yyyy-MM-dd"});
-    $('#reportGenerateStartdate').val('{{$presentdate}}');
-    $('#reportGenerateenddate').val('{{$presentdate}}');
+    $('#reportGenerateStartdate, #reportGenerateStartdate1').kendoDatePicker( {format: "yyyy-MM-dd"});
+    $('#reportGenerateenddate, #reportGenerateenddate1').kendoDatePicker({format: "yyyy-MM-dd"});
+    $('#reportGenerateStartdate, #reportGenerateStartdate1').val('{{$presentdate}}');
+    $('#reportGenerateenddate, #reportGenerateenddate1').val('{{$presentdate}}');
     $('#reportType').val('both');
     
     
@@ -473,6 +473,7 @@
                 <div class="md-card uk-margin-medium-bottom">
 		    <div class="md-card-content">
                         <br>
+                        <h3 class="heading_b uk-margin-bottom">General Report</h3>
                         {{ Form::open(array('url' => '/reports/generatereport', 'id'=>"generatereportform", "class"=>"uk-form-stacked", 'method' => 'post')) }}    
                            <div class="uk-grid" data-uk-grid-margin>
                                <div class="uk-width-medium-1-4">
@@ -504,6 +505,7 @@
                                                     <option value="BySchool">By School</option>
                                                     <option value="ByLocality">By Locality</option>
                                                     <option value="ByApartment">By Apartmnet</option>
+                                                    <option value="SalesAlloc">Sales Allocation Rport</option>
                                             </select>
                                                  
                                    </div>
@@ -526,7 +528,34 @@
                             <div class="uk-width-1-4"></div>
                             </div>
                         {{ Form::close() }}
+
+
+                        <br><br>
                     
+                      <h3 class="heading_b uk-margin-bottom">Sales Allocation Report</h3>
+                      {{ Form::open(array('url' => '/reports/salesAllocreport', "class"=>"uk-form-stacked", 'method' => 'post')) }}    
+                        <div class="uk-grid" data-uk-grid-margin>
+                           <div class="uk-width-medium-1-4">
+                             <div class="parsley-row form-group">
+                                <label for="startDate">Start Date</label><br>
+                                {{Form::text('reportGenerateStartdate1',
+                                null,array('id'=>'reportGenerateStartdate1', 'class' => '','required'))}} 
+                             </div>
+                           </div>
+                           <div class="uk-width-medium-1-4">
+                             <div class="parsley-row form-group">
+                                <label for="endDate">End Date</label><br>
+                                {{Form::text('reportGenerateEnddate1',
+                                null,array('id'=>'reportGenerateenddate1', 'class' => '','required'))}} 
+                             </div>
+                           </div>
+                           <div class="uk-width-1-4">
+                             <div class="parsley-row" style="padding: 25px 30px;">
+                                <button type="submit" class="md-btn md-btn-primary">Generate</button>
+                             </div>
+                           </div>
+                         </div>
+                      {{ Form::close() }}<br>
                 
                <br clear="all">
                 <div class="md-card uk-margin-medium-bottom" id="reportdata">

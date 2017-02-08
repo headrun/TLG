@@ -126,6 +126,7 @@ Route::group(array('prefix'=>'Discounts'),function(){
 Route::group(array('prefix'=>'reports'),function(){
         Route::any('/view_reports','ReportsController@view_reports');
         Route::any('/deleted_customers','ReportsController@deleted_customers');
+        Route::any('/salesAllocreport', "ReportsController@salesAllocreport");
 });
 
 

@@ -47,6 +47,66 @@ class ReportsController extends \BaseController {
                 return Response::json(array($inputs));
             }
         }
+
+        public static function salesAllocreport(){
+
+        	if(Auth::check()){
+        		$inputs=  Input::all();
+        		$salesFile = PaymentDues::getSalesAllocReport($inputs);
+
+        		$sheetheaders = ['ROLL NUMBER', 'INVOICE NUMBER', "Date of Billing\nMM/DD/YYYY", "Date of Birth\nMM/DD//YYYY", 'Child Name', 'Parent Name', 'Class', 'No. Of Weeks', '2nd Class', "Start Date\nMM/DD/YYYY", 'End Date', 'Membership', 'Classes', 'Tax', 'Total', "Mode Of\nPayment"];
+
+        		//Concatinating shet headers and body
+				$sheetData[0] = $sheetheaders;
+				$sheetData = $sheetData + $salesFile;
+
+        		Excel::create('Sales Allocation Report', function($excel) use($sheetData) {
+		              $excel->sheet('Sheet 1', function($sheet) use($sheetData){
+		                  
+		                  //Styles in Row wise
+		                  $sheet->mergeCells('A1:P1');
+		                  $sheet->setAllBorders('thin');
+		                  $heightArray = array(
+		                      1     =>  50,
+		                      2     =>  50,
+		                  );
+		                  for ($i=3; $i < count($sheetData); $i++) { 
+		                  	$heightArray[$i] = 22; 
+		                  }
+
+		                  $sheet->setHeight($heightArray);
+		                  $sheet->row(1, function ($row) {
+		                      $row->setFontFamily('Calibri');
+		                      $row->setFontSize(11);
+		                      $row->setFontColor('#ffffff');
+		                      $row->setAlignment('center');
+		                      $row->setFontWeight('normal');
+		                      $row->setValignment('center');
+		                      $row->setBackground('#205867');
+		                  });
+		                  $sheet->row(2, function ($row) {
+		                      $row->setFontFamily('Calibri');
+		                      $row->setFontSize(9);
+		                      $row->setFontColor('#ffffff');
+		                      $row->setAlignment('center');
+		                      $row->setFontWeight('normal');
+		                      $row->setValignment('center');
+		                      $row->setBackground('#205867');
+		                  });
+
+		                  //Set Headers in row wise
+		                  $sheet->row(1, array('MASTER SALES ALLOCATION FOR THE MONTH OF '. date("F Y")));
+
+		                  //Writing into file 
+		                  $sheet->fromArray($sheetData);
+		              });
+		          })->export('xls');
+
+
+        	}else{
+        		return Redirect::action('VaultController@logout');
+        	}
+        }
         
         public static function deleted_customers(){
             if((Auth::check()) && (Session::get('userType'))=='ADMIN'){

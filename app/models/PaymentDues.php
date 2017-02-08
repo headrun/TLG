@@ -509,5 +509,61 @@ class PaymentDues extends \Eloquent {
         
         return $paymentDues;
   }
+
+  static public function getSalesAllocReport($inputs){
+
+    $final_sales_data = [];
+    $Sales['data']=PaymentDues::where('franchisee_id','=',Session::get('franchiseId'))
+            ->where('payment_status','=','paid')
+            ->where('student_class_id','<>',0)
+            ->whereDate('created_at','>=',$inputs['reportGenerateStartdate1'])
+            ->whereDate('created_at','<=',$inputs['reportGenerateEnddate1'])
+            ->orderBy('id','desc')
+            ->get();          
+
+    for($i=0;$i<count($Sales['data']);$i++){
+
+        $each_sales_data = [];
+
+        $temp5 = PaymentMaster::where('payment_master.payment_no', '=', $Sales['data'][$i]['payment_no'])->join('orders', 'orders.payment_no', '=', 'payment_master.payment_no')->get();
+
+        /*********88Putting values in fixed order for excel sheet  *******/
+        $each_sales_data[] = "";
+        $each_sales_data[] = $temp5[0]->invoice_id;
+        $billing_date = date_create($Sales['data'][$i]['created_at']);
+        $each_sales_data[] = date_format($billing_date,"m/d/Y");
+
+        //Collecting customer Data
+        $temp=  Customers::find($Sales['data'][$i]['customer_id']);
+
+        //Collecting Student Data
+        $temp2=  Students::find($Sales['data'][$i]['student_id']);
+        $dob = date_create($temp2->student_date_of_birth);
+        $each_sales_data[]=date_format($dob,"m/d/Y");
+        $each_sales_data[]=$temp2->student_name;
+        $each_sales_data[]=$temp->customer_name.' '.$temp->customer_lastname;
+
+        //Collecting Classes Data
+        $temp4 = Classes::getstudentclasses($Sales['data'][$i]['class_id']);
+        $each_sales_data[] = $temp4[0]->class_name;
+        $sDate = new Carbon($Sales['data'][$i]['start_order_date']);
+        $eDate = new Carbon($Sales['data'][$i]['end_order_date']);
+        $each_sales_data[] = $Sales['data'][$i]['selected_order_sessions'];
+        $each_sales_data[] = "";
+        $each_sales_data[] = date_format($sDate,"m/d/Y");
+        $each_sales_data[] = date_format($eDate, 'F d Y');
+        $each_sales_data[] = $Sales['data'][$i]['membership_name'];
+        $each_sales_data[] =$Sales['data'][$i]['selected_order_sessions'];
+        $each_sales_data[] = $Sales['data'][$i]['tax_percentage'].' %';
+        $total = $Sales['data'][$i]['each_class_amount'] * $Sales['data'][$i]['selected_order_sessions'];
+        $each_sales_data[] = $total;
+        $each_sales_data[] = $temp5[0]->payment_mode;
+
+        //Apending array to final array
+        $final_sales_data[] = $each_sales_data;
+    }
+    return $final_sales_data;
+
+  }
   
 }

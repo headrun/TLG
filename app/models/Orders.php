@@ -339,4 +339,8 @@ class Orders extends \Eloquent {
         return $order;
         
     }
+
+    static public function getByPaymentId($pid){
+        return Orders::where('payment_no','=', $pid)->get();
+    }
 }
