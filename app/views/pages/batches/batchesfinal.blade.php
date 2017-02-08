@@ -94,7 +94,123 @@ $(document).ready(function(){
                                         string += '<option value='+response.data[i]['id']+'>'+response.data[i]['location_name']+'</option>';
                                         }
                                         $("#seasonLocation").append(string);
+                                        $.ajax({
+					      type: "POST",
+					      url: "{{URL::to('/quick/classesbyCourse')}}",
+					      data: {'franchiseeCourse': $('#franchiseeCourse').val()},
+					      dataType:"json",
+					      success: function (response)
+					      {
+						$("#className").val("");
+						$("#className").empty();
+						var string = '<option value="">Select Class name</option>';
+						$.each(response, function (index, item) {
+						  string += '<option value='+index+'>'+item+'</option>';
+						});
+						$("#className").append(string);
+  $.ajax({
+			type: "POST",
+			url: "{{URL::to('/quick/getBatchData')}}",
+                        data: {'session_id':$('#selectSeason').val()},
+			dataType: 'json',
+			success: function(response){
+                            if(response.status=='success'){
+                                $('#batchData').html('');
+                             
+                         var htmldata="<div class='md-card-content'>"+
+		                    "<div class='uk-overflow-container'>"+
+		                        "<table id='batchTable' class='uk-table'>"+
+		                            "<thead>"+
+		                            "<tr>"+
+		                                "<th>Batch Name</th>"+
+		                                "<th>Location</th>"+
+                                                "<th>Day</th>"+
+		                                "<th>Timings</th>"+
+                                                "<th>L Instructor</th>"+
+                                                "<th>Status</th>"+
+                                                "<th>Created Date</th>"+
+		                                "<th>Action</th>"+
+		                            "</tr>"+
+		                            "</thead>";
+                                    if(response.data.length>0){
+                                for(var i=0;i<response.data.length;i++){
+                                     if(response.data[i]['count']!=0){
+                                      htmldata=htmldata+"<tr>"+
+		                                "<td>"+ response.data[i]['batch_name']+"</td>"+
+		                                "<td>"+response.data[i]['location_name']+"</td>"+
+                                                "<td>"+response.data[i]['day']+"</td>"+
+		                                "<td>"+response.data[i]['preferred_time']+" to "+response.data[i]['preferred_end_time']+"</td>"+
+                                                "<td>"+response.data[i]['instructor_name']+"</td>"+
+                                                "<td>"+response.data[i]['count']+"/18</td>"+
+                                                
+                                                "<td>"+response.data[i]['created']+"</td>"+
+		                                "<td>"+
+		                                	"<a class='btn btn-info btn-xs' href='{{url()}}/batches/attendance/"+response.data[i]['id']+"' title='Summary'><i class='Small material-icons' style='font-size:20px;'>assignment</i></a> " +
+		                                        "<a class='btn btn-primary btn-xs' href='{{url()}}/batches/view/"+ response.data[i]['id'] +"' title='Attendance'><i class='Small material-icons' style='font-size:20px;'>snooze</i></a>"+
+		                                	"<a  id='editBatchbutton' class='btn btn-warning btn-xs' onclick='editbatch("+response.data[i]['id']+','+response.data[i]['location_id']+','+response.data[i]['lead_instructor']+")' title='Edit'> <i class='Small material-icons' style='font-size:20px;'>mode_edit</i></a>"+
+		                                
+                                                "</td>"+
+		                                
+		                      "</tr>";
+                                     }else{
+                                         htmldata=htmldata+"<tr>"+
+		                                "<td>"+ response.data[i]['batch_name']+"</td>"+
+		                                "<td>"+response.data[i]['location_name']+"</td>"+
+                                                "<td>"+response.data[i]['day']+"</td>"+
+		                                "<td>"+response.data[i]['preferred_time']+" to "+response.data[i]['preferred_end_time']+"</td>"+
+                                                "<td>"+response.data[i]['instructor_name']+"</td>"+
+                                                "<td>"+response.data[i]['count']+"/18</td>"+
+                                                
+                                                "<td>"+response.data[i]['created']+"</td>"+
+		                                "<td>"+
+		                                	"<a class='btn btn-info btn-xs' href='{{url()}}/batches/attendance/"+response.data[i]['id']+"' title='Summary'><i class='Small material-icons' style='font-size:20px;'>assignment</i></a> " +
+		                                        "<a class='btn btn-primary btn-xs' href='{{url()}}/batches/view/"+ response.data[i]['id'] +"' title='Attendance'><i class='Small material-icons' style='font-size:20px;'>snooze</i></a>"+
+		                                	"<a  id='editBatchbutton' class='btn btn-warning btn-xs' onclick='editbatch("+response.data[i]['id']+','+response.data[i]['location_id']+','+response.data[i]['lead_instructor']+")' title='Edit'> <i class='Small material-icons' style='font-size:20px;'>mode_edit</i></a>"+
+                                                        "<a id='deleteBatchbutton' class='btn btn-danger btn-xs' onclick='deletebatch("+response.data[i]['id']+")'title='Delete'> <i class='Small material-icons' style='font-size:20px;'>delete </i> </a>"+
+                                                "</td>"+
+		                                
+		                      "</tr>";
+                                     }
+                                }
+                                }
+//                                else{
+//                                htmldata=htmldata+"<tr><td>"+
+//                                    "No batches added yet..."+
+//                                    "</td></tr>";
+//                                }
+                                 htmldata=htmldata+  "</table>"+
+                                            "</div>"+
+                                            "</div>";
+                                $('#batchData').html(htmldata);
+                                $("#batchTable").DataTable();
+                              //console.log(response.data);
+                            }
+                        }
+             });  
+             
+             $.ajax({
+			type: "POST",
+			url: "{{URL::to('/quick/season/getLocationBySeasonId')}}",
+                        data: {'seasonId':$('#selectSeason').val(),},
+			dataType: 'json',
+			success: function(response){
+                            //console.log(response.status);
+                            console.log(response.data);
+                            $("#seasonLocation").val("");
+		  	$("#seasonLocation").empty();
+                            //<select name="seasonLocation" id='seasonLocation' class = 'form-control input-sm md-input' style='padding:0px; font-weight:bold;color: #727272;' >
+										
+				//					</select>
+                            string='';
+                            for(var i=0;i<response.data.length;i++) {
+		  		string += '<option value='+response.data[i]['id']+'>'+response.data[i]['location_name']+'</option>';
+                            }
+                             $("#seasonLocation").append(string);
 
+                        }
+             });
+					      }
+					  });   
                                         }
                                        });
                            }else {
@@ -729,7 +845,7 @@ $('#batch_delete').click(function(){
 		                            </tr>
 		                            </thead>
 		                            <tbody>
-                                            <?php if(isset($batches)){ ?>    
+                                            <?php if(!isset($batches)){ ?>    
 		                             @foreach($batches as $batch)
 		                             <tr>
 		                                <td>{{$batch->batch_name}}</td>
