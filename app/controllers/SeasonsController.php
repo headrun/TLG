@@ -130,8 +130,21 @@ class SeasonsController extends \BaseController {
         }
         public function getSeasonsForBatches(){
             $season_data=Seasons::where('franchisee_id','=',Session::get ( 'franchiseId' ))
+                                  ->where('start_date','<=',date('Y-m-d'))
+                                  ->where('end_date','>=',date('Y-m-d'))
                                   ->orderBy('id', 'DESC')
                                   ->get();
+            $season_ids=[];
+            foreach ($season_data as $season){
+              $season_ids[]=$season->id;
+            }
+            $season_rest_data=Seasons::where('franchisee_id','=',Session::get ( 'franchiseId' ))
+                                       ->whereNotIn('id',$season_ids)
+                                       ->get();
+            $activeseason_count=count($season_data);
+            for($i=0;$i<count($season_rest_data);$i++){
+              $season_data[$activeseason_count++]=$season_rest_data[$i];
+            }
             if($season_data){
                 return Response::json(array('status'=>'success','season_data'=>$season_data));
             }else{
@@ -139,10 +152,26 @@ class SeasonsController extends \BaseController {
             }
         }
                 public function getSeasonsForEnrollment(){
-            $season_data=Seasons::where('franchisee_id','=',Session::get ( 'franchiseId' ))
+            //getting the present live seasons
+	    $season_data=Seasons::where('franchisee_id','=',Session::get ( 'franchiseId' ))
+                                  ->where('start_date','<=',date('Y-m-d'))
+                                  ->where('end_date','>=',date('Y-m-d'))
                                   //->whereNotIn('season_type', ['Summer Season'])
                                   ->orderBy('id', 'DESC')
                                   ->get();
+            //getting the rest of seasons
+            $season_ids=[];
+            foreach ($season_data as $season){
+              $season_ids[]=$season->id;
+            }
+            $season_rest_data=Seasons::where('franchisee_id','=',Session::get ( 'franchiseId' ))
+                                       ->whereNotIn('id',$season_ids)
+                                       ->get();
+            $activeseason_count=count($season_data);
+            for($i=0;$i<count($season_rest_data);$i++){
+              $season_data[$activeseason_count++]=$season_rest_data[$i];
+            }
+            
             $classData = Classes::where('franchisee_id', '=', Session::get('franchiseId'))->get();
             if($season_data){
                 return Response::json(array('status'=>'success','season_data'=>$season_data,'Class_data'=> $classData));

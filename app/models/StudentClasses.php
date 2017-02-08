@@ -118,6 +118,7 @@ class StudentClasses extends \Eloquent {
         $StudentClasses->status="enrolled";
       }
 		$StudentClasses->batch_id      = $input['batchId'];
+                $StudentClasses->franchisee_id = Session::get('franchiseId');
 		$StudentClasses->created_by    = Session::get('userId');
 		$StudentClasses->created_at    = date("Y-m-d H:i:s");
 		$StudentClasses->save();

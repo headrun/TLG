@@ -33,6 +33,17 @@ class Customers extends \Eloquent {
 	
 	
 	static function addCustomers($inputs){
+		if(($inputs['altMobileNo']!='') && (Customers::where('alt_mobile_no','=',$inputs['altMobileNo'])
+                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                    ->exists()
+		  )||(Customers::where('mobile_no','=',$inputs['altMobileNo'])
+                    ->where('franchisee_id','=',Session::get('franchiseId'))
+                    ->exists()
+          )
+		  ){
+
+			return false;
+		}
 		
 		if(! ((Customers::where('mobile_no','=',$inputs['customerMobile'])
                     ->where('franchisee_id','=',Session::get('franchiseId'))
@@ -40,16 +51,9 @@ class Customers extends \Eloquent {
           )||(Customers::where('alt_mobile_no','=',$inputs['customerMobile'])
                     ->where('franchisee_id','=',Session::get('franchiseId'))
                     ->exists()
-          )||(Customers::where('alt_mobile_no','=',$inputs['altMobileNo'])
-                    ->where('franchisee_id','=',Session::get('franchiseId'))
-                    ->exists()
-					)||(Customers::where('mobile_no','=',$inputs['altMobileNo'])
-                    ->where('franchisee_id','=',Session::get('franchiseId'))
-                    ->exists()
           )
-				 )
 
-      ){
+        )){
 		
 		$customer = new Customers();
 		$customer->franchisee_id  = Session::get('franchiseId');
