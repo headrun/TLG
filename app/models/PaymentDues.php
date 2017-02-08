@@ -552,7 +552,7 @@ class PaymentDues extends \Eloquent {
         $each_sales_data[] = "";
         $each_sales_data[] = date_format($sDate,"m/d/Y");
         $each_sales_data[] = date_format($eDate, 'F d Y');
-        $each_sales_data[] = $Sales['data'][$i]['membership_name'];
+        $each_sales_data[] = $Sales['data'][$i]['membership_name'] !== "" ? $Sales['data'][$i]['membership_name'] : "Annual Membership";
         $each_sales_data[] =$Sales['data'][$i]['selected_order_sessions'];
         $each_sales_data[] = $Sales['data'][$i]['tax_percentage'].' %';
         $total = $Sales['data'][$i]['each_class_amount'] * $Sales['data'][$i]['selected_order_sessions'];
