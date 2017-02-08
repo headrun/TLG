@@ -270,7 +270,7 @@ class PaymentsController extends \BaseController {
 		$getCustomerName = Customers::select('customer_name','customer_lastname')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
 		$getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
 		$paymentMode = Orders::where('payment_no', '=', $payment_no)->get();
-		$getTermsAndConditions = TermsAndConditions::where('id', '=', (TermsAndConditions::max('id')))->get();
+		$getTermsAndConditions = TermsAndConditions::where('franchisee_id', '=', Session::get('franchiseId'))->get();
                 $franchisee_name=Franchisee::find(Session::get('franchiseId'));
 		$tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
                 $data = compact('totalSelectedClasses', 'getBatchNname',
@@ -302,6 +302,8 @@ class PaymentsController extends \BaseController {
                         $payment_due_data->description=$membershipTypeData->description;
                      }
                 }
+                $franchisee_name=Franchisee::find(Session::get('franchiseId'));
+                $getTermsAndConditions = TermsAndConditions::where('franchisee_id', '=', Session::get('franchiseId'))->get();
 		$customer_data = $customer_data [0];
 		$birthday_data = $birthday_data [0];
 		$student_data = $student_data [0];
@@ -313,6 +315,8 @@ class PaymentsController extends \BaseController {
 				'student_data',
                                 'payment_due_data',
                                 'tax_data',
+                                'franchisee_name',
+                                'getTermsAndConditions',
 		);
 		
 		// print_r($data);

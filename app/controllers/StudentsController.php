@@ -1057,8 +1057,8 @@ public function enrollKid2(){
         $totalAmountForEachBach[] = (int)$paymentDueDetails[$i]['payment_batch_amount'];
         $totalAmountForAllBatch = $totalAmountForAllBatch + (int)$paymentDueDetails[$i]['payment_batch_amount'];
       }   
-                    
-      $getTermsAndConditions = TermsAndConditions::where('id', '=', (TermsAndConditions::max('id')))->get();
+      $getTermsAndConditions = TermsAndConditions::where('franchisee_id', '=', Session::get('franchiseId'))->get();
+      $franchisee_name=Franchisee::find(Session::get('franchiseId'));               
       $getCustomerName = Customers::select('customer_name','customer_lastname','customer_email')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
                     //return Response::json(array($getCustomerName));
       $getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
@@ -1069,7 +1069,7 @@ public function enrollKid2(){
       }
         $franchisee_name=Franchisee::find(Session::get('franchiseId'));
         $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
-        $data = compact('totalSelectedClasses', 'getBatchNname','tax_data',
+        $data = compact('totalSelectedClasses', 'getBatchNname','tax_data','franchisee_name',
                         'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate','franchisee_name',
                         'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName','getTermsAndConditions',
                         'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode');
@@ -1122,7 +1122,6 @@ public function enrollKid2(){
   public function addbirthdayParty(){
     
     $inputs = Input::all();
-    return $inputs; die();
                
                 if($inputs['remainingAmount'] >=0){
                 

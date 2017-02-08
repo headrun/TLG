@@ -140,6 +140,8 @@ class SeasonsController extends \BaseController {
         }
                 public function getSeasonsForEnrollment(){
             $season_data=Seasons::where('franchisee_id','=',Session::get ( 'franchiseId' ))
+                                  //->where('start_date','<=',date('Y-m-d'))
+                                  //->where('end_date','>=',date('Y-m-d'))
                                   //->whereNotIn('season_type', ['Summer Season'])
                                   ->orderBy('id', 'DESC')
                                   ->get();

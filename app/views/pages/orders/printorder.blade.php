@@ -36,7 +36,9 @@ print_r($orders); */
 		
 		}
                 pre {
-                    white-space: pre-wrap;  
+                    white-space: pre-wrap; 
+                    word-break:keep-all;
+                    overflow:hidden; 
                 }
                 @media print {
                     #Header, #Footer { display: none !important; }
@@ -100,7 +102,7 @@ print_r($orders); */
 					</div>
 				
 				</div>
-
+                                <p style="text-align: center;">{{$franchisee_name['franchisee_legal_entity']}}</p>
 				<p style="text-align: center;">Thank You and welcome to The Little Gym family</p>
 				<br clear="all"/>
 				<div class="col-md-7" style="margin:0px auto !important; float:left; border-bottom:2px dashed #EEEEEE;">
@@ -320,8 +322,10 @@ print_r($orders); */
 					
 					<p>Welcome. Thanks for Joining The Little Gym.  Regards, Team TLG</p>
 					<hr/>
-					<p style = "font-weight: bold">Terms & Conditions:</p>
-					<pre>{{ $getTermsAndConditions[0]['terms_conditions']}}</pre>
+                                        <br>
+                                        <div>
+					<pre class="text-justify"><p style = "font-weight: bold">Terms & Conditions:</p>{{ $getTermsAndConditions[0]['terms_conditions']}}</pre>
+                                        </div>
 					<br/>					
 				</div>
 			

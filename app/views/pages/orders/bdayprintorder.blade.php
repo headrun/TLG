@@ -33,6 +33,11 @@
 		
 		
 		}
+                pre {
+                    white-space: pre-wrap;
+                    word-break:keep-all;
+                    overflow:hidden;
+                }
                 @media print {
                     #Header, #Footer { display: none !important; }
                 }   
@@ -100,6 +105,7 @@
 				
 				</div>
 				<br clear="all"/>
+                                <p style="text-align: center;">{{$franchisee_name['franchisee_legal_entity']}}</p>
 				<p style="text-align: center;">Thank You and welcome to celebrate B'day party in The Little Gym family</p>
 				<br clear="all"/>
 				<div class="col-md-11" style="margin:0px auto !important; float:none; border-bottom:2px dashed #EEEEEE;">
@@ -240,7 +246,8 @@
 					
                                         <p class="text-center">Welcome. Thanks for Celebrating B'day in  The Little Gym.  Regards, Team TLG</p>
 				    <hr/>
-					<p>Terms & Conditions:</p>
+                                        <pre class="text-justify"><p style = "font-weight: bold">Terms & Conditions:</p>{{ $getTermsAndConditions[0]['terms_conditions']}}</pre>
+
 					<br/>
 				</div>
 			

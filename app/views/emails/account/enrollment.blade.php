@@ -32,7 +32,9 @@ $class  = $orderDetailsTomail['class']; */
                    
 		}
               pre {
-                white-space: pre-wrap;  
+                white-space: pre-wrap; 
+                word-break:keep-all;
+                overflow:hidden; 
               }
 	</style>
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -51,7 +53,7 @@ $class  = $orderDetailsTomail['class']; */
 					</div>
 				
 				</div>
-
+                                 <p style="text-align: center;">{{$franchisee_name['franchisee_legal_entity']}}</p>
 				<p style="text-align: center; font-size: 15px">Thank You and welcome to The Little Gym family</p>
 				<br clear="all"/>
 				<div class="col-md-7" style="margin:0px auto !important; float:left; border-bottom:2px dashed #EEEEEE;">
