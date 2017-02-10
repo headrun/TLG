@@ -663,7 +663,7 @@ public function enrollKid2(){
 
           $PaymentreminderDate=new carbon();
           $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$batch_data[count($batch_data)-1]['schedule_date']);
-          $PaymentreminderDate->subDays(14);
+          $PaymentreminderDate->subDays(98);
           $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
           
           Comments::addSinglePayComment($customer_log_data);
@@ -843,7 +843,7 @@ public function enrollKid2(){
         
         $PaymentreminderDate=new carbon();
         $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$batch_data[1][count($batch_data[1])-1]['schedule_date']);
-        $PaymentreminderDate->subDays(14);
+        $PaymentreminderDate->subDays(98);
         $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
         Comments::addSinglePayComment($customer_log_data);
       }
@@ -1031,7 +1031,7 @@ public function enrollKid2(){
         
           $PaymentreminderDate=new carbon();
           $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$batch_data[2][count($batch_data[2])-1]['schedule_date']);
-          $PaymentreminderDate->subDays(14);
+          $PaymentreminderDate->subDays(98);
           $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
         
                         
