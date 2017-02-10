@@ -650,7 +650,7 @@ public function enrollKid2(){
                 
                     //** working on the payment_followups **//
                     
-        if(count($batch_data) >= 5){
+        if(count($batch_data) >= 15){
           $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
                         //creating logs/followup for first payment
           $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
@@ -660,7 +660,12 @@ public function enrollKid2(){
           $customer_log_data['followup_type']='PAYMENT';
           $customer_log_data['followup_status']='REMINDER_CALL';
           $customer_log_data['comment_type']='VERYINTERESTED';
-          $customer_log_data['reminderDate']=$batch_data[count($batch_data)-2]['schedule_date'];
+
+          $PaymentreminderDate=new carbon();
+          $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$batch_data[count($batch_data)-1]['schedule_date']);
+          $PaymentreminderDate->subDays(14);
+          $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
+          
           Comments::addSinglePayComment($customer_log_data);
         }
     
@@ -825,7 +830,7 @@ public function enrollKid2(){
                             
                     //** working on the payment_followups **//
                     
-      if((count($batch_data[0]) + count($batch_data[1])) >= 5){
+      if((count($batch_data[0]) + count($batch_data[1])) >= 15){
         $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
                         //creating logs/followup for first payment
         $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
@@ -835,14 +840,12 @@ public function enrollKid2(){
         $customer_log_data['followup_type']='PAYMENT';
         $customer_log_data['followup_status']='REMINDER_CALL';
         $customer_log_data['comment_type']='VERYINTERESTED';
-        if(count($batch_data[1])>=3){
-          $customer_log_data['reminderDate']=$batch_data[1][count($batch_data[1])-2]['schedule_date'];
-        }else{
-          if(count($batch_data[1])==2){
-            $customer_log_data['reminderDate']=$batch_data[0][count($batch_data[0])-1]['schedule_date'];
-          }
-        }
-                        Comments::addSinglePayComment($customer_log_data);
+        
+        $PaymentreminderDate=new carbon();
+        $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$batch_data[1][count($batch_data[1])-1]['schedule_date']);
+        $PaymentreminderDate->subDays(14);
+        $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
+        Comments::addSinglePayComment($customer_log_data);
       }
     
 
@@ -1013,7 +1016,7 @@ public function enrollKid2(){
       }
       //** working on the payment_followups **//
                     
-      if((count($batch_data[0]) + count($batch_data[1])+ count($batch_data[2])) >= 5){
+      if((count($batch_data[0]) + count($batch_data[1])+ count($batch_data[2])) >= 15){
         $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
                         //creating logs/followup for first payment
         $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
@@ -1024,14 +1027,13 @@ public function enrollKid2(){
         $customer_log_data['followup_status']='REMINDER_CALL';
         $customer_log_data['comment_type']='VERYINTERESTED';
                         
-        $customer_log_data['reminderDate']=$batch_data[2][count($batch_data[2])-2]['schedule_date'];
-        if(count($batch_data[2])>=3){
-          $customer_log_data['reminderDate']=$batch_data[2][count($batch_data[2])-2]['schedule_date'];
-        }else{
-          if(count($batch_data[2])==2){
-            $customer_log_data['reminderDate']=$batch_data[1][count($batch_data[0])-1]['schedule_date'];
-          }
-        }
+        //$customer_log_data['reminderDate']=$batch_data[2][count($batch_data[2])-2]['schedule_date'];
+        
+          $PaymentreminderDate=new carbon();
+          $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$batch_data[2][count($batch_data[2])-1]['schedule_date']);
+          $PaymentreminderDate->subDays(14);
+          $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
+        
                         
         Comments::addSinglePayComment($customer_log_data);
       }
