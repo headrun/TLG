@@ -69,6 +69,24 @@ class DashboardController extends \BaseController {
                         $present_date=Carbon::now();
                         $totalclasses=0;
                         foreach($courses as $course){
+                          $temp= DB::select(DB::raw("SELECT count('student_id') as totalno
+                                                     FROM student_classes 
+                                                     WHERE franchisee_id = ".Session::get('franchiseId').
+                                                     " AND enrollment_start_date <= '".date('Y-m-d').
+                                                     "' AND enrollment_end_date >= '".date('Y-m-d').
+                                                     "' AND class_id IN (select id from classes where course_id =".$course->id .")".
+                                                     " AND student_classes.status IN ('enrolled')"));
+                            if($temp[0]->totalno){
+                              $course->totalno=$temp[0]->totalno;
+                              $totalclasses+=$temp[0]->totalno;
+                            }else{
+                              $course->totalno=0;
+                              $totalclasses+=0;
+                            }
+                        }
+
+                        /*
+                        foreach($courses as $course){
                           $temp= DB::select(DB::raw("SELECT sum(selected_sessions) as totalno
                                                      FROM student_classes 
                                                      WHERE franchisee_id = ".Session::get('franchiseId').
@@ -82,6 +100,7 @@ class DashboardController extends \BaseController {
                             $totalclasses+=0;
                           }
                         }
+                        */
                        
                         
 			//for birthdayparty
