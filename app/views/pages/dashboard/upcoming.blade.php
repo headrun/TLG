@@ -59,7 +59,7 @@
         },
         "iDisplayLength": 10,
         "lengthMenu": [ 10, 50, 100, 150, 200 ],
-        "order": [[ 3, "desc" ]],
+        "order": [[ 3, "asc" ]],
     });    
     $("#followupTable").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
@@ -293,18 +293,7 @@
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <center><span class="uk-text-muted uk-text-small" id = "Titles">Family Memberships</span></center>
-                             <!--<table style="width: 100% " >
-                                <thead>
-                                        <tr>
-                                            <th align="left"><center><span class="uk-text-muted uk-text-small">Today</span></center> </th>
-                                            <th align="right" valign="right"><center><span class="uk-text-muted uk-text-small">Till now</span></center> </th>
-                                        </tr>
-                                </thead>
-                                <tbody align = "center">
-                                <td><h2 class="uk-margin-remove"><span class="countUpMe">{{$todaysMemberReg}}<noscript>12456</noscript></span></h2></td>
-                                <td valign="left"><h2 class="uk-margin-remove"><span class="countUpMe">{{$membersCount}}<noscript>12456</noscript></span></h2></td>
-                                </tbody>
-                            </table>-->
+                             
 
                             <div class = "row" style = "">
                                 <div class = "col-md-6">
@@ -579,7 +568,7 @@
                                         <tr>
                                             <th class="uk-text-nowrap">Customer</th>
                                             <th class="uk-text-nowrap">Kid</th>
-                                            <th class="uk-text-nowrap">Mobile No</th>                                            
+                                            <th class="uk-text-nowrap">Mobile No</th>                                        <th class="uk-text-nowrap">B'day</th>    
                                             <th class="uk-text-nowrap">DOB</th>
                                             <th class="uk-text-nowrap">Type</th>
                                          
@@ -597,6 +586,9 @@
                                             </td>
                                             <td> 
                                                 {{$birthday_data[$i]['mobile_no']}}
+                                            </td>
+                                            <td>
+                                                {{date('M d', strtotime($birthday_data[$i]['student_date_of_birth']));}}
                                             </td>
                                             <td> {{$birthday_data[$i]['student_date_of_birth']}}
                                             
@@ -630,6 +622,9 @@
                                             <td> {{$birthday_data_month[$i][$j]['mobile_no']}}
                                             
                                             </td>
+                                            <td>
+                                                {{date('M d', strtotime($birthday_data[$i]['student_date_of_birth']));}}
+                                            </td>
                                             <td> {{$birthday_data_month[$i][$j]['student_date_of_birth']}}
                                             
                                             </td>
@@ -658,6 +653,9 @@
                                             </td>
                                             <td> {{$birthday_month_startdays[$i]['mobile_no']}}
                                             
+                                            </td>
+                                            <td>
+                                                {{date('M d', strtotime($birthday_data[$i]['student_date_of_birth']));}}
                                             </td>
                                             <td> {{$birthday_month_startdays[$i]['student_date_of_birth']}}
                                             
@@ -742,50 +740,8 @@
                     <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-overflow-container">
-                                <div width = "100%">
-                                    
-                                        <p style  ="font-size: 24px;">Classes (Expiring) </p>        
-                                    
-                                    
-                                </div>
-                                <br clear="all"/>
-                            	<table class="uk-table" id="classesExpiringTable">
-                                    <thead>
-                                        <tr>
-                                            <th class="uk-text-nowrap">Class Name</th>
-                                            <th class="uk-text-nowrap">End Date</th>
-                                            <th class="uk-text-nowrap">Time</th>                                            
-                                            
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($expiringbatch as $batch)
-                                        <tr>
-                                            <td>{{$batch->batch_name}}</td>
-                                            <td>{{$batch->end_date}}</td>
-                                            <td>{{$batch->preferred_time.' - '}}{{$batch->preferred_end_time}}</td>
-                                            
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                               
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-              </div>
-            
-            
-            <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
-            
-                <div class="uk-width-medium-1-2">
-                    <div class="md-card">
-                        <div class="md-card-content">
-                            <div class="uk-overflow-container">
                             <h3>Follow Ups (Future)</h3>
-                            	<?php if(isset($futurefollowups)){?>
+                              <?php if(isset($futurefollowups)){?>
                                 <table class="uk-table dashboardTable" id="futurefollowupTable" >
                                     <thead>
                                         <tr>
@@ -796,7 +752,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    	<?php foreach($futurefollowups as $items){?>
+                                      <?php foreach($futurefollowups as $items){?>
                                         <tr class="uk-table-middle smallText">
                                             <td class="uk-width-3-10 uk-text-nowrap">{{$items->Customers->customer_name}} {{$items->Customers->customer_lastname}}<a href="{{url()}}/customers/view/{{$items->Customers->id}}?tab=ivfollowup"></a></td>
                                             <td class="uk-width-3-10 uk-text-nowrap">{{$items->followup_type}}</td>
@@ -811,18 +767,11 @@
                         </div>
                     </div>
                </div>
-               <div class="uk-width-medium-1-2">
-                   <!--
-                    <div class="md-card">
-                        <div class="md-card-content">
-                            <div class="uk-overflow-container">
-                            
-                            </div>
-                        </div>
-                    </div>
-                   -->
-               </div>
-            </div>
+                
+              </div>
+            
+            
+            
               
 
 @stop

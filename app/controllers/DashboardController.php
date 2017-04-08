@@ -133,16 +133,16 @@ class DashboardController extends \BaseController {
                         $dat=new carbon();
                         $month=$dat->month;
                         $presentdate=$dat->day;
-                       
+                        
                         // for rest of the days of month
                         $birthday_data= Students::whereNotIn('id',$student_id)
                                                   ->where('student_date_of_birth','<>','')
-                                                  ->where( DB::raw('MONTH(student_date_of_birth)'), '=', $month )
-                                                  ->where( DB::raw('DATE(student_date_of_birth)'), '>', $presentdate )
+                                                  ->where( DB::raw('MONTH(student_date_of_birth)'), '=', $month)
+                                                  ->where( DB::raw('DAY(student_date_of_birth)'), '>', $presentdate )
                                                   ->where('franchisee_id','=',Session::get('franchiseId'))
                                                   ->orderBy(DB::raw('DAY(student_date_of_birth)'))
                                                   -> get();
-                      
+                        
                         for($i=0;$i<count($birthday_data);$i++){
                             $customer_data= Customers::where('id','=',$birthday_data[$i]['customer_id'])->get();
                             $birthday_data[$i]['customer_name']=  $customer_data[0]['customer_name'];
@@ -167,6 +167,7 @@ class DashboardController extends \BaseController {
                         // for starting months
                       $m=1;
                         while($m<$month){
+                          
                             $birthday_data_month[]=
                                                   Students::whereNotIn('id',$student_id)
                                                  //  where('student_date_of_birth','>',$startdate->toDateString())
@@ -177,6 +178,8 @@ class DashboardController extends \BaseController {
                                                   //->where('student_date_of_birth','=','0000-'.$month.'-00') 
                                                   ->orderBy(DB::raw('DAY(student_date_of_birth)'))
                                                   -> get();
+                          
+                            
                             $m++;
                         }
                         
@@ -195,7 +198,7 @@ class DashboardController extends \BaseController {
                                                  //  where('student_date_of_birth','>',$startdate->toDateString())
                                                   ->where('student_date_of_birth','<>','')
                                                   ->where( DB::raw('MONTH(student_date_of_birth)'), '=', $month )
-                                                  ->where( DB::raw('DATE(student_date_of_birth)'), '<', $presentdate )
+                                                  ->where( DB::raw('DAY(student_date_of_birth)'), '<', $presentdate )
                                                   ->where('franchisee_id','=',Session::get('franchiseId'))
                                                   //->where('student_date_of_birth','=','0000-'.$month.'-00') 
                                                   ->orderBy(DB::raw('DAY(student_date_of_birth)'))
@@ -233,10 +236,10 @@ class DashboardController extends \BaseController {
                           $birthdayPresentWeek[$i]['student_name']=$student_data[0]['student_name'];
                         }
                         
-                        $expiringbatch= Batches::getExpiringBatchData();
+                        //$expiringbatch= Batches::getExpiringBatchData();
                         
                         //return $birthday_data; die();
-			$viewData = array('currentPage', 'mainMenu', 'expiringbatch',
+			$viewData = array('currentPage', 'mainMenu',
                                                            'birthday_data','birthday_data_month','birthday_month_startdays','birthdayPresentWeek',
                                                            'todaysMemberReg','membersCount',
                                                            'todaysNonmemberReg','NonmembersCount',
