@@ -809,8 +809,9 @@ $('#batch_delete').click(function(){
 				                 	<select name="batchLimitCbx" id='batchLimitCbx' class = 'form-control input-sm md-input' style='padding:0px; font-weight:bold;color: #727272;' required >
 										<option value="">Select Batch Limit</option>
 										<?php for($i=0;$i<count($batches_limit);$i++){ ?>
-                                                                                <option value="{{$batches_limit[$i]['batches_limit_no']}}">BatchLimit{{$batches_limit[$i]['batches_limit_no']}}(R:{{$batches_limit[$i]['batch_limit_receptionist']}})(A:{{$batches_limit[$i]['batch_limit_admin']}})</option>
+                                                                                <option value="{{$batches_limit[$i]['batches_limit_no']}}">BatchLimit(R:{{$batches_limit[$i]['batch_limit_receptionist']}})(A:{{$batches_limit[$i]['batch_limit_admin']}})</option>
                                                                                 <?php } ?>
+                                +
 							</select>
                                             </div>
 			                </div>

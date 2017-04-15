@@ -96,7 +96,7 @@
         },
         "iDisplayLength": 10,
         "lengthMenu": [ 10, 50, 100, 150, 200 ],
-        "order": [[ 3, "desc" ]]
+        "order": [[ 3, "asc" ]]
     });
     $("#followupPending").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
@@ -249,6 +249,7 @@
                             },
                             "iDisplayLength": 10,
                             "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                           // "order": [[ 3, "asc" ]],
                     });
                 }
             });
@@ -623,7 +624,7 @@
                                             
                                             </td>
                                             <td>
-                                                {{date('M d', strtotime($birthday_data[$i]['student_date_of_birth']));}}
+                                                {{date('M d', strtotime($birthday_data_month[$i][$j]['student_date_of_birth']));}}
                                             </td>
                                             <td> {{$birthday_data_month[$i][$j]['student_date_of_birth']}}
                                             
