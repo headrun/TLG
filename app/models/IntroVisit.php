@@ -67,8 +67,10 @@ class IntroVisit extends \Eloquent {
 	static function getAllActiveIntrovisit(){
 	
 		return IntroVisit::with('Customers', 'Classes', 'Batches', 'Students')
+
 						//	->whereIn('status',array('ACTIVE/SCHEDULED','RESCHEDULED'))
 							->where('franchisee_id', '=',  Session::get('franchiseId'))
+							//->orderBy('iv_date','DESC')
 							->get();
 	}
 	
