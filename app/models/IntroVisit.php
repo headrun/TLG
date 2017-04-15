@@ -91,7 +91,7 @@ class IntroVisit extends \Eloquent {
                                ->get();
             for($i=0;$i<count($introvisit['data']);$i++){
                 $temp=  Customers::find($introvisit['data'][$i]['customer_id']);
-                $introvisit['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+                $introvisit['data'][$i]['customer_name']=$temp->customer_name." ".$temp->customer_lastname;
                 $temp2=  Students::find($introvisit['data'][$i]['student_id']);
                 $introvisit['data'][$i]['student_name']=$temp2->student_name;
                 if($introvisit['data'][$i]['batch_id']!=null){

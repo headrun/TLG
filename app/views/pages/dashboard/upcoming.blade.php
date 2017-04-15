@@ -623,7 +623,7 @@
                                             
                                             </td>
                                             <td>
-                                                {{date('M d', strtotime($birthday_data[$i]['student_date_of_birth']));}}
+                                               {{date('M d', strtotime($birthday_data_month[$i][$j]['student_date_of_birth']))}}
                                             </td>
                                             <td> {{$birthday_data_month[$i][$j]['student_date_of_birth']}}
                                             
@@ -655,7 +655,7 @@
                                             
                                             </td>
                                             <td>
-                                                {{date('M d', strtotime($birthday_data[$i]['student_date_of_birth']));}}
+                                                {{date('M d', strtotime($birthday_month_startdays[$i][$j]['student_date_of_birth']));}}
                                             </td>
                                             <td> {{$birthday_month_startdays[$i]['student_date_of_birth']}}
                                             

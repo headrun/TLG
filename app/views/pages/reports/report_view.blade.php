@@ -56,6 +56,7 @@
                                             '<th>Transaction Date</th>'+
                                             '</tr></thead>';
                                 for(var i=0;i<response[0]['data'].length;i++){
+                                  var membership_amt = response[0]['data'][i]['membership_amount'] == null ? 0 : response[0]['data'][i]['membership_amount'];
                                     header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
                                           response[0]['data'][i]['student_name']+"</td><td>";
                                           if(typeof(response[0]['data'][i]['batch_name']) == 'undefined'){
@@ -63,11 +64,11 @@
                                           }else{
                                             header_data+=response[0]['data'][i]['batch_name']+"</td><td>";
                                           }
-                                    header_data+=response[0]['data'][i]['membership_amount']+"</td><td>";
+                                    header_data+= membership_amt +"</td><td>";
                                           if(typeof(response[0]['data'][i]['batch_name']) == 'undefined'){
                                             header_data+=response[0]['data'][i]['payment_due_amount']+"</td><td>";
                                           }else{
-                                            header_data+="null"+"</td><td>";
+                                            header_data+="0"+"</td><td>";
                                           }
                                           
                                           header_data+=response[0]['data'][i]['payment_due_amount_after_discount']+"</td><td>"+
@@ -110,10 +111,12 @@
                                             '</tr></thead>';                                
                             
                             for(var i=0;i<response[0]['data'].length;i++){
+                              var membership_amt = response[0]['data'][i]['membership_amount'] == null ? 0 : response[0]['data'][i]['membership_amount'];
+                              var payment_due_amt = response[0]['data'][i]['payment_due_amount'] == null ? 0 : response[0]['data'][i]['payment_due_amount'];
                              header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
                                           response[0]['data'][i]['student_name']+"</td><td>"+
-                                          response[0]['data'][i]['membership_amount']+"</td><td>"+
-                                          response[0]['data'][i]['payment_due_amount']+"</td><td>"+
+                                          membership_amt+"</td><td>"+
+                                          payment_due_amt+"</td><td>"+
                                           response[0]['data'][i]['created_at']+"</td></tr>";
                             }
                             header_data+="</table></div></div>";
@@ -132,16 +135,19 @@
                                             '<th>Customer Name</th>'+
                                             '<th>Student Name</th>'+
                                             '<th>Batch Name</th>'+
+                                            '<th>Slected Sessions</th>'+
                                             '<th>Membership Amount</th>'+
                                             '<th>Enrollment Amount</th>'+
                                             '<th>Transaction Date</th>'+
                                             '</tr></thead>';
                                     
                                     for(var i=0;i<response[0]['data'].length;i++){
+                                      var membership_amt = response[0]['data'][i]['membership_amount'] == null ? 0 : response[0]['data'][i]['membership_amount'];
                                     header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
                                           response[0]['data'][i]['student_name']+"</td><td>"+
                                           response[0]['data'][i]['batch_name']+"</td><td>"+
-                                          response[0]['data'][i]['membership_amount']+"</td><td>"+
+                                          response[0]['data'][i]['selected_sessions']+"</td><td>"+
+                                          membership_amt +"</td><td>"+
                                           response[0]['data'][i]['payment_due_amount_after_discount']+"</td><td>"+
                                           response[0]['data'][i]['created_at']+"</td></tr>";
                                     }
@@ -169,6 +175,7 @@
                                             '<th>Transaction Date</th>'+
                                             '</tr></thead>';
                                 for(var i=0;i<response[0]['data'].length;i++){
+                                  var membership_amt = response[0]['data'][i]['membership_amount'] == null ? 0 : response[0]['data'][i]['membership_amount'];
                                     header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
                                           response[0]['data'][i]['student_name']+"</td><td>";
                                           if(typeof(response[0]['data'][i]['batch_name']) == 'undefined'){
@@ -176,11 +183,11 @@
                                           }else{
                                             header_data+=response[0]['data'][i]['batch_name']+"</td><td>";
                                           }
-                                          header_data+=response[0]['data'][i]['membership_amount']+"</td><td>";
+                                          header_data+= membership_amt+"</td><td>";
                                           if(typeof(response[0]['data'][i]['batch_name']) == 'undefined'){
                                             header_data+=response[0]['data'][i]['payment_due_amount']+"</td><td>";
                                           }else{
-                                            header_data+="null"+"</td><td>";
+                                            header_data+="0"+"</td><td>";
                                           }
                                           
                                           header_data+=response[0]['data'][i]['payment_due_amount_after_discount']+"</td><td>"+
@@ -214,8 +221,9 @@
                                     header_data+="</table></div></div>";
                                     console.log(header_data);
                                     $('#reportdata').html(header_data);
-                                    $('#reportTable').DataTable(//{dom:'T<"clear">lfrtip',
-                                       //"tableTools": {"sSwfPath": "/swf/copy_csv_xls_pdf.swf"}}
+                                    $('#reportTable').DataTable({
+                                        "dom" :'T<"clear">lfrtip',
+                                       "tableTools": {"sSwfPath": "/swf/copy_csv_xls_pdf.swf"}}
                                     );
                                 
                             }else if(response[1]==='Introvisit'){
@@ -253,7 +261,7 @@
                                             '<th>Customer Name</th>'+
                                             '<th>Inquiry Date</th>'+
                                             '</tr></thead>';
-                                for(var i=0;i<response[0]['data'].length;i++){
+                                for(var i=0;i<response[0].data.length;i++){
                                     header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
                                           response[0]['data'][i]['created_at']+"</td></tr>";
                                     }
@@ -505,7 +513,6 @@
                                                     <option value="BySchool">By School</option>
                                                     <option value="ByLocality">By Locality</option>
                                                     <option value="ByApartment">By Apartmnet</option>
-                                                    <option value="SalesAlloc">Sales Allocation Rport</option>
                                             </select>
                                                  
                                    </div>

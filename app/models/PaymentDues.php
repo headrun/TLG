@@ -228,7 +228,7 @@ class PaymentDues extends \Eloquent {
                                                     ->get();
         for($i=0;$i<count($birthdayReportDetails['data']);$i++){
             $temp=  Customers::find($birthdayReportDetails['data'][$i]['customer_id']);
-            $birthdayReportDetails['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+            $birthdayReportDetails['data'][$i]['customer_name']=$temp->customer_name." ".$temp->customer_lastname;
             $temp2=  Students::find($birthdayReportDetails['data'][$i]['student_id']);
             $birthdayReportDetails['data'][$i]['student_name']=$temp2->student_name;
         }
@@ -260,7 +260,7 @@ class PaymentDues extends \Eloquent {
                                                     ->get();
         for($i=0;$i<count($enrollmentReportDetails['data']);$i++){
             $temp=  Customers::find($enrollmentReportDetails['data'][$i]['customer_id']);
-            $enrollmentReportDetails['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+            $enrollmentReportDetails['data'][$i]['customer_name']=$temp->customer_name." ".$temp->customer_lastname;
             $temp2=  Students::find($enrollmentReportDetails['data'][$i]['student_id']);
             $enrollmentReportDetails['data'][$i]['student_name']=$temp2->student_name;
             $temp3= Batches::find($enrollmentReportDetails['data'][$i]['batch_id']);
@@ -292,7 +292,7 @@ class PaymentDues extends \Eloquent {
                                  ->get();
         for($i=0;$i<count($reportData['data']);$i++){
             $temp=  Customers::find($reportData['data'][$i]['customer_id']);
-            $reportData['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+            $reportData['data'][$i]['customer_name']=$temp->customer_name." ".$temp->customer_lastname;
             $temp2= Students::find($reportData['data'][$i]['student_id']);
             $reportData['data'][$i]['student_name']=$temp2->student_name;
             if($reportData['data'][$i]['batch_id']!=null){
@@ -527,7 +527,7 @@ class PaymentDues extends \Eloquent {
 
         $temp5 = PaymentMaster::where('payment_master.payment_no', '=', $Sales['data'][$i]['payment_no'])->join('orders', 'orders.payment_no', '=', 'payment_master.payment_no')->get();
 
-        /*********88Putting values in fixed order for excel sheet  *******/
+        /***********  Putting values in fixed order for excel sheet  **********/
         $each_sales_data[] = "";
         $each_sales_data[] = $temp5[0]->invoice_id;
         $billing_date = date_create($Sales['data'][$i]['created_at']);
@@ -553,7 +553,8 @@ class PaymentDues extends \Eloquent {
         $each_sales_data[] = date_format($sDate,"m/d/Y");
         $each_sales_data[] = date_format($eDate, 'F d Y');
         $each_sales_data[] = $Sales['data'][$i]['membership_name'] !== "" ? $Sales['data'][$i]['membership_name'] : "Annual Membership";
-        $each_sales_data[] =$Sales['data'][$i]['selected_order_sessions'];
+        $each_sales_data[] = $Sales['data'][$i]['selected_order_sessions'];
+        $each_sales_data[] = $Sales['data'][$i]['discount_amount'];
         $each_sales_data[] = $Sales['data'][$i]['tax_percentage'].' %';
         $total = $Sales['data'][$i]['each_class_amount'] * $Sales['data'][$i]['selected_order_sessions'];
         $each_sales_data[] = $total;

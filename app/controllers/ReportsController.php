@@ -54,7 +54,7 @@ class ReportsController extends \BaseController {
         		$inputs=  Input::all();
         		$salesFile = PaymentDues::getSalesAllocReport($inputs);
 
-        		$sheetheaders = ['ROLL NUMBER', 'INVOICE NUMBER', "Date of Billing\nMM/DD/YYYY", "Date of Birth\nMM/DD//YYYY", 'Child Name', 'Parent Name', 'Class', 'No. Of Weeks', '2nd Class', "Start Date\nMM/DD/YYYY", 'End Date', 'Membership', 'Classes', 'Tax', 'Total', "Mode Of\nPayment"];
+        		$sheetheaders = ['ROLL NUMBER', 'INVOICE NUMBER', "Date of Billing\nMM/DD/YYYY", "Date of Birth\nMM/DD//YYYY", 'Child Name', 'Parent Name', 'Class', 'No. Of Weeks', '2nd Class', "Start Date\nMM/DD/YYYY", 'End Date', 'Membership', 'Classes', 'Discount', 'Tax', 'Total', "Mode Of\nPayment"];
 
         		//Concatinating shet headers and body
 				$sheetData[0] = $sheetheaders;

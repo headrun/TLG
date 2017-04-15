@@ -24,9 +24,19 @@ class Inquiry extends \Eloquent {
                                ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
                                ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
                                ->get();
+          //$finalArray = array();
          for($i=0;$i<count($inquiry['data']);$i++){
-                $temp=  Customers::find($inquiry['data'][$i]['customer_id']);
-                $inquiry['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+              $temp=  Customers::find($inquiry['data'][$i]['customer_id']);
+                //$inquiry['data'][$i]['customer_name'] = "";
+              if (!empty($temp)) {
+                  if (gettype($temp) == "array") {
+                      $inquiry['data'][$i]['customer_name']= $temp['customer_name']." ".$temp['customer_lastname'];
+                  }elseif(gettype($temp) == "object"){
+                      $inquiry['data'][$i]['customer_name']= $temp->customer_name." ".$temp->customer_lastname;
+                  } 
+                  //array_push($finalArray, $inquiry['data'][$i]);
+              }
+                
          }
          return $inquiry;
             
