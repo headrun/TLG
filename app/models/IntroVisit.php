@@ -70,7 +70,7 @@ class IntroVisit extends \Eloquent {
 
 						//	->whereIn('status',array('ACTIVE/SCHEDULED','RESCHEDULED'))
 							->where('franchisee_id', '=',  Session::get('franchiseId'))
-							//->orderBy('iv_date','DESC')
+							->orderBy('iv_date','DESC')
 							->get();
 	}
 	

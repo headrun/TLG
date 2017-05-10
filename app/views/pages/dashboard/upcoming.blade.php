@@ -96,7 +96,7 @@
         },
         "iDisplayLength": 10,
         "lengthMenu": [ 10, 50, 100, 150, 200 ],
-        "order": [[ 3, "asc" ]]
+        //"order": [[ 3, "desc" ]]
     });
     $("#followupPending").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {

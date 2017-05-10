@@ -519,7 +519,7 @@ class PaymentDues extends \Eloquent {
             ->whereDate('created_at','>=',$inputs['reportGenerateStartdate1'])
             ->whereDate('created_at','<=',$inputs['reportGenerateEnddate1'])
             ->orderBy('id','desc')
-            ->get();          
+            ->get();       
 
     for($i=0;$i<count($Sales['data']);$i++){
 
@@ -529,7 +529,11 @@ class PaymentDues extends \Eloquent {
 
         /***********  Putting values in fixed order for excel sheet  **********/
         $each_sales_data[] = "";
-        $each_sales_data[] = $temp5[0]->invoice_id;
+        if (isset($temp5[0]->invoice_id) && !empty($temp5[0]->invoice_id))
+            $each_sales_data[] = $temp5[0]->invoice_id;
+        else
+            $each_sales_data[] = 0;
+        $each_sales_data[] = 0;
         $billing_date = date_create($Sales['data'][$i]['created_at']);
         $each_sales_data[] = date_format($billing_date,"m/d/Y");
 
@@ -552,11 +556,17 @@ class PaymentDues extends \Eloquent {
         $each_sales_data[] = "";
         $each_sales_data[] = date_format($sDate,"m/d/Y");
         $each_sales_data[] = date_format($eDate, 'F d Y');
-        $each_sales_data[] = $Sales['data'][$i]['membership_name'] !== "" ? $Sales['data'][$i]['membership_name'] : "Annual Membership";
+        $mem_name = $Sales['data'][$i]['membership_name'] !== "" ? $Sales['data'][$i]['membership_name'] : "Annual Membership";
+        $each_sales_data[] = $mem_name;
+        $each_sales_data[] = $mem_name == "Annual Membership" ? 2000 : 5000;
         $each_sales_data[] = $Sales['data'][$i]['selected_order_sessions'];
         $each_sales_data[] = $Sales['data'][$i]['discount_amount'];
+        $each_sales_data[] = $Sales['data'][$i]['discount_sibling_amount'];
+        $each_sales_data[] = $Sales['data'][$i]['discount_multipleclasses_amount'];
         $each_sales_data[] = $Sales['data'][$i]['tax_percentage'].' %';
         $total = $Sales['data'][$i]['each_class_amount'] * $Sales['data'][$i]['selected_order_sessions'];
+        $tax_amt = $total/100*$Sales['data'][$i]['tax_percentage'];
+        $each_sales_data[] = $tax_amt;
         $each_sales_data[] = $total;
         $each_sales_data[] = $temp5[0]->payment_mode;
 

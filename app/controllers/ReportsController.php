@@ -54,7 +54,8 @@ class ReportsController extends \BaseController {
         		$inputs=  Input::all();
         		$salesFile = PaymentDues::getSalesAllocReport($inputs);
 
-        		$sheetheaders = ['ROLL NUMBER', 'INVOICE NUMBER', "Date of Billing\nMM/DD/YYYY", "Date of Birth\nMM/DD//YYYY", 'Child Name', 'Parent Name', 'Class', 'No. Of Weeks', '2nd Class', "Start Date\nMM/DD/YYYY", 'End Date', 'Membership', 'Classes', 'Discount', 'Tax', 'Total', "Mode Of\nPayment"];
+        		//return $salesFile;
+        		$sheetheaders = ['ROLL NUMBER', 'INVOICE NUMBER', "Date of Billing\nMM/DD/YYYY", "Date of Birth\nMM/DD//YYYY", 'Child Name', 'Parent Name', 'Class', 'No. Of Weeks', '2nd Class', "Start Date\nMM/DD/YYYY", 'End Date', 'Membership', 'Membership Amount', 'Classes', 'Discount', 'Discount For Siblings', 'Discount for Multi-class', 'Tax %', 'Tax Amount', 'Total', "Mode Of\nPayment"];
 
         		//Concatinating shet headers and body
 				$sheetData[0] = $sheetheaders;
@@ -64,7 +65,7 @@ class ReportsController extends \BaseController {
 		              $excel->sheet('Sheet 1', function($sheet) use($sheetData){
 		                  
 		                  //Styles in Row wise
-		                  $sheet->mergeCells('A1:P1');
+		                  $sheet->mergeCells('A1:U1');
 		                  $sheet->setAllBorders('thin');
 		                  $heightArray = array(
 		                      1     =>  50,

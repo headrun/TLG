@@ -30,7 +30,7 @@
     $('#reportGenerateenddate, #reportGenerateenddate1').kendoDatePicker({format: "yyyy-MM-dd"});
     $('#reportGenerateStartdate, #reportGenerateStartdate1').val('{{$presentdate}}');
     $('#reportGenerateenddate, #reportGenerateenddate1').val('{{$presentdate}}');
-    $('#reportType').val('both');
+    $('#reportType').val('Birthday');
     
     
     $.ajax({
@@ -223,8 +223,20 @@
                                     $('#reportdata').html(header_data);
                                     $('#reportTable').DataTable({
                                         "dom" :'T<"clear">lfrtip',
-                                       "tableTools": {"sSwfPath": "/swf/copy_csv_xls_pdf.swf"}}
-                                    );
+                                       "tableTools": {"sSwfPath": "/swf/copy_csv_xls_pdf.swf"},
+                                       "oTableTools": {
+                                           "aButtons": [
+                                                "copy",
+                                                "print",
+                                                {
+                                                    "sExtends":    "collection",
+                                                    "sButtonText": "Save",
+                                                    "aButtons":    [ "csv", "xls", "pdf" ]
+                                                }
+                                            ]
+                                        }
+
+                                    });
                                 
                             }else if(response[1]==='Introvisit'){
                                 var header_data="<div class='md-card-content'>"+
@@ -505,7 +517,7 @@
                                                     style='padding: 0px; font-weight: bold; color: #727272; width:100%'>
                                                     <option value="Birthday" >Birthday</option>       
                                                     <option value="Enrollment">Enrollment</option>
-                                                    <option value="both">Enrollment & Birthday</option>
+                                                    <!--<option value="both">Enrollment & Birthday</option>-->
                                                     <option value="Membership">Membership</option>
                                                     <option value="Introvisit">Introvisit</option>
                                                     <option value="Inquiry">Inquiry</option>

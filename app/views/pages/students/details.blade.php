@@ -1780,6 +1780,7 @@ $('#batchName').change(function(){
                 $('#Pcount').text('0');
                 $('#Acount').text('0');
                 $('#EAcount').text('0');
+                $('#Rcount').text('0');
                         $('#makeup-session').text('0');
                         $('#total-session').text(response.totalSession);
                         
@@ -1788,6 +1789,7 @@ $('#batchName').change(function(){
                 var Pcount = 0;
                 var Acount = 0;
                 var EAcount = 0;
+                var Rcount = 0;
                         var makeup =0;
                         var total=response.data.length;
                 for(i = 0; i < response.data.length; i++){
@@ -1809,6 +1811,7 @@ $('#batchName').change(function(){
                 $('#Pcount').text(Pcount);
                 $('#Acount').text(Acount);
                 $('#EAcount').text(EAcount);
+                $('#Rcount').text(response.totalSession - Pcount);
                         $('#makeup-session').text(makeup);
                         $('#total-session').text(response.totalSession);
               } 
@@ -3475,55 +3478,7 @@ $('.deleteenrollmentdata').click(function(){
 
                                                                                          <div class="uk-width-medium-1-1">
 
-                                                                                                       <div class="md-card uk-margin-medium-bottom">
-                                                                                                                   <div class="md-card-content">
-                                                                                                                         <div class="uk-overflow-container">
-
-                                                                                                                            
-                                                                                                                            <table class="uk-table table-striped" id="paymentsMadeTable" >
-                                                                                                                                <thead>
-                                                                                                                                    <tr>
-                                                                                                                                    <th class="uk-text-nowrap">Enrolled class</th>
-                                                                                                                                    <th class="uk-text-nowrap">class start date</th>
-                                                                                                                                    <th class="uk-text-nowrap">class end date</th>
-                                                                                                                                    <th class="uk-text-nowrap">sessions</th>
-                                                                                                                                    <th class="uk-text-nowrap">Amount</th>
-                                                                                                                                    
-                                                                                                                                    <th class="uk-text-nowrap">Received by</th>
-                                                                                                                                    <th class="uk-text-nowrap">option</th>
-                                                                                                                                    
-                                                                                                                                    </tr>
-                                                                                                                                </thead>
-                                                                                                                                <tbody>
-                                                                                                                                    
-                                                                                                                                    <?php if(isset($payment_made_data[0])){ 
-                                                                                                                                        for($j=0;$j<count($payment_made_data);$j++){
-                                                                                                                                            for($i=0;$i<sizeof($payment_made_data[$j]);$i++){ 
-                                                                                                                                        
-                                                                                                                                        ?>
-                                                                                                                                        <tr>
-                                                                                                                                            <td>{{$payment_made_data[$j][$i]['class_name']}}</td>
-                                                                                                                                            <td>{{$payment_made_data[$j][$i]['start_order_date']}}</td>
-                                                                                                                                            <td>{{$payment_made_data[$j][$i]['end_order_date']}}</td>
-                                                                                                                                            <td>{{$payment_made_data[$j][$i]['selected_order_sessions']}}</td>
-                                                                                                                                            <td>{{$payment_made_data[$j][$i]['payment_due_amount']}}</td>
-                                                                                                                                            <td>{{$payment_made_data[$j][$i]['receivedname']}}</td>
-                                                                                                                                            <?php if((count($payment_made_data[$j])>1) && $i==0 ) {?>
-                                                                                                                                            <td style="text-align:justify;vertical-align:middle;"  rowspan=<?php echo count($payment_made_data[$j])?> ><a id='Print' target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
-                                                                                                                                            <?php }else if(count($payment_made_data[$j])==1){ ?>
-                                                                                                                                            <td><a id='Print'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
-                                                                                                                                            <?php } ?>
-                                                                                                                                        </tr>
-                                                                                                                                     <?php }
-                                                                                                                                        }
-                                                                                                                                        } ?>
-                                                                                                                                          
-                                                                                                                                </tbody>
-                                                                                                                            </table>
-                                                                                                                         </div>
-                                                                                                                       </div>
-
-                                                                                                              
+                                                                                                       <div class="md-card uk-margin-medium-bottom">  
                                                                                                         </div>
                                                                                              </div>
                                                                                              
@@ -3566,44 +3521,51 @@ $('.deleteenrollmentdata').click(function(){
                 <br clear = "all"/>
                 <br clear = "all"/>
                 <div class="uk-grid data-uk-grid-margin">
-                  <div class="uk-width-medium-1-3">
+                  <div class="uk-width-medium-1-4">
                                                             <div class="parsley-row">
                                                                     <span class="md-btn md-btn-success" style="border-radius: 15px; font-size:12px;">
                                                                         Present days - <span class = "badge" id = "Pcount" style = "background: #000"></span> 
                                                                     </span>
                                                              </div>
                                                         </div>
-                                                        <div class="uk-width-medium-1-3">
+                                                        <div class="uk-width-medium-1-4">
                                                             <div class="parsley-row">
                                                                 <span class="md-btn md-btn-warning" style="border-radius: 15px; font-size:12px;" id="excusedabsent">
                                                                     Excused absent - <span class = "badge" id = "EAcount" style = "background: #000"></span>
                                                                 </span>
                                                             </div>
                                                         </div>
-                                                    <div class="uk-width-medium-1-3">
+                                                    <div class="uk-width-medium-1-4">
                                                         <div class="parsley-row">
                                                             <span class="md-btn md-btn-danger" style="border-radius: 15px; font-size:12px;">
                                                                  Absent days - <span class = "badge" id = "Acount" style = "background: #000"></span>
                                                             </span>
                                                         </div>
                                                     </div>
+                                                    <div class="uk-width-medium-1-4">
+                                                        <div class="parsley-row">
+                                                            <span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
+                                                                 Remaining Days - <span class = "badge" id = "Rcount" style = "background: #000"></span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="uk-grid data-uk-grid-margin">
-                                                    <div class="uk-width-medium-1-3">
+                                                    <div class="uk-width-medium-1-4">
                                                         <div class="parsley-row">
                                                             <span class="md-btn md-btn-warning" id='makeupsession' style="border-radius: 15px; font-size:12px;">
                                                 Make-up given <span class = "badge" id = "makeup-session" style = "background: #000"></span>
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <div class="uk-width-medium-1-3">
+                                                    <div class="uk-width-medium-1-4">
                                                         <div class="parsley-row">
                                                             <span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
                                                                 Total-Session - <span class = "badge" id = "total-session" style = "background: #000"></span>
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <div class="uk-width-medium-1-3">
+                                                    <div class="uk-width-medium-1-4">
                                                         <div class="parsley-row">
                                                             <span class="md-btn md-btn-success" id="Transfers" style="border-radius: 15px; font-size:12px;">
                                                             Transfer</span>
