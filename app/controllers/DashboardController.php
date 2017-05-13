@@ -242,7 +242,7 @@ class DashboardController extends \BaseController {
                           $birthdayPresentWeek[$i]['student_name']=$student_data[0]['student_name'];
                         }
                         
-                        //$expiringbatch= Batches::getExpiringBatchData();
+                        $expiringbatch= Batches::getExpiringBatchData();
                         
                         //return $birthday_data; die();
 			$viewData = array('currentPage', 'mainMenu',
@@ -253,7 +253,7 @@ class DashboardController extends \BaseController {
                                                             'totalbpartyCount','todaysbpartycount',
                                                            'courses','futurefollowups',
 							  'todaysCustomerReg','todaysEnrolledCustomers','enrolledCustomers','totalIntrovisitCount', 'introVisitCount', 'allIntrovisits', 'todaysFollowup', 
-							  'todaysIntrovisit','activeRemindersCount','totalclasses');
+							  'todaysIntrovisit','activeRemindersCount','totalclasses', 'expiringbatch');
 			return View::make('pages.dashboard.upcoming',compact($viewData));
      
 		}elseif(Auth::check() && Session::get('userType')=='SUPER_ADMIN'){

@@ -1236,7 +1236,7 @@ if($('#enrollmentStartDate').val()!=''){
 $.ajax({
         type: "POST",
         url: "{{URL::to('/quick/getBatchRemainingClassesByBatchId')}}",
-        data: {'batchId':$('#batchCbx').val(),'preferredStartDate':$('#enrollmentStartDate').val(),},
+        data: {'batchId':$('#batchCbx').val(),'preferredStartDate':$('#enrollmentStartDate').val(), 'removalbleClasses': 0},
         dataType:"json",
         success: function (response)
         {
@@ -1244,7 +1244,7 @@ $.ajax({
             if(response.status=='success'){
                 
                 if(selectedNoOfClass <= response.classCount){
-                    $('#batch1Msg').html('<span class="uk-alert uk-alert-success">No Of Classes:'+selectedNoOfClass+'&nbsp;<i class="fa fa-trash" style = "background: #e53935; padding: 3px"  aria-hidden="true" id = "deleteBtn1" ></i></span>');
+                    $('#batch1Msg').html('<span class="uk-alert uk-alert-success">No Of Classes:'+selectedNoOfClass+'&nbsp;<i class="fa fa-trash" style = "background: #e53935; padding: 3px"  aria-hidden="true" id = "deleteBtn1" ></i></span><input type="hidden" id="batch1SelectedClasses" value="'+selectedNoOfClass+'">');
                     batch1ClassCost=response.classAmount;
                     $('#enrollmentcontinue2').hide();
                     $('#enrollmentcontinue3').hide();
@@ -1276,7 +1276,7 @@ $.ajax({
                      
                     //alert('completed');
                 }else{
-                    $('#batch1Msg').html('<span class="uk-alert uk-alert-success" >No Of Classes:'+response.classCount+'&nbsp;<i class="fa fa-trash" style = "background: #e53935; padding: 3px"  id = "deleteBtn1"  aria-hidden="true"></i></span>');
+                    $('#batch1Msg').html('<span class="uk-alert uk-alert-success" >No Of Classes:'+response.classCount+'&nbsp;<i class="fa fa-trash" style = "background: #e53935; padding: 3px"  id = "deleteBtn1"  aria-hidden="true"></i></span></span><input type="hidden" id="batch1SelectedClasses" value="'+response.classCount+'">');
                     enddate1=response.lastdate;
                     firstselectedNoOfClass=response.classCount;
                     batch1ClassCost=response.classAmount;
@@ -1463,7 +1463,7 @@ console.log(enddate1);
 $.ajax({
         type: "POST",
         url: "{{URL::to('/quick/getBatchRemainingClassesByBatchId')}}",
-        data: {'batchId':$('#batchCbx2').val(),'preferredStartDate':enddate1,},
+        data: {'batchId':$('#batchCbx2').val(),'preferredStartDate':enddate1, 'removalbleClasses': firstselectedNoOfClass},
         dataType:"json",
         success: function (response)
         {
@@ -1471,7 +1471,7 @@ $.ajax({
             if(response.status=='success'){
                 
                 if((selectedNoOfClass-firstselectedNoOfClass)<= response.classCount){
-                    $('#batch2Msg').html('<span class="uk-alert  uk-alert-success">No Of Classes:'+(selectedNoOfClass-firstselectedNoOfClass)+'&nbsp;<i class="fa fa-trash" style = "background: #e53935; padding: 3px" id = "deleteBtn2"  aria-hidden="true"></i></span>');
+                    $('#batch2Msg').html('<span class="uk-alert  uk-alert-success">No Of Classes:'+(selectedNoOfClass-firstselectedNoOfClass)+'&nbsp;<i class="fa fa-trash" style = "background: #e53935; padding: 3px" id = "deleteBtn2"  aria-hidden="true"></i></span><input type="hidden" id="batch1SelectedClasses" value="'+selectedNoOfClass+'">');
                     $('#enrollmentcontinue3').hide();
                     batch2ClassCost=response.classAmount;
                     secondselectedNoOfClass=(selectedNoOfClass-firstselectedNoOfClass);
@@ -1555,7 +1555,7 @@ console.log(enddate2);
 $.ajax({
         type: "POST",
         url: "{{URL::to('/quick/getBatchRemainingClassesByBatchId')}}",
-        data: {'batchId':$('#batchCbx3').val(),'preferredStartDate':enddate2},
+        data: {'batchId':$('#batchCbx3').val(),'preferredStartDate':enddate2, 'removalbleClasses': secondselectedNoOfClass + firstselectedNoOfClass},
         dataType:"json",
         success: function (response)
         {
