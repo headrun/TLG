@@ -533,7 +533,7 @@ class PaymentDues extends \Eloquent {
             $each_sales_data[] = $temp5[0]->invoice_id;
         else
             $each_sales_data[] = 0;
-        $each_sales_data[] = 0;
+        //$each_sales_data[] = 0;
         $billing_date = date_create($Sales['data'][$i]['created_at']);
         $each_sales_data[] = date_format($billing_date,"m/d/Y");
 
