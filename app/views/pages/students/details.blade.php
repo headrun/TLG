@@ -1236,7 +1236,7 @@ if($('#enrollmentStartDate').val()!=''){
 $.ajax({
         type: "POST",
         url: "{{URL::to('/quick/getBatchRemainingClassesByBatchId')}}",
-        data: {'batchId':$('#batchCbx').val(),'preferredStartDate':$('#enrollmentStartDate').val(), 'removalbleClasses': 0},
+        data: {'batchId':$('#batchCbx').val(),'preferredStartDate':$('#enrollmentStartDate').val(), 'removalbleClasses': 0, 'selectedNoOfClass': selectedNoOfClass},
         dataType:"json",
         success: function (response)
         {
@@ -1463,7 +1463,7 @@ console.log(enddate1);
 $.ajax({
         type: "POST",
         url: "{{URL::to('/quick/getBatchRemainingClassesByBatchId')}}",
-        data: {'batchId':$('#batchCbx2').val(),'preferredStartDate':enddate1, 'removalbleClasses': firstselectedNoOfClass},
+        data: {'batchId':$('#batchCbx2').val(),'preferredStartDate':enddate1, 'removalbleClasses': firstselectedNoOfClass, 'selectedNoOfClass': selectedNoOfClass},
         dataType:"json",
         success: function (response)
         {
@@ -1555,7 +1555,7 @@ console.log(enddate2);
 $.ajax({
         type: "POST",
         url: "{{URL::to('/quick/getBatchRemainingClassesByBatchId')}}",
-        data: {'batchId':$('#batchCbx3').val(),'preferredStartDate':enddate2, 'removalbleClasses': secondselectedNoOfClass + firstselectedNoOfClass},
+        data: {'batchId':$('#batchCbx3').val(),'preferredStartDate':enddate2, 'removalbleClasses': secondselectedNoOfClass + firstselectedNoOfClass, 'selectedNoOfClass': selectedNoOfClass},
         dataType:"json",
         success: function (response)
         {
@@ -3474,18 +3474,62 @@ $('.deleteenrollmentdata').click(function(){
             <h4 class="heading_c uk-margin-small-bottom">Payments made</h4>
                 <ul class="md-list">
                       
-                                                                                        <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
+                  <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
+                    <div class="uk-width-medium-1-1">
 
-                                                                                         <div class="uk-width-medium-1-1">
+                      <div class="md-card uk-margin-medium-bottom">
+           <div class="md-card-content">
+                 <div class="uk-overflow-container">
+ 
+                    
+                    <table class="uk-table table-striped" id="paymentsMadeTable" >
+                        <thead>
+                            <tr>
+                            <th class="uk-text-nowrap">Enrolled class</th>
+                            <th class="uk-text-nowrap">class start date</th>
+                            <th class="uk-text-nowrap">class end date</th>
+                            <th class="uk-text-nowrap">sessions</th>
+                            <th class="uk-text-nowrap">Amount</th>
+                            
+                            <th class="uk-text-nowrap">Received by</th>
+                            <th class="uk-text-nowrap">option</th>
+                            
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <?php if(isset($payment_made_data[0])){ 
+                                for($j=0;$j<count($payment_made_data);$j++){
+                                    for($i=0;$i<sizeof($payment_made_data[$j]);$i++){ 
+                                
+                                ?>
+                                <tr>
+                                    <td>{{$payment_made_data[$j][$i]['class_name']}}</td>
+                                    <td>{{$payment_made_data[$j][$i]['start_order_date']}}</td>
+                                    <td>{{$payment_made_data[$j][$i]['end_order_date']}}</td>
+                                    <td>{{$payment_made_data[$j][$i]['selected_order_sessions']}}</td>
+                                    <td>{{$payment_made_data[$j][$i]['payment_due_amount']}}</td>
+                                    <td>{{$payment_made_data[$j][$i]['receivedname']}}</td>
+                                    <?php if((count($payment_made_data[$j])>1) && $i==0 ) {?>
+                                    <td style="text-align:justify;vertical-align:middle;"  rowspan=<?php echo count($payment_made_data[$j])?> ><a id='Print' target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
+                                    <?php }else if(count($payment_made_data[$j])==1){ ?>
+                                    <td><a id='Print'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
+                                    <?php } ?>
+                                </tr>
+                             <?php }
+                                }
+                                } ?>
+                                  
+                        </tbody>
+                    </table>
+                 </div>
+</div>
 
-                                                                                                       <div class="md-card uk-margin-medium-bottom">  
-                                                                                                        </div>
-                                                                                             </div>
-                                                                                             
-                                                
-                                                                                             
-                                                                                            </div>
-                                                                    </ul>  
+                      <div class="md-card uk-margin-medium-bottom">  
+                      </div>
+                    </div>
+                  </div>
+                </ul>  
           </li>
 
 

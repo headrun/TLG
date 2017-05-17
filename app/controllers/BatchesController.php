@@ -490,17 +490,31 @@ class BatchesController extends \BaseController {
                                               ->where('batch_id','=',$inputs['batchId'])
                                               ->whereDate('schedule_date','>=',$inputs['preferredStartDate'])
                                               ->get();
-           // return Response::json(array(count($batchClassesData)));
-            $batchClassesCount=count($batchClassesData);
-            $batchClassesCount = $batchClassesCount - $inputs['removalbleClasses'];
-            
-            if($batchClassesCount){
-	            $lastEndDate=$batchClassesData[($batchClassesCount-1)]['schedule_date'];
 
+            $batchClassesCount=count($batchClassesData);
+            //print_r($batchClassesCount); die;
+            //$batchClassesCount = $batchClassesCount - $inputs['removalbleClasses'];
+            $lastEndDate;
+            if($batchClassesCount){
+            	$sCount = $inputs['selectedNoOfClass'] - $inputs['removalbleClasses'];
+            	if ($inputs['removalbleClasses'] != 0) {	            	
+	            	//print_r($batchClassesData[$sCount-1]); die;
+	            	if ($sCount <= $batchClassesCount) {
+	            		$lastEndDate=$batchClassesData[$sCount-1]['schedule_date'];
+	            	}
+	            }else{
+	            	if ($sCount <= $batchClassesCount) {
+	            		$lastEndDate=$batchClassesData[$sCount-1]['schedule_date'];	
+	            	}else{
+	            		$batchClassesCount = $batchClassesCount - $inputs['removalbleClasses'];
+	            		$lastEndDate=$batchClassesData[($batchClassesCount-1)]['schedule_date'];
+	            	}
+	            }
+	            //print_r($lastEndDate); die;
 	            $date=  Carbon::now();
 	            $date=$date->createFromFormat('Y-m-d',$lastEndDate);
 	            $date=$date->next(Carbon::MONDAY);
-	            
+	            //print_r($date); die;
 	            //getting the batch cost from batch class
 	            
 	            //$class_data=  ClassBasePrice::where('base_price_no','=',Batches::find($inputs['batchId'])->classes()->base_price_no)->select('base_price')->get();
@@ -510,7 +524,14 @@ class BatchesController extends \BaseController {
 	             $base_price=$base_price[0]['base_price'];
             }
             if($batchClassesCount){
-                return Response::json(array('status'=>'success','classCount'=>$batchClassesCount,'lastdate'=>$date->toDateString(),'classAmount'=>$base_price,'enrollment_end_date'=>$batchClassesData[($batchClassesCount-1)]['schedule_date'],'enrollment_start_date'=>$batchClassesData[0]['schedule_date'],'batch_Schedule_data'=>$batchClassesData));
+                return Response::json(array('status'=>'success',
+                							'classCount'=>$batchClassesCount,
+                							'lastdate'=>$date->toDateString(),
+                							'classAmount'=>$base_price,
+                							//'enrollment_end_date'=>$batchClassesData[($batchClassesCount-1)]['schedule_date'],
+                							'enrollment_end_date'=>$lastEndDate,
+                							'enrollment_start_date'=>$batchClassesData[0]['schedule_date'],
+                							'batch_Schedule_data'=>$batchClassesData));
             }else{
                 return Response::json(array('status'=>'failure'));
             }
