@@ -319,7 +319,25 @@ print_r($orders); */
 					</div>
 					@endif
 					<br clear="all"/>
-					
+					<table style="width: 100%;">
+						<tr>
+							<td><strong>Legal Entity Name :</strong></td>
+							<td>{{$invoice_data[0]['legal_entry_name']}}</td>
+							<td><strong>PAN No :</strong></td>
+							<td>{{$invoice_data[0]['pan_no']}}</td>
+						</tr>
+						<tr>
+							<td><strong>Service Tax No :</strong></td>
+							<td>{{$invoice_data[0]['service_tax_no']}}</td>
+							<td><strong>TIN No :</strong></td>
+							<td>{{$invoice_data[0]['tin_no']}}</td>
+						</tr>
+						<tr>
+							<td><strong>TAN NO :</strong></td>
+							<td colspan="3">{{$invoice_data[0]['tan_no']}}</td>
+						</tr>
+					</table>
+					<br>
 					<p>Welcome. Thanks for Joining The Little Gym.  Regards, Team TLG</p>
 					<hr/>
                                         <br>

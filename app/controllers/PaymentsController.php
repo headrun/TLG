@@ -252,6 +252,7 @@ class PaymentsController extends \BaseController {
 		$totalSelectedClasses = '';
 		$totalAmountForAllBatch = '';
 		$payment_no = Crypt::decrypt($id);
+		$invoice_data = InvoiceData::where('franchise_id', '=', Session::get('franchiseId'))->get();
 		$paymentDueDetails = PaymentDues::where('payment_no', '=', $payment_no)->get();
 		for($i = 0; $i < count($paymentDueDetails); $i++){
 			$totalSelectedClasses = $totalSelectedClasses + $paymentDueDetails[$i]['selected_sessions'];
@@ -276,7 +277,7 @@ class PaymentsController extends \BaseController {
                 $data = compact('totalSelectedClasses', 'getBatchNname',
 		 'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate','franchisee_name',
 		  'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName','tax_data',
-		   'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode', 'getTermsAndConditions');
+		   'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode', 'getTermsAndConditions', 'invoice_data');
 		return View::make('pages.orders.printorder', $data);
 		//return $discounts_amount;	
                 }else{
