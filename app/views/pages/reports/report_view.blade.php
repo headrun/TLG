@@ -516,15 +516,15 @@
                                             <select name="reportType" id="reportType" class="input-sm md-input"
                                                     style='padding: 0px; font-weight: bold; color: #727272; width:100%'>
                                                     <option value="Birthday" >Birthday</option>       
-                                                    <option value="Enrollment">Enrollment</option>
+                                                    <!--<option value="Enrollment">Enrollment</option>-->
                                                     <!--<option value="both">Enrollment & Birthday</option>-->
                                                     <option value="Membership">Membership</option>
                                                     <option value="Introvisit">Introvisit</option>
                                                     <option value="Inquiry">Inquiry</option>
-                                                    <option value="Weekly">SAR(Weekly)</option>
+                                                    <!--<option value="Weekly">SAR(Weekly)</option>
                                                     <option value="BySchool">By School</option>
                                                     <option value="ByLocality">By Locality</option>
-                                                    <option value="ByApartment">By Apartmnet</option>
+                                                    <option value="ByApartment">By Apartmnet</option>-->
                                             </select>
                                                  
                                    </div>

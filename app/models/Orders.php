@@ -1,6 +1,6 @@
 
 <?php
-
+use Carbon\Carbon;
 class Orders extends \Eloquent {
 	protected $table = 'orders';
 	protected $fillable = [];
@@ -343,4 +343,72 @@ class Orders extends \Eloquent {
     static public function getByPaymentId($pid){
         return Orders::where('payment_no','=', $pid)->get();
     }
+    
+    static public function getSalesAllocReport($inputs){
+
+        $final_sales_data = [];
+        $Sales['data'] = Orders::where('franchisee_id','=',Session::get('franchiseId'))
+                    //->where('student_classes_id','<>',0)
+                    ->whereDate('created_at','>=',$inputs['reportGenerateStartdate1'])
+                    ->whereDate('created_at','<=',$inputs['reportGenerateEnddate1'])
+                    ->orderBy('id','desc')
+                    ->get();
+
+        for($i=0;$i<count($Sales['data']);$i++){
+
+            $each_sales_data = [];
+
+            //Collecting customer Data
+            $temp=  Customers::find($Sales['data'][$i]['customer_id']);
+            $each_sales_data[]=$temp->customer_name.' '.$temp->customer_lastname;
+
+            //Collecting Student Data
+            $temp2=  Students::find($Sales['data'][$i]['student_id']);
+            $each_sales_data[]=$temp2->student_name;
+
+            $temp1 = date_create($Sales['data'][$i]['created_at']);
+            $each_sales_data[] = date_format($temp1,"m/d/Y");
+
+            $dob = date_create($temp2->student_date_of_birth);
+            $each_sales_data[]=date_format($dob,"m/d/Y");
+
+            //$each_sales_data[] = '';//new retention
+
+            $payment_data = PaymentDues::
+                                where('payment_no', '=', $Sales['data'][$i]['payment_no'])
+                                ->where('student_id', '=', $Sales['data'][$i]['student_id'])
+                                ->where('customer_id', '=', $Sales['data'][$i]['customer_id'])
+                                ->selectRaw('sum(payments_dues.selected_sessions) as selected_classes, min(start_order_date) as start_date, max(end_order_date) as end_date, class_id, membership_name, each_class_amount, tax_percentage')
+                                ->get();
+
+            $get_class_name = Classes::where('id', '=', $payment_data[0]['class_id'])->select('class_name')->get();
+            $get_class_name = array_filter(json_decode(json_encode($get_class_name),TRUE));
+            $class_name = "";
+            if (!empty($get_class_name)) {
+                $class_name = $get_class_name[0]['class_name'];
+            }
+            $each_sales_data[]= $class_name;
+            $each_sales_data[]= date_format(new Carbon($payment_data[0]['start_date']), 'F d Y');
+            $each_sales_data[]= date_format(new Carbon($payment_data[0]['end_date']), 'F d Y');
+            $each_sales_data[]= $payment_data[0]['selected_classes'];
+            $each_sales_data[]= "";//2nd class
+
+            $mem_name = $payment_data[0]['membership_name'] !== "" ? $payment_data[0]['membership_name'] : "Annual Membership";
+            $each_sales_data[]= $mem_name;
+            $each_sales_data[] = $mem_name == "Annual Membership" ? 2000 : 5000;
+
+            //$fees = $payment_data[0]['each_class_amount'] * $payment_data[0]['selected_classes'];
+            $each_sales_data[]= $Sales['data'][$i]['amount'];
+
+            $tax_amt = $Sales['data'][$i]['amount']/100*$payment_data[0]['tax_percentage'];
+
+            $each_sales_data[]= $tax_amt;
+            $each_sales_data[]= $Sales['data'][$i]['amount']+$tax_amt;
+            $each_sales_data[]= $Sales['data'][$i]['payment_mode'];
+
+            $final_sales_data[] = $each_sales_data;
+            //array_push($final_sales_data, $each_sales_data);
+        }
+        return $final_sales_data;
+    } 
 }

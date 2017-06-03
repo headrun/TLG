@@ -24,6 +24,5 @@ class PaymentMaster extends \Eloquent {
       $paymentmaster->save();
       return $paymentmaster;
       
-  }
-  
+  }  
 }

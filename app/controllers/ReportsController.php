@@ -52,10 +52,62 @@ class ReportsController extends \BaseController {
 
         	if(Auth::check()){
         		$inputs=  Input::all();
-        		$salesFile = PaymentDues::getSalesAllocReport($inputs);
+        		
+        		
+        		$salesFile = Orders::getSalesAllocReport($inputs);
+        		//$salesFile = PaymentDues::getSalesAllocReport($inputs);
 
-        		//return $salesFile;
-        		$sheetheaders = ['ROLL NUMBER', 'INVOICE NUMBER', "Date of Billing\nMM/DD/YYYY", "Date of Birth\nMM/DD//YYYY", 'Child Name', 'Parent Name', 'Class', 'No. Of Weeks', '2nd Class', "Start Date\nMM/DD/YYYY", 'End Date', 'Membership', 'Membership Amount', 'Classes', 'Discount', 'Discount For Siblings', 'Discount for Multi-class', 'Tax %', 'Tax Amount', 'Total', "Mode Of\nPayment"];
+
+        		$sheetheaders = ['Parent Name', 'Child Name', 'Payment Date', 'Date of Birth', 'Name Of Class', 'Start Date', 'End Date', 'No.Of Classes Selected', '2nd Class', 'Membership', 'Membership Amount', 'Fees', 'Tax Amount', 'Total', 'Mode Of Payment'];
+
+        		$sheetData[0] = $sheetheaders;
+				$sheetData = $sheetData + $salesFile;
+
+				Excel::create('Sales_Allocation_Report', function($excel) use($sheetData) {
+		              $excel->sheet('Sheet 1', function($sheet) use($sheetData){
+		                  
+		                  //Styles in Row wise
+		                  $sheet->mergeCells('A1:O1');
+		                  $sheet->setAllBorders('thin');
+		                  $heightArray = array(
+		                      1     =>  50,
+		                      2     =>  50,
+		                  );
+		                  for ($i=3; $i < count($sheetData); $i++) { 
+		                  	$heightArray[$i] = 22; 
+		                  }
+
+		                  $sheet->setHeight($heightArray);
+		                  $sheet->row(1, function ($row) {
+		                      $row->setFontFamily('Calibri');
+		                      $row->setFontSize(11);
+		                      $row->setFontColor('#ffffff');
+		                      $row->setAlignment('center');
+		                      $row->setFontWeight('normal');
+		                      $row->setValignment('center');
+		                      $row->setBackground('#205867');
+		                  });
+		                  $sheet->row(2, function ($row) {
+		                      $row->setFontFamily('Calibri');
+		                      $row->setFontSize(9);
+		                      $row->setFontColor('#ffffff');
+		                      $row->setAlignment('center');
+		                      $row->setFontWeight('normal');
+		                      $row->setValignment('center');
+		                      $row->setBackground('#205867');
+		                  });
+
+		                  //Set Headers in row wise
+		                  $sheet->row(1, array('MASTER SALES ALLOCATION FOR THE MONTH OF '. date("F Y")));
+
+		                  //Writing into file 
+		                  $sheet->fromArray($sheetData, null, 'A1', false, false);
+		              });
+		          })->store('xls', storage_path('sales-allocation'));//->download('xlsx');
+
+				return url()."/app/storage/sales-allocation/Sales_Allocation_Report.xls";
+        		//'Discount For Siblings', 'Discount for Multi-class', 'Tax %', 'Tax Amount', 'Total',
+        		/*$sheetheaders = ['ROLL NUMBER', 'INVOICE NUMBER', "Date of Billing\nMM/DD/YYYY", "Date of Birth\nMM/DD//YYYY", 'Child Name', 'Parent Name', 'Class', 'No. Of Weeks', '2nd Class', "Start Date\nMM/DD/YYYY", 'End Date', 'Membership', 'Membership Amount', 'Classes', 'Discount', 'Discount For Siblings', 'Discount for Multi-class', 'Tax %', 'Tax Amount', 'Total', "Mode Of\nPayment"];
 
         		//Concatinating shet headers and body
 				$sheetData[0] = $sheetheaders;
@@ -101,7 +153,7 @@ class ReportsController extends \BaseController {
 		                  //Writing into file 
 		                  $sheet->fromArray($sheetData);
 		              });
-		          })->export('xls');
+		          })->export('xls');*/
 
 
         	}else{
