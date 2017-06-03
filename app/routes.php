@@ -126,7 +126,6 @@ Route::group(array('prefix'=>'Discounts'),function(){
 Route::group(array('prefix'=>'reports'),function(){
         Route::any('/view_reports','ReportsController@view_reports');
         Route::any('/deleted_customers','ReportsController@deleted_customers');
-        Route::any('/salesAllocreport', "ReportsController@salesAllocreport");
 });
 
 
@@ -151,7 +150,7 @@ Route::group(array('prefix' => 'quick'), function() {
 		Route::any('addFranchisee',"FranchiseeController@addFranchisee");
         Route::any('updateFranchisee','FranchiseeController@updateFranchisee');
         Route:: any('addAdminUser','UsersController@addAdminUser');
-
+        Route::any('/salesAllocreport', "ReportsController@salesAllocreport");
 
 
         /**

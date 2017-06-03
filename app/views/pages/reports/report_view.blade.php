@@ -466,6 +466,31 @@
         }
     });
 })(jQuery);
+
+
+$(document).on('click', '.salse_alloc_btn', function(){
+
+    var start_date = $('#reportGenerateStartdate1').val();
+    var end_date = $('#reportGenerateenddate1').val();
+
+    if (typeof start_date !== 'undefined' && typeof end_date !== 'undefined' ) {
+
+        $.ajax({
+
+            type: "POST",
+            url: "{{URL::to('/quick/salesAllocreport')}}",
+            data: {'reportGenerateStartdate1': start_date, 'reportGenerateEnddate1': end_date},
+            dataType: 'json',
+            success: function(response){
+                if (response.status === "success") {
+
+                    window.open(response.data, '_blank');
+                } 
+            }
+        });
+    }
+});
+
 </script>
 @stop
 
@@ -570,7 +595,7 @@
                            </div>
                            <div class="uk-width-1-4">
                              <div class="parsley-row" style="padding: 25px 30px;">
-                                <button type="submit" class="md-btn md-btn-primary">Generate</button>
+                                <button type="button" class="md-btn md-btn-primary salse_alloc_btn">Generate</button>
                              </div>
                            </div>
                          </div>

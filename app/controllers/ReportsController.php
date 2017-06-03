@@ -105,7 +105,8 @@ class ReportsController extends \BaseController {
 		              });
 		          })->store('xls', storage_path('sales-allocation'));//->download('xlsx');
 
-				return url()."/app/storage/sales-allocation/Sales_Allocation_Report.xls";
+				$filename = url()."/app/storage/sales-allocation/Sales_Allocation_Report.xls";
+				return Response::json(array('status'=> "success", 'data'=> $filename));
         		//'Discount For Siblings', 'Discount for Multi-class', 'Tax %', 'Tax Amount', 'Total',
         		/*$sheetheaders = ['ROLL NUMBER', 'INVOICE NUMBER', "Date of Billing\nMM/DD/YYYY", "Date of Birth\nMM/DD//YYYY", 'Child Name', 'Parent Name', 'Class', 'No. Of Weeks', '2nd Class', "Start Date\nMM/DD/YYYY", 'End Date', 'Membership', 'Membership Amount', 'Classes', 'Discount', 'Discount For Siblings', 'Discount for Multi-class', 'Tax %', 'Tax Amount', 'Total', "Mode Of\nPayment"];
 
