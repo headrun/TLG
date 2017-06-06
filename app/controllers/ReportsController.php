@@ -63,6 +63,8 @@ class ReportsController extends \BaseController {
         		$sheetData[0] = $sheetheaders;
 				$sheetData = $sheetData + $salesFile;
 
+				//print_r($sheetData); die;
+
 				Excel::create('Sales_Allocation_Report', function($excel) use($sheetData) {
 		              $excel->sheet('Sheet 1', function($sheet) use($sheetData){
 		                  
@@ -101,12 +103,13 @@ class ReportsController extends \BaseController {
 		                  $sheet->row(1, array('MASTER SALES ALLOCATION FOR THE MONTH OF '. date("F Y")));
 
 		                  //Writing into file 
-		                  $sheet->fromArray($sheetData, null, 'A1', false, false);
+		                  $sheet->fromArray($sheetData, null, 'A2', false, false);
 		              });
 		          })->store('xls', storage_path('sales-allocation'));//->download('xlsx');
 
 				$filename = url()."/app/storage/sales-allocation/Sales_Allocation_Report.xls";
 				return Response::json(array('status'=> "success", 'data'=> $filename));
+
         		//'Discount For Siblings', 'Discount for Multi-class', 'Tax %', 'Tax Amount', 'Total',
         		/*$sheetheaders = ['ROLL NUMBER', 'INVOICE NUMBER', "Date of Billing\nMM/DD/YYYY", "Date of Birth\nMM/DD//YYYY", 'Child Name', 'Parent Name', 'Class', 'No. Of Weeks', '2nd Class', "Start Date\nMM/DD/YYYY", 'End Date', 'Membership', 'Membership Amount', 'Classes', 'Discount', 'Discount For Siblings', 'Discount for Multi-class', 'Tax %', 'Tax Amount', 'Total', "Mode Of\nPayment"];
 
