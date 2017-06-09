@@ -56,9 +56,9 @@ class ReportsController extends \BaseController {
         		
         		$salesFile = Orders::getSalesAllocReport($inputs);
         		//$salesFile = PaymentDues::getSalesAllocReport($inputs);
+        		//return $salesFile;
 
-
-        		$sheetheaders = ['Parent Name', 'Child Name', 'Payment Date', 'Date of Birth', 'Name Of Class', 'Start Date', 'End Date', 'No.Of Classes Selected', '2nd Class', 'Membership', 'Membership Amount', 'Fees', 'Tax Amount', 'Total', 'Mode Of Payment'];
+        		$sheetheaders = ['Parent Name', 'Child Name', 'Payment Date', 'Date of Birth', 'Name Of Class', 'Start Date', 'End Date', 'No.Of Classes Selected', '2nd Class', 'Membership', 'Membership Amount', 'Fees', 'Tax Amount', 'Discount', 'Discount For Siblings', 'Discount for Multi-class', 'Total', 'Mode Of Payment'];
 
         		$sheetData[0] = $sheetheaders;
 				$sheetData = $sheetData + $salesFile;
@@ -69,7 +69,7 @@ class ReportsController extends \BaseController {
 		              $excel->sheet('Sheet 1', function($sheet) use($sheetData){
 		                  
 		                  //Styles in Row wise
-		                  $sheet->mergeCells('A1:O1');
+		                  $sheet->mergeCells('A1:R1');
 		                  $sheet->setAllBorders('thin');
 		                  $heightArray = array(
 		                      1     =>  50,

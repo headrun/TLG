@@ -205,27 +205,48 @@ $class  = $orderDetailsTomail['class']; */
 							</td>
 						</tr>
 						
-						<tr>
+						<!--<tr>
 							<td style="text-align:right">
-                                                            <strong>Tax ({{$paymentDueDetails[0]['tax_percentage']}} %)</strong>
-                                                            <p>[<?php 
-                                                                if(isset($tax_data)){
-                                                                  for($i=0;$i<count($tax_data);$i++){
-                                                                      echo $tax_data[$i]['tax_particular'].':'.$tax_data[$i]['tax_percentage'].'%';
-                                                                      if($i != count($tax_data) -1){
-                                                                          echo ", &nbsp;";
-                                                                      }
-                                                                      
-                                                                  }
-                                                                }
-                                                                ?>
-                                                                ]</p>
-                                                        </td>
+                                <strong>
+                                	Tax ($paymentDueDetails[0]['tax_percentage'] - 1 %)
+                                </strong>
+                                <p>[<?php 
+		                                /*if(isset($tax_data)){
+
+		                                  for($i=0;$i<count($tax_data);$i++){
+
+		                                      echo $tax_data[$i]['tax_particular'].':'.$tax_data[$i]['tax_percentage'].'%';
+		                                      if($i != count($tax_data) -1){
+		                                          echo ", &nbsp;";
+		                                      }
+		                                      
+		                                  }
+		                                }*/
+	                                ?>
+                                ]</p>
+                            </td>
 							<td  style="text-align:right">
 								
-								<strong>{{number_format((float)( (((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * $paymentDueDetails[0]['tax_percentage']/100), 2, '.', '') }}</strong>
+								<strong>number_format((float)( (((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * $paymentDueDetails[0]['tax_percentage']-1/100), 2, '.', '') </strong>
 							</td>
+						</tr>-->
+
+						@if(isset($tax_data))
+                        @for($i=0;$i<count($tax_data);$i++)
+						<tr>
+							<td style="text-align:right">
+                            	<strong>
+                            		{{$tax_data[$i]['tax_particular'].'('.$tax_data[$i]['tax_percentage'].'%)'}}
+                            	</strong>
+                            </td>
+                            <td style="text-align:right">
+                            	<strong>
+                            		{{number_format((float)( (((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * $tax_data[$i]['tax_percentage'] /100), 2, '.', '') }}
+                            	</strong>
+                            </td>
 						</tr>
+						@endfor
+						@endif
 						
 						<tr>
 							<td style="text-align:right"><strong>Grand Total</strong></td>
