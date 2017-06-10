@@ -351,7 +351,7 @@ class Orders extends \Eloquent {
                     //->where('student_classes_id','<>',0)
                     ->whereDate('created_at','>=',$inputs['reportGenerateStartdate1'])
                     ->whereDate('created_at','<=',$inputs['reportGenerateEnddate1'])
-                    ->orderBy('id','desc')
+                    ->orderBy('id')
                     ->get();
 
 

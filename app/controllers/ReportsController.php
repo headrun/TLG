@@ -52,6 +52,9 @@ class ReportsController extends \BaseController {
 
         	if(Auth::check()){
         		$inputs=  Input::all();
+
+        		$start_date = date_create($inputs['reportGenerateStartdate1']);
+        		$end_date = date_create($inputs['reportGenerateEnddate1']);
         		
         		
         		$salesFile = Orders::getSalesAllocReport($inputs);
@@ -65,8 +68,8 @@ class ReportsController extends \BaseController {
 
 				//print_r($sheetData); die;
 
-				Excel::create('Sales_Allocation_Report', function($excel) use($sheetData) {
-		              $excel->sheet('Sheet 1', function($sheet) use($sheetData){
+				Excel::create('Sales_Allocation_Report', function($excel) use($sheetData, $start_date, $end_date) {
+		              $excel->sheet('Sheet 1', function($sheet) use($sheetData, $start_date, $end_date){
 		                  
 		                  //Styles in Row wise
 		                  $sheet->mergeCells('A1:R1');
@@ -100,7 +103,7 @@ class ReportsController extends \BaseController {
 		                  });
 
 		                  //Set Headers in row wise
-		                  $sheet->row(1, array('MASTER SALES ALLOCATION FOR THE MONTH OF '. date("F Y")));
+		                  $sheet->row(1, array('MASTER SALES ALLOCATION FOR THE MONTH OF '. date_format($start_date,"Y/m/d"). " To ". date_format($end_date,"Y/m/d")));
 
 		                  //Writing into file 
 		                  $sheet->fromArray($sheetData, null, 'A2', false, false);

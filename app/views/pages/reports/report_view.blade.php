@@ -540,8 +540,8 @@ $(document).on('click', '.salse_alloc_btn', function(){
                                         <strong><label>Report Type</label></strong>
                                             <select name="reportType" id="reportType" class="input-sm md-input"
                                                     style='padding: 0px; font-weight: bold; color: #727272; width:100%'>
-                                                    <option value="Birthday" >Birthday</option>       
-                                                    <!--<option value="Enrollment">Enrollment</option>-->
+                                                    <!--<option value="Birthday" >Birthday</option>-->       
+                                                    <option value="Enrollment">Enrollment</option>
                                                     <!--<option value="both">Enrollment & Birthday</option>-->
                                                     <option value="Membership">Membership</option>
                                                     <option value="Introvisit">Introvisit</option>
