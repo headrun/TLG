@@ -208,7 +208,13 @@ print_r($orders); */
 						<tr>
 							<td style="text-align:right"><strong>By Choosing {{$paymentDueDetails[0]['selected_sessions']}} Classes You are Saving ({{$paymentDueDetails[0]['discount_applied']}}%: [-{{$paymentDueDetails[0]['discount_amount']}}Rs])</strong></td>
 							<td  style="text-align:right">
-								<strong><?php $amount=$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']; echo number_format((float)$amount, 2, '.', ''); ?></strong>
+								<strong>
+									<?php 
+										$amount=$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']; 
+										echo number_format((float)$amount, 2, '.', ''); 
+									?>
+											
+								</strong>
 							</td>
 						</tr>
                                                 <?php if($paymentDueDetails[0]['discount_sibling_applied']!=0){ ?>
@@ -248,8 +254,10 @@ print_r($orders); */
 						<tr>
 							<td style="text-align:right"><strong>Subtotal</strong></td>
 							<td  style="text-align:right">
-								
-								<strong>{{number_format((float)(((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']-$paymentDueDetails[0]['discount_admin_amount']), 2, '.', '')}}</strong>
+								<strong>
+								{{ number_format((float)(((float)$membershipAmount) + $paymentDueDetails[0]['payment_due_amount'] - 
+								$paymentDueDetails[0]['discount_amount'] - 
+								$paymentDueDetails[0]['discount_sibling_amount'] - $paymentDueDetails[0]['discount_multipleclasses_amount'] - $paymentDueDetails[0]['discount_admin_amount']), 2, '.', '')}}</strong>
 							</td>
 						</tr>
 						

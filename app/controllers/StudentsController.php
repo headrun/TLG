@@ -162,6 +162,7 @@ class StudentsController extends \BaseController {
                         if($discount_second_class_elligible){
                             $classes_count=  StudentClasses::where('student_id','=',$id)
                                              ->where('status','=','enrolled')
+                                             ->whereDate('enrollment_end_date', '>=', date('Y-m-d'))
                                            //->whereDate('enrollment_start_date','>=',date("Y-m-d"))
                                            //->whereDate('enrollment_end_date','<=',date("Y-m-d"))
                                            //->distinct('class_id')

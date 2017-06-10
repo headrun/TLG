@@ -334,107 +334,103 @@ $("#finalPaymentDiv").hide();
 
 
 function calculateFinalAmount(){
-        
+
         var second_child_discount_amt=0;
-  var second_class_discount_amt=0;
+        var second_class_discount_amt=0;
         var finalAmount = (parseFloat($("#totalAmountToPay").val()));
   
-                          
-                                    var percentAmount = parseFloat($("#totalAmountToPaytotals").val()*DiscountPercentage/100);
-                                    $('#discount').html('<p>By Choosing '+selectedNoOfClass+' Classes You are Saving ('+DiscountPercentage+'%:[-'+(percentAmount).toFixed(2)+'Rs])</p>');
-                            
-                        
-                                $("#discountTextBox").val("-"+(percentAmount).toFixed(2));
+        var percentAmount = parseFloat($("#totalAmountToPaytotals").val()*DiscountPercentage/100);
+        $('#discount').html('<p>By Choosing '+selectedNoOfClass+' Classes You are Saving ('+DiscountPercentage+'%:[-'+(percentAmount).toFixed(2)+'Rs])</p>');
+
+        $("#discountTextBox").val("-"+(percentAmount).toFixed(2));
                                 
-                          finalAmount = parseFloat(finalAmount-percentAmount);
-                                $("#discountTextBoxlabel").html((finalAmount).toFixed(2));
-                                <?php if($discount_second_child_elligible){ ?>
-                                    
-                                    
-                                    $('#second_child_discount_to_form').val({{$discount_second_child}});
-                                    second_child_discount_amt=parseFloat(finalAmount*{{$discount_second_child}}/100);
-                                    $('#second_child_amount').val('-'+(second_child_discount_amt).toFixed(2));
-                                    
-                                    finalAmount=parseFloat(finalAmount-second_child_discount_amt);
-                                    $('#second_child_discount').html('<p>By Enrolling Sibling You are Saving('+{{$discount_second_child}}+'%:[-'+(second_child_discount_amt).toFixed(2)+'Rs])</p>');
-                                    $('#second_child_amountlabel').html((finalAmount).toFixed(2));
-                                <?php } ?>
+        finalAmount = parseFloat(finalAmount-percentAmount);
+        $("#discountTextBoxlabel").html((finalAmount).toFixed(2));
+        
+        <?php if($discount_second_child_elligible){ ?>
+          $('#second_child_discount_to_form').val({{$discount_second_child}});
+          second_child_discount_amt=parseFloat(finalAmount*{{$discount_second_child}}/100);
+          $('#second_child_amount').val('-'+(second_child_discount_amt).toFixed(2));
+          
+          finalAmount=parseFloat(finalAmount-second_child_discount_amt);
+          $('#second_child_discount').html('<p>By Enrolling Sibling You are Saving('+{{$discount_second_child}}+'%:[-'+(second_child_discount_amt).toFixed(2)+'Rs])</p>');
+          $('#second_child_amountlabel').html((finalAmount).toFixed(2));
+      <?php } ?>
                                   
-                                <?php if($discount_second_class_elligible){ ?>
-                                    
-                                    
-                                    $('#second_class_discount_to_form').val({{$discount_second_class}});
-                                    second_class_discount_amt=parseFloat(finalAmount*{{$discount_second_class}}/100);
-                                    $('#second_class_amount').val('-'+(second_class_discount_amt).toFixed(2));
-                                    $('#second_class_amountlabel').html('-'+(second_class_discount_amt).toFixed(2));
-                                    finalAmount=parseFloat(finalAmount-second_class_discount_amt);
-                                    $('#second_class_discount').html('<p>By Enrolling Multiple Classes You are Saving('+{{$discount_second_class}}+'%[-'+(second_class_discount_amt).toFixed(2)+'Rs])</p>');
-                                    $('#second_class_amountlabel').html((finalAmount).toFixed(2));
-                                <?php } ?>
-                                
-                                <?php if(!$customermembership){?>
-                                     finalAmount = finalAmount+parseFloat($("#membershipAmount").val());
-                                <?php }?>
-                                 Adminamountcal=finalAmount;
-                                 if(typeof $('#admin_discount_amount').val()!='undefined'){
-                                    var adminamt=parseFloat($('#admin_discount_amount').val());
-                                    $("#subtotal").val(((Math.round((finalAmount-adminamt)*100)/100)).toFixed(2));
-                                    $('#subtotallabel').html(((Math.round((finalAmount-adminamt)*100)/100)).toFixed(2));
-                                 }else{
-                                    $("#subtotal").val(((Math.round((finalAmount)*100)/100)).toFixed(0));
-                                    $('#subtotallabel').html(((Math.round((finalAmount)*100)/100)).toFixed(0));
-                                 }
+      <?php if($discount_second_class_elligible){ ?>
+          $('#second_class_discount_to_form').val({{$discount_second_class}});
+          second_class_discount_amt=parseFloat(finalAmount*{{$discount_second_class}}/100);
+          $('#second_class_amount').val('-'+(second_class_discount_amt).toFixed(2));
+          $('#second_class_amountlabel').html('-'+(second_class_discount_amt).toFixed(2));
+          finalAmount=parseFloat(finalAmount-second_class_discount_amt);
+          $('#second_class_discount').html('<p>By Enrolling Multiple Classes You are Saving('+{{$discount_second_class}}+'%[-'+(second_class_discount_amt).toFixed(2)+'Rs])</p>');
+          $('#second_class_amountlabel').html((finalAmount).toFixed(2));
+      <?php } ?>
+      
+      <?php if(!$customermembership){?>
+           finalAmount = finalAmount+parseFloat($("#membershipAmount").val());
+      <?php }?>
+       
+       Adminamountcal=finalAmount;
+       if(typeof $('#admin_discount_amount').val()!='undefined'){
+          var adminamt=parseFloat($('#admin_discount_amount').val());
+          $("#subtotal").val(((Math.round((finalAmount-adminamt)*100)/100)).toFixed(2));
+          $('#subtotallabel').html(((Math.round((finalAmount-adminamt)*100)/100)).toFixed(2));
+       }else{
+          $("#subtotal").val(((Math.round((finalAmount)*100)/100)).toFixed(0));
+          $('#subtotallabel').html(((Math.round((finalAmount)*100)/100)).toFixed(0));
+       }
                                  
-                          var tax =(finalAmount*tax_Percentage/100);
-                                tax=Math.round(tax*100)/100;
-                                
-                                $("#taxAmount").val((tax).toFixed(2));
-                                $('#taxAmountlabel').html((tax).toFixed(2));
-                                finalAmount=finalAmount+tax;
-                                finalAmount=Math.round(finalAmount*100)/100;
-                          $("#grandTotal").val((finalAmount).toFixed(0));
-                                $('#grandTotallabel').html((finalAmount).toFixed(0));
-                                $('#discountPercentage').val((DiscountPercentage).toFixed(2));
-        $('#paymentTable').show();
-        $('#paymentType').show();
-                                $('#emailEnrollPrintDiv').show();
-                                
-                                $('#admin_discount_amount').change(function(){
-                                    if(($('#admin_discount_amount').val()=='')||($('#admin_discount_amount').val()<0)){
-                                       $('#admin_discount_amount').val('0'); 
-                                    }
-                                    var adminamt=parseFloat($('#admin_discount_amount').val());
-                                    var subtotal=Adminamountcal;
-                                    
-                                    $("#subtotal").val((subtotal-adminamt).toFixed(2));
-                                    $('#subtotallabel').html((subtotal-adminamt).toFixed(2));
-                                    var tax =((subtotal-adminamt)*tax_Percentage/100);
-                                    tax=Math.round(tax*100)/100;
-                                    
-                                    $("#taxAmount").val((tax).toFixed(2));
-                                    $('#taxAmountlabel').html((tax).toFixed(2));
-                                    Amount=Math.round(((subtotal-adminamt)+tax)*100)/100;
-                                    $("#grandTotal").val((Amount).toFixed(0));
-                                    $('#grandTotallabel').html((Amount).toFixed(0));
-                                });
-                                $('#admin_discount_amount').keyup(function(){
-                                    if(($('#admin_discount_amount').val()=='')||($('#admin_discount_amount').val()<0)){
-                                       $('#admin_discount_amount').val('0'); 
-                                    }
-                                    var adminamt=parseFloat($('#admin_discount_amount').val());
-                                    var subtotal=Adminamountcal;
-                                    
-                                    $("#subtotal").val((subtotal-adminamt).toFixed(2));
-                                    $('#subtotallabel').html((subtotal-adminamt).toFixed(2));
-                                    var tax =(((subtotal-adminamt)*tax_Percentage/100).toFixed(2));
-                                    tax=Math.round(tax*100)/100;
-                                    
-                                    $("#taxAmount").val((tax).toFixed(2));
-                                    $('#taxAmountlabel').html((tax).toFixed(2));
-                                    Amount=Math.round(((subtotal-adminamt)+tax)*100)/100;
-                                    $("#grandTotal").val((Amount).toFixed(0));
-                                    $('#grandTotallabel').html((Amount).toFixed(0));
-                                });
+      var tax =(finalAmount*tax_Percentage/100);
+            tax=Math.round(tax*100)/100;
+            
+            $("#taxAmount").val((tax).toFixed(2));
+            $('#taxAmountlabel').html((tax).toFixed(2));
+            finalAmount=finalAmount+tax;
+            finalAmount=Math.round(finalAmount*100)/100;
+            $("#grandTotal").val((finalAmount).toFixed(0));
+            $('#grandTotallabel').html((finalAmount).toFixed(0));
+            $('#discountPercentage').val((DiscountPercentage).toFixed(2));
+            $('#paymentTable').show();
+            $('#paymentType').show();
+          $('#emailEnrollPrintDiv').show();
+          
+          $('#admin_discount_amount').change(function(){
+              if(($('#admin_discount_amount').val()=='')||($('#admin_discount_amount').val()<0)){
+                 $('#admin_discount_amount').val('0'); 
+              }
+              var adminamt=parseFloat($('#admin_discount_amount').val());
+              var subtotal=Adminamountcal;
+              
+              $("#subtotal").val((subtotal-adminamt).toFixed(2));
+              $('#subtotallabel').html((subtotal-adminamt).toFixed(2));
+              var tax =((subtotal-adminamt)*tax_Percentage/100);
+              tax=Math.round(tax*100)/100;
+              
+              $("#taxAmount").val((tax).toFixed(2));
+              $('#taxAmountlabel').html((tax).toFixed(2));
+              Amount=Math.round(((subtotal-adminamt)+tax)*100)/100;
+              $("#grandTotal").val((Amount).toFixed(0));
+              $('#grandTotallabel').html((Amount).toFixed(0));
+          });
+          $('#admin_discount_amount').keyup(function(){
+              if(($('#admin_discount_amount').val()=='')||($('#admin_discount_amount').val()<0)){
+                 $('#admin_discount_amount').val('0'); 
+              }
+              var adminamt=parseFloat($('#admin_discount_amount').val());
+              var subtotal=Adminamountcal;
+              
+              $("#subtotal").val((subtotal-adminamt).toFixed(2));
+              $('#subtotallabel').html((subtotal-adminamt).toFixed(2));
+              var tax =(((subtotal-adminamt)*tax_Percentage/100).toFixed(2));
+              tax=Math.round(tax*100)/100;
+              
+              $("#taxAmount").val((tax).toFixed(2));
+              $('#taxAmountlabel').html((tax).toFixed(2));
+              Amount=Math.round(((subtotal-adminamt)+tax)*100)/100;
+              $("#grandTotal").val((Amount).toFixed(0));
+              $('#grandTotallabel').html((Amount).toFixed(0));
+          });
         
 }
 
