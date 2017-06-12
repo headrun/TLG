@@ -347,10 +347,13 @@ class Orders extends \Eloquent {
     static public function getSalesAllocReport($inputs){
 
         $final_sales_data = array();
+
+        $final_sales_data[] = ['Parent Name', 'Child Name', 'Payment Date', 'Date of Birth', 'Name Of Class', 'Start Date', 'End Date', 'No.Of Classes Selected', '2nd Class', 'Membership', 'Membership Amount', 'Fees', 'Tax Amount', 'Discount', 'Discount For Siblings', 'Discount for Multi-class', 'Total', 'Mode Of Payment'];
         $Sales['data'] = Orders::where('franchisee_id','=',Session::get('franchiseId'))
                     //->where('student_classes_id','<>',0)
                     ->whereDate('created_at','>=',$inputs['reportGenerateStartdate1'])
                     ->whereDate('created_at','<=',$inputs['reportGenerateEnddate1'])
+                    //->where('student_id', '=', '1804')
                     ->orderBy('id')
                     ->get();
 

@@ -61,15 +61,17 @@ class ReportsController extends \BaseController {
         		//$salesFile = PaymentDues::getSalesAllocReport($inputs);
         		//return $salesFile;
 
-        		$sheetheaders = ['Parent Name', 'Child Name', 'Payment Date', 'Date of Birth', 'Name Of Class', 'Start Date', 'End Date', 'No.Of Classes Selected', '2nd Class', 'Membership', 'Membership Amount', 'Fees', 'Tax Amount', 'Discount', 'Discount For Siblings', 'Discount for Multi-class', 'Total', 'Mode Of Payment'];
-
-        		$sheetData[0] = $sheetheaders;
-				$sheetData = $sheetData + $salesFile;
+        		//$sheetheaders = ['Parent Name', 'Child Name', 'Payment Date', 'Date of Birth', 'Name Of Class', 'Start Date', 'End Date', 'No.Of Classes Selected', '2nd Class', 'Membership', 'Membership Amount', 'Fees', 'Tax Amount', 'Discount', 'Discount For Siblings', 'Discount for Multi-class', 'Total', 'Mode Of Payment'];
+        		//$sheetData = [];
+        		//$sheetData[] = $sheetheaders;
+				//$sheetData[] =$salesFile;
+				//array_push($sheetData, $sheetheaders);
+				//array_push($sheetData, $salesFile);
 
 				//print_r($sheetData); die;
 
-				Excel::create('Sales_Allocation_Report', function($excel) use($sheetData, $start_date, $end_date) {
-		              $excel->sheet('Sheet 1', function($sheet) use($sheetData, $start_date, $end_date){
+				Excel::create('Sales_Allocation_Report', function($excel) use($salesFile, $start_date, $end_date) {
+		              $excel->sheet('Sheet 1', function($sheet) use($salesFile, $start_date, $end_date){
 		                  
 		                  //Styles in Row wise
 		                  $sheet->mergeCells('A1:R1');
@@ -78,7 +80,7 @@ class ReportsController extends \BaseController {
 		                      1     =>  50,
 		                      2     =>  50,
 		                  );
-		                  for ($i=3; $i < count($sheetData); $i++) { 
+		                  for ($i=3; $i < count($salesFile); $i++) { 
 		                  	$heightArray[$i] = 22; 
 		                  }
 
@@ -106,7 +108,7 @@ class ReportsController extends \BaseController {
 		                  $sheet->row(1, array('MASTER SALES ALLOCATION FOR THE MONTH OF '. date_format($start_date,"Y/m/d"). " To ". date_format($end_date,"Y/m/d")));
 
 		                  //Writing into file 
-		                  $sheet->fromArray($sheetData, null, 'A2', false, false);
+		                  $sheet->fromArray($salesFile, null, 'A2', false, false);
 		              });
 		          })->store('xls', storage_path('sales-allocation'));//->download('xlsx');
 
