@@ -354,7 +354,6 @@ class Orders extends \Eloquent {
                     ->orderBy('id')
                     ->get();
 
-
         for($i=0;$i<count($Sales['data']);$i++){
 
             $each_sales_data = array();
@@ -364,9 +363,9 @@ class Orders extends \Eloquent {
                                 where('payment_no', '=', $Sales['data'][$i]['payment_no'])
                                 ->where('student_id', '=', $Sales['data'][$i]['student_id'])
                                 ->where('customer_id', '=', $Sales['data'][$i]['customer_id'])
-                                ->selectRaw('sum(payments_dues.selected_sessions) as selected_classes, min(start_order_date) as start_date, max(end_order_date) as end_date, class_id, membership_name, each_class_amount, tax_percentage, discount_amount, discount_sibling_amount, discount_multipleclasses_amount')
+                                ->selectRaw('sum(payments_dues.selected_sessions) as selected_classes, min(start_order_date) as start_date, max(end_order_date) as end_date, class_id, membership_type_id, membership_amount, each_class_amount, tax_percentage, discount_amount, discount_sibling_amount, discount_multipleclasses_amount')
                                 ->get();
-            
+
             if ($payment_data[0]['selected_classes'] > 0) {
                 
                 //Collecting customer Data
@@ -401,17 +400,22 @@ class Orders extends \Eloquent {
                 else
                     $each_sales_data[]= "No";//2nd class
 
-                $mem_name = $payment_data[0]['membership_name'] !== "" ? $payment_data[0]['membership_name'] : "Annual Membership";
-                $each_sales_data[]= $mem_name;
+                $membership_amount = $payment_data[0]['membership_amount'];
 
-                $membership_amount;
-                $checkUser = Orders::checkNameExist($final_sales_data, $cus_name);
+                $mem_name = $membership_amount == "5000" ? "Lifetime Membership" : "Annual Membership";
+
+                //$mem_name = $payment_data[0]['membership_name'] !== "" ? $payment_data[0]['membership_name'] : "Annual Membership";
+                $each_sales_data[]= $mem_name;
+                $each_sales_data[]= $membership_amount;
+
+                //$membership_amount;
+                /*$checkUser = Orders::checkNameExist($final_sales_data, $cus_name);
                 if($checkUser)
                     $membership_amount = "-";
                 else
                     $membership_amount = $mem_name == "Annual Membership" ? 2000 : 5000;
                 
-                $each_sales_data[]= $membership_amount;
+                $each_sales_data[]= $membership_amount;*/
 
                 //$fees = $payment_data[0]['each_class_amount'] * $payment_data[0]['selected_classes'];
                 $total_amt_after_disc = $Sales['data'][$i]['amount'] + $membership_amount - $payment_data[0]['discount_amount'] -  $payment_data[0]['discount_sibling_amount'] - $payment_data[0]['discount_multipleclasses_amount'];
@@ -420,12 +424,12 @@ class Orders extends \Eloquent {
 
                 $tax_amt = (($total_amt_after_disc)/100) * $payment_data[0]['tax_percentage'];
 
-                $each_sales_data[]= $tax_amt;
+                $each_sales_data[]= number_format($tax_amt, 2, '.', '');
                 $each_sales_data[]= $payment_data[0]['discount_amount'];
                 $each_sales_data[]= $payment_data[0]['discount_sibling_amount'];
                 $each_sales_data[]= $payment_data[0]['discount_multipleclasses_amount'];
                 
-                $each_sales_data[]= $total_amt_after_disc + $tax_amt;
+                $each_sales_data[]= number_format($total_amt_after_disc + $tax_amt, 2, '.', '');;
                 $each_sales_data[]= $Sales['data'][$i]['payment_mode'];
 
                 $final_sales_data[] = $each_sales_data;   
