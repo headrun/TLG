@@ -133,7 +133,7 @@ $(document).ready(function (){
 				         <div class="uk-grid" data-uk-grid-margin>
 				            <div class="uk-width-medium-1-2">    
 				                  <div class="parsley-row form-group">				                 	
-				                 	{{ Form::select('userType', array('' => 'Please select a User type','TEACHER'=>'Instructor','RECEPTIONIST'=>'Receptionist'), null ,array('id'=>'userType', 'class' => 'input-sm md-input',  'required'=>'', "placeholder"=>"User type", "style"=>'padding:0px; font-weight:bold;color: #727272;')) }}
+				                 	{{ Form::select('userType', array('' => 'Please select a User type','INSTRUCTOR'=>'Instructor','RECEPTIONIST'=>'Receptionist'), null ,array('id'=>'userType', 'class' => 'input-sm md-input',  'required'=>'', "placeholder"=>"User type", "style"=>'padding:0px; font-weight:bold;color: #727272;')) }}
 				                 </div>
 				            </div>  
 				            <br clear="all"/><br clear="all"/><br clear="all"/>
