@@ -846,7 +846,7 @@ $('#batch_delete').click(function(){
 		                            </tr>
 		                            </thead>
 		                            <tbody>
-                                            <?php if(!isset($batches)){ ?>    
+                                            <?php if(isset($batches)){ ?>    
 		                             @foreach($batches as $batch)
 		                             <tr>
 		                                <td>{{$batch->batch_name}}</td>
