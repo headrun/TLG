@@ -35,7 +35,7 @@ class StudentClasses extends \Eloquent {
                         "SELECT * from students where id IN (SELECT distinct (student_classes.student_id)
                          FROM student_classes where  
                           enrollment_end_date >='".$present_date->toDateString()."' AND student_classes.status 
-                         IN ('enrolled')) and students.franchisee_id='".$franchiseeId."'")
+                         IN ('enrolled', 'transferred_to_other_class', 'transferred_class')) and students.franchisee_id='".$franchiseeId."'")
                                    );
     return $students;
 	}
@@ -46,7 +46,7 @@ class StudentClasses extends \Eloquent {
                 $students=DB::select(DB::raw(
                         "SELECT * from students where id NOT IN (SELECT distinct(student_classes.student_id)
                          FROM student_classes where  enrollment_end_date >= '".$present_date->toDateString()."' AND student_classes.status 
-                         IN ('enrolled')) and students.franchisee_id= '".$franchiseeId."'")
+                         IN ('enrolled', 'transferred_to_other_class', 'transferred_class')) and students.franchisee_id= '".$franchiseeId."'")
                                    );
                 
                 /*
