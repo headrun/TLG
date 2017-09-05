@@ -492,27 +492,31 @@ class BatchesController extends \BaseController {
                                               ->get();
 
             $batchClassesCount=count($batchClassesData);
-            //print_r($batchClassesCount); die;
+            // return 'Count is: '.$batchClassesCount;
+            // print_r($batchClassesCount); die;
             //$batchClassesCount = $batchClassesCount - $inputs['removalbleClasses'];
-            $lastEndDate;
+            $lastEndDate = '';
+
             if($batchClassesCount){
             	$sCount = $inputs['selectedNoOfClass'] - $inputs['removalbleClasses'];
             	if ($inputs['removalbleClasses'] != 0) {	            	
 	            	//print_r($batchClassesData[$sCount-1]); die;
 	            	if ($sCount <= $batchClassesCount) {
-	            		$lastEndDate=$batchClassesData[$sCount-1]['schedule_date'];
+	            		$lastEndDate = $batchClassesData[$sCount-1]['schedule_date'];
+	            	}else{
+	            		$lastEndDate = $batchClassesData[$batchClassesCount-1]['schedule_date'];
 	            	}
 	            }else{
 	            	if ($sCount <= $batchClassesCount) {
-	            		$lastEndDate=$batchClassesData[$sCount-1]['schedule_date'];	
+	            		$lastEndDate = $batchClassesData[$sCount-1]['schedule_date'];	
 	            	}else{
 	            		$batchClassesCount = $batchClassesCount - $inputs['removalbleClasses'];
-	            		$lastEndDate=$batchClassesData[($batchClassesCount-1)]['schedule_date'];
+	            		$lastEndDate = $batchClassesData[($batchClassesCount-1)]['schedule_date'];
 	            	}
 	            }
 	            //print_r($lastEndDate); die;
 	            $date=  Carbon::now();
-	            $date=$date->createFromFormat('Y-m-d',$lastEndDate);
+	            $date=$date->createFromFormat('Y-m-d', $lastEndDate);
 	            $date=$date->next(Carbon::MONDAY);
 	            //print_r($date); die;
 	            //getting the batch cost from batch class
@@ -528,7 +532,7 @@ class BatchesController extends \BaseController {
                 							'classCount'=>$batchClassesCount,
                 							'lastdate'=>$date->toDateString(),
                 							'classAmount'=>$base_price,
-                							//'enrollment_end_date'=>$batchClassesData[($batchClassesCount-1)]['schedule_date'],
+                							//s'enrollment_end_date'=>$batchClassesData[($batchClassesCount-1)]['schedule_date'],
                 							'enrollment_end_date'=>$lastEndDate,
                 							'enrollment_start_date'=>$batchClassesData[0]['schedule_date'],
                 							'batch_Schedule_data'=>$batchClassesData));
@@ -573,9 +577,6 @@ class BatchesController extends \BaseController {
                                    'preferred_end_time'=>$endTime24Hours));
             return Response::json(array('status'=>'success','data'=>$data));
         }
-        
-        
-        
         public function deleteBatchById(){
             $inputs['batch_id']=Input::get('batch_id');
             // deleting from batch_schedule table 
