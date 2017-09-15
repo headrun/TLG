@@ -704,10 +704,8 @@ class BatchesController extends \BaseController {
                		$batchData[$i]['Leadinstructor']=$t1->first_name.$t1->last_name;
                }
                
-//               $batch_count=  StudentClasses::where('batch_id','=',$batchData[$i]['batch_id'])
-//                                              
-//                                              ->whereIn('status',array('enrolled','makeup'))
-//                                              ->count();
+              $batch_count=  StudentClasses::where('batch_id','=',$batchData[$i]['batch_id'])                                              
+              ->whereIn('status',array('enrolled','makeup'))->count();
            }
            if ($batchData) {
                return Response::json(array('status' => 'success', 'batch_data'=> $batchData));

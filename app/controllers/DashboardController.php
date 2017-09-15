@@ -219,18 +219,24 @@ class DashboardController extends \BaseController {
                         
                         //for birthday celebration this week
                         
-                        $presentdate=new carbon();
-                        $weeekdate=new carbon();
-                         $weekdatemon= $presentdate->endOfWeek();
+                        $presentdate= Carbon::now();;
+                        $weeekdate= new carbon();
+                        $time = strtotime($presentdate);
+                        $end = strtotime('next sunday, 11:59am', $time);
+                        //print_r(date('Y-m-d', strtotime('+1', $end))); die;
+                        //$weekdatemon= $presentdate->endOfWeek();
                         //$weeekdate->addDays(7);
                        
-                        $birthdayPresentWeek=BirthdayParties::
-                                                              where('birthday_party_date','>=',$presentdate->toDateString())
-                                                            // ->where('birthday_party_date','>=',$weekdatemon)
-                                                            //  ->where('birthday_party_date','<=',$weeekdate->toDateString())
-                                                              ->where('birthday_party_date','<=',$weekdatemon->toDateString())
-                                                              ->orderBy('birthday_party_date','ASC')
-                                                              ->get();
+                        $birthdayPresentWeek=BirthdayParties::whereDate('birthday_party_date','>=',date('Y-m-d', $time))
+                              // ->where('birthday_party_date','>=',$weekdatemon)
+                              //  ->where('birthday_party_date','<=',$weeekdate->toDateString())
+                                //->whereDate('birthday_party_date','<=',$weekdatemon->toDateString())
+                                ->whereDate('birthday_party_date','<=', date('Y-m-d', $end))
+                                ->orderBy('birthday_party_date','ASC')
+                                ->get();
+                        //print_r(array($presentdate, $weeekdate->toDateString(), $end));
+                        //return $birthdayPresentWeek;
+
                         for($i=0;$i<count($birthdayPresentWeek);$i++){
                           $customer_data=Customers::where('id','=',$birthdayPresentWeek[$i]['customer_id'])->get();
                           $birthdayPresentWeek[$i]['customer_name']= $customer_data[0]['customer_name'];
@@ -278,13 +284,14 @@ class DashboardController extends \BaseController {
           $weeekdate=new carbon();
           $weekdatemon= $presentdate->endOfWeek();
         //  $weeekdate->addDays(7);
-          $birthdayCelebrationsData=BirthdayParties::
-                                                where('birthday_party_date','>=',$presentdate->toDateString())
+          $birthdayCelebrationsData=BirthdayParties::where('birthday_party_date','>=',$presentdate->toDateString())
                                               //  ->where('birthday_party_date','<=',$weeekdate->toDateString())
                                                 //->where('franchisee_id','=',Session::get('franchiseId'))
                                                // ->orderBy('birthday_party_date')
-                                                ->where('birthday_party_date','<=',$weekdatemon->toDateString())
-                                               ->orderBy('birthday_party_date','ASC')
+                                                ->where('birthday_party_date','<=',
+                                                  $weekdatemon->toDateString())
+
+                                                ->orderBy('birthday_party_date','ASC')
                                                 ->get();
           for($i=0;$i<count($birthdayCelebrationsData);$i++){
               $customer_data=Customers::where('id','=',$birthdayCelebrationsData[$i]['customer_id'])->get();
