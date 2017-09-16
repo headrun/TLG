@@ -503,7 +503,7 @@ function calculateBirthdayPartyPrice(){
             $("#totalAmountPayable").empty();
             var tax = Math.floor(((tax_Percentage/100)*parseInt(advance)))
 	
-            $("#totalAmountPayable").val((parseInt(tax)+parseInt(advance)))
+            $("#totalAmountPayable").val((parseInt(tax)-parseInt(advance)))
             $("#taxAmount").val(tax);
 	
         
@@ -525,7 +525,7 @@ function calculateBirthdayPartyPrice(){
 	
         var defaultBirthdayPrice    = parseFloat($("#defaultBirthdayPrice").val());
 		
-	var grandTotal = (additionalGuestPrice + additionalHalfHourPrice + membershipPrice+ defaultBirthdayPrice);
+	var grandTotal = (additionalGuestPrice + additionalHalfHourPrice + membershipPrice + defaultBirthdayPrice);
 
 	
 	
@@ -891,6 +891,7 @@ function pendingamount(pendingamountId,pendingAmount){
                                
                                 
                             });
+                            //Aditional guest
                             $('#additionalguestNo').change(function(){
                                 if($('#additionalguestNo').val()<0){
                                     $('#additionalguestNo').val(0);
@@ -902,7 +903,7 @@ function pendingamount(pendingamountId,pendingAmount){
                                 var addguestamt=$('#additionalguestNo').val() * parseInt(birthday_additional_guest_price);
                                 $('#additionalguestcost').val(addguestamt);
                                 var addtionaltimecost=parseInt($('#additionalhalfhourscost').val());
-                                $('#amountpending').val(parseInt(response.birthday_data['default_birthday_cost'])+addguestamt+addtionaltimecost);
+                                $('#amountpending').val(parseInt(response.birthday_data['default_birthday_cost'])+addguestamt+addtionaltimecost-response.birthday_data['advance_amount_paid']);
                                 var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
                                 $('#taxamount').val(tax);
                                 $('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt($('#amountpending').val()));
@@ -926,6 +927,7 @@ function pendingamount(pendingamountId,pendingAmount){
                             });
                             //additional half hour change for receive due
                             $('#additionalhalfhours').change(function(){
+                            	//debugger;
                                 if($('#additionalhalfhours').val()<0){
                                     $('#additionalhalfhours').val(0);
                                 }
@@ -934,7 +936,7 @@ function pendingamount(pendingamountId,pendingAmount){
                                 }
                                 $('#additionalhalfhourscost').val(parseInt($('#additionalhalfhours').val()) * birthday_additional_half_hour_price);
                                 var addtionaltimecost=parseInt($('#additionalhalfhourscost').val());
-                                $('#amountpending').val(parseInt(response.birthday_data['default_birthday_cost'])+parseInt($('#additionalguestcost').val())+addtionaltimecost);
+                                $('#amountpending').val(parseInt(response.birthday_data['default_birthday_cost'])+parseInt($('#additionalguestcost').val())+addtionaltimecost-response.birthday_data['advance_amount_paid']);
                                 var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
                                 $('#taxamount').val(tax);
                                 $('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt($('#amountpending').val()));
@@ -942,6 +944,7 @@ function pendingamount(pendingamountId,pendingAmount){
                             });
                             // for keyup operation
                             $('#additionalhalfhours').keyup(function(){
+                            	//debugger;
                                 if($('#additionalhalfhours').val()<0){
                                     $('#additionalhalfhours').val(0);
                                 }
@@ -1248,20 +1251,20 @@ $(document).ready(function(){
    
    
 });
-/*
-$('#followupTypeCbx').change(function(){
 
-   if($('#followupTypeCbx').val()=='INTROVISIT'){
-       $('#actionCbx').html('');
-       $('#actionCbx').append("<option value=''></option>"+
-                            "<option value='ADDINTROVISIT'>AddIntrovisit</option>"+
-                            "<option value='FOLLOWUPINTROVISIT'>FollowupIntrovisit</option>");
-   }else{
-       $('#actionCbx').html('');
-   } 
-});
+// $('#followupTypeCbx').change(function(){
 
-*/
+//    if($('#followupTypeCbx').val()=='INTROVISIT'){
+//        $('#actionCbx').html('');
+//        $('#actionCbx').append("<option value=''></option>"+
+//                             "<option value='ADDINTROVISIT'>AddIntrovisit</option>"+
+//                             "<option value='FOLLOWUPINTROVISIT'>FollowupIntrovisit</option>");
+//    }else{
+//        $('#actionCbx').html('');
+//    } 
+// });
+
+
 function getEligibleClasses(ageYear,ageMonth,studentGender){
 var yearAndMonth= (parseInt(ageYear*12)+parseInt(ageMonth));
           //console.log(ageYear);

@@ -32,7 +32,7 @@ class StudentClasses extends \Eloquent {
 	static function getAllEnrolledStudents($franchiseeId){
 		$present_date=Carbon::now();
 		            $students=DB::select(DB::raw(
-                        "SELECT * from students where id IN (SELECT distinct (student_classes.student_id)
+                        "SELECT * from students where id IN (SELECT distinct(student_classes.student_id)
                          FROM student_classes where  
                           enrollment_end_date >='".$present_date->toDateString()."' AND student_classes.status 
                          IN ('enrolled', 'transferred_to_other_class', 'transferred_class')) and students.franchisee_id='".$franchiseeId."'")
@@ -135,11 +135,12 @@ class StudentClasses extends \Eloquent {
 		
 		$franchiseeId = Session::get('franchiseId');
 		$present_date=Carbon::now();
-		$enrolledCustomers = 
-                        DB::select(DB::raw("SELECT count(distinct(students.id)) as enrollmentno
-                                                FROM student_classes INNER JOIN students ON student_classes.student_id = students.id
-                                                WHERE  students.franchisee_id='".$franchiseeId."' AND student_classes.status='enrolled' AND enrollment_end_date >= '".$present_date->toDateString()."'")
-                                  );
+
+		$enrolledCustomers = DB::select(DB::raw("SELECT count(distinct(students.id)) as enrollmentno
+                    FROM student_classes INNER JOIN students ON student_classes.student_id = students.id
+                    WHERE  students.franchisee_id='".$franchiseeId."' AND student_classes.status IN ('enrolled', 'transferred_to_other_class', 'transferred_class') AND enrollment_end_date >= '".$present_date->toDateString()."'")
+      );
+                               
                                   
 		$enrolledCustomers=$enrolledCustomers[0]->enrollmentno;	
                 if($enrolledCustomers){
