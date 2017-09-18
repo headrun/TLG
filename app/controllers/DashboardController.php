@@ -222,30 +222,33 @@ class DashboardController extends \BaseController {
                         $presentdate= Carbon::now();;
                         $weeekdate= new carbon();
                         $time = strtotime($presentdate);
-                        $end = strtotime('next sunday, 11:59am', $time);
+                        $end = strtotime('next sunday, 11:59pm', $time);
                         //print_r(date('Y-m-d', strtotime('+1', $end))); die;
                         //$weekdatemon= $presentdate->endOfWeek();
                         //$weeekdate->addDays(7);
+                        //return date('Y-m-d', $end);
                        
                         $birthdayPresentWeek=BirthdayParties::whereDate('birthday_party_date','>=',date('Y-m-d', $time))
                               // ->where('birthday_party_date','>=',$weekdatemon)
                               //  ->where('birthday_party_date','<=',$weeekdate->toDateString())
                                 //->whereDate('birthday_party_date','<=',$weekdatemon->toDateString())
-                                ->whereDate('birthday_party_date','<=', date('Y-m-d', $end))
+                                ->whereDate('birthday_party_date','<=',date('Y-m-d', $end))
                                 ->orderBy('birthday_party_date','ASC')
                                 ->get();
                         //print_r(array($presentdate, $weeekdate->toDateString(), $end));
                         //return $birthdayPresentWeek;
 
                         for($i=0;$i<count($birthdayPresentWeek);$i++){
-                          $customer_data=Customers::where('id','=',$birthdayPresentWeek[$i]['customer_id'])->get();
+                          $customer_data=Customers::where('id','=',$birthdayPresentWeek[$i]['customer_id'])->distinct()->get();
                           $birthdayPresentWeek[$i]['customer_name']= $customer_data[0]['customer_name'];
                           $birthdayPresentWeek[$i]['mobile_no']= $customer_data[0]['mobile_no'];
                           $birthdayPresentWeek[$i]['franchisee_id']= $customer_data[0]['franchisee_id'];
-                          $student_data=  Students::where('id','=',$birthdayPresentWeek[$i]['student_id'])->get();
+                          $student_data=  Students::where('id','=',$birthdayPresentWeek[$i]['student_id'])->distinct()->get();
                           $birthdayPresentWeek[$i]['student_name']=$student_data[0]['student_name'];
                         }
-                        
+                        //return Session::get('franchisee_id');
+
+                        //return $birthdayPresentWeek;
                         $expiringbatch= Batches::getExpiringBatchData();
                         
                         //return $birthday_data; die();
@@ -258,6 +261,7 @@ class DashboardController extends \BaseController {
                                                            'courses','futurefollowups',
 							  'todaysCustomerReg','todaysEnrolledCustomers','enrolledCustomers','totalIntrovisitCount', 'introVisitCount', 'allIntrovisits', 'todaysFollowup', 
 							  'todaysIntrovisit','activeRemindersCount','totalclasses', 'expiringbatch');
+   
 			return View::make('pages.dashboard.upcoming',compact($viewData));
      
 		}elseif(Auth::check() && Session::get('userType')=='SUPER_ADMIN'){
@@ -280,27 +284,35 @@ class DashboardController extends \BaseController {
       $inputs = Input::all();
 
       if($inputs['value'] == "Week"){
-          $presentdate=new carbon();
-          $weeekdate=new carbon();
-          $weekdatemon= $presentdate->endOfWeek();
-        //  $weeekdate->addDays(7);
-          $birthdayCelebrationsData=BirthdayParties::where('birthday_party_date','>=',$presentdate->toDateString())
-                                              //  ->where('birthday_party_date','<=',$weeekdate->toDateString())
-                                                //->where('franchisee_id','=',Session::get('franchiseId'))
-                                               // ->orderBy('birthday_party_date')
-                                                ->where('birthday_party_date','<=',
-                                                  $weekdatemon->toDateString())
+          $presentdate= Carbon::now();;
+                        $weeekdate= new carbon();
+                        $time = strtotime($presentdate);
+                        $end = strtotime('next sunday, 11:59pm', $time);
+                        //print_r(date('Y-m-d', strtotime('+1', $end))); die;
+                        //$weekdatemon= $presentdate->endOfWeek();
+                        //$weeekdate->addDays(7);
+                        //return date('Y-m-d', $end);
+                       
+                        $birthdayCelebrationsData=BirthdayParties::whereDate('birthday_party_date','>=',date('Y-m-d', $time))
+                              // ->where('birthday_party_date','>=',$weekdatemon)
+                              //  ->where('birthday_party_date','<=',$weeekdate->toDateString())
+                                //->whereDate('birthday_party_date','<=',$weekdatemon->toDateString())
+                                ->whereDate('birthday_party_date','<=',date('Y-m-d', $end))
+                                ->orderBy('birthday_party_date','ASC')
+                                ->get();
+                        //print_r(array($presentdate, $weeekdate->toDateString(), $end));
+                       
 
-                                                ->orderBy('birthday_party_date','ASC')
-                                                ->get();
-          for($i=0;$i<count($birthdayCelebrationsData);$i++){
-              $customer_data=Customers::where('id','=',$birthdayCelebrationsData[$i]['customer_id'])->get();
-              $birthdayCelebrationsData[$i]['customer_name']= $customer_data[0]['customer_name'];
-              $birthdayCelebrationsData[$i]['mobile_no']= $customer_data[0]['mobile_no'];
-              $birthdayCelebrationsData[$i]['franchisee_id']= $customer_data[0]['franchisee_id'];
-              $student_data=  Students::where('id','=',$birthdayCelebrationsData[$i]['student_id'])->get();
-              $birthdayCelebrationsData[$i]['student_name']=$student_data[0]['student_name'];
-          }
+                        for($i=0;$i<count($birthdayCelebrationsData);$i++){
+                          $customer_data=Customers::where('id','=',$birthdayCelebrationsData[$i]['customer_id'])->distinct()->get();
+                          $birthdayCelebrationsData[$i]['customer_name']= $customer_data[0]['customer_name'];
+                          $birthdayCelebrationsData[$i]['mobile_no']= $customer_data[0]['mobile_no'];
+                          $birthdayCelebrationsData[$i]['franchisee_id']= $customer_data[0]['franchisee_id'];
+                          $student_data=  Students::where('id','=',$birthdayCelebrationsData[$i]['student_id'])->distinct()->get();
+                          $birthdayCelebrationsData[$i]['student_name']=$student_data[0]['student_name'];
+                        }
+
+
       }elseif($inputs['value'] == "Month"){
           $birthdayCelebrationsData  = BirthdayParties::whereRaw('MONTH(birthday_party_date) = MONTH(NOW())')->get();
 

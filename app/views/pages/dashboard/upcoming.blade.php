@@ -718,7 +718,9 @@
                                     </thead>
                                     <tbody id = "BirthdayTableBody">
                                         <?php for($i=0;$i<count($birthdayPresentWeek);$i++){
-                                            if($birthdayPresentWeek[$i]['franchisee_id']==Session::get('franchiseId')){?>
+
+                                            //if($birthdayPresentWeek[$i]['franchisee_id']==Session::get('franchiseId'))
+                                            { ?>
                                         <tr>
                                             <td>{{$birthdayPresentWeek[$i]['customer_name']}}{{$birthdayPresentWeek[$i]['customer_lastname']}}
                                             <a href="{{url()}}/customers/view/{{$birthdayPresentWeek[$i]['customer_id']}}?tab=birthdayparty"></a>
