@@ -920,7 +920,7 @@ function pendingamount(pendingamountId,pendingAmount){
                                 var addguestamt=$('#additionalguestNo').val() * parseInt(birthday_additional_guest_price);
                                 $('#additionalguestcost').val(addguestamt);
                                 var addtionaltimecost=parseInt($('#additionalhalfhourscost').val());
-                                $('#amountpending').val(parseInt(response.birthday_data['default_birthday_cost'])+addguestamt+addtionaltimecost);
+                                $('#amountpending').val(parseInt(response.birthday_data['default_birthday_cost'])+addguestamt+addtionaltimecost)-response.birthday_data['advance_amount_paid'];
                                 var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
                                 $('#taxamount').val(tax);
                                 $('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt($('#amountpending').val()));
