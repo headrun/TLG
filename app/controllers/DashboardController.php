@@ -71,8 +71,7 @@ class DashboardController extends \BaseController {
                         $present_date=Carbon::now();
                         $totalclasses=0;
                         foreach($courses as $course){
-                          $temp= DB::select(DB::raw("SELECT count('student_id') as totalno
-                                                     FROM student_classes 
+                          $temp= DB::select(DB::raw("SELECT count('student_id') as totalno FROM student_classes 
                                                      WHERE franchisee_id = '".Session::get('franchiseId')."' AND enrollment_end_date >= '".date('Y-m-d')."' AND class_id IN (select id from classes where course_id =".$course->id .") AND student_classes.status IN ('enrolled')"));
 
 
@@ -84,7 +83,7 @@ class DashboardController extends \BaseController {
                               $totalclasses+=0;
                             }
                         }
-
+                        //return $totalclasses;
                         /*
                         foreach($courses as $course){
                           $temp= DB::select(DB::raw("SELECT sum(selected_sessions) as totalno
@@ -124,6 +123,7 @@ class DashboardController extends \BaseController {
                         $student_id=array();
                         $birthday_celebration_data=BirthdayParties::where('created_at','>=',$startdate->toDateString())
                                                                     ->where('created_at','<=',$endofyear->toDateString())
+                                                                    ->where('franchisee_id','=',Session::get('franchiseId'))
                                                                     ->select('student_id')
                                                                     ->get();
                         
@@ -138,7 +138,7 @@ class DashboardController extends \BaseController {
                         $birthday_data= Students::whereNotIn('id',$student_id)
                                                   ->where('student_date_of_birth','<>','')
                                                   ->where( DB::raw('MONTH(student_date_of_birth)'), '=', $month)
-                                                  ->where( DB::raw('DAY(student_date_of_birth)'), '>', $presentdate )
+                                                  //->where( DB::raw('DAY(student_date_of_birth)'), '>', $presentdate )
                                                   ->where('franchisee_id','=',Session::get('franchiseId'))
                                                   ->orderBy(DB::raw('DAY(student_date_of_birth)'))
                                                   -> get();
@@ -233,6 +233,7 @@ class DashboardController extends \BaseController {
                               //  ->where('birthday_party_date','<=',$weeekdate->toDateString())
                                 //->whereDate('birthday_party_date','<=',$weekdatemon->toDateString())
                                 ->whereDate('birthday_party_date','<=',date('Y-m-d', $end))
+                                ->where('franchisee_id','=',Session::get('franchiseId'))
                                 ->orderBy('birthday_party_date','ASC')
                                 ->get();
                         //print_r(array($presentdate, $weeekdate->toDateString(), $end));
@@ -284,23 +285,22 @@ class DashboardController extends \BaseController {
       $inputs = Input::all();
 
       if($inputs['value'] == "Week"){
-          $presentdate= Carbon::now();;
-                        $weeekdate= new carbon();
-                        $time = strtotime($presentdate);
-                        $end = strtotime('next sunday, 11:59pm', $time);
-                        //print_r(date('Y-m-d', strtotime('+1', $end))); die;
-                        //$weekdatemon= $presentdate->endOfWeek();
-                        //$weeekdate->addDays(7);
-                        //return date('Y-m-d', $end);
-                       
-                        $birthdayCelebrationsData=BirthdayParties::whereDate('birthday_party_date','>=',date('Y-m-d', $time))
-                              // ->where('birthday_party_date','>=',$weekdatemon)
-                              //  ->where('birthday_party_date','<=',$weeekdate->toDateString())
-                                //->whereDate('birthday_party_date','<=',$weekdatemon->toDateString())
-                                ->whereDate('birthday_party_date','<=',date('Y-m-d', $end))
-                                ->orderBy('birthday_party_date','ASC')
-                                ->get();
-                        //print_r(array($presentdate, $weeekdate->toDateString(), $end));
+          $presentdate= Carbon::now();
+          $weeekdate= new carbon();
+          $time = strtotime($presentdate);
+          $end = strtotime('next sunday, 11:59pm', $time);
+          //print_r(date('Y-m-d', strtotime('+1', $end))); die;
+          //$weekdatemon= $presentdate->endOfWeek();
+          //$weeekdate->addDays(7);
+          //return date('Y-m-d', $end);
+         
+          $birthdayCelebrationsData=BirthdayParties::whereDate('birthday_party_date','>=',date('Y-m-d', $time))
+                              
+                              ->where('franchisee_id','=',Session::get('franchiseId'))
+                              ->whereDate('birthday_party_date','<=',date('Y-m-d', $end))
+                              ->orderBy('birthday_party_date','ASC')
+                              ->get();
+                        
                        
 
                         for($i=0;$i<count($birthdayCelebrationsData);$i++){
@@ -314,7 +314,11 @@ class DashboardController extends \BaseController {
 
 
       }elseif($inputs['value'] == "Month"){
-          $birthdayCelebrationsData  = BirthdayParties::whereRaw('MONTH(birthday_party_date) = MONTH(NOW())')->get();
+          $birthdayCelebrationsData  = BirthdayParties::whereRaw('MONTH(birthday_party_date) = MONTH(NOW())')
+                                                      ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                      ->orderBy('birthday_party_date','ASC')
+                                                      ->get();
+          
 
           for($i=0;$i<count($birthdayCelebrationsData);$i++){
               $customer_data=Customers::where('id','=',$birthdayCelebrationsData[$i]['customer_id'])->get();
@@ -324,9 +328,16 @@ class DashboardController extends \BaseController {
               $student_data=  Students::where('id','=',$birthdayCelebrationsData[$i]['student_id'])->get();
               $birthdayCelebrationsData[$i]['student_name']=$student_data[0]['student_name'];
           }
+          
 
       }elseif($inputs['value'] == "Year"){
-          $birthdayCelebrationsData  = BirthdayParties::whereRaw('YEAR(birthday_party_date) = YEAR(NOW())')->get();
+                 
+            $birthdayCelebrationsData  = BirthdayParties::whereRaw('YEAR(birthday_party_date) = YEAR(NOW())')
+                                                      ->where('franchisee_id','=',Session::get('franchiseId'))
+                                                      ->orderBy('birthday_party_date','ASC')
+                                                      ->get();
+       
+
 
           for($i=0;$i<count($birthdayCelebrationsData);$i++){
               $customer_data=Customers::where('id','=',$birthdayCelebrationsData[$i]['customer_id'])->get();
