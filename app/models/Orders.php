@@ -163,6 +163,7 @@ class Orders extends \Eloquent {
                                 //->join('birthday_parties','orders.birthday_id','=','birthday_parties.id')
                                 //->join('users','orders.created_by','=','users.id')
                                 where('orders.customer_id','=',$customerId)
+                                ->where('franchisee_id', '=', Session::get('franchiseId'))
                                 ->where('orders.birthday_id','<>','')
                                 ->groupBy('orders.id')
                                 ->orderBy('birthday_id','DESC')
@@ -348,7 +349,7 @@ class Orders extends \Eloquent {
 
         $final_sales_data = array();
 
-        $final_sales_data[] = ['Parent Name', 'Child Name', 'Payment Date', 'Date of Birth', 'Name Of Class', 'Start Date', 'End Date', 'No.Of Classes Selected', '2nd Class', 'Membership', 'Membership Amount', 'Fees', 'Tax Amount', 'Discount', 'Discount For Siblings', 'Discount for Multi-class', 'Total', 'Mode Of Payment'];
+        $final_sales_data[] = ['Parent Name', 'Child Name', 'Payment Date', 'Date of Birth', 'Name Of Class', 'Start Date', 'End Date', 'No.Of Classes Selected', '2nd Class', 'Membership', 'Membership Amount', 'Fees', 'Tax Amount', 'Discount', 'Discount For Siblings', 'Discount for Multi-class','Special Discount', 'Total', 'Mode Of Payment'];
         $Sales['data'] = Orders::where('franchisee_id','=',Session::get('franchiseId'))
                     //->where('student_classes_id','<>',0)
                     ->whereDate('created_at','>=',$inputs['reportGenerateStartdate1'])
@@ -366,7 +367,7 @@ class Orders extends \Eloquent {
                                 where('payment_no', '=', $Sales['data'][$i]['payment_no'])
                                 ->where('student_id', '=', $Sales['data'][$i]['student_id'])
                                 ->where('customer_id', '=', $Sales['data'][$i]['customer_id'])
-                                ->selectRaw('sum(payments_dues.selected_sessions) as selected_classes, min(start_order_date) as start_date, max(end_order_date) as end_date, class_id, membership_type_id, membership_amount, each_class_amount, tax_percentage, discount_amount, discount_sibling_amount, discount_multipleclasses_amount')
+                                ->selectRaw('sum(payments_dues.selected_sessions) as selected_classes, min(start_order_date) as start_date, max(end_order_date) as end_date, class_id, membership_type_id, membership_amount, each_class_amount, tax_percentage, discount_amount, discount_sibling_amount, discount_multipleclasses_amount, discount_admin_amount')
                                 ->get();
 
             if ($payment_data[0]['selected_classes'] > 0) {
@@ -431,8 +432,9 @@ class Orders extends \Eloquent {
                 $each_sales_data[]= $payment_data[0]['discount_amount'];
                 $each_sales_data[]= $payment_data[0]['discount_sibling_amount'];
                 $each_sales_data[]= $payment_data[0]['discount_multipleclasses_amount'];
+                $each_sales_data[]= $payment_data[0]['discount_admin_amount'];
                 
-                $each_sales_data[]= number_format($total_amt_after_disc + $tax_amt, 2, '.', '');;
+                $each_sales_data[]= number_format($total_amt_after_disc - $payment_data[0]['discount_admin_amount'] + $tax_amt , 2, '.', '');;
                 $each_sales_data[]= $Sales['data'][$i]['payment_mode'];
 
                 $final_sales_data[] = $each_sales_data;   

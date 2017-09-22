@@ -74,7 +74,7 @@ class ReportsController extends \BaseController {
 		              $excel->sheet('Sheet 1', function($sheet) use($salesFile, $start_date, $end_date){
 		                  
 		                  //Styles in Row wise
-		                  $sheet->mergeCells('A1:R1');
+		                  $sheet->mergeCells('A1:S1');
 		                  $sheet->setAllBorders('thin');
 		                  $heightArray = array(
 		                      1     =>  50,
