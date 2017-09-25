@@ -1229,18 +1229,25 @@ $('#SeasonsCbx3').change(function(){
 $('#batchCbx').change(function(){
 
 if($('#enrollmentStartDate').val()!=''){
+    console.log($('#batchCbx').val());
+    console.log($('#eligibleClassesCbx').val());
 $.ajax({
         type: "POST",
         url: "{{URL::to('/quick/getBatchRemainingClassesByBatchId')}}",
-        data: {'batchId':$('#batchCbx').val(),'preferredStartDate':$('#enrollmentStartDate').val(), 'removalbleClasses': 0, 'selectedNoOfClass': selectedNoOfClass},
+        data: {'batchId':$('#batchCbx').val(),'preferredStartDate':$('#enrollmentStartDate').val(), 'removalbleClasses': 0, 'selectedNoOfClass': selectedNoOfClass, 'classId' : $('#eligibleClassesCbx').val(),'studentId' : studentId, 'season_id': $('#SeasonsCbx').val()},
         dataType:"json",
         success: function (response)
         {
             console.log(response);
-            if(response.status=='success'){
+            if(response.status=='available')
+             {  
+                console.log(response.status);
+                $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-danger" >Already this course is enrolled for the same batch in Season.</p>');
+            }
+            else if(response.status=='success'){
                 
                 if(selectedNoOfClass <= response.classCount){
-                    $('#batch1Msg').html('<span class="uk-alert uk-alert-success">No Of Classes:'+selectedNoOfClass+'&nbsp;<i class="fa fa-trash" style = "background: #e53935; padding: 3px"  aria-hidden="true" id = "deleteBtn1" ></i></span><input type="hidden" id="batch1SelectedClasses" value="'+selectedNoOfClass+'">');
+                    $('#batch1Msg').html('<span class="uk-alert uk-alert-success">No Of Classes:'+selectedNoOfClass+'&nbsp;<i class="fa fa-trash" style = "background: red; padding: 3px"  aria-hidden="true" id = "deleteBtn1" ></i></span><input type="hidden" id="batch1SelectedClasses" value="'+selectedNoOfClass+'">');
                     batch1ClassCost=response.classAmount;
                     $('#enrollmentcontinue2').hide();
                     $('#enrollmentcontinue3').hide();
@@ -1459,12 +1466,23 @@ console.log(enddate1);
 $.ajax({
         type: "POST",
         url: "{{URL::to('/quick/getBatchRemainingClassesByBatchId')}}",
-        data: {'batchId':$('#batchCbx2').val(),'preferredStartDate':enddate1, 'removalbleClasses': firstselectedNoOfClass, 'selectedNoOfClass': selectedNoOfClass},
+        data: {'batchId':$('#batchCbx2').val(),'preferredStartDate':$('#enrollmentStartDate').val(), 'removalbleClasses': 0, 'selectedNoOfClass': selectedNoOfClass, 'classId' : $('#eligibleClassesCbx2').val(),'studentId' : studentId, 'season_id': $('#SeasonsCbx2').val()},
         dataType:"json",
         success: function (response)
         {
-            console.log(response);
-            if(response.status=='success'){
+             console.log(response);
+             if($('#SeasonsCbx').val() == $('#SeasonsCbx2').val() && 
+                $('#eligibleClassesCbx').val() == $('#eligibleClassesCbx2').val() && 
+                $('#batchCbx').val() == $('#batchCbx2').val()){
+                $("#messageStudentEnrollmentDiv").html('<p class="uk-alert " style="background-color:#FA8BBA">Just now you selected same class and same batch in the same season.</p>');
+
+             }
+             else if(response.status=='available')
+             {  
+                console.log(response.status);
+                $("#messageStudentEnrollmentDiv").html('<p class="uk-alert " style="background-color:#F95019">Already this course is enrolled for the same batch in Season.</p>');
+             }
+             else if(response.status=='success'){
                 
                 if((selectedNoOfClass-firstselectedNoOfClass)<= response.classCount){
                     $('#batch2Msg').html('<span class="uk-alert  uk-alert-success">No Of Classes:'+(selectedNoOfClass-firstselectedNoOfClass)+'&nbsp;<i class="fa fa-trash" style = "background: #e53935; padding: 3px" id = "deleteBtn2"  aria-hidden="true"></i></span><input type="hidden" id="batch1SelectedClasses" value="'+selectedNoOfClass+'">');
@@ -1551,14 +1569,29 @@ console.log(enddate2);
 $.ajax({
         type: "POST",
         url: "{{URL::to('/quick/getBatchRemainingClassesByBatchId')}}",
-        data: {'batchId':$('#batchCbx3').val(),'preferredStartDate':enddate2, 'removalbleClasses': secondselectedNoOfClass + firstselectedNoOfClass, 'selectedNoOfClass': selectedNoOfClass},
+        data: {'batchId':$('#batchCbx3').val(),'preferredStartDate':$('#enrollmentStartDate').val(), 'removalbleClasses': 0, 'selectedNoOfClass': selectedNoOfClass, 'classId' : $('#eligibleClassesCbx3').val(),'studentId' : studentId, 'season_id': $('#SeasonsCbx3').val()},
         dataType:"json",
         success: function (response)
         {
-            console.log(response);
-            if(response.status=='success'){
-                
-                if((selectedNoOfClass-(firstselectedNoOfClass+secondselectedNoOfClass)) <= response.classCount){
+             console.log(response);
+             if($('#SeasonsCbx2').val() == $('#SeasonsCbx3').val() && 
+                $('#eligibleClassesCbx2').val() == $('#eligibleClassesCbx3').val() && 
+                $('#batchCbx2').val() == $('#batchCbx3').val()){
+                $("#messageStudentEnrollmentDiv").html('<p class="uk-alert " style="background-color:#FA8BBA">Just now you selected same class and same batch in the same season.</p>');
+            }
+            else if($('#SeasonsCbx').val() == $('#SeasonsCbx3').val() && 
+                $('#eligibleClassesCbx').val() == $('#eligibleClassesCbx3').val() && 
+                $('#batchCbx').val() == $('#batchCbx3').val()){
+                $("#messageStudentEnrollmentDiv").html('<p class="uk-alert " style="background-color:#FA8BBA">Just now you selected same class and same batch in the same season.</p>');
+            }
+          
+            else if(response.status=='available')
+             {  
+                console.log(response.status);
+                $("#messageStudentEnrollmentDiv").html('<p class="uk-alert " style="background-color:#50C5FC">Already this course is enrolled for the same batch in Season.</p>');
+             }
+            else if(response.status=='success'){
+                 if((selectedNoOfClass-(firstselectedNoOfClass+secondselectedNoOfClass)) <= response.classCount){
                     $('#batch3Msg').html('<span class="uk-alert uk-alert-success">No Of Classes:'+(selectedNoOfClass-(firstselectedNoOfClass+secondselectedNoOfClass))+'&nbsp;<i class="fa fa-trash" style = "background: #e53935; padding: 3px" id = "deleteBtn3" aria-hidden="true"></i></span>');
                     batch3ClassCost=response.classAmount;
                     thirdselectedNoOfClass=(selectedNoOfClass-(firstselectedNoOfClass+secondselectedNoOfClass));
@@ -1876,7 +1909,7 @@ $('#ClassesCbxForOld').change(function(){
     $.ajax({
       type: "POST",
       url: "{{URL::to('/quick/getBatchesForOldCustomer')}}",
-          data: {'seasonId': seasonId, 'classId': classId},
+      data: {'seasonId': seasonId, 'classId': classId},
       dataType: 'json',
       success: function(response){
               console.log(response.batch_data);
