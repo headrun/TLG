@@ -47,7 +47,7 @@ class StudentsController extends \BaseController {
     
   }
         
-        public function enrolledstudents(){
+  public function enrolledstudents(){
             if(Auth::check()){
                 $currentPage  =  "ENROLLEDSTUDENTS";
                 $mainMenu     =  "STUDENTS_MAIN";
@@ -113,8 +113,23 @@ class StudentsController extends \BaseController {
    *
    * @return Response
    */
+
+  public function enrollmentStartDate(){
+    $inputs = Input::all();
+    $date = $inputs['enrollmentStartDate'];
+    
+
+
+  }
+
   public function view($id)
   {
+    $preferedDate = '';
+    if (!empty($inputs = Input::all())) {
+      $inputs = Input::all();
+      $preferedDate = $inputs['enrollmentStartDate'];
+    }
+    
     if(Auth::check())
     {
       $currentPage  =  "STUDENTS_LIST";
@@ -160,6 +175,17 @@ class StudentsController extends \BaseController {
                         }
                         
                         if($discount_second_class_elligible){
+                          if ($preferedDate != '') {
+                            return 'Date is Available';
+                            $classes_count=  StudentClasses::where('student_id','=',$id)
+                                             ->where('status','=','enrolled')
+                                             ->whereDate('enrollment_end_date', '>=', $preferedDate)
+                                           //->whereDate('enrollment_start_date','>=',date("Y-m-d"))
+                                           //->whereDate('enrollment_end_date','<=',date("Y-m-d"))
+                                           //->distinct('class_id')
+                                             ->count();
+                          } else {
+                            // return 'Date is Not Available';
                             $classes_count=  StudentClasses::where('student_id','=',$id)
                                              ->where('status','=','enrolled')
                                              ->whereDate('enrollment_end_date', '>=', date('Y-m-d'))
@@ -167,6 +193,7 @@ class StudentsController extends \BaseController {
                                            //->whereDate('enrollment_end_date','<=',date("Y-m-d"))
                                            //->distinct('class_id')
                                              ->count();
+                          }
                             
                             if($classes_count >= 1){
                                 $discount_second_class_elligible=1;
@@ -1119,9 +1146,7 @@ public function enrollKid2(){
     }
     return Response::json(array("status"=>"clear"));
   }
-  
-  
-  
+
   public function addbirthdayParty(){
     
     $inputs = Input::all();
@@ -1261,7 +1286,7 @@ public function enrollKid2(){
   
   public function getStudentsByBatch(){
     
-    $inputs = Input::all();
+    $inputs=Input::all();
     
     $batchId       = $inputs['batchId'];
     $selectedDate  = $inputs['selectedDate'];

@@ -293,6 +293,8 @@ $("#addEnrollment").click(function(){
 //$("#paymentOptions").hide();
 
 $("#enrollmentOptions").click(function (){
+    var enrollmentStartDate = $('#enrollmentStartDate').val();
+
         <?php if(!$customermembership){?>
      var membershipAmt={{json_encode($membershipTypesAll)}};  
     $("#membershipAmount").val(membershipAmt[0]['fee_amount']);
@@ -300,8 +302,21 @@ $("#enrollmentOptions").click(function (){
                 $('#membershipAmounttotalslabel').html(membershipAmt[0]['fee_amount']);
   <?php }?>
                 
+    $.ajax({
+          type: "POST",
+          url: "{{URL::to('students/view/3142')}}",
+          data: {'enrollmentStartDate': enrollmentStartDate},
+          dataType:"json",
+          success: function (response)
+          {
+                 // alert(response);   
+                        
+          }
+      }); 
+
                 $('#enrollNow').addClass('disabled');
                 totalCostForpay=(firstselectedNoOfClass*batch1ClassCost)+(secondselectedNoOfClass*batch2ClassCost)+(thirdselectedNoOfClass*batch3ClassCost);
+
                 //$('#selectedPaymentMethod').html('Amount:');
                 $("#finalPaymentDiv").show();
     $("#singlePayAmountDiv").show();
@@ -345,7 +360,8 @@ function calculateFinalAmount(){
         $("#discountTextBox").val("-"+(percentAmount).toFixed(2));
                                 
         finalAmount = parseFloat(finalAmount-percentAmount);
-        $("#discountTextBoxlabel").html((finalAmount).toFixed(2));
+        $("#discountTextBoxlabel").html((Math.round(finalAmount/10)*10).toFixed(2));
+        
         
         <?php if($discount_second_child_elligible){ ?>
           $('#second_child_discount_to_form').val({{$discount_second_child}});
@@ -354,7 +370,7 @@ function calculateFinalAmount(){
           
           finalAmount=parseFloat(finalAmount-second_child_discount_amt);
           $('#second_child_discount').html('<p>By Enrolling Sibling You are Saving('+{{$discount_second_child}}+'%:[-'+(second_child_discount_amt).toFixed(2)+'Rs])</p>');
-          $('#second_child_amountlabel').html((finalAmount).toFixed(2));
+          $('#second_child_amountlabel').html((Math.round(finalAmount/10)*10).toFixed(2));
       <?php } ?>
                                   
       <?php if($discount_second_class_elligible){ ?>
@@ -364,7 +380,7 @@ function calculateFinalAmount(){
           $('#second_class_amountlabel').html('-'+(second_class_discount_amt).toFixed(2));
           finalAmount=parseFloat(finalAmount-second_class_discount_amt);
           $('#second_class_discount').html('<p>By Enrolling Multiple Classes You are Saving('+{{$discount_second_class}}+'%[-'+(second_class_discount_amt).toFixed(2)+'Rs])</p>');
-          $('#second_class_amountlabel').html((finalAmount).toFixed(2));
+          $('#second_class_amountlabel').html((Math.round(finalAmount/10)*10).toFixed(2));
       <?php } ?>
       
       <?php if(!$customermembership){?>
@@ -1242,7 +1258,7 @@ $.ajax({
             if(response.status=='available')
              {  
                 console.log(response.status);
-                $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-danger" >Already this course is enrolled for the same batch in Season.</p>');
+                $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-danger" >Already this course is enrolled for the same batch in this Season.</p>');
             }
             else if(response.status=='success'){
                 
@@ -1480,7 +1496,7 @@ $.ajax({
              else if(response.status=='available')
              {  
                 console.log(response.status);
-                $("#messageStudentEnrollmentDiv").html('<p class="uk-alert " style="background-color:#F95019">Already this course is enrolled for the same batch in Season.</p>');
+                $("#messageStudentEnrollmentDiv").html('<p class="uk-alert " style="background-color:#F95019">Already this course is enrolled for the same batch in this Season.</p>');
              }
              else if(response.status=='success'){
                 
@@ -1588,7 +1604,7 @@ $.ajax({
             else if(response.status=='available')
              {  
                 console.log(response.status);
-                $("#messageStudentEnrollmentDiv").html('<p class="uk-alert " style="background-color:#50C5FC">Already this course is enrolled for the same batch in Season.</p>');
+                $("#messageStudentEnrollmentDiv").html('<p class="uk-alert " style="background-color:#50C5FC">Already this course is enrolled for the same batch in this Season.</p>');
              }
             else if(response.status=='success'){
                  if((selectedNoOfClass-(firstselectedNoOfClass+secondselectedNoOfClass)) <= response.classCount){

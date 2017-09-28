@@ -250,8 +250,9 @@ class BatchesController extends \BaseController {
         
         public function getBatchData(){
             $inputs=  Input::all();
+            $present_date = carbon::now();
             $franchisee_id=Session::get('franchiseId');
-           $batch_data=  Batches::getAllBatchesbySeasonId($franchisee_id,$inputs['session_id']);
+            $batch_data=  Batches::getAllBatchesbySeasonId($franchisee_id,$inputs['session_id']);
            
             for($i=0;$i<count($batch_data);$i++){
 				$batch_data[$i]['preferred_time']=date("h:i",  strtotime($batch_data[$i]['preferred_time']));
@@ -267,10 +268,13 @@ class BatchesController extends \BaseController {
 				}else{
 				  $batch_data[$i]['instructor_name']='';
 				}
-				$batch_data[$i]['count']=  StudentClasses::where('batch_id','=',$batch_data[$i]['id'])
-							 ->whereIn('status',array('enrolled','makeup','introvisit','transferred_class'))
-                             ->distinct('student_id')
-                             ->count();
+				$batch_data[$i]['count'] = StudentClasses::with('Students')
+								->where('batch_id','=',$batch_data[$i]['id'])
+                                ->whereIn('status',array('enrolled','makeup','introvisit','transferred_class'))
+								->whereDate('enrollment_start_date', '<=', $present_date)
+								->whereDate('enrollment_end_date', '>=', $present_date)
+								->distinct('student_id')
+								->count();
             }
                        
             if($batch_data){
