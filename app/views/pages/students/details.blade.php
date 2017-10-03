@@ -304,7 +304,7 @@ $("#enrollmentOptions").click(function (){
                 
     $.ajax({
           type: "POST",
-          url: "{{URL::to('students/view/3142')}}",
+          url: "{{URL::to('students/view/3195')}}",
           data: {'enrollmentStartDate': enrollmentStartDate},
           dataType:"json",
           success: function (response)
@@ -3209,13 +3209,26 @@ $('.deleteenrollmentdata').click(function(){
                                              <tbody>
                                              <tr>
                                                  <th>Batch&nbsp;Name&nbsp; </th>
+                                                 <th>Week&nbsp;</th>
+                                                 <th>Time&nbsp;</th>
                                                  <th>Start&nbsp;Date&nbsp; </th>
                                                  <th>End&nbsp;Date&nbsp; </th>
                                                  <th>No&nbsp;Of&nbsp;Sessions&nbsp; </th>
                                              </tr>
-                                             <?php for($i=0;$i<count($latestEnrolledData);$i++){?>
+                                             <?php 
+                                                for($i=0;$i<count($latestEnrolledData);$i++){
+                                                $test = explode('-', $latestEnrolledData[$i]['batch_name']);
+                                                $day= date("l", strtotime($latestEnrolledData[$i]['enrollment_start_date']) );
+                                                $timeStart = explode(':',$latestEnrolledData[$i]['preferred_time']);
+                                                $timeEnd = explode(':',$latestEnrolledData[$i]['preferred_end_time']);
+                                                // $test = $test[0].' '.$test[1].' '.$test[2];
+                                                //return $day;
+                                              
+                                            ?>
                                             <tr>
-                                                <td>{{$latestEnrolledData[$i]['batch_name']}}&nbsp;</td>
+                                                <td>{{$test[0].' '.$test[1].' '.$test[2]}}&nbsp;</td>
+                                                <td>{{$day}}&nbsp;</td>
+                                                <td>{{$timeStart[0].':'.$timeStart[1]}}&nbsp;-{{$timeEnd[0].':'.$timeEnd[1]}}&nbsp;</td>
                                                 <td>{{$latestEnrolledData[$i]['enrollment_start_date']}}&nbsp;</td>
                                                 <td>{{$latestEnrolledData[$i]['enrollment_end_date']}}&nbsp;</td>
                                                 <td>{{$latestEnrolledData[$i]['selected_sessions']}}&nbsp;</td>

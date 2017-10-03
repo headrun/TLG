@@ -248,6 +248,7 @@
                                             '<th>Student Name</th>'+
                                             '<th>Batch Name</th>'+
                                             '<th>IV Date</th>'+
+                                            '<th>IV Status</th>'+
                                             '<th>Registered Date</th>'+
                                             '</tr></thead>';
                                 for(var i=0;i<response[0]['data'].length;i++){
@@ -255,6 +256,7 @@
                                           response[0]['data'][i]['student_name']+"</td><td>"+
                                           response[0]['data'][i]['batch_name']+"</td><td>"+
                                           response[0]['data'][i]['iv_date']+"</td><td>"+
+                                          response[0]['data'][i]['status']+"</td><td>"+
                                           response[0]['data'][i]['created_at']+"</td></tr>";
                                     }
                                     header_data+="</table></div></div>";
@@ -540,7 +542,7 @@ $(document).on('click', '.salse_alloc_btn', function(){
                                         <strong><label>Report Type</label></strong>
                                             <select name="reportType" id="reportType" class="input-sm md-input"
                                                     style='padding: 0px; font-weight: bold; color: #727272; width:100%'>
-                                                    <!--<option value="Birthday" >Birthday</option>-->       
+                                                    <option value="Birthday">Birthday</option>       
                                                     <option value="Enrollment">Enrollment</option>
                                                     <!--<option value="both">Enrollment & Birthday</option>-->
                                                     <option value="Membership">Membership</option>

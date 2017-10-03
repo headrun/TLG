@@ -176,30 +176,51 @@ class StudentsController extends \BaseController {
                         
                         if($discount_second_class_elligible){
                           if ($preferedDate != '') {
-                            return 'Date is Available';
+                            //return 'Date is Available';
                             $classes_count=  StudentClasses::where('student_id','=',$id)
                                              ->where('status','=','enrolled')
-                                             ->whereDate('enrollment_end_date', '>=', $preferedDate)
-                                           //->whereDate('enrollment_start_date','>=',date("Y-m-d"))
-                                           //->whereDate('enrollment_end_date','<=',date("Y-m-d"))
-                                           //->distinct('class_id')
-                                             ->count();
-                          } else {
-                            // return 'Date is Not Available';
-                            $classes_count=  StudentClasses::where('student_id','=',$id)
-                                             ->where('status','=','enrolled')
-                                             ->whereDate('enrollment_end_date', '>=', date('Y-m-d'))
-                                           //->whereDate('enrollment_start_date','>=',date("Y-m-d"))
-                                           //->whereDate('enrollment_end_date','<=',date("Y-m-d"))
-                                           //->distinct('class_id')
-                                             ->count();
-                          }
-                            
-                            if($classes_count >= 1){
-                                $discount_second_class_elligible=1;
+                                             ->select('enrollment_end_date')
+                                             ->get();
+
+                              // $disStatus =  StudentClasses::where('student_id','=',$id)
+                              //                  ->where('status','=','enrolled')
+                              //                  ->select('enrollment_end_date')
+                              //                  ->get();
+                            //return $classes_count[0]['enrollment_end_date'];
+                           // return $preferedDate;
+                            if($preferedDate < $classes_count[0]['enrollment_end_date']){
+                                
+                                
+                                $discount_second_class_elligible=1;  
+
                             }else{
+                                //return '$$$$';
                                 $discount_second_class_elligible=0;
                             }
+                          }
+                            // return $disStatus[0]['enrollment_end_date'];
+                            // return $preferedDate;
+                          // } else {
+                          //    // return 'Date is Not Available';
+                          //   // $classes_count=  StudentClasses::where('student_id','=',$id)
+                          //   //                  ->where('status','=','enrolled')
+                          //   //                  ->whereDate('enrollment_end_date', '>=', $preferedDate)
+                          //   //                  ->count();
+                          //   // $disStatus = 0;
+                          // }
+                            // if($classes_count >= 1){
+                            // if($preferedDate >= $disStatus[0]['enrollment_end_date']){
+                            //     $discount_second_class_elligible=1;  
+
+                            // }else{
+                            //     $discount_second_class_elligible=0;
+                            // }
+                            
+                            // if($classes_count >= 1){
+                            //     $discount_second_class_elligible=1;
+                            // }else{
+                            //     $discount_second_class_elligible=0;
+                            // }
                         }
                         
                         if($discount_second_child_elligible){
@@ -227,6 +248,9 @@ class StudentsController extends \BaseController {
                       for($i=0;$i<count($latestEnrolledData);$i++){
                           $temp=  Batches::find($latestEnrolledData[$i]['batch_id']);
                           $latestEnrolledData[$i]['batch_name']=$temp->batch_name;
+                          $latestEnrolledData[$i]['preferred_time']=$temp->preferred_time;
+                          $latestEnrolledData[$i]['preferred_end_time']=$temp->preferred_end_time;
+
                       }
                     $discountEnrollmentData=  Discounts::getEnrollmentDiscontByFranchiseId();    
                     //getting the data from payment_master
