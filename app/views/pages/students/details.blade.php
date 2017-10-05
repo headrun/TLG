@@ -4107,7 +4107,9 @@ $('.deleteenrollmentdata').click(function(){
                                                                             </td>
                                                                         </tr>
                                                                         <?php }?>
-                                                                        <?php if(Session::get('userType') == 'ADMIN'){?>
+                                                                        <!-- <?php
+                                                                         //if(Session::get('userType') == 'ADMIN')
+                                                                          {?> -->
                                                                             <tr>
                                                                             <td colspan="2" style="text-align: right; font-weight: bold"><div><p>Special Discount For you</p></div></td>
                                                                             <td><input style="font-weight: bold; width:50%" type="number"
@@ -4115,7 +4117,7 @@ $('.deleteenrollmentdata').click(function(){
                       class="form-control" />
                                                                             </td>
                                                                         </tr>
-                                                                        <?php } ?>
+                                                                        <!-- <?php } ?> -->
                                                                         <?php if(!$customermembership){?>
                   <tr>
 
