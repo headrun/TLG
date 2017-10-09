@@ -295,38 +295,26 @@ $("#addEnrollment").click(function(){
 $("#enrollmentOptions").click(function (){
     var enrollmentStartDate = $('#enrollmentStartDate').val();
 
-        <?php if(!$customermembership){?>
-     var membershipAmt={{json_encode($membershipTypesAll)}};  
-    $("#membershipAmount").val(membershipAmt[0]['fee_amount']);
-    $("#membershipAmounttotals").val(membershipAmt[0]['fee_amount']);
-                $('#membershipAmounttotalslabel').html(membershipAmt[0]['fee_amount']);
-  <?php }?>
-                
-    $.ajax({
-          type: "POST",
-          url: "{{URL::to('students/view/3195')}}",
-          data: {'enrollmentStartDate': enrollmentStartDate},
-          dataType:"json",
-          success: function (response)
-          {
-                 // alert(response);   
-                        
-          }
-      }); 
+      <?php if(!$customermembership){?>
+         var membershipAmt={{json_encode($membershipTypesAll)}};  
+        $("#membershipAmount").val(membershipAmt[0]['fee_amount']);
+        $("#membershipAmounttotals").val(membershipAmt[0]['fee_amount']);
+        $('#membershipAmounttotalslabel').html(membershipAmt[0]['fee_amount']);
+      <?php }?>
+    
+      $('#enrollNow').addClass('disabled');
+      totalCostForpay=(firstselectedNoOfClass*batch1ClassCost)+(secondselectedNoOfClass*batch2ClassCost)+(thirdselectedNoOfClass*batch3ClassCost);
 
-                $('#enrollNow').addClass('disabled');
-                totalCostForpay=(firstselectedNoOfClass*batch1ClassCost)+(secondselectedNoOfClass*batch2ClassCost)+(thirdselectedNoOfClass*batch3ClassCost);
-
-                //$('#selectedPaymentMethod').html('Amount:');
-                $("#finalPaymentDiv").show();
-    $("#singlePayAmountDiv").show();
-    $("#singlePayAmount").val(totalCostForpay);
-    $("#totalAmountToPay").val(totalCostForpay);
-    $("#totalAmountToPaytotals").val(totalCostForpay);
-                $('#totalAmountToPaytotalslabel').html(totalCostForpay);
-                calculateFinalAmount();
-                
-                $("#paymentType").show();
+      //$('#selectedPaymentMethod').html('Amount:');
+      $("#finalPaymentDiv").show();
+      $("#singlePayAmountDiv").show();
+      $("#singlePayAmount").val(totalCostForpay);
+      $("#totalAmountToPay").val(totalCostForpay);
+      $("#totalAmountToPaytotals").val(totalCostForpay);
+      $('#totalAmountToPaytotalslabel').html(totalCostForpay);
+      
+      calculateFinalAmount();
+      $("#paymentType").show();
                 
 });
 
@@ -338,11 +326,6 @@ $('#cardDetailsDiv3').hide();
 $('#chequeDetailsDiv3').hide();
 $('#cardDetailsDiv4').hide();
 $('#chequeDetailsDiv4').hide();
-
-
-
-
-
 
 
 $("#finalPaymentDiv").hide();
@@ -4107,7 +4090,9 @@ $('.deleteenrollmentdata').click(function(){
                                                                             </td>
                                                                         </tr>
                                                                         <?php }?>
-                                                                        <?php if(Session::get('userType') == 'ADMIN'){?>
+                                                                        <!-- <?php
+                                                                         //if(Session::get('userType') == 'ADMIN')
+                                                                          {?> -->
                                                                             <tr>
                                                                             <td colspan="2" style="text-align: right; font-weight: bold"><div><p>Special Discount For you</p></div></td>
                                                                             <td><input style="font-weight: bold; width:50%" type="number"
@@ -4115,7 +4100,7 @@ $('.deleteenrollmentdata').click(function(){
                       class="form-control" />
                                                                             </td>
                                                                         </tr>
-                                                                        <?php } ?>
+                                                                        <!-- <?php } ?> -->
                                                                         <?php if(!$customermembership){?>
                   <tr>
 

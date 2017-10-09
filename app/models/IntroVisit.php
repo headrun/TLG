@@ -87,7 +87,7 @@ class IntroVisit extends \Eloquent {
                                 ->count();
         }
 	
-       static function getAllIntrovisitforReport($inputs){
+        static function getAllIntrovisitforReport($inputs){
         	$present_date = Carbon::now();
             $introvisit['data']= Introvisit::where('franchisee_id','=',Session::get('franchiseId'))
                                ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
