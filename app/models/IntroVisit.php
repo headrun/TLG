@@ -1,4 +1,5 @@
 <?php
+use Carbon\Carbon;
 
 class IntroVisit extends \Eloquent {
 	protected $fillable = [];
@@ -86,22 +87,34 @@ class IntroVisit extends \Eloquent {
                                 ->count();
         }
 	
-        static function getAllIntrovisitforReport($inputs){
+       static function getAllIntrovisitforReport($inputs){
+        	$present_date = Carbon::now();
             $introvisit['data']= Introvisit::where('franchisee_id','=',Session::get('franchiseId'))
                                ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
                                ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
                                ->get();
+            //return $present_date;
             for($i=0;$i<count($introvisit['data']);$i++){
                 $temp=  Customers::find($introvisit['data'][$i]['customer_id']);
                 $introvisit['data'][$i]['customer_name']=$temp->customer_name." ".$temp->customer_lastname;
                 $temp2=  Students::find($introvisit['data'][$i]['student_id']);
                 $introvisit['data'][$i]['student_name']=$temp2->student_name;
+                $temp4= StudentClasses::find($introvisit['data'][$i]['student_id']);
+                $introvisit['data'][$i]['status']=$temp2->status;
+                if($introvisit['data'][$i]['status']==''){
+                	if($introvisit['data'][$i]['iv_date'] <= $present_date){
+                	   $introvisit['data'][$i]['status'] ='Attended';
+                	}
+                	else{
+                	   $introvisit['data'][$i]['status'] ='IV SCHEDULED';
+                	}
+                }
                 if($introvisit['data'][$i]['batch_id']!=null){
                     $temp3= Batches::find($introvisit['data'][$i]['batch_id']);
                     $introvisit['data'][$i]['batch_name']=$temp3->batch_name;
                 }
             }
             return $introvisit;
-        }
+        }	
 	
 }
