@@ -60,7 +60,7 @@ Route::group(array('prefix' => 'dashboard'), function() {
 
 Route::group(array('prefix' => 'students'), function() {
 	Route::any('/nonenrolled', "StudentsController@index");
-        Route::any('/enrolled', "StudentsController@enrolledstudents");
+    Route::any('/enrolled', "StudentsController@enrolledstudents");
 	Route::any('/view/{id}', ['uses' =>"StudentsController@view"]);
 	Route::any('/profile/picture', "StudentsController@uploadProfilePicture");
 
@@ -338,7 +338,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('getMakeupdataByBatchId','ClassesController@getMakeupdatabyBatchId');
         Route::any('getTransferkiddata','ClassesController@getTransferkiddatabyBatchId');
         Route::any('BdayPartiesFiltering','DashboardController@BdayPartiesFiltering');
-
+        Route::any('UpdateEaDate','ClassesController@UpdateEaDate');
         
 	Route::any('saveSchedule', function(){
 	
