@@ -115,6 +115,6 @@ class IntroVisit extends \Eloquent {
                 }
             }
             return $introvisit;
-        }
+        }	
 	
 }
