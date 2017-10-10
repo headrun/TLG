@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Input;
+use DB;
+use Carbon\Carbon;
 class ClassesController extends \BaseController {
 
 	/**
@@ -372,6 +374,22 @@ class ClassesController extends \BaseController {
         
 //        return Response::json(array('status'=>'success','discount'=>$discount));
         }
+       public function UpdateEaDate(){
+       		if(Auth::check()){
+               	$inputs=Input::all();
+               	$present_date = Carbon::now();
+          		$update_attendance = DB::table('attendance')->insert(['student_id' => $inputs['studentId'], 'student_classes_id' =>$inputs['classId'], 'status' => 'EA', 'batch_id' => $inputs['batchId'], 'attendance_date' => $inputs['attDate'], 'description_absent' => $inputs['desc'], 'created_at'=>$present_date , 'updated_at'=>$present_date ]);
+          							
+            							
+	            //return $update_attendance;
+	            if($update_attendance){
+                    return Response::json(array('status'=>'success','data'=>$inputs));
+                }else{
+                    return Response::json(array('status'=>'failure'));   
+                }
+           	}
+       }
+      
 	
         
         

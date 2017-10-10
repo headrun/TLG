@@ -266,7 +266,23 @@ function getbatchesStudents(batchId, dateStartEvent){
 				    $.each(response.result, function (index, item) {
 					//attendanceString = '<tr><td><input type="hidden" value="'+dateStartEvent+'"  name="attendanceDate_'+i+'"/><input type="hidden" value="'+batchId+'"  name="batch_'+i+'"/><input type="hidden" value="'+item.studentId+'"  name="student_'+i+'"/>'+item.studentName+'</td><td class="form-group"><input id="attendance_for_userP'+i+'" name="attendance_for_user'+i+'" value="P" type="radio" class="radio-custom" required /><label for="attendance_for_userP'+i+'" class="radio-custom-label">P</label><input id="attendance_for_userA'+i+'" name="attendance_for_user'+i+'" value="A"  type="radio" class="radio-custom" /><label for="attendance_for_userA'+i+'" class="radio-custom-label">A</label><input id="attendance_for_userEA'+i+'" name="attendance_for_user'+i+'" value="EA"  type="radio" class="radio-custom" /><label for="attendance_for_userEA'+i+'" class="radio-custom-label">EA</label></td><td></td></tr>';
 				    		
-				    	attendanceString = '<tr><td><input type="hidden" value="'+dateStartEvent+'"  name="attendanceDate_'+i+'"/><input type="hidden" value="'+batchId+'"  name="batch_'+i+'"/><input type="hidden" id="student_class_id'+i+'" name="student_class_id'+i+'" value="'+item.student_classes_id+'"><input type="hidden" value="'+item.studentId+'"  name="student_'+i+'"/><input type="hidden" value="'+item.introvisit_id+'"  name="introvisit_id'+i+'"/>'+item.studentName+'</td><td class="form-group"><input id="attendance_for_userP'+i+'" name="attendance_for_user'+i+'" data="eadisable"  data2='+i+' value="P" type="radio" class="radio-custom" required /><label for="attendance_for_userP'+i+'" class="radio-custom-label">P</label><input id="attendance_for_userA'+i+'" name="attendance_for_user'+i+'" value="A" data3="Aenable" data="eadisable" data2='+i+' type="radio" class="radio-custom" /><label for="attendance_for_userA'+i+'" class="radio-custom-label">A</label><input id="attendance_for_userEA'+i+'" name="attendance_for_user'+i+'" data="eaenable" data2='+i+' value="EA"  type="radio" class="radio-custom" /><label for="attendance_for_userEA'+i+'" class="radio-custom-label">EA</label></td></tr>';
+				    	attendanceString = '<tr>'+
+				    			'<td>'+
+				    				'<input type="hidden" class="attDate" value="'+dateStartEvent+'"  name="attendanceDate_'+i+'"/>'+
+				    				'<input type="hidden" class="batchId" value="'+batchId+'"  name="batch_'+i+'"/>'+
+				    				'<input type="hidden" class="classId" id="student_class_id'+i+'" name="student_class_id'+i+'" value="'+item.student_classes_id+'">'+
+				    				'<input type="hidden" class="studentId" value="'+item.studentId+'"  name="student_'+i+'"/>'+
+				    				'<input type="hidden" class="ivId" value="'+item.introvisit_id+'"  name="introvisit_id'+i+'"/>'+
+				    					item.studentName+
+				    			'</td>'+
+				    			'<td class="form-group">'+
+				    				'<input id="attendance_for_userP'+i+'" name="attendance_for_user'+i+'" data="eadisable"  data2='+i+' value="P" type="radio" class="radio-custom" required />'+
+				    					'<label for="attendance_for_userP'+i+'" class="radio-custom-label">P</label>'+
+				    				'<input id="attendance_for_userA'+i+'" name="attendance_for_user'+i+'" value="A" data3="Aenable" data="eadisable" data2='+i+' type="radio" class="radio-custom" />'+
+				    					'<label for="attendance_for_userA'+i+'" class="radio-custom-label">A</label>'+
+				    				'<input id="attendance_for_userEA'+i+'" name="attendance_for_user'+i+'" data="eaenable" data2='+i+' value="EA"  type="radio" class="radio-custom" />'+'<label for="attendance_for_userEA'+i+'" class="radio-custom-label">EA</label>'+
+				    			'</td>'+
+				    		'</tr>';
 				    	$("#attendanceTbody").append(attendanceString);
 				    	
 	                  	if(item.isAttendanceEntered == 'yes'){
@@ -282,8 +298,10 @@ function getbatchesStudents(batchId, dateStartEvent){
                                     //console.log(this.id);
                                     var i=$(this).attr('data2');
                                     $('#absent'+i).remove();
-                                    $(this).parent().append("<div class='uk-grid'data-uk-grid-margin id='ea"+i+"'><div class='uk-width-medium-1-3'><input id='Description_user_"+i+"' required class='form-control input-sm ' name='description_user_"+i+"' style='' type='text' placeholder='Description' /></div><div class='uk-width-medium-1-3'><input type='text'  name='reminderdate_user_"+i+"' class='form-control input-sm' required style='width:100%' placeholder='ReminderDate' /><div class='uk-width-medium-1-3'></div></div></div>");
-                                    $('input[name="reminderdate_user_'+i+'"]').kendoDatePicker();
+                                    $(this).parent().append("<div class='uk-grid'data-uk-grid-margin id='ea"+i+"'><div class='uk-width-medium-1-3'><input id='Description_user_"+i+"' required class='form-control input-sm  Description_user' name='description_user_"+i+"' style='' type='text' placeholder='Description' /></div><div class='uk-width-medium-1-3'><input type='text'  name='reminderdate_user_"+i+"' class='userRemDate form-control input-sm' required style='width:100%' placeholder='ReminderDate' /><div class='uk-width-medium-1-3'></div></div><button type='button' style= margin-left:40px; class=' btn btn-success eaDateSave'>Save</button></div><div id='makeupmsg' class='parsley-row'><div>");
+                                    $('input[name="reminderdate_user_'+i+'"]').datepicker({ dateFormat: 'yy-mm-dd'}).val();
+                                    // $('input[name="reminderdate_user_'+i+'"]').datepicker({ dateFormat: 'yy-mm-dd'}).val();
+
                                     //console.log($(this).parent());
                                 });
                                 
@@ -296,7 +314,7 @@ function getbatchesStudents(batchId, dateStartEvent){
                                 $('input[type="radio"][data3="Aenable"]').change(function(){
                                         var i=$(this).attr('data2');
                                         $('#ea'+i).remove();
-                                        $(this).parent().append("<div class='uk-grid'data-uk-grid-margin id='absent"+i+"'><div class='uk-width-medium-1-3'><input id='Description_user_absent_"+i+"' required class='form-control input-sm ' name='description_user_absent_"+i+"' style='' type='text' placeholder='Description' /></div><div class='uk-width-medium-1-3'><input type='text'  name='reminderdate_user_absent_"+i+"' class='form-control input-sm' required style='width:100%' placeholder='ReminderDate' /><div class='uk-width-medium-1-3'></div></div></div>");
+                                        $(this).parent().append("<div class='uk-grid'data-uk-grid-margin id='absent"+i+"'><div class='uk-width-medium-1-3'><input id='Description_user_absent_"+i+"' required class='form-control input-sm ' name='description_user_absent_"+i+"' style='' type='text' placeholder='Description' /></div><div class='uk-width-medium-1-3'><input type='text'  name='reminderdate_user_absent_"+i+"'  class='form-control input-sm' required style='width:100%' placeholder='ReminderDate' /><div class='uk-width-medium-1-3'></div></div></div>");
                                         $('input[name="reminderdate_user_absent_'+i+'"]').kendoDatePicker();
                                     
                                 });
@@ -321,6 +339,57 @@ function getbatchesStudents(batchId, dateStartEvent){
 	console.log(isExists);
 	return isExists;
 }
+
+$(document).on('click', '.eaDateSave', function(){
+	// 'i[data="makeupsave"]'
+	//return $('i[data="attendance_for_userEA"]').val();
+	var desc = $(this).closest('.uk-grid').find('.Description_user').val();
+	var date = $(this).closest('.uk-grid').find('input.userRemDate').val();
+	var studentId = $(this).closest('td').prev('td').find('.studentId').val();
+	var ivId = $(this).closest('td').prev('td').find('.ivId').val();
+	var batchId = $(this).closest('td').prev('td').find('.batchId').val();
+	var classId = $(this).closest('td').prev('td').find('.classId').val();
+	var attDate = $(this).closest('td').prev('td').find('.attDate').val();
+	// var alert = $(this).closest('td').prev('td').find('.attDate').val();
+
+
+	if(typeof date !=  'undefined' && date != ''){
+		$.ajax({
+		    type: "POST",
+		    url: "{{URL::to('/quick/UpdateEaDate')}}",
+		    data:{'date':date,
+		    	  'desc':desc,
+		    	  'studentId': studentId,
+		    	  'ivId': ivId,
+		    	  'batchId': batchId,
+		    	  'classId': classId,
+		    	  'attDate': attDate },
+		  	success: function(response){
+			  	if(response.status == "success"){
+			  		 $('#makeupmsg').hide();
+			  		 $(".eaDateSave").remove();
+			  		 $(".Description_user").remove();
+			  		 $("input.userRemDate").remove();
+			  		 $('#makeupmsg').html("<p class='uk-alert uk-alert-success'>Excused Absent date has been noted successfully.</p>");
+					 
+				}else{
+					$("#makeupmsg").hide();
+					$("#makeupmsg").html('<p class="uk-alert uk-alert-warning">Already this kid enrolled in the same batch.</p>');
+					
+				}
+				$('#makeupmsg').show('slow');
+                                        setTimeout(function(){
+                                            $('#makeupmsg').slideUp();
+                                            $('#makeupmsg').html('');
+                                            $('#makeupmsg').show();
+                                        },3000);
+                                        $("#eaDateSave").attr("disabled", false);
+
+			}
+		});
+	}
+});
+
 
 
 $("#addAttendanceForm").validator();
