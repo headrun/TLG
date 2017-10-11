@@ -151,6 +151,10 @@ class StudentsController extends \BaseController {
                         $count=0;
                         
                         $DiscountApprove = Discounts::where('franchisee_id', '=', Session::get('franchiseId'))->first();
+
+                        $end = StudentClasses::where('student_id','=',$id)
+                                               ->where('student_id','=',$id)
+                                               ->max('enrollment_end_date'); 
                         if($DiscountApprove['discount_second_child_approve'] == 1){
                             $discount_second_child_elligible=1;
                             $discount_second_child = $DiscountApprove['discount_second_child'];
@@ -232,7 +236,7 @@ class StudentsController extends \BaseController {
                         $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
                         $membershipTypesAll = MembershipTypes::getMembershipTypes();
                          //return $student[0]['id'];
-      $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll',
+      $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll','end',
                                                                 'discountEnrollmentData','latestEnrolledData','taxPercentage','tax_data',
                                                                 'discount_second_class_elligible','discount_second_child_elligible','discount_second_child','discount_second_class',
                 'studentEnrollments','customermembership','paymentDues',

@@ -293,7 +293,7 @@ $("#addEnrollment").click(function(){
 //$("#paymentOptions").hide();
 
 $("#enrollmentOptions").click(function (){
-    var enrollmentStartDate = $('#enrollmentStartDate').val();
+    
 
       <?php if(!$customermembership){?>
          var membershipAmt={{json_encode($membershipTypesAll)}};  
@@ -333,6 +333,7 @@ $("#finalPaymentDiv").hide();
 
 function calculateFinalAmount(){
 
+        var enrollmentStartDate = $('#enrollmentStartDate').val();
         var second_child_discount_amt=0;
         var second_class_discount_amt=0;
         var finalAmount = (parseFloat($("#totalAmountToPay").val()));
@@ -357,13 +358,18 @@ function calculateFinalAmount(){
       <?php } ?>
                                   
       <?php if($discount_second_class_elligible){ ?>
-          $('#second_class_discount_to_form').val({{$discount_second_class}});
-          second_class_discount_amt=parseFloat(finalAmount*{{$discount_second_class}}/100);
-          $('#second_class_amount').val('-'+(second_class_discount_amt).toFixed(2));
-          $('#second_class_amountlabel').html('-'+(second_class_discount_amt).toFixed(2));
-          finalAmount=parseFloat(finalAmount-second_class_discount_amt);
-          $('#second_class_discount').html('<p>By Enrolling Multiple Classes You are Saving('+{{$discount_second_class}}+'%[-'+(second_class_discount_amt).toFixed(2)+'Rs])</p>');
-          $('#second_class_amountlabel').html((Math.round(finalAmount/10)*10).toFixed(2));
+          if($('#enrollmentStartDate').val() <= '{{ $end }}'){      
+              $('#second_class_discount_to_form').val({{$discount_second_class}});
+              second_class_discount_amt=parseFloat(finalAmount*{{$discount_second_class}}/100);
+              $('#second_class_amount').val('-'+(second_class_discount_amt).toFixed(2));
+              $('#second_class_amountlabel').html('-'+(second_class_discount_amt).toFixed(2));
+              finalAmount=parseFloat(finalAmount-second_class_discount_amt);
+              $('#second_class_discount').html('<p>By Enrolling Multiple Classes You are Saving('+{{$discount_second_class}}+'%[-'+(second_class_discount_amt).toFixed(2)+'Rs])</p>');
+              $('#second_class_amountlabel').html((Math.round(finalAmount/10)*10).toFixed(2));
+          }else{
+              $('#second_class_discount').hide();
+              $('#second_class_amountlabel').hide();
+          }
       <?php } ?>
       
       <?php if(!$customermembership){?>
@@ -4078,6 +4084,7 @@ $('.deleteenrollmentdata').click(function(){
                                                                         </tr>
                                                                         <?php } ?>
                                                                         <?php if($discount_second_class_elligible){ ?>
+                                                                        
                                                                         <tr>
                                                                             <td colspan="2" style="text-align: right; font-weight: bold"><div id="second_class_discount"><p>Multi Classes:0%</p></div></td>
                                                                             <td><label style="font-weight: bold" id="second_class_amountlabel" name="second_class_amountlabel">-0</label>
@@ -4089,7 +4096,7 @@ $('.deleteenrollmentdata').click(function(){
                       
                                                                             </td>
                                                                         </tr>
-                                                                        <?php }?>
+                                                                        <?php  } ?>
                                                                         <!-- <?php
                                                                          //if(Session::get('userType') == 'ADMIN')
                                                                           {?> -->
