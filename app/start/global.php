@@ -46,22 +46,10 @@ Log::useFiles(storage_path().'/logs/laravel.log');
 |
 */
 
-/*App::error(function(Exception $exception, $code)
+App::error(function($exception, $code)
 {
-	Log::error($exception);
-});*/
-
-App::missing(function($e) {
- $url = Request::fullUrl(); 
- Log::warning("404 for URL: $url");
- return Response::make('404 not found', 404); 
-});
-
-App::error(function(Exception $exception, $code)
-{
-//    return View::make( 'pages.error404');
-	Log::error($exception);
-
+    return View::make('pages.error404');
+    
 });
 
 
@@ -93,5 +81,4 @@ App::down(function()
 | definitions instead of putting them all in the main routes file.
 |
 */
-
 require app_path().'/filters.php';

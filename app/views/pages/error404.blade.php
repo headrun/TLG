@@ -7,10 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 </head>
 <body>
-<div class="wrap" style="margin-top:10%;">
-	<center>
-	<h1>TLG</h1>
-	</center>
+<div class="wrap" style="margin-top:17%;">
 	<center>
 		<img src="{{url()}}/assets/img/logo.png" alt="" />
 	</center>
