@@ -290,6 +290,7 @@ $("#addEnrollment").click(function(){
       
 });
 
+
 //$("#paymentOptions").hide();
 
 $("#enrollmentOptions").click(function (){
@@ -336,18 +337,34 @@ function calculateFinalAmount(){
         var enrollmentStartDate = $('#enrollmentStartDate').val();
         var second_child_discount_amt=0;
         var second_class_discount_amt=0;
+
+        if($("input[name='enrollmentClassesSelect']:checked").val() == 'custom'){
+          var selected = $('#customEnrollmemtNoofClass').val();  
+        }else{
+          var selected = $("input[name='enrollmentClassesSelect']:checked").val();
+        }
+        if( {{$remaining_classes}} <= selected) {
+          var second_discount = Math.abs({{$remaining_classes}} - $("input[name='enrollmentClassesSelect']:checked").val());
+        
+        }else{ 
+          var second_discount = 0;
+         } 
         var finalAmount = (parseFloat($("#totalAmountToPay").val()));
-  
+        $('#second').html('second_discount');
         var percentAmount = parseFloat($("#totalAmountToPaytotals").val()*DiscountPercentage/100);
         $('#discount').html('<p>By Choosing '+selectedNoOfClass+' Classes You are Saving ('+DiscountPercentage+'%:[-'+(percentAmount).toFixed(2)+'Rs])</p>');
+        var base_price = second_discount * {{ $base_price[0]['base_price']}};
+        var after_discount = (base_price*DiscountPercentage/100);
 
         $("#discountTextBox").val("-"+(percentAmount).toFixed(2));
                                 
         finalAmount = parseFloat(finalAmount-percentAmount);
         $("#discountTextBoxlabel").html((Math.round(finalAmount/10)*10).toFixed(2));
-        
-        
+
+            
+     
         <?php if($discount_second_child_elligible){ ?>
+
           $('#second_child_discount_to_form').val({{$discount_second_child}});
           second_child_discount_amt=parseFloat(finalAmount*{{$discount_second_child}}/100);
           $('#second_child_amount').val('-'+(second_child_discount_amt).toFixed(2));
@@ -358,19 +375,28 @@ function calculateFinalAmount(){
       <?php } ?>
                                   
       <?php if($discount_second_class_elligible){ ?>
-          if($('#enrollmentStartDate').val() <= '{{ $end }}'){      
+          if(enrollmentStartDate <= '{{ $end }}'){    
+              var dis = (finalAmount - after_discount);  
               $('#second_class_discount_to_form').val({{$discount_second_class}});
-              second_class_discount_amt=parseFloat(finalAmount*{{$discount_second_class}}/100);
-              $('#second_class_amount').val('-'+(second_class_discount_amt).toFixed(2));
+              second_class_discount_amt=parseFloat(dis*{{$discount_second_class}}/100);
+              $('#second_class_amount').val('-'+(dis).toFixed(2));
               $('#second_class_amountlabel').html('-'+(second_class_discount_amt).toFixed(2));
               finalAmount=parseFloat(finalAmount-second_class_discount_amt);
-              $('#second_class_discount').html('<p>By Enrolling Multiple Classes You are Saving('+{{$discount_second_class}}+'%[-'+(second_class_discount_amt).toFixed(2)+'Rs])</p>');
+              if(second_discount == '0'){
+                
+                $('#second_class_discount').html('<p>By Enrolling Multiple Classes You are Saving('+{{$discount_second_class}}+'%[-'+(second_class_discount_amt).toFixed(2)+'Rs])</p>');
+              }else{
+                $('#second_class_discount').html('<p>By Enrolling Multiple Classes You get 2nd class discount on <font color="red">'+second_discount+' Classes</font>('+{{$discount_second_class}}+'%[-'+(second_class_discount_amt).toFixed(2)+'Rs])</p>');
+              }
               $('#second_class_amountlabel').html((Math.round(finalAmount/10)*10).toFixed(2));
           }else{
               $('#second_class_discount').hide();
               $('#second_class_amountlabel').hide();
           }
-      <?php } ?>
+      <?php }   ?>
+        
+        
+        
       
       <?php if(!$customermembership){?>
            finalAmount = finalAmount+parseFloat($("#membershipAmount").val());
@@ -3231,6 +3257,7 @@ $('.deleteenrollmentdata').click(function(){
                                     </div>
                                     
         </div>
+                                
                                 <a class="md-fab md-fab-small md-fab-accent" id="editKidBtn" style="right:83px"> <i
           class="material-icons">&#xE150;</i>
         </a>
@@ -3286,6 +3313,7 @@ $('.deleteenrollmentdata').click(function(){
           <li id="enrollmentsTabheading"class=""><a href="#enrollments">Enrollments</a></li>
           <li id="paymentsTabheading"class=""><a href="#payments">Payments</a></li>
           <li id="attendanceTabheading"class=""><a href="#attendace">Attendance</a></li>
+
                                         <!--<li id="introvisitTabheading"class=""><a href="#introvisit">Intro Visit</a></li>-->
         </ul>
         <ul id="user_profile_tabs_content" class="uk-switcher uk-margin">
@@ -3671,7 +3699,6 @@ $('.deleteenrollmentdata').click(function(){
                 </div>
                         </div>
           </li>
-
 
                                         
           <li id="birthdays">

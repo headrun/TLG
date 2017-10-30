@@ -199,23 +199,24 @@ class Comments extends \Eloquent {
         }
 	
 	static function getAllFollowupActive(){
-	
+	    $inputs = Input::all();   
 		$today = date('Y-m-d');
-		return Comments::with('Customers')->where("franchisee_id", "=", Session::get('franchiseId'))
-		->where("reminder_date", "!=", "NULL")
-		//->where("comment_type", "=", "followup") 
-		//->where("reminder_status", "=", "active")
-                ->whereDate("reminder_date", "<", $today)
-		->orderBy('reminder_date', 'ASC')
-		//->where("reminder_date", "LIKE", "".$today."%")
-		->get();
-	
+        $franchis_id = Session::get('franchiseId'); 
+       // print_r($today); die();
+		return Comments::join('customers', 'customers.id', '=', 'customer_logs.customer_id')
+                    ->where("customer_logs.franchisee_id", "=", Session::get('franchiseId'))
+            		->where("customer_logs.reminder_date", "!=", "NULL")
+            		->where("customer_logs.followup_type", "!=", "ENROLLMENT")
+                    ->where("customer_logs.followup_status", "!=", "NOT_INTERESTED")
+                    ->whereDate("customer_logs.reminder_date", "<", $today)
+                    ->selectRaw('customers.customer_name, customers.customer_lastname, customers.id, customer_logs.followup_type, max(customer_logs.reminder_date) as reminder_date, customers.mobile_no')
+                    ->groupBy('customer_logs.student_id')
+                    ->orderBy('customer_logs.reminder_date','DESC')
+                    ->get();
+
 	}
 	
-	
-	
-	
-        static function addFollowupForMembership($customerMembershipData){
+    static function addFollowupForMembership($customerMembershipData){
             
             $brushupReminderdate=  Carbon::now();
             $finalReminderdate=Carbon::now();

@@ -140,7 +140,7 @@ $('#rDate').kendoDatePicker();
 $('#enrollmentReminderDate').kendoDatePicker();
 $('#rmDate').kendoDatePicker();
 $('#rmdDate').kendoDatePicker();
-//$('#Reschedule-date').kendoDatePicker();
+$('#Reschedule-date').kendoDatePicker();
 $('#Reminder-date').kendoDatePicker();
 $('#introVisitTxtBox').kendoDatePicker();
 $('#reminderDateBox').kendoDatePicker();
@@ -1440,7 +1440,7 @@ $('#enrollmenteditstatusSelect').change(function(){
    }
 });
 
-$('#reschedule-date').kendoDatePicker();
+//$('#Reschedule-date').kendoDatePicker();
 function saveIv(){
 
 
@@ -1452,7 +1452,7 @@ function saveIv(){
         url: "{{URL::to('/quick/editIntrovisit')}}",
         data:{'iv_id':$('#iv_id').val(), "customerCommentTxtarea":$("#ivcustomerCommentTxtarea").val(),
               'reminder-date':$('#Reminder-date').val(),'ivstatus':$('#iveditstatusSelect').val(),
-              'iveditAction':$('#iveditActionSelect').val(),},
+              'iveditAction':$('#iveditActionSelect').val(),'reschedule_date':$('#Reschedule-date').val()},
         //data: {'classId': $("#eligibleClassesCbx").val(), 'batchId':$("#batchCbx").val(), "studentId":studentId},
         dataType:"json",
         success: function (response)
@@ -2168,8 +2168,8 @@ $('#saveComplaintBtn').click(function(){
 
 
 $('#saveRetentionBtn').click(function(){
- if(($('#retentionstatusSelect').val()!='') && ($('#retentioneditActionSelect').val()!='') && 
-         ($('#retentioncustomerCommentTxtarea').val()!='' && $('#rmDate'),val() != '')){
+	if(($('#retentionstatusSelect').val()!='') && ($('#retentioneditActionSelect').val()!='') && 
+         ($('#retentioncustomerCommentTxtarea').val()!='' && $('#rmDate').val() != '')){
        //call ajax
        
            $.ajax({
@@ -4726,18 +4726,25 @@ $('#memberhsipchequeNumber').keyup(function(){
                                                         </select>
 						</div>
 					</div>
-                                         
-                                         <div class="uk-width-medium-1-3" id="reminderDate">
-								<div class="parsley-row" style="margin-top: -23px;">
-									<label for="Reminder-date">Reminder-date<span
-										class="req">*</span></label><br>
+                         <div class="uk-width-medium-1-3" id="reminderDate">
+							<div class="parsley-row" style="margin-top: -23px;">
+			 					<label for="Reminder-date">Reminder-date<span
+									class="req">*</span></label><br>
 									{{Form::text('Reminder-date',
 									null,array('id'=>'Reminder-date', 'required'=>'','class' =>
 									'uk-form-width-medium'))}}
-
 								</div>
-							
-                                         </div>
+                        </div>
+                        <div class="uk-width-medium-1-3" id="reschedule">
+                        	<div>
+								<div class="parsley-row"><br><br>
+									<label for="Reschedule-date">Reschedule-date (For Reschedule IV)</label><br>
+										{{Form::text('Reschedule-date',
+										null,array('id'=>'Reschedule-date','class' =>
+										'uk-form-width-medium'))}}
+								</div>
+							</div>
+                        </div>
                                          
                                   </div>
                                      <!--

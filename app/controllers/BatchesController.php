@@ -252,12 +252,15 @@ class BatchesController extends \BaseController {
             $inputs=  Input::all();
             $present_date = carbon::now();
             $franchisee_id=Session::get('franchiseId');
+            // return $franchisee_id;
+            // return $batch_limit[1]['batch_limit_admin'];	
             $batch_data=  Batches::getAllBatchesbySeasonId($franchisee_id,$inputs['session_id']);
            
             for($i=0;$i<count($batch_data);$i++){
 				$batch_data[$i]['preferred_time']=date("h:i",  strtotime($batch_data[$i]['preferred_time']));
 				$batch_data[$i]['preferred_end_time']=date("h:i",  strtotime($batch_data[$i]['preferred_end_time']));
-
+				$batch_limit = BatchLimit::where('franchisee_id','=', $franchisee_id)->max('batch_limit_admin')->get();
+				$batch_data[$i]['batch_limit_admin'] = $batch_limit[0]['batch_limit_admin'];
 				$location_data=  Location::where('id','=',$batch_data[$i]['location_id'])->get();
 				$batch_data[$i]['location_name']=$location_data[0]['location_name'];
 				$batch_data[$i]['created']=date("Y-m-d",strtotime($batch_data[$i]['created_at']));
@@ -491,14 +494,8 @@ class BatchesController extends \BaseController {
         
         public function getBatchRemainingClassesByBatchId(){
             $inputs=Input::all();
-            //return $inputs;//Session::get('franchiseId');
             $result = DB::select(DB::raw("select * from student_classes where student_id = '$inputs[studentId]' and batch_id = '$inputs[batchId]' and class_id = '$inputs[classId]' and '$inputs[preferredStartDate]' <= enrollment_end_date and '$inputs[preferredStartDate]'>= enrollment_start_date"));
-            //$sam = DB::select(DB::raw("select * from student_classes where '$inputs[preferredStartDate]' >= enrollment_start_date AND '$inputs[preferredStartDate]'<= 'enrollment_end_date' AND student_id='$inputs[studentId]'"));
-            // $sam =student_classes::where('student_id','=',$inputs['studentId'])
-            // 					 ->whereDate($inputs['preferredStartDate'],'>=','enrollment_start_date')
-            // 					 ->whereDate($inputs['preferredStartDate'],'<=','enrollment_end_date')
-            // 					 ->get();
-            //return $sam;
+           
             if($result)
             {
         
@@ -512,6 +509,17 @@ class BatchesController extends \BaseController {
                                               ->get();
 
             $batchClassesCount=count($batchClassesData);
+           //  $batch_limt_no = BatchLimit::where('franchisee_id','=',Session::get('franchiseId'))
+           //  						   ->get();
+           //  $batch_count = StudentClasses::where('franchisee_id','=',Session::get('franchiseId'))
+           //  							->where('batch_id','=',$inputs['batchId'])
+           //  							->count();
+           // //return $batch_count;
+           //  //print_r($batch_limt_no[0]['batch_limit_admin']); die();
+           //  if($batch_count >= $batch_limt_no[1]['batch_limit_admin']){
+           //  	return  Response::json(array('status'=>'FULL'));
+           //  }
+
             //return 'Count is: '.$batchClassesCount;
             // print_r($batchClassesCount); die;
             //$batchClassesCount = $batchClassesCount - $inputs['removalbleClasses'];

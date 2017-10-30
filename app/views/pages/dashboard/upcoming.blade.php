@@ -504,7 +504,7 @@
                                     	?>
                                         <tr class="uk-table-middle smallText">
                                            	<td class="uk-width-3-10 uk-text-nowrap">{{$items->Customers['customer_name']}}{{$items->Customers['customer_lastname']}} </td>
-                                           	<!--<td class="uk-width-3-10 uk-text-nowrap">{{--$items->Customers['customer_email']--}}</td>-->
+                                           	<!--<td class="uk-width-3-10 uk-text-nowrap">{{-$items->Customers['customer_email']}}</td>-->
                                            	<td class="uk-width-3-10 uk-text-nowrap">{{$items->Customers['mobile_no']}}</td>
                                            	<td class="uk-width-3-10 uk-text-nowrap">{{$items->followup_status}}</td>
                                            	
@@ -544,10 +544,10 @@
                                     <tbody>
                                     	<?php foreach($activeRemindersCount as $items){?>
                                         <tr class="uk-table-middle smallText">
-                                            <td class="uk-width-3-10 uk-text-nowrap">{{$items->Customers->customer_name}}{{$items->Customers->customer_lastname}}<a href="{{url()}}/customers/view/{{$items->Customers->id}}?tab=ivfollowup"></a></td>
-                                            <td class="uk-width-3-10 uk-text-nowrap">{{$items->followup_type}}</td>
-                                            <td class="uk-width-3-10 uk-text-nowrap">{{$items->Customers->mobile_no}}</td>
-                                            <td class="uk-width-3-10 uk-text-nowrap">{{date('d M Y', strtotime($items->reminder_date))}}</td>
+                                            <td class="uk-width-3-10 uk-text-nowrap">{{$items['customer_name']}}{{$items['customer_lastname']}}<a href="{{url()}}/customers/view/{{$items['id']}}?tab=ivfollowup"></a></td>
+                                            <td class="uk-width-3-10 uk-text-nowrap">{{$items['followup_type']}}</td>
+                                            <td class="uk-width-3-10 uk-text-nowrap">{{$items['mobile_no']}}</td>
+                                            <td class="uk-width-3-10 uk-text-nowrap">{{date('d M Y', strtotime($items['reminder_date']))}}</td>
                                         </tr>   
                                         <?php }?>                                     
                                     </tbody>

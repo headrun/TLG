@@ -235,13 +235,35 @@ class StudentsController extends \BaseController {
                         $taxPercentage=  PaymentTax::getTaxPercentageForPayment();
                         $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
                         $membershipTypesAll = MembershipTypes::getMembershipTypes();
-                         //return $student[0]['id'];
+                        //2nd class applciable for remaning classes in 1st class
+                        
+                        $last = StudentClasses::where('franchisee_id','=',Session::get('franchiseId'))
+                                        ->where('student_id','=',$id)
+                                        ->where('selected_sessions','!=',1)
+                                        ->orderBy('created_at','desc')
+                                        ->limit(1)
+                                        ->get();  
+
+                        if($last[0]['id'] != ''){                       
+                          $attendance = Attendance::where('student_id','=',$id)
+                                                ->where('student_classes_id','=',$last[0]['id'])
+                                                ->count();
+                          $remaining_classes = $last[0]['selected_sessions'] - $attendance;
+                        }else{
+                            $remaining_classes = 0;
+                        }
+                          
+                     
+                        $base_price = ClassBasePrice::where('franchise_id','=',Session::get('franchiseId'))
+                                                    ->select('base_price')
+                                                    ->get();
+                       
       $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll','end',
                                                                 'discountEnrollmentData','latestEnrolledData','taxPercentage','tax_data',
                                                                 'discount_second_class_elligible','discount_second_child_elligible','discount_second_child','discount_second_class',
                 'studentEnrollments','customermembership','paymentDues',
                 'scheduledIntroVisits', 'introvisit', 'discountEligibility','paidAmountdata','order_due_data',
-                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata');
+                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata','remaining_classes','base_price');
       return View::make('pages.students.details',compact($dataToView));
     }else{
       return Redirect::action('VaultController@logout');
@@ -1454,7 +1476,17 @@ public function enrollKid2(){
                     $introvisit=Comments::where('introvisit_id','=',$inputs['iv_id'])
                                                ->orderBy('id','DESC')
                                                ->first();
-                    
+                    if($inputs['reschedule_date'] !=''){
+                      $re_date = $inputs['reschedule_date']; 
+                      $reschedule_date = date("Y-m-d H:i:s", strtotime($re_date));
+                      //return $resc_date;
+                      $update  = IntroVisit::where('id', '=', $inputs['iv_id'])
+                                             ->update(['iv_date'=>$reschedule_date]);
+                      $update_att = StudentClasses::where('introvisit_id','=',$inputs['iv_id'])
+                                                  ->update(['enrollment_start_date'=>$reschedule_date,'enrollment_end_date'=>$reschedule_date]);
+
+                      
+                    }
                     //return Response::json(array("status",$introvisit)); 
                         
                      if($introvisit){

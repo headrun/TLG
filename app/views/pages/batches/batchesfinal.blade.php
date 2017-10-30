@@ -141,7 +141,7 @@ $(document).ready(function(){
                                                 "<td>"+response.data[i]['day']+"</td>"+
 		                                "<td>"+response.data[i]['preferred_time']+" to "+response.data[i]['preferred_end_time']+"</td>"+
                                                 "<td>"+response.data[i]['instructor_name']+"</td>"+
-                                                "<td>"+response.data[i]['count']+"/18</td>"+
+                                                "<td>"+response.data[i]['count']+"/"+response.data[i]['batch_limit_admin']+"</td>"+
                                                 
                                                 "<td>"+response.data[i]['created']+"</td>"+
 		                                "<td>"+
@@ -159,7 +159,7 @@ $(document).ready(function(){
                                                 "<td>"+response.data[i]['day']+"</td>"+
 		                                "<td>"+response.data[i]['preferred_time']+" to "+response.data[i]['preferred_end_time']+"</td>"+
                                                 "<td>"+response.data[i]['instructor_name']+"</td>"+
-                                                "<td>"+response.data[i]['count']+"/18</td>"+
+                                                "<td>"+response.data[i]['count']+"/"+response.data[i]['batch_limit_admin']+"</td>"+
                                                 
                                                 "<td>"+response.data[i]['created']+"</td>"+
 		                                "<td>"+
@@ -349,7 +349,7 @@ $(document.body).on('change','#selectSeason',function(){
                                                 "<td>"+response.data[i]['day']+"</td>"+
 		                                "<td>"+response.data[i]['preferred_time']+" to "+response.data[i]['preferred_end_time']+"</td>"+
                                                 "<td>"+response.data[i]['instructor_name']+"</td>"+
-                                                "<td>"+response.data[i]['count']+"/18</td>"+
+                                                "<td>"+response.data[i]['count']+$batch_limit[i]['batch_limit_admin']
                                                 
                                                 "<td>"+response.data[i]['created']+"</td>"+
 		                                "<td>"+
@@ -367,7 +367,7 @@ $(document.body).on('change','#selectSeason',function(){
                                                 "<td>"+response.data[i]['day']+"</td>"+
 		                                "<td>"+response.data[i]['preferred_time']+" to "+response.data[i]['preferred_end_time']+"</td>"+
                                                 "<td>"+response.data[i]['instructor_name']+"</td>"+
-                                                "<td>"+response.data[i]['count']+"/18</td>"+
+                                                "<td>"+response.data[i]['count']+"/"+response.data[i]['batch_limit_admin']+"</td>"+
                                                 
                                                 "<td>"+response.data[i]['created']+"</td>"+
 		                                "<td>"+
