@@ -258,26 +258,7 @@ class StudentsController extends \BaseController {
                                                     ->get();
                         $present = carbon::now();
 
-                        $iv = IntroVisit::where('franchisee_id','=',Session::get('franchiseId'))
-                                        ->where('student_id','=',$id)
-                                        ->select('iv_date')
-                                        ->get();
-                       
-                        if(sizeof($iv))
-                        {
-                          $iv_date = strtotime($iv[0]['iv_date']);
-                          $present_date = strtotime($present);
-
-                          if(isset($iv_date) != ''){
-                            if(isset($iv_date) >= $present_date){
-                                $stage = 'IV SCHEDULED';
-                              }else{
-                                $stage = '';
-                              }
-                            }
-                        }else{ 
-                          $stage = '';
-                        }
+                        
                         
       $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll','end',
                                                                 'discountEnrollmentData','latestEnrolledData','taxPercentage','tax_data',

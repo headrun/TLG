@@ -3196,7 +3196,7 @@ $('.deleteenrollmentdata').click(function(){
                                         <div class="col-md-5">
           <h2 class="heading_b uk-margin-bottom">
             <span class="uk-text-truncate"> {{$student->student_name}}
-              <span id="stageChange" class="new badge" style="background-color: #7CB342;">{{$stage}}</span></span><span
+              <span id="stageChange" class="new badge" style="background-color: #7CB342;"></span></span><span
               class="sub-heading"><a
               href="{{url()}}/customers/view/{{$student->customers->id}}"
               style="color: #FFF;">({{$student->customers->customer_name}})</a></span>
