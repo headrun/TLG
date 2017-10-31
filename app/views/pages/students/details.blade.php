@@ -327,6 +327,8 @@ $('#cardDetailsDiv3').hide();
 $('#chequeDetailsDiv3').hide();
 $('#cardDetailsDiv4').hide();
 $('#chequeDetailsDiv4').hide();
+
+
 $("#finalPaymentDiv").hide();
 
 
@@ -342,18 +344,19 @@ function calculateFinalAmount(){
           var selected = $("input[name='enrollmentClassesSelect']:checked").val();
         }
         if( {{$remaining_classes}} < selected) {
-          var second_discount = Math.abs({{$remaining_classes}} - $("input[name='enrollmentClassesSelect']:checked").val());
+          var second_discount = {{ $remaining_classes }};
         
         }else{ 
           var second_discount = 0;
          } 
         var finalAmount = (parseFloat($("#totalAmountToPay").val()));
-        $('#second').html('second_discount');
         var percentAmount = parseFloat($("#totalAmountToPaytotals").val()*DiscountPercentage/100);
         $('#discount').html('<p>By Choosing '+selectedNoOfClass+' Classes You are Saving ('+DiscountPercentage+'%:[-'+(percentAmount).toFixed(2)+'Rs])</p>');
-        var base_price = second_discount * {{ $base_price[0]['base_price']}};
-        var after_discount = (base_price*DiscountPercentage/100);
-
+        if(second_discount != 0){
+          var base_price = {{ $remaining_classes }}*{{$base_price[0]['base_price']}};
+        }else{
+          finalAmount;
+        }
         $("#discountTextBox").val("-"+(percentAmount).toFixed(2));
                                 
         finalAmount = parseFloat(finalAmount-percentAmount);
@@ -373,11 +376,15 @@ function calculateFinalAmount(){
       <?php } ?>
                                   
       <?php if($discount_second_class_elligible){ ?>
-          if(enrollmentStartDate <= '{{ $end }}'){    
-              var dis = (finalAmount - after_discount);  
+          if(enrollmentStartDate <= '{{ $end }}'){   
               $('#second_class_discount_to_form').val({{$discount_second_class}});
-              second_class_discount_amt=parseFloat(dis*{{$discount_second_class}}/100);
-              $('#second_class_amount').val('-'+(dis).toFixed(2));
+              if(second_discount == 0){
+                second_class_discount_amt=parseFloat(finalAmount*{{$discount_second_class}}/100);
+                $('#second_class_amount').val('-'+(finalAmount).toFixed(2));
+              }else{
+                second_class_discount_amt=parseFloat(base_price*{{$discount_second_class}}/100);
+                $('#second_class_amount').val('-'+(base_price).toFixed(2));
+              }
               $('#second_class_amountlabel').html('-'+(second_class_discount_amt).toFixed(2));
               finalAmount=parseFloat(finalAmount-second_class_discount_amt);
               if(second_discount == '0'){
@@ -3188,7 +3195,8 @@ $('.deleteenrollmentdata').click(function(){
           <div class="row">
                                         <div class="col-md-5">
           <h2 class="heading_b uk-margin-bottom">
-            <span class="uk-text-truncate"> {{$student->student_name}}</span><span
+            <span class="uk-text-truncate"> {{$student->student_name}}
+              <span id="stageChange" class="new badge" style="background-color: #7CB342;">{{$stage}}</span></span><span
               class="sub-heading"><a
               href="{{url()}}/customers/view/{{$student->customers->id}}"
               style="color: #FFF;">({{$student->customers->customer_name}})</a></span>

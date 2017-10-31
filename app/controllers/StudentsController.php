@@ -243,7 +243,7 @@ class StudentsController extends \BaseController {
                                         ->orderBy('created_at','desc')
                                         ->limit(1)
                                         ->get();  
-
+                       
                         if(isset($last[0]['id']) != ''){                       
                           $attendance = Attendance::where('student_id','=',$id)
                                                 ->where('student_classes_id','=',$last[0]['id'])
@@ -251,19 +251,40 @@ class StudentsController extends \BaseController {
                           $remaining_classes = $last[0]['selected_sessions'] - $attendance;
                         }else{
                             $remaining_classes = 0;
-                        }
-                          
-                     
+                        } 
+                         
                         $base_price = ClassBasePrice::where('franchise_id','=',Session::get('franchiseId'))
                                                     ->select('base_price')
                                                     ->get();
+                        $present = carbon::now();
+
+                        $iv = IntroVisit::where('franchisee_id','=',Session::get('franchiseId'))
+                                        ->where('student_id','=',$id)
+                                        ->select('iv_date')
+                                        ->get();
                        
+                        if(sizeof($iv))
+                        {
+                          $iv_date = strtotime($iv[0]['iv_date']);
+                          $present_date = strtotime($present);
+
+                          if(isset($iv_date) != ''){
+                            if(isset($iv_date) >= $present_date){
+                                $stage = 'IV SCHEDULED';
+                              }else{
+                                $stage = '';
+                              }
+                            }
+                        }else{ 
+                          $stage = '';
+                        }
+                        
       $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll','end',
                                                                 'discountEnrollmentData','latestEnrolledData','taxPercentage','tax_data',
                                                                 'discount_second_class_elligible','discount_second_child_elligible','discount_second_child','discount_second_class',
                 'studentEnrollments','customermembership','paymentDues',
                 'scheduledIntroVisits', 'introvisit', 'discountEligibility','paidAmountdata','order_due_data',
-                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata','remaining_classes','base_price');
+                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata','remaining_classes','base_price','stage');
       return View::make('pages.students.details',compact($dataToView));
     }else{
       return Redirect::action('VaultController@logout');

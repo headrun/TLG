@@ -2706,7 +2706,6 @@ $('#memberhsipchequeNumber').keyup(function(){
                                 	<?php }else{?>
                                 		<span class="new badge" style="background-color:#B10909">Not a member</span> 
                                 	<?php }?>
-                                	<span id="stageChange" class="new badge" style="background-color: #7CB342;">{{ucfirst($customer->stage)}}</span>
                                 	</span>                      
                                	</h2>
                                 <ul class="user_stats">
