@@ -141,7 +141,7 @@ $(document).ready(function(){
                                                 "<td>"+response.data[i]['day']+"</td>"+
 		                                "<td>"+response.data[i]['preferred_time']+" to "+response.data[i]['preferred_end_time']+"</td>"+
                                                 "<td>"+response.data[i]['instructor_name']+"</td>"+
-                                                "<td>"+response.data[i]['count']+"/"+response.data[i]['batch_limit_admin']+"</td>"+
+                                                "<td>"+response.data[i]['count']+"/"+response.data[i]['batch_limit']+"</td>"+
                                                 
                                                 "<td>"+response.data[i]['created']+"</td>"+
 		                                "<td>"+
@@ -159,7 +159,7 @@ $(document).ready(function(){
                                                 "<td>"+response.data[i]['day']+"</td>"+
 		                                "<td>"+response.data[i]['preferred_time']+" to "+response.data[i]['preferred_end_time']+"</td>"+
                                                 "<td>"+response.data[i]['instructor_name']+"</td>"+
-                                                "<td>"+response.data[i]['count']+"/"+response.data[i]['batch_limit_admin']+"</td>"+
+                                                "<td>"+response.data[i]['count']+"/"+response.data[i]['batch_limit']+"</td>"+
                                                 
                                                 "<td>"+response.data[i]['created']+"</td>"+
 		                                "<td>"+
@@ -349,7 +349,7 @@ $(document.body).on('change','#selectSeason',function(){
                                                 "<td>"+response.data[i]['day']+"</td>"+
 		                                "<td>"+response.data[i]['preferred_time']+" to "+response.data[i]['preferred_end_time']+"</td>"+
                                                 "<td>"+response.data[i]['instructor_name']+"</td>"+
-                                                "<td>"+response.data[i]['count']+$batch_limit[i]['batch_limit_admin']
+                                                "<td>"+response.data[i]['count']+$batch_limit[i]['batch_limit']
                                                 
                                                 "<td>"+response.data[i]['created']+"</td>"+
 		                                "<td>"+
@@ -367,7 +367,7 @@ $(document.body).on('change','#selectSeason',function(){
                                                 "<td>"+response.data[i]['day']+"</td>"+
 		                                "<td>"+response.data[i]['preferred_time']+" to "+response.data[i]['preferred_end_time']+"</td>"+
                                                 "<td>"+response.data[i]['instructor_name']+"</td>"+
-                                                "<td>"+response.data[i]['count']+"/"+response.data[i]['batch_limit_admin']+"</td>"+
+                                                "<td>"+response.data[i]['count']+"/"+response.data[i]['batch_limit']+"</td>"+
                                                 
                                                 "<td>"+response.data[i]['created']+"</td>"+
 		                                "<td>"+
@@ -809,7 +809,7 @@ $('#batch_delete').click(function(){
 				                 	<select name="batchLimitCbx" id='batchLimitCbx' class = 'form-control input-sm md-input' style='padding:0px; font-weight:bold;color: #727272;' required >
 										<option value="">Select Batch Limit</option>
 										<?php for($i=0;$i<count($batches_limit);$i++){ ?>
-                                                                                <option value="{{$batches_limit[$i]['batches_limit_no']}}">BatchLimit(R:{{$batches_limit[$i]['batch_limit_receptionist']}})(A:{{$batches_limit[$i]['batch_limit_admin']}})</option>
+                                                                                <option value="{{$batches_limit[$i]['batches_limit_no']}}">BatchLimit(R:{{$batches_limit[$i]['batch_limit_receptionist']}})(A:{{$batches_limit[$i]['batch_limit']}})</option>
                                                                                 <?php } ?>
                                 +
 							</select>

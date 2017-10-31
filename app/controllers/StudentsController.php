@@ -244,7 +244,7 @@ class StudentsController extends \BaseController {
                                         ->limit(1)
                                         ->get();  
 
-                        if($last[0]['id'] != ''){                       
+                        if(isset($last[0]['id']) != ''){                       
                           $attendance = Attendance::where('student_id','=',$id)
                                                 ->where('student_classes_id','=',$last[0]['id'])
                                                 ->count();

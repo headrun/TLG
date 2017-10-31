@@ -252,15 +252,17 @@ class BatchesController extends \BaseController {
             $inputs=  Input::all();
             $present_date = carbon::now();
             $franchisee_id=Session::get('franchiseId');
-            // return $franchisee_id;
-            // return $batch_limit[1]['batch_limit_admin'];	
             $batch_data=  Batches::getAllBatchesbySeasonId($franchisee_id,$inputs['session_id']);
            
             for($i=0;$i<count($batch_data);$i++){
 				$batch_data[$i]['preferred_time']=date("h:i",  strtotime($batch_data[$i]['preferred_time']));
 				$batch_data[$i]['preferred_end_time']=date("h:i",  strtotime($batch_data[$i]['preferred_end_time']));
-				$batch_limit = BatchLimit::where('franchisee_id','=', $franchisee_id)->max('batch_limit_admin')->get();
-				$batch_data[$i]['batch_limit_admin'] = $batch_limit[0]['batch_limit_admin'];
+				$batch_limit = BatchLimit::where('franchisee_id','=', $franchisee_id)->orderby('batch_limit_admin','DESC')->get();
+				if(Session::get('userType') == 'ADMIN'){
+					$batch_data[$i]['batch_limit'] = $batch_limit[0]['batch_limit_admin'];
+				}else{
+					$batch_data[$i]['batch_limit'] = $batch_limit[0]['batch_limit_receptionist'];
+				}
 				$location_data=  Location::where('id','=',$batch_data[$i]['location_id'])->get();
 				$batch_data[$i]['location_name']=$location_data[0]['location_name'];
 				$batch_data[$i]['created']=date("Y-m-d",strtotime($batch_data[$i]['created_at']));
@@ -278,10 +280,9 @@ class BatchesController extends \BaseController {
 								->whereDate('enrollment_end_date', '>=', $present_date)
 								->distinct('student_id')
 								->count();
-            }
-                       
+            }       
             if($batch_data){
-            return Response::json(array('status'=>'success','data'=>$batch_data));
+            	return Response::json(array('status'=>'success','data'=>$batch_data));
             }else{
                 return Response::json(array('status','failure'));
             }
