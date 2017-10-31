@@ -327,8 +327,6 @@ $('#cardDetailsDiv3').hide();
 $('#chequeDetailsDiv3').hide();
 $('#cardDetailsDiv4').hide();
 $('#chequeDetailsDiv4').hide();
-
-
 $("#finalPaymentDiv").hide();
 
 
@@ -343,7 +341,7 @@ function calculateFinalAmount(){
         }else{
           var selected = $("input[name='enrollmentClassesSelect']:checked").val();
         }
-        if( {{$remaining_classes}} <= selected) {
+        if( {{$remaining_classes}} < selected) {
           var second_discount = Math.abs({{$remaining_classes}} - $("input[name='enrollmentClassesSelect']:checked").val());
         
         }else{ 
