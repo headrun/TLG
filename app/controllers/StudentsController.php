@@ -244,7 +244,7 @@ class StudentsController extends \BaseController {
                                         ->limit(1)
                                         ->get();  
                        
-                        if(isset($last[0]['id']) != ''){                       
+                        if(!empty($last) && count($last) > 0){
                           $attendance = Attendance::where('student_id','=',$id)
                                                 ->where('student_classes_id','=',$last[0]['id'])
                                                 ->count();
@@ -256,9 +256,29 @@ class StudentsController extends \BaseController {
                         $base_price = ClassBasePrice::where('franchise_id','=',Session::get('franchiseId'))
                                                     ->select('base_price')
                                                     ->get();
+                        
                         $present = carbon::now();
 
-                        
+                        $iv = IntroVisit::where('franchisee_id','=',Session::get('franchiseId'))
+                                        ->where('student_id','=',$id)
+                                        ->select('iv_date')
+                                        ->get();
+                        //return $iv;
+                        if(sizeof($iv))
+                        {
+                          $iv_date = strtotime($iv[0]['iv_date']);
+                          $present_date = strtotime($present);
+
+                          if(isset($iv_date) != ''){
+                            if(isset($iv_date) >= $present_date){
+                                $stage = 'IV SCHEDULED';
+                              }else{
+                                $stage = '';
+                              }
+                            }
+                        }else{ 
+                          $stage = '';
+                        }
                         
       $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll','end',
                                                                 'discountEnrollmentData','latestEnrolledData','taxPercentage','tax_data',
