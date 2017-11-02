@@ -5057,18 +5057,17 @@ $('#memberhsipchequeNumber').keyup(function(){
                                                         </select>
 						</div>
 					</div>
-                                         
-                                         <div class="uk-width-medium-1-3" id="renDate">
-								<div class="parsley-row" style="margin-top: -23px;">
-									<label for="rmDate">Reminder-date<span
+                            <div class="uk-width-medium-1-3" id="remdDate">
+							<div class="parsley-row" style="margin-top: -23px;">
+								<label for="rmdDate">Reminder-date<span
 										class="req">*</span></label><br>
-									{{Form::text('rmDate',
-									null,array('id'=>'rmDate', 'required'=>'','class' =>
+									{{Form::text('rmdDate',
+									null,array('id'=>'rmdDate', 'required'=>'','class' =>
 									'uk-form-width-medium'))}}
 
-								</div>
-							
-                                         </div>
+							</div>
+					
+                         </div>
                                          
                                   </div>
                                      
@@ -5157,19 +5156,19 @@ $('#memberhsipchequeNumber').keyup(function(){
 						</div>
 					</div>
                                          
-                                         <div class="uk-width-medium-1-3" id="remdDate">
-								<div class="parsley-row" style="margin-top: -23px;">
-									<label for="rmdDate">Reminder-date<span
+                         <div class="uk-width-medium-1-3" id="remdDate">
+							<div class="parsley-row" style="margin-top: -23px;">
+								<label for="rmdDate">Reminder-date<span
 										class="req">*</span></label><br>
 									{{Form::text('rmdDate',
 									null,array('id'=>'rmdDate', 'required'=>'','class' =>
 									'uk-form-width-medium'))}}
 
-								</div>
-							
-                                         </div>
+							</div>
+					
+                         </div>
                                          
-                                  </div>
+                      </div>
                                      
                             </div>
                             <br>

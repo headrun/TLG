@@ -15,8 +15,10 @@ class Retention extends \Eloquent {
            return $retention;
      }
      static function getRetentionByCustomerId($customerId){
-            return Retention::where('customer_id','=',$customerId)
+            return Retention::where('customer_id','=', 1319)
                              ->where('franchisee_id','=',Session::get('franchiseId'))
+                             ->selectRaw('max(id) as id, student_id')
+                             ->groupBy('student_id')
                              ->get();
         }
 }

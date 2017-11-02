@@ -352,15 +352,17 @@ function calculateFinalAmount(){
         var finalAmount = (parseFloat($("#totalAmountToPay").val()));
         var percentAmount = parseFloat($("#totalAmountToPaytotals").val()*DiscountPercentage/100);
         $('#discount').html('<p>By Choosing '+selectedNoOfClass+' Classes You are Saving ('+DiscountPercentage+'%:[-'+(percentAmount).toFixed(2)+'Rs])</p>');
-        if(second_discount != 0){
-          var base_price = {{ $remaining_classes }}*{{$base_price[0]['base_price']}};
-        }else{
-          finalAmount;
-        }
+        
         $("#discountTextBox").val("-"+(percentAmount).toFixed(2));
                                 
         finalAmount = parseFloat(finalAmount-percentAmount);
         $("#discountTextBoxlabel").html((Math.round(finalAmount/10)*10).toFixed(2));
+        var multiple = finalAmount/selected;
+        if(second_discount != 0){
+          var base_price = {{ $remaining_classes }}*multiple;
+        }else{
+          finalAmount;
+        }
 
             
      

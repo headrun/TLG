@@ -258,7 +258,6 @@ class StudentsController extends \BaseController {
                                                     ->get();
                         
                         $present = carbon::now();
-
                         $iv = IntroVisit::where('franchisee_id','=',Session::get('franchiseId'))
                                         ->where('student_id','=',$id)
                                         ->select('iv_date')
@@ -266,20 +265,19 @@ class StudentsController extends \BaseController {
                         //return $iv;
                         if(sizeof($iv))
                         {
-                          $iv_date = strtotime($iv[0]['iv_date']);
-                          $present_date = strtotime($present);
+                          $iv_date = date('Y-m-d',strtotime($iv[0]['iv_date']));
+                          $present_date = date('Y-m-d',strtotime($present));
 
                           if(isset($iv_date) != ''){
-                            if(isset($iv_date) >= $present_date){
+                            if(($iv_date) >= $present_date){
                                 $stage = 'IV SCHEDULED';
                               }else{
                                 $stage = '';
                               }
                             }
-                        }else{ 
+                        }else{
                           $stage = '';
                         }
-                        
       $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll','end',
                                                                 'discountEnrollmentData','latestEnrolledData','taxPercentage','tax_data',
                                                                 'discount_second_class_elligible','discount_second_child_elligible','discount_second_child','discount_second_class',
@@ -2075,11 +2073,10 @@ public function enrollKid2(){
                         $commentsInput['followupType']  = $retention_data['followup_type'];
                         $commentsInput['commentStatus']= $inputs['followup_status'];
                         $commentsInput['commentType']   = $inputs['comment_type']; 
-                           
-      $commentsInput['commentText']    = $commentText;
+                        $commentsInput['commentText']    = $commentText;
             
                         
-                            if($inputs['followup_status']!= 'CLOSE_CALL'){
+                            if($inputs['followup_status'] != 'CLOSE_CALL'){
                                if(isset($inputs['rDate'])){
                                    $commentsInput['reminderDate']   = $inputs['rDate'];
                                }
