@@ -25,15 +25,14 @@ class Orders extends \Eloquent {
 	static function createOrder($input){
 		
 		$order = new Orders();
-		
+        $franchisee_name=Franchisee::find(Session::get('franchiseId'));
+		$year = date('Y');
 		$order->customer_id     = $input['customer_id'];
               
 		if(isset($input['student_id']) && array_key_exists('student_id',$input) && $input['student_id']!=''){
 			$order->student_id      = $input['student_id'];
 		}
-
     $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
-
     if(isset($input['payment_no']) && array_key_exists('payment_no',$input) && $input['payment_no']!=''){
       $order->payment_no= $input['payment_no'];
     }
@@ -312,6 +311,7 @@ class Orders extends \Eloquent {
         $order -> payment_dues_id = $inputs['payment_due_id'];
         $order->franchisee_id=Session::get('franchiseId');
         $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
+
         $order -> payment_for = 'membership';
         $order -> membership_id = $inputs['membership_id'];
         $order -> membership_type = $inputs['membership_type_id'];
@@ -347,103 +347,176 @@ class Orders extends \Eloquent {
     
     static public function getSalesAllocReport($inputs){
 
-        $final_sales_data = array();
+            $final_sales_data = array();
 
-        $final_sales_data[] = ['Parent Name', 'Child Name', 'Payment Date', 'Date of Birth', 'Name Of Class', 'Start Date', 'End Date', 'No.Of Classes Selected', '2nd Class', 'Membership', 'Membership Amount', 'Fees', 'Tax Amount', 'Discount', 'Discount For Siblings', 'Discount for Multi-class','Special Discount', 'Total', 'Mode Of Payment'];
-        $Sales['data'] = Orders::where('franchisee_id','=',Session::get('franchiseId'))
-                    //->where('student_classes_id','<>',0)
-                    ->whereDate('created_at','>=',$inputs['reportGenerateStartdate1'])
-                    ->whereDate('created_at','<=',$inputs['reportGenerateEnddate1'])
-                    //->where('student_id', '=', '1804')
-                    ->orderBy('id')
-                    ->get();
+            $final_sales_data[] = ['Parent Name', 'Child Name', 'Payment Date', 'Date of Birth','Type(enrollment/Birthday)', 'Name Of Class','Start Date', 'End Date', 'No.Of Classes Selected', '2nd Class', 'Membership', 'Membership Amount', 'Additional Guest Price', 'Additional Halfhour Price','Fees(Enrollement/Birthday)', 'Tax Amount', 'Discount', 'Discount For Siblings', 'Discount for Multi-class','Special Discount', 'Total', 'Mode Of Payment'];
+            $Sales['data'] = Orders::where('franchisee_id','=',Session::get('franchiseId'))
+                        //->where('student_classes_id','<>',0)
+                        ->whereDate('created_at','>=',$inputs['reportGenerateStartdate1'])
+                        ->whereDate('created_at','<=',$inputs['reportGenerateEnddate1'])
+                        //->where('student_id', '=', '1804')
+                        //->groupBy('student_id')
+                        ->orderBy('id')
+                        ->get();
+             $Bday['data'] = BirthdayParties::where('franchisee_id','=',Session::get('franchiseId'))
+                        ->whereDate('created_at','>=',$inputs['reportGenerateStartdate1'])
+                        ->whereDate('created_at','<=',$inputs['reportGenerateEnddate1'])
+                        ->orderBy('id')
+                        ->get();    
+            for($i=0;$i<count($Sales['data']);$i++){
+                $payment_data = PaymentDues::
+                                    where('payment_no', '=', $Sales['data'][$i]['payment_no'])
+                                    ->where('student_id', '=', $Sales['data'][$i]['student_id'])
+                                    ->where('customer_id', '=', $Sales['data'][$i]['customer_id'])
+                                    ->where('birthday_id','=', $Sales['data'][$i]['birthday_id'])
+                                    ->selectRaw('sum(payments_dues.selected_sessions) as selected_classes, min(start_order_date) as start_date, max(end_order_date) as end_date, class_id, membership_type_id, membership_amount, each_class_amount, tax_percentage, discount_amount, discount_sibling_amount,payment_due_for,payment_due_amount, discount_multipleclasses_amount, discount_admin_amount')
+                                    ->get();
 
-        for($i=0;$i<count($Sales['data']);$i++){
 
-            $each_sales_data = array();
+                $each_sales_data = array();
+                if($payment_data[0]['payment_due_for'] == 'birthday'){
+                    $temp=  Customers::find($Sales['data'][$i]['customer_id']);
+                    $cus_name = $temp->customer_name.' '.$temp->customer_lastname;
+                    $each_sales_data[]= $cus_name;
+
+                    //Collecting Student Data
+                    $temp2=  Students::find($Sales['data'][$i]['student_id']);
+                    $each_sales_data[]=$temp2->student_name;
+
+                    $temp1 = date_create($Sales['data'][$i]['created_at']);
+                    $each_sales_data[] = date_format($temp1,"m/d/Y");
+
+                    $dob = date_create($temp2->student_date_of_birth);
+                    $each_sales_data[]=date_format($dob,"m/d/Y");
+                    $each_sales_data[]= $payment_data[0]['payment_due_for'];
+                    $each_sales_data[]= '***NA***';
+                    $temp3 = BirthdayParties::where('student_id','=',$Sales['data'][$i]['student_id'])
+                                            ->get();
+                    $temp4 = BirthdayBasePrice::where('franchisee_id','=',Session::get('franchiseId'))->selectRaw('default_advance_amount')
+                                      ->get();
+                    
+                    $each_sales_data[] = $temp3[0]['birthday_party_date'];
+                    $each_sales_data[] = $temp3[0]['birthday_party_date'];
+                    $each_sales_data[] = 'NA';
+                    $each_sales_data[] = 'NA';
+                    $each_sales_data[]= 'NA';
+                    $each_sales_data[] = 'NA';
+                    $fees = $Sales['data'][$i]['amount'];
+                    if($temp4[0]['default_advance_amount'] != $fees){                      
+                            $each_sales_data[] = $temp3[0]['additional_guest_price'];
+                            $each_sales_data[] = $temp3[0]['additional_halfhour_price'];
+                      
+                    }else{
+                        $each_sales_data[] = '0';
+                        $each_sales_data[] = '0';
+                    }
+                    $each_sales_data[] =  $fees;
+                    $total = ($Sales['data'][$i]['amount']);
+                    
+                    $tax_amt = (($total)/100) * $payment_data[0]['tax_percentage'];
+                    if($tax_amt != ''){
+                        $each_sales_data[] = $tax_amt;
+                    }else{
+                        $each_sales_data[] = '0';
+                    }
+                    $each_sales_data[] = 'NA';
+                    $each_sales_data[] = 'NA';
+                    $each_sales_data[] = 'NA';
+                    $each_sales_data[] = 'NA';
+                    $each_sales_data[] = $total + $tax_amt;
+                    $each_sales_data[]= $Sales['data'][$i]['payment_mode'];
+                    $final_sales_data[] = $each_sales_data;
 
 
-            $payment_data = PaymentDues::
-                                where('payment_no', '=', $Sales['data'][$i]['payment_no'])
-                                ->where('student_id', '=', $Sales['data'][$i]['student_id'])
-                                ->where('customer_id', '=', $Sales['data'][$i]['customer_id'])
-                                ->selectRaw('sum(payments_dues.selected_sessions) as selected_classes, min(start_order_date) as start_date, max(end_order_date) as end_date, class_id, membership_type_id, membership_amount, each_class_amount, tax_percentage, discount_amount, discount_sibling_amount, discount_multipleclasses_amount, discount_admin_amount')
-                                ->get();
+                    }
+                if($payment_data[0]['payment_due_for'] == 'enrollment'){
+                                //Collecting customer Data
+                    $temp=  Customers::find($Sales['data'][$i]['customer_id']);
+                    $cus_name = $temp->customer_name.' '.$temp->customer_lastname;
+                    $each_sales_data[]= $cus_name;
 
-            if ($payment_data[0]['selected_classes'] > 0) {
-                
-                //Collecting customer Data
-                $temp=  Customers::find($Sales['data'][$i]['customer_id']);
-                $cus_name = $temp->customer_name.' '.$temp->customer_lastname;
-                $each_sales_data[]= $cus_name;
+                    //Collecting Student Data
+                    $temp2=  Students::find($Sales['data'][$i]['student_id']);
+                    $each_sales_data[]=$temp2->student_name;
 
-                //Collecting Student Data
-                $temp2=  Students::find($Sales['data'][$i]['student_id']);
-                $each_sales_data[]=$temp2->student_name;
+                    $temp1 = date_create($Sales['data'][$i]['created_at']);
+                    $each_sales_data[] = date_format($temp1,"m/d/Y");
 
-                $temp1 = date_create($Sales['data'][$i]['created_at']);
-                $each_sales_data[] = date_format($temp1,"m/d/Y");
+                    $dob = date_create($temp2->student_date_of_birth);
+                    $each_sales_data[]=date_format($dob,"m/d/Y");
 
-                $dob = date_create($temp2->student_date_of_birth);
-                $each_sales_data[]=date_format($dob,"m/d/Y");
 
-                //$each_sales_data[] = '';//new retention
+                    //$each_sales_data[] = '';//new retention
+                   
+                    $each_sales_data[]= $payment_data[0]['payment_due_for'];
+                    // if($payment_data[0]['payment_due_for'] == 'enrollment'){
+                       $get_class_name = Classes::where('id', '=', $payment_data[0]['class_id'])->select('class_name')->get();
+                    // }else{
+                    //     $get_class_name = 'Birthday Payment';
+                    // }
+                    
+                    $get_class_name = array_filter(json_decode(json_encode($get_class_name),TRUE));
+                    $class_name = "";
+                    if (!empty($get_class_name)) {
+                        $class_name = $get_class_name[0]['class_name'];
+                    }
+                    $each_sales_data[]= $class_name;
+                    $each_sales_data[]= date_format(new Carbon($payment_data[0]['start_date']), 'F d Y');
+                    $each_sales_data[]= date_format(new Carbon($payment_data[0]['end_date']), 'F d Y');
+                    $each_sales_data[]= $payment_data[0]['selected_classes'];
 
-                $get_class_name = Classes::where('id', '=', $payment_data[0]['class_id'])->select('class_name')->get();
-                $get_class_name = array_filter(json_decode(json_encode($get_class_name),TRUE));
-                $class_name = "";
-                if (!empty($get_class_name)) {
-                    $class_name = $get_class_name[0]['class_name'];
-                }
-                $each_sales_data[]= $class_name;
-                $each_sales_data[]= date_format(new Carbon($payment_data[0]['start_date']), 'F d Y');
-                $each_sales_data[]= date_format(new Carbon($payment_data[0]['end_date']), 'F d Y');
-                $each_sales_data[]= $payment_data[0]['selected_classes'];
                 if ((int)$payment_data[0]['discount_multipleclasses_amount'])
-                    $each_sales_data[]= "Yes";//2nd class
-                else
-                    $each_sales_data[]= "No";//2nd class
+                                    $each_sales_data[]= "Yes";//2nd class
+                                else
+                                    $each_sales_data[]= "No";//2nd class
 
-                $membership_amount = $payment_data[0]['membership_amount'];
+                                $membership_amount = $payment_data[0]['membership_amount'];
 
-                $mem_name = $membership_amount == "5000" ? "Lifetime Membership" : "Annual Membership";
+                                $mem_name = $membership_amount == "5000" ? "Lifetime Membership" : "Annual Membership";
 
-                //$mem_name = $payment_data[0]['membership_name'] !== "" ? $payment_data[0]['membership_name'] : "Annual Membership";
-                $each_sales_data[]= $mem_name;
-                $each_sales_data[]= $membership_amount;
+                                //$mem_name = $payment_data[0]['membership_name'] !== "" ? $payment_data[0]['membership_name'] : "Annual Membership";
+                                $each_sales_data[]= $mem_name;
+                                $each_sales_data[]= $membership_amount;
 
-                //$membership_amount;
-                /*$checkUser = Orders::checkNameExist($final_sales_data, $cus_name);
-                if($checkUser)
-                    $membership_amount = "-";
-                else
-                    $membership_amount = $mem_name == "Annual Membership" ? 2000 : 5000;
-                
-                $each_sales_data[]= $membership_amount;*/
+                                //$membership_amount;
+                                /*$checkUser = Orders::checkNameExist($final_sales_data, $cus_name);
+                                if($checkUser)
+                                    $membership_amount = "-";
+                                else
+                                    $membership_amount = $mem_name == "Annual Membership" ? 2000 : 5000;
+                                
+                                $each_sales_data[]= $membership_amount;*/
 
-                //$fees = $payment_data[0]['each_class_amount'] * $payment_data[0]['selected_classes'];
-                $total_amt_after_disc = $Sales['data'][$i]['amount'] + $membership_amount - $payment_data[0]['discount_amount'] -  $payment_data[0]['discount_sibling_amount'] - $payment_data[0]['discount_multipleclasses_amount'];
+                                //$fees = $payment_data[0]['each_class_amount'] * $payment_data[0]['selected_classes'];
+                                $total_amt_after_disc = $Sales['data'][$i]['amount'] + $membership_amount - $payment_data[0]['discount_amount'] -  $payment_data[0]['discount_sibling_amount'] - $payment_data[0]['discount_multipleclasses_amount'];
+                                
 
-                $each_sales_data[]= $Sales['data'][$i]['amount'];
+                                
+                                $each_sales_data[]= '0';
+                                $each_sales_data[]= '0';
+                                $each_sales_data[]= $Sales['data'][$i]['amount'];
 
-                $tax_amt = (($total_amt_after_disc)/100) * $payment_data[0]['tax_percentage'];
+                                $tax_amt = (($total_amt_after_disc)/100) * $payment_data[0]['tax_percentage'];
 
-                $each_sales_data[]= number_format($tax_amt, 2, '.', '');
-                $each_sales_data[]= $payment_data[0]['discount_amount'];
-                $each_sales_data[]= $payment_data[0]['discount_sibling_amount'];
-                $each_sales_data[]= $payment_data[0]['discount_multipleclasses_amount'];
-                $each_sales_data[]= $payment_data[0]['discount_admin_amount'];
-                
-                $each_sales_data[]= number_format($total_amt_after_disc - $payment_data[0]['discount_admin_amount'] + $tax_amt , 2, '.', '');;
-                $each_sales_data[]= $Sales['data'][$i]['payment_mode'];
+                                $each_sales_data[]= number_format($tax_amt, 2, '.', '');
+                                $each_sales_data[]= $payment_data[0]['discount_amount'];
+                                $each_sales_data[]= $payment_data[0]['discount_sibling_amount'];
+                                $each_sales_data[]= $payment_data[0]['discount_multipleclasses_amount'];
+                                $each_sales_data[]= $payment_data[0]['discount_admin_amount'];
 
-                $final_sales_data[] = $each_sales_data;   
-            }
-            //array_push($final_sales_data, $each_sales_data);
-        }
-        
-        return $final_sales_data;
-    } 
+
+                                $each_sales_data[]= number_format($total_amt_after_disc - $payment_data[0]['discount_admin_amount'] + $tax_amt , 2, '.', '');;
+                                $each_sales_data[]= $Sales['data'][$i]['payment_mode'];
+
+                                $final_sales_data[] = $each_sales_data;
+                                           //array_push($final_sales_data, $each_sales_data);      
+                            }
+
+
+                        }
+                        return $final_sales_data;
+                    }
+
 
     public static function checkNameExist($array_name, $cus_name){
         $final_array = array();

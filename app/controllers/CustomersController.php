@@ -228,7 +228,7 @@ class CustomersController extends \BaseController {
                            
                            $birthdayData=BirthdayParties::getBirthdaybyId($birthdaypaiddata[$i]['birthday_id']);
                            $birthdaypaiddata[$i]['birthday_party_date']=$birthdayData[0]['birthday_party_date'];
-                           $birthdaypaiddata[$i]['tax_amount']=$birthdaypaiddata[0]['tax_amount'];
+                           // $birthdaypaiddata[$i]['tax_amount']= $birthdaypaiddata[0]['tax_amount'];
                            $user_data=User::getUsersByUserId($birthdaypaiddata[$i]['created_by']);
                            $birthdaypaiddata[$i]['name']=$user_data[0]['first_name'].$user_data[0]['last_name'];
                            $birthdaypaiddata[$i]['encrypted_id']=Crypt::encrypt($birthdaypaiddata[$i]['id']);

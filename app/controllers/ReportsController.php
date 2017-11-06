@@ -50,14 +50,16 @@ class ReportsController extends \BaseController {
 
         public static function salesAllocreport(){
 
-        	if(Auth::check()){
-        		$inputs=  Input::all();
+                       if(Auth::check()){
+                               $inputs=  Input::all();
 
-        		$start_date = date_create($inputs['reportGenerateStartdate1']);
-        		$end_date = date_create($inputs['reportGenerateEnddate1']);
+                               $start_date = date_create($inputs['reportGenerateStartdate1']);
+                               $end_date = date_create($inputs['reportGenerateEnddate1']);
+
+
+                               $salesFile = Orders::getSalesAllocReport($inputs);
+
         		
-        		
-        		$salesFile = Orders::getSalesAllocReport($inputs);
         		//$salesFile = PaymentDues::getSalesAllocReport($inputs);
         		//return $salesFile;
 
@@ -74,7 +76,7 @@ class ReportsController extends \BaseController {
 		              $excel->sheet('Sheet 1', function($sheet) use($salesFile, $start_date, $end_date){
 		                  
 		                  //Styles in Row wise
-		                  $sheet->mergeCells('A1:S1');
+		                  $sheet->mergeCells('A1:V1');
 		                  $sheet->setAllBorders('thin');
 		                  $heightArray = array(
 		                      1     =>  50,
