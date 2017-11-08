@@ -136,13 +136,18 @@ class Comments extends \Eloquent {
             $comments->student_id=$inputs['student_id'];
             $comments->customer_id=$inputs['customer_id'];
             $comments->franchisee_id=$inputs['franchisee_id'];
+            if(isset($inputs['retention_id'])){
+                $comments->retention_id=$inputs['retention_id']; 
+            }
             $comments->followup_type=$inputs['followup_type'];
             $comments->followup_status=$inputs['followup_status'];
             $comments->comment_type=$inputs['comment_type'];
             $comments->created_by=Session::get('userId');
             $comments->created_at= date('Y-m-d H:i:s');
             $comments->log_text="Payment call for the kid";
-            $comments->paymentfollowup_id=$inputs['paymentfollowup_id'];
+            if(isset($inputs['paymentfollowup_id'])){
+                $comments->paymentfollowup_id=$inputs['paymentfollowup_id'];
+            }
             if(isset($inputs['reminderDate']) && array_key_exists('reminderDate',$inputs) ){
                 $comments->reminder_date=$inputs['reminderDate'];
             }

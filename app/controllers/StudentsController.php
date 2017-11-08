@@ -652,6 +652,8 @@ public function enrollKid2(){
                     /* Working on preparing to payment master table for single pay */
         $sendPaymentMasterDetailsToInsert = PaymentMaster::createPaymentMaster($sendPaymentDetailsToInsert);
 
+        
+
                     /* inserting into payment Master table is completed for single pay */
                     /* Working on preparing to Orders table for single pay */
 
@@ -697,22 +699,44 @@ public function enrollKid2(){
                     //** working on the payment_followups **//
                     
         if(count($batch_data) >= 15){
-          $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
+          // $retention['customer_id']     = $inputs['customerId'];
+          // $retention['student_id'] = $insertDataToStudentClassTable['student_id'];
+          $dataToretention = Retention::createRetention($sendPaymentDetailsToInsert);
                         //creating logs/followup for first payment
           $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
           $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
           $customer_log_data['franchisee_id']=Session::get('franchiseId');
-          $customer_log_data['paymentfollowup_id']=$payment_followup_data1->id;
-          $customer_log_data['followup_type']='PAYMENT';
+          $customer_log_data['retention_id']=$dataToretention->id;
+          $customer_log_data['followup_type']='RETENTION';
           $customer_log_data['followup_status']='REMINDER_CALL';
           $customer_log_data['comment_type']='VERYINTERESTED';
 
           $PaymentreminderDate=new carbon();
-          $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$batch_data[count($batch_data)-1]['schedule_date']);
+          $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$insertDataToStudentClassTable['enrollment_end_date']);
           $PaymentreminderDate->subDays(14);
           $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
           
           Comments::addSinglePayComment($customer_log_data);
+
+          $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
+
+          if(isset($payment_followup_data1)){
+              $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
+              $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
+              $customer_log_data['franchisee_id']=Session::get('franchiseId');
+              $customer_log_data['paymentfollowup_id'] = $payment_followup_data1->id;
+              $customer_log_data['retention_id']='NULL';
+              $customer_log_data['followup_type']='PAYMENT';
+              $customer_log_data['followup_status']='REMINDER_CALL';
+              $customer_log_data['comment_type']='VERYINTERESTED';
+
+              $PaymentreminderDate=new carbon();
+              $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$insertDataToStudentClassTable['enrollment_end_date']);
+              $PaymentreminderDate->subDays(14);
+              $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
+              
+              Comments::addSinglePayComment($customer_log_data);
+          }
         }
     
 
@@ -877,21 +901,44 @@ public function enrollKid2(){
                     //** working on the payment_followups **//
                     
       if((count($batch_data[0]) + count($batch_data[1])) >= 15){
-        $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
-                        //creating logs/followup for first payment
+        // $retention['customer_id']     = $inputs['customerId'];
+        // $retention['student_id'] = $insertDataToStudentClassTable['student_id'];
+        $dataToretention = Retention::createRetention($sendPaymentDetailsToInsert);
+                      //creating logs/followup for first payment
         $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
         $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
         $customer_log_data['franchisee_id']=Session::get('franchiseId');
-        $customer_log_data['paymentfollowup_id']=$payment_followup_data1->id;
-        $customer_log_data['followup_type']='PAYMENT';
+        $customer_log_data['retention_id']=$dataToretention->id;
+        $customer_log_data['followup_type']='RETENTION';
         $customer_log_data['followup_status']='REMINDER_CALL';
         $customer_log_data['comment_type']='VERYINTERESTED';
-        
+
         $PaymentreminderDate=new carbon();
-        $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$batch_data[1][count($batch_data[1])-1]['schedule_date']);
+        $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$insertDataToStudentClassTable['enrollment_end_date']);
         $PaymentreminderDate->subDays(14);
         $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
+        
         Comments::addSinglePayComment($customer_log_data);
+
+        $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
+                      //creating logs/followup for first payment
+        if(isset($payment_followup_data1)){
+            $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
+            $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
+            $customer_log_data['franchisee_id']=Session::get('franchiseId');
+            $customer_log_data['paymentfollowup_id'] = $payment_followup_data1->id;
+            $customer_log_data['retention_id']='NULL';
+            $customer_log_data['followup_type']='PAYMENT';
+            $customer_log_data['followup_status']='REMINDER_CALL';
+            $customer_log_data['comment_type']='VERYINTERESTED';
+
+            $PaymentreminderDate=new carbon();
+            $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$insertDataToStudentClassTable['enrollment_end_date']);
+            $PaymentreminderDate->subDays(14);
+            $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
+            
+            Comments::addSinglePayComment($customer_log_data);
+        }
       }
     
 
@@ -975,7 +1022,7 @@ public function enrollKid2(){
           $paymentDuesInput[$i]['discount_sibling_amount']       = $discount_sibling_amount[1];
           $paymentDuesInput[$i]['discount_sibling_applied']      = $inputs['second_child_discount_to_form'];
         }
-                                
+                              
                                
                                 
                                 
@@ -1063,25 +1110,44 @@ public function enrollKid2(){
       //** working on the payment_followups **//
                     
       if((count($batch_data[0]) + count($batch_data[1])+ count($batch_data[2])) >= 15){
-        $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
-                        //creating logs/followup for first payment
+        // $retention['customer_id']     = $inputs['customerId'];
+        // $retention['student_id'] = $insertDataToStudentClassTable['student_id'];
+        $dataToretention = Retention::createRetention($sendPaymentDetailsToInsert);
+                      //creating logs/followup for first payment
         $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
         $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
         $customer_log_data['franchisee_id']=Session::get('franchiseId');
-        $customer_log_data['paymentfollowup_id']=$payment_followup_data1->id;
-        $customer_log_data['followup_type']='PAYMENT';
+        $customer_log_data['retention_id']=$dataToretention->id;
+        $customer_log_data['followup_type']='RETENTION';
         $customer_log_data['followup_status']='REMINDER_CALL';
         $customer_log_data['comment_type']='VERYINTERESTED';
-                        
-        //$customer_log_data['reminderDate']=$batch_data[2][count($batch_data[2])-2]['schedule_date'];
+
+        $PaymentreminderDate=new carbon();
+        $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$insertDataToStudentClassTable['enrollment_end_date']);
+        $PaymentreminderDate->subDays(14);
+        $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
         
-          $PaymentreminderDate=new carbon();
-          $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$batch_data[2][count($batch_data[2])-1]['schedule_date']);
-          $PaymentreminderDate->subDays(14);
-          $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
-        
-                        
         Comments::addSinglePayComment($customer_log_data);
+
+        $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
+                      //creating logs/followup for first payment
+        if(isset($payment_followup_data1)){
+            $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
+            $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
+            $customer_log_data['franchisee_id']=Session::get('franchiseId');
+            $customer_log_data['paymentfollowup_id'] = $payment_followup_data1->id;
+            $customer_log_data['retention_id']='NULL';
+            $customer_log_data['followup_type']='PAYMENT';
+            $customer_log_data['followup_status']='REMINDER_CALL';
+            $customer_log_data['comment_type']='VERYINTERESTED';
+
+            $PaymentreminderDate=new carbon();
+            $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$insertDataToStudentClassTable['enrollment_end_date']);
+            $PaymentreminderDate->subDays(14);
+            $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
+            
+            Comments::addSinglePayComment($customer_log_data);
+        }
       }
     }
     DB::commit();

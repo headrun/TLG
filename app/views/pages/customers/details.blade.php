@@ -3937,7 +3937,7 @@ $('#memberhsipchequeNumber').keyup(function(){
                                                                                              <td>{{$retention_data[$i]['comments']['followup_type']}}</td>
                                                                                              <td></td>
                                                                                              <td>{{$retention_data[$i]['comments']['comment_type']}}</td>
-                                                                                             <td>{{$retention_data[$i]['comments']['reminder_date']}}</td>
+                                                                                             <td>{{$retention_data[$i]['reminder_date_end']}}</td>
                                                                                              <td>
                                                                                                  <a href="#" class="btn btn-xs btn-warning" onclick="getRetentionData({{$retention_data[$i]['id']}})" >History</a>
                                                                                                  <a href="#" class="btn btn-xs btn-primary" onclick="selectRetentionstatus({{$retention_data[$i]['id']}},'{{$retention_data[$i]['comments']['followup_status']}}','{{$retention_data[$i]['comments']['comment_type']}}')">Edit</a>
@@ -3957,19 +3957,7 @@ $('#memberhsipchequeNumber').keyup(function(){
                                                                                              </td>
                                                                                          </tr>
                                                                                        <?php }}?>
-                                                                                       <?php if(isset($enrollmentFollowupData)){ for($i=0;$i<count($enrollmentFollowupData);$i++){?> 
-                                                                                         <tr>
-                                                                                             <td>{{$enrollmentFollowupData[$i]['student_name']}}</td>
-                                                                                             <td>{{$enrollmentFollowupData[$i]['comments']['followup_type']}}</td>
-                                                                                             <td>{{$enrollmentFollowupData[$i]['payment_date']}}</td>
-                                                                                             <td>{{$enrollmentFollowupData[$i]['comments']['comment_type']}}</td>
-                                                                                             <td>{{$enrollmentFollowupData[$i]['comments']['reminder_date']}}</td>
-                                                                                             <td>
-                                                                                                 <a href="#" class="btn btn-xs btn-warning" onclick="getEnrollmentData({{$enrollmentFollowupData[$i]['id']}})" >History</a>
-                                                                                                 <a href="#" class="btn btn-xs btn-primary" onclick="selectEnrollmetnstatus({{$enrollmentFollowupData[$i]['id']}},'{{$enrollmentFollowupData[$i]['comments']['followup_status']}}','{{$enrollmentFollowupData[$i]['comments']['comment_type']}}')">Edit</a>
-                                                                                             </td>
-                                                                                         </tr>
-                                                                                       <?php }}?>
+                                                                                      
                                                                                        <?php if(isset($membership_followup_data)){ for($i=0;$i<count($membership_followup_data);$i++){?> 
                                                                                          <tr>
                                                                                              <td></td>

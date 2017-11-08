@@ -288,10 +288,17 @@ class CustomersController extends \BaseController {
                                $retention_data[$i]['comments']=  Comments::where('retention_id','=',$retention_data[$i]['id'])
                                                                  ->orderBy('id','DESC')
                                                                  ->first();
+                               $end_date = StudentClasses::where('student_id','=',$retention_data[$i]['student_id'])
+                               									 ->select('enrollment_end_date')
+                               									 ->orderBy('enrollment_end_date','DESC')
+                               									 ->limit(1)
+                               									 ->get();
+                               $end_date =  date('Y-m-d', strtotime('-14 day', strtotime($end_date[0]['enrollment_end_date'])));
+                               $retention_data[$i]['reminder_date_end'] = $end_date;
                                $student_data=  Students::find($retention_data[$i]['student_id']);
                                $retention_data[$i]['student_name']=$student_data['student_name'];
                          }
-                         
+                    	 //return $end_date;
                       //for inquiry
                          $inuiry_data=Inquiry::getInquiryByCustomerId($id);
                          for($i=0;$i<count($inuiry_data);$i++){
@@ -300,19 +307,6 @@ class CustomersController extends \BaseController {
                                                           ->first();
                              
                          }
-                         
-                     //for enrollment payment followup/brush up calls
-                         $enrollmentFollowupData=  PaymentFollowups::getPaymentFollowupByCustomerId($id);
-                           for($i=0;$i<count($enrollmentFollowupData);$i++){
-                           
-                           $enrollmentFollowupData[$i]['comments']=Comments::where('paymentfollowup_id','=',$enrollmentFollowupData[$i]['id'])
-                                                                             ->orderBy('id','DESC')
-                                                                             ->first();
-                           $student_data=  Students::find($enrollmentFollowupData[$i]['student_id']);
-                           $enrollmentFollowupData[$i]['student_name']=$student_data['student_name'];
-                           $paymentDueData= PaymentDues::find($enrollmentFollowupData[$i]['payment_due_id']);
-                           $enrollmentFollowupData[$i]['payment_date']=$paymentDueData['end_order_date'];
-                           }
                            
                         // for customer kids enrollment.  
                           
