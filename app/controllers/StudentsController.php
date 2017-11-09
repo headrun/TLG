@@ -698,7 +698,7 @@ public function enrollKid2(){
                 
                     //** working on the payment_followups **//
                     
-        if(count($batch_data) >= 15){
+       // if(count($batch_data) >= 15){
           // $retention['customer_id']     = $inputs['customerId'];
           // $retention['student_id'] = $insertDataToStudentClassTable['student_id'];
           $dataToretention = Retention::createRetention($sendPaymentDetailsToInsert);
@@ -737,7 +737,7 @@ public function enrollKid2(){
               
               Comments::addSinglePayComment($customer_log_data);
           }
-        }
+       // }
     
 
     
@@ -922,7 +922,7 @@ public function enrollKid2(){
 
         $payment_followup_data1=  PaymentFollowups::createPaymentFollowup($sendPaymentDetailsToInsert,$final_payment_master_no);
                       //creating logs/followup for first payment
-        if(isset($payment_followup_data1)){
+        //if(isset($payment_followup_data1)){
             $customer_log_data['customer_id']=$sendPaymentDetailsToInsert->customer_id;
             $customer_log_data['student_id']=$sendPaymentDetailsToInsert->student_id;
             $customer_log_data['franchisee_id']=Session::get('franchiseId');
@@ -939,7 +939,7 @@ public function enrollKid2(){
             
             Comments::addSinglePayComment($customer_log_data);
         }
-      }
+    //  }
     
 
                 
@@ -1109,7 +1109,7 @@ public function enrollKid2(){
       }
       //** working on the payment_followups **//
                     
-      if((count($batch_data[0]) + count($batch_data[1])+ count($batch_data[2])) >= 15){
+      //if((count($batch_data[0]) + count($batch_data[1])+ count($batch_data[2])) >= 15){
         // $retention['customer_id']     = $inputs['customerId'];
         // $retention['student_id'] = $insertDataToStudentClassTable['student_id'];
         $dataToretention = Retention::createRetention($sendPaymentDetailsToInsert);
@@ -1148,7 +1148,7 @@ public function enrollKid2(){
             
             Comments::addSinglePayComment($customer_log_data);
         }
-      }
+     // }
     }
     DB::commit();
     

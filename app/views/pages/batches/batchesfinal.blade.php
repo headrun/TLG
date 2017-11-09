@@ -552,6 +552,9 @@ $('#seasonLocation').change(function(){
 
 });
 
+$('#addbatch').click(function(){
+	$('#addbatch').addClass('disabled');
+});
 //
 //$('#eachClassAmount').change(function(){
 //        if(parseInt($('#eachClassAmount').val())<0){

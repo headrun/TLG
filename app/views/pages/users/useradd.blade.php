@@ -43,6 +43,10 @@ $(document).ready(function (){
         });
 	});
 });	
+$('#customerSubmit').click(function(){
+	$('#customerSubmit').disabled();
+});
+
 </script>
 
 @stop
@@ -144,7 +148,7 @@ $(document).ready(function (){
                         <div class="uk-grid">
                             <div class="uk-width-1-1">
                             	
-                                <button type="submit" id="customerSubmit" class="md-btn md-btn-primary">Save User Details</button>
+                                <button type="submit" id="customerSubmit"  onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();" onSubmit="window.location.reload();" class="md-btn md-btn-primary">Save User Details</button>
                             </div>
                         </div>
                     {{ Form::close() }}	

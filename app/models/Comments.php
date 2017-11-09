@@ -197,10 +197,15 @@ class Comments extends \Eloquent {
 	}
         
         static function getFutureFollowup(){
-            return Comments::with('Customers')->where('franchisee_id','=',Session::get('franchiseId'))
-                            ->whereDate("reminder_date",'>',date('Y-m-d'))
-                            ->orderBy('reminder_date', 'desc')
-                            ->get();
+            $today = date('Y-m-d');
+            return Comments::join('customers', 'customers.id', '=', 'customer_logs.customer_id')
+                    ->where("customer_logs.franchisee_id", "=", Session::get('franchiseId'))
+                    ->where("customer_logs.followup_type", "!=", "PAYMENT")
+                    ->selectRaw('customers.customer_name, customers.customer_lastname, customers.id, customer_logs.followup_type, max(customer_logs.reminder_date) as reminder_date, customers.mobile_no')
+                    ->groupBy('customer_logs.student_id')
+                    ->havingRaw('max(customer_logs.reminder_date) > "'.$today.'"')
+                    ->orderBy('customer_logs.reminder_date','DESC')
+                    ->get();
         }
 	
 	static function getAllFollowupActive(){
@@ -211,8 +216,8 @@ class Comments extends \Eloquent {
 		return Comments::join('customers', 'customers.id', '=', 'customer_logs.customer_id')
                     ->where("customer_logs.franchisee_id", "=", Session::get('franchiseId'))
             		->where("customer_logs.reminder_date", "!=", "NULL")
-            		->where("customer_logs.followup_type", "!=", "ENROLLMENT")
                     ->where("customer_logs.followup_status", "!=", "NOT_INTERESTED")
+                    ->where("customer_logs.followup_type", "!=", "PAYMENT")
                     ->selectRaw('customers.customer_name, customers.customer_lastname, customers.id, customer_logs.followup_type, max(customer_logs.reminder_date) as reminder_date, customers.mobile_no')
                     ->groupBy('customer_logs.student_id')
                     ->havingRaw('max(customer_logs.reminder_date) < "'.$today.'"')
