@@ -213,9 +213,9 @@ class Comments extends \Eloquent {
             		->where("customer_logs.reminder_date", "!=", "NULL")
             		->where("customer_logs.followup_type", "!=", "ENROLLMENT")
                     ->where("customer_logs.followup_status", "!=", "NOT_INTERESTED")
-                    ->whereDate("customer_logs.reminder_date", "<", $today)
                     ->selectRaw('customers.customer_name, customers.customer_lastname, customers.id, customer_logs.followup_type, max(customer_logs.reminder_date) as reminder_date, customers.mobile_no')
                     ->groupBy('customer_logs.student_id')
+                    ->havingRaw('max(customer_logs.reminder_date) < "'.$today.'"')
                     ->orderBy('customer_logs.reminder_date','DESC')
                     ->get();
 

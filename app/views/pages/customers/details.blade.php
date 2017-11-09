@@ -3937,7 +3937,7 @@ $('#memberhsipchequeNumber').keyup(function(){
                                                                                              <td>{{$retention_data[$i]['comments']['followup_type']}}</td>
                                                                                              <td></td>
                                                                                              <td>{{$retention_data[$i]['comments']['comment_type']}}</td>
-                                                                                             <td>{{$retention_data[$i]['reminder_date_end']}}</td>
+                                                                                             <td>{{$retention_data[$i]['comments']['reminder_date']}}</td>
                                                                                              <td>
                                                                                                  <a href="#" class="btn btn-xs btn-warning" onclick="getRetentionData({{$retention_data[$i]['id']}})" >History</a>
                                                                                                  <a href="#" class="btn btn-xs btn-primary" onclick="selectRetentionstatus({{$retention_data[$i]['id']}},'{{$retention_data[$i]['comments']['followup_status']}}','{{$retention_data[$i]['comments']['comment_type']}}')">Edit</a>

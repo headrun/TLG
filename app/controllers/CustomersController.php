@@ -288,13 +288,6 @@ class CustomersController extends \BaseController {
                                $retention_data[$i]['comments']=  Comments::where('retention_id','=',$retention_data[$i]['id'])
                                                                  ->orderBy('id','DESC')
                                                                  ->first();
-                               $end_date = StudentClasses::where('student_id','=',$retention_data[$i]['student_id'])
-                               									 ->select('enrollment_end_date')
-                               									 ->orderBy('enrollment_end_date','DESC')
-                               									 ->limit(1)
-                               									 ->get();
-                               $end_date =  date('Y-m-d', strtotime('-14 day', strtotime($end_date[0]['enrollment_end_date'])));
-                               $retention_data[$i]['reminder_date_end'] = $end_date;
                                $student_data=  Students::find($retention_data[$i]['student_id']);
                                $retention_data[$i]['student_name']=$student_data['student_name'];
                          }
