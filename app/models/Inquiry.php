@@ -14,6 +14,39 @@ class Inquiry extends \Eloquent {
            $inquiry->save();
            return $inquiry;
     }
+    static function getInquiryForActivityReport($inputs){
+        $getInquiryForActivityReport['data'] = Inquiry::where('franchisee_id','=',Session::get('franchiseId'))
+                         ->whereDate('created_at','>=',$inputs['reportStartDate'])
+                         ->whereDate('created_at','<=',$inputs['reportEndDate'])
+                         ->select('customer_id','created_at')
+                         ->orderby('created_at','DESC')
+                         ->limit(1)
+                         ->get();
+        for($i=0;$i<count($getInquiryForActivityReport['data']);$i++){
+
+            $temp=  Customers::find($getInquiryForActivityReport['data'][$i]['customer_id']);
+
+            $getInquiryForActivityReport['data'][$i]['customer_name'] = $temp->customer_name." ".$temp->customer_lastname;
+
+            $temp2=  Students::where('customer_id','=',$getInquiryForActivityReport['data'][$i]['customer_id'])->get();
+
+            $getInquiryForActivityReport['data'][$i]['student_name'] = isset($temp2) && !empty($temp2) ? $temp2[0]['student_name'] : "";
+
+            $getInquiryForActivityReport['data'][$i]['payment_due_for'] = 'INQUIRY';
+
+            $temp3=  Comments::where('student_id','=',$getInquiryForActivityReport['data'][$i]['student_id'])
+                              ->where('reminder_date','!=','null')
+                              ->orderby('created_at','DESC')
+                              ->where('followup_type','=','INQUIRY')
+                              ->limit(1)
+                              ->get();
+                              
+            if(isset($temp3) && !empty($temp3)){
+                $getInquiryForActivityReport['data'][$i]['created_at']=$temp3[0]['reminder_date']; }
+        }
+        return $getInquiryForActivityReport;
+    }
+
     static function getInquiryByCustomerId($customerId){
             return Inquiry::where('customer_id','=',$customerId)
                              ->where('franchisee_id','=',Session::get('franchiseId'))

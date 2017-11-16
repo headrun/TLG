@@ -18,6 +18,53 @@ class ReportsController extends \BaseController {
                 return Redirect::action('VaultController@logout');
             }
         }
+
+
+        public static function activityReport(){
+        	
+        	if(Auth::check()){
+        		
+        		$inputs=  Input::all();
+                 
+                $data = array(PaymentDues::getAllBirthdayPaymentsforActivityReport($inputs));
+                $iv_data = array(IntroVisit::getIvForActivityReport($inputs));
+                $retention_data = array(Retention::getRetentionForActivityReport($inputs));
+                $inquiry_data = array(Inquiry::getInquiryForActivityReport($inputs));
+                $complaint_data = array(Complaint::getComplaintsForActivityReport($inputs));
+
+                if (isset($data) && !empty($data)) {
+                	$data = json_decode($data[0]['data'],true);
+                }
+
+                if (isset($iv_data) && !empty($iv_data)) {
+                	$iv_data = json_decode($iv_data[0]['data'],true);
+                }
+
+                if (isset($retention_data)) {
+                	$retention_data = json_decode($retention_data[0]['data'],true);//json_decode($retention_data[0]['data'],true);
+                }
+
+                if (isset($inquiry_data) && !empty($inquiry_data)) {
+                	$inquiry_data = json_decode($inquiry_data[0]['data'],true);
+                }
+
+                if (isset($complaint_data) && !empty($complaint_data)) {
+                	$complaint_data = json_decode($complaint_data[0]['data'],true);
+                }
+               
+                $output = json_encode(
+                	array_merge(
+                		$data,
+                		$iv_data,
+                		$retention_data,
+                		$inquiry_data,
+                		$complaint_data
+                	)
+                );
+                return Response::json(array('status'=> 'success', 'data'=> json_decode($output, true)));
+        	}
+        	
+        }
     
         public static function generatereport(){
             if(Auth::check()){

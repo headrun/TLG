@@ -207,6 +207,39 @@ class Comments extends \Eloquent {
                     ->orderBy('customer_logs.reminder_date','DESC')
                     ->get();
         }
+    
+    static function toDeleteMultile(){
+        $inputs = Input::all();   
+        $today = date('Y-m-d');
+        $franchis_id = Session::get('franchiseId'); 
+       // print_r($today); die();
+        return Comments::join('customers', 'customers.id', '=', 'customer_logs.customer_id')
+                    ->where("customer_logs.franchisee_id", "=", Session::get('franchiseId'))
+                    ->where("customer_logs.reminder_date", "!=", "NULL")
+                    ->where("customer_logs.followup_status", "!=", "NOT_INTERESTED")
+                    ->where("customer_logs.followup_type", "=", "RETENTION")
+                    ->selectRaw('max(customer_logs.id) as id')
+                    ->groupBy('customer_logs.student_id')
+                    /*->havingRaw('max(customer_logs.reminder_date) < "'.$today.'"')*/
+                    ->orderBy('customer_logs.reminder_date','DESC')
+                    ->lists('id');
+
+    }
+    static function toGetMultileRecords(){
+        $inputs = Input::all();   
+        $today = date('Y-m-d');
+        $franchis_id = Session::get('franchiseId'); 
+       // print_r($today); die();
+        return Comments::join('customers', 'customers.id', '=', 'customer_logs.customer_id')
+                    ->where("customer_logs.franchisee_id", "=", Session::get('franchiseId'))
+                    ->where("customer_logs.reminder_date", "!=", "NULL")
+                    ->where("customer_logs.followup_type", "=", "RETENTION")
+                    ->selectRaw('customer_logs.id')
+                   // ->havingRaw('max(customer_logs.reminder_date) < "'.$today.'"')
+                    ->orderBy('customer_logs.reminder_date','DESC')
+                    ->lists('customer_logs.id');
+
+    }
 	
 	static function getAllFollowupActive(){
 	    $inputs = Input::all();   
@@ -216,6 +249,7 @@ class Comments extends \Eloquent {
 		return Comments::join('customers', 'customers.id', '=', 'customer_logs.customer_id')
                     ->where("customer_logs.franchisee_id", "=", Session::get('franchiseId'))
             		->where("customer_logs.reminder_date", "!=", "NULL")
+                    ->where("customer_logs.reminder_date", ">=", '2000-01-01')
                     ->where("customer_logs.followup_status", "!=", "NOT_INTERESTED")
                     ->where("customer_logs.followup_type", "!=", "PAYMENT")
                     ->selectRaw('customers.customer_name, customers.customer_lastname, customers.id, customer_logs.followup_type, max(customer_logs.reminder_date) as reminder_date, customers.mobile_no')

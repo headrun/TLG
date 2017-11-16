@@ -21,6 +21,7 @@ Route::any('/courses', 'CoursesController@viewCourses');
 
 
 Route::any('/terms_conditions', 'DashboardController@terms_conditions');
+Route::any('dashboard/toDeleteMultiple','DashboardController@toDeleteMultiple');
 
 Route::any('/classes', 'ClassesController@add_new_classes');
 Route::any('/add_new_class_franchise', 'ClassesController@add_new_class_franchise');
@@ -289,6 +290,7 @@ Route::group(array('prefix' => 'quick'), function() {
 	 *  --------------------------------------------------------------------------------------------------------------------------------------
 	 */
         Route::any('generatereport', "ReportsController@generatereport");
+        Route::any('activityReport',"ReportsController@activityReport");
         
         
         

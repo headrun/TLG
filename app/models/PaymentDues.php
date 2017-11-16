@@ -216,6 +216,48 @@ class PaymentDues extends \Eloquent {
                             ->where('student_class_id','!=','0')
                             ->get();
     }
+
+    static function getAllBirthdayPaymentsforActivityReport($inputs){
+        $birthdayActivityReportDetails['data'] =PaymentDues::where('franchisee_id','=',Session::get('franchiseId'))
+                          ->where('payment_status','=','paid')
+                         
+                          ->whereDate('created_at','>=',$inputs['reportStartDate'])
+                          ->whereDate('created_at','<=',$inputs['reportEndDate'])
+                          ->select('student_id','customer_id','created_at')
+                          ->orderBy('id','desc')
+                          ->get();
+        for($i = 0; $i < count($birthdayActivityReportDetails['data']); $i++){
+
+            $temp = Customers::find($birthdayActivityReportDetails['data'][$i]['customer_id']);
+
+            $birthdayActivityReportDetails['data'][$i]['customer_name'] = $temp->customer_name." ".$temp->customer_lastname;
+
+            $temp2 = Students::find($birthdayActivityReportDetails['data'][$i]['student_id']);
+
+            $birthdayActivityReportDetails['data'][$i]['student_name'] = $temp2->student_name;
+
+            $temp3 = PaymentDues::where('student_id','=',$birthdayActivityReportDetails['data'][$i]['student_id'])->select('payment_due_for')->get();
+            //print_r($temp3); die();
+            for($j = 0; $j < count($temp3); $j++){
+              if($temp3[$j]['payment_due_for'] == 'enrollment'){
+                $temp4 = StudentClasses::where('student_id','=',$birthdayActivityReportDetails['data'][$i]['student_id'])
+                                    ->select('enrollment_start_date')
+                                    ->orderby('created_at','DESC')
+                                    ->get();
+                $birthdayActivityReportDetails['data'][$i]['payment_due_for']='ENROLLMENT';
+                $birthdayActivityReportDetails['data'][$i]['created_at']=$temp4[0]['enrollment_start_date'];
+              }
+              if($temp3[$j]['payment_due_for'] == 'birthday'){
+                $temp5 = BirthdayParties::where('student_id','=',$birthdayActivityReportDetails['data'][$i]['student_id'])->select('birthday_party_date')->get();
+                $birthdayActivityReportDetails['data'][$i]['payment_due_for']='BIRTHDAY';
+                $birthdayActivityReportDetails['data'][$i]['created_at']=$temp5[0]['birthday_party_date'];
+              }
+            }
+
+        }
+        //print_r($temp3[$i]['payment_due_for']); die();
+        return $birthdayActivityReportDetails;
+    }
     
     static function getAllBirthdayPaymentsforReport($inputs){
         $birthdayReportDetails['data'] =PaymentDues::where('payment_due_for','=','birthday')

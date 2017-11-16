@@ -30,6 +30,10 @@
     $('#reportGenerateenddate, #reportGenerateenddate1').kendoDatePicker({format: "yyyy-MM-dd"});
     $('#reportGenerateStartdate, #reportGenerateStartdate1').val('{{$presentdate}}');
     $('#reportGenerateenddate, #reportGenerateenddate1').val('{{$presentdate}}');
+    $('#reportStartDate').kendoDatePicker( {format: "yyyy-MM-dd"});
+    $('#reportEndDate').kendoDatePicker( {format: "yyyy-MM-dd"});
+    $('#reportStartDate').val('{{$presentdate}}');
+    $('#reportEndDate').val('{{$presentdate}}');
     $('#reportType').val('Birthday');
     
     
@@ -469,6 +473,48 @@
     });
 })(jQuery);
 
+$(document).on('click', '#activityReport', function(){
+
+    var start_date = $('#reportStartDate').val();
+    var end_date = $('#reportEndDate').val();
+
+    if (typeof start_date !== 'undefined' && typeof end_date !== 'undefined' ) {
+        $.ajax({
+            type: "POST",
+            url: "{{URL::to('/quick/activityReport')}}",
+            data: {'reportStartDate': start_date, 'reportEndDate': end_date},
+            dataType: 'json',
+            success: function(response){
+                    var data = '';
+                    var header_data="<div class='md-card-content'>"+
+                                        "<div class='uk-overflow-container'>"+
+                                    "<table id='reportTable' class='uk-table'>"+
+                                    "<thead>"+
+                                    '<tr>'+
+                                    '<th>Customer Name</th>'+
+                                    '<th>Student Name</th>'+
+                                    '<th>Type of Activity</th>'+
+                                    '<th>Schedule Date</th>'+
+                                    '</tr></thead>';
+                            for(var i=0;i<response.data.length;i++){
+
+                                header_data+="<tr><td>"+response.data[i]['customer_name']+"</td><td>"+
+                                          response.data[i]['student_name']+"</td><td>"+
+                                          response.data[i]['payment_due_for']+"</td><td>"+
+                                          response.data[i]['created_at']+"</td></tr>";
+                                    
+                            }
+                            
+                            header_data+="</table></div></div>";
+                            console.log(header_data);
+                            $('#reportdata').html(header_data);
+                            $('#reportTable').DataTable();
+                    
+                
+            }
+        });
+    }
+});
 
 $(document).on('click', '.salse_alloc_btn', function(){
 
@@ -484,7 +530,7 @@ $(document).on('click', '.salse_alloc_btn', function(){
             data: {'reportGenerateStartdate1': start_date, 'reportGenerateEnddate1': end_date},
             dataType: 'json',
             success: function(response){
-                if (response.status === "success") {
+                if(response.status === "success"){
 
                     window.open(response.data, '_blank');
                 } 
@@ -520,6 +566,31 @@ $(document).on('click', '.salse_alloc_btn', function(){
                 <div class="md-card uk-margin-medium-bottom">
 		    <div class="md-card-content">
                         <br>
+                        <h3 class="heading_b uk-margin-bottom">Activity Report</h3>
+                        {{ Form::open(array('url' => '/reports/activityReport', 'id'=>"activityReportform", "class"=>"uk-form-stacked", 'method' => 'post')) }} 
+                          <div class="uk-grid" data-uk-grid-margin>
+                              <div class="uk-width-medium-1-4">
+                                <div class="parsley-row form-group">
+                                  <label for="selectDate">Start Date</label><br>
+                                    {{Form::text('reportStartDate',
+            null,array('id'=>'reportStartDate', 'class' => '','required'))}} 
+                                </div>
+                              </div>
+                              <div class="uk-width-medium-1-4">
+                               <div class="parsley-row form-group">
+                                        <label for="endDate">End Date</label><br>
+                                            {{Form::text('reportEndDate',
+            null,array('id'=>'reportEndDate', 'class' => '','required'))}} 
+                               </div>
+                            </div>
+
+                              <div class="uk-width-1-4">
+                                <div class="parsley-row" style="padding: 25px 30px;">
+                                  <button type="button" class="md-btn md-btn-primary" id="activityReport">Generate</button>
+                                </div>
+                              </div>
+                            </div>
+                        {{ Form::close() }}
                         <h3 class="heading_b uk-margin-bottom">General Report</h3>
                         {{ Form::open(array('url' => '/reports/generatereport', 'id'=>"generatereportform", "class"=>"uk-form-stacked", 'method' => 'post')) }}    
                            <div class="uk-grid" data-uk-grid-margin>

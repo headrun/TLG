@@ -22,9 +22,38 @@ class IntroVisit extends \Eloquent {
 		return $this->belongsTo('Batches', 'batch_id');
 	}
 	
+	static function getIvForActivityReport($inputs){
 
-	
-	
+        $getIvForActivityReport['data'] = IntroVisit::where('franchisee_id','=',Session::get('franchiseId'))
+						 ->whereDate('created_at','>=',$inputs['reportStartDate'])
+        				 ->whereDate('created_at','<=',$inputs['reportEndDate'])
+        				 ->select('student_id','customer_id','created_at')
+        				 ->get();
+        for($i=0;$i<count($getIvForActivityReport['data']);$i++){
+
+            $temp=  Customers::find($getIvForActivityReport['data'][$i]['customer_id']);
+            
+            $getIvForActivityReport['data'][$i]['customer_name']=$temp->customer_name." ".$temp->customer_lastname;
+            
+            $temp2=  Students::find($getIvForActivityReport['data'][$i]['student_id']);
+            
+            $getIvForActivityReport['data'][$i]['student_name']=$temp2->student_name;
+            
+            $getIvForActivityReport['data'][$i]['payment_due_for']= 'INTROVISIT';
+            
+            $temp3=  IntroVisit::where('student_id','=',$getIvForActivityReport['data'][$i]['student_id'])
+                              ->where('iv_date','!=','null')
+                              ->orderby('created_at','DESC')
+                              ->limit(1)
+                              ->get();
+            if(isset($temp3) && !empty($temp3)){
+                $getIvForActivityReport['data'][$i]['created_at']=$temp3[0]['iv_date'];  
+            }
+
+
+        }
+        return $getIvForActivityReport;
+    }
 	static function addSchedule($inputs){
 		
 		$introVisit = new IntroVisit();

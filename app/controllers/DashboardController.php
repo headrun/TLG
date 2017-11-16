@@ -114,7 +114,9 @@ class DashboardController extends \BaseController {
 			                  $todaysIntrovisit = BatchSchedule::getTodaysIntroVisits();
 			
 			                  $activeRemindersCount = Comments::getAllFollowupActive();
-			
+
+
+
                         //get birthday dates
                         $startdate=new carbon();
                         $startdate->startOfYear();
@@ -383,6 +385,20 @@ class DashboardController extends \BaseController {
           return Response::json(array('status'=> "success", $sendDetails));  
         }else{
           return Response::json(array('status'=> "failure"));        
+      }
+  }
+  public function toDeleteMultiple(){
+      $value = array();
+      $total = array();
+      $toDeleteMultile = Comments::toDeleteMultile();
+      $toGetMultileRecords = Comments::toGetMultileRecords();
+      //return $toDeleteMultile;
+     
+      foreach ($toGetMultileRecords as $key => $value){
+          if (!in_array($value, $toDeleteMultile)) {
+              $update = Comments::where('id','=',$value)
+                                ->update(['reminder_date' => 'NULL']);
+          }
       }
   }
 
