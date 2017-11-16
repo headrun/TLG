@@ -34,9 +34,9 @@ class Retention extends \Eloquent {
               
               $getRetentionForActivityReport['data'][$i]['customer_name']=$temp->customer_name." ".$temp->customer_lastname;
               
-              $temp2=  Students::find($getRetentionForActivityReport['data'][$i]['student_id']);
+              $temp2 =  Students::find($getRetentionForActivityReport['data'][$i]['student_id']);
               
-              $getRetentionForActivityReport['data'][$i]['student_name'] = isset($temp2) && !empty($temp2) ? $temp2[0]['student_name'] : "";
+              $getRetentionForActivityReport['data'][$i]['student_name'] = $temp2->student_name;
               
               $getRetentionForActivityReport['data'][$i]['payment_due_for']= 'RETENTION';
               
