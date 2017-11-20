@@ -278,12 +278,93 @@ class StudentsController extends \BaseController {
                         }else{
                           $stage = '';
                         }
+                        $batch_id = StudentClasses::where('student_id','=',$id)
+                                                    ->select('id','batch_id','enrollment_start_date','enrollment_end_date','selected_sessions','status')
+                                                    ->get();
+                       // return $batch_id;
+                        for($i=0;$i<count($batch_id);$i++){
+                              $batch = Batches::where('id','=',$batch_id[$i]['batch_id'])
+                                              ->select('batch_name')
+                                              ->get();
+                              $batchDetails[$i]['batch_name'] = $batch[0]['batch_name'];
+                              $batchDetails[$i]['enrollment_start_date'] = $batch_id[$i]['enrollment_start_date'];
+                              $batchDetails[$i]['enrollment_end_date'] = $batch_id[$i]['enrollment_end_date'];
+                              $batchDetails[$i]['selected_sessions'] = $batch_id[$i]['selected_sessions'];
+                              $batchDetails[$i]['id'] = $batch_id[$i]['id'];
+
+                              $transfer = StudentClasses::where('student_id','=',$id)
+                                                    ->select('status')
+                                                    ->get();                    
+                              if($transfer[$i]['status'] == 'transferred_class'){
+                                $batchDetails[$i]['stage'] = 'Transfered';
+                              }else{
+                                $batchDetails[$i]['stage'] = '';
+                              }
+
+                              ////// To get present dates count ////////
+
+                              $present_count = Attendance::where('student_id','=',$id)
+                                                ->where('student_classes_id','=',$batch_id[$i]['id'])
+                                                ->select('status','attendance_date')
+                                                ->where('status','=','P')
+                                                ->count();
+                              
+                              $batchDetails[$i]['present'] = $present_count > 0 ? $present_count : 0;
+
+                              ////// To get absent date count ////////
+
+                              $absent_count = Attendance::where('student_id','=',$id)
+                                                ->where('student_classes_id','=',$batch_id[$i]['id'])
+                                                ->select('status')
+                                                ->where('status','=','A')
+                                                ->count();
+                              $batchDetails[$i]['Absent'] = $absent_count > 0 ? $absent_count : 0;
+
+                              ////// To get EA count ////////
+
+                              $EA_count = Attendance::where('student_id','=',$id)
+                                                ->where('student_classes_id','=',$batch_id[$i]['id'])
+                                                ->whereNull('makeup_class_given')
+                                                ->where('status','=','EA')
+                                                ->count(); 
+                              $batchDetails[$i]['EA'] = $EA_count > 0 ? $EA_count : 0; 
+
+                              ////// To get makeup count ////////
+
+                              $makeup_count = Attendance::where('student_id','=',$id)
+                                                ->where('student_classes_id','=',$batch_id[$i]['id'])
+                                                ->where('makeup_class_given','=','1')
+                                                ->count();
+                              $batchDetails[$i]['makeup'] = $makeup_count > 0 ? $makeup_count : 0;
+
+                              $total = $batchDetails[$i]['present'] + $batchDetails[$i]['Absent'] + $batchDetails[$i]['EA'] + $batchDetails[$i]['makeup'];
+                              
+                              if(!empty($batch_id[$i]['selected_sessions']) && count($batch_id[$i]['selected_sessions']) > 0){
+                                  if($total <= $batch_id[$i]['selected_sessions']){
+                                     $attendance = Attendance::where('student_id','=',$id)
+                                                      ->where('student_classes_id','=',$batch_id[$i]['id'])
+                                                      ->count();
+
+                                     $batchDetails[$i]['remaining_classes'] = $batchDetails[$i]['selected_sessions'] - $attendance;
+                                  }else{
+                                     $batchDetails[$i]['remaining_classes'] = 0;
+                                  }
+
+                              }else{
+                                  $batchDetails[$i]['remaining_classes'] = 0;
+                              }
+
+
+                          
+                        }
+                        //return $batchDetails;
+
       $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll','end',
                                                                 'discountEnrollmentData','latestEnrolledData','taxPercentage','tax_data',
                                                                 'discount_second_class_elligible','discount_second_child_elligible','discount_second_child','discount_second_class',
                 'studentEnrollments','customermembership','paymentDues',
                 'scheduledIntroVisits', 'introvisit', 'discountEligibility','paidAmountdata','order_due_data',
-                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata','remaining_classes','base_price','stage');
+                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata','remaining_classes','base_price','stage','batchDetails');
       return View::make('pages.students.details',compact($dataToView));
     }else{
       return Redirect::action('VaultController@logout');
@@ -713,7 +794,6 @@ public function enrollKid2(){
 
           $PaymentreminderDate=new carbon();
           $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$insertDataToStudentClassTable['enrollment_end_date']);
-          $PaymentreminderDate->subDays(14);
           $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
           
           Comments::addSinglePayComment($customer_log_data);
@@ -732,7 +812,6 @@ public function enrollKid2(){
 
               $PaymentreminderDate=new carbon();
               $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$insertDataToStudentClassTable['enrollment_end_date']);
-              $PaymentreminderDate->subDays(14);
               $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
               
               Comments::addSinglePayComment($customer_log_data);
@@ -915,7 +994,6 @@ public function enrollKid2(){
 
         $PaymentreminderDate=new carbon();
         $PaymentreminderDate=$PaymentreminderDate->createFromFormat('Y-m-d',$insertDataToStudentClassTable['enrollment_end_date']);
-        $PaymentreminderDate->subDays(14);
         $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();
         
         Comments::addSinglePayComment($customer_log_data);
@@ -1393,7 +1471,31 @@ public function enrollKid2(){
                                     
         $attendanceArray[$i]['studentId']   = $studentAttendance->Students->id;
         $studentAttendanceRecord = Attendance::getDaysAttendanceForStudent($studentAttendance->Students->id, $batchId,  $selectedDate);
+        $enrollmentDates = StudentClasses::where('id','=',$studentAttendance->id)
+                                        ->select('enrollment_start_date','enrollment_end_date')
+                                        ->get();
+        $attendanceArray[$i]['enrollment_start_date'] = $enrollmentDates[0]['enrollment_start_date'];
+        $attendanceArray[$i]['enrollment_end_date'] = $enrollmentDates[0]['enrollment_end_date'];
         
+        $end = new Carbon();
+
+        $end=$end->createFromFormat('Y-m-d',$attendanceArray[$i]['enrollment_end_date']);
+       
+        $end = $end->subDays(7);
+        
+        $attendanceArray[$i]['end'] = $end->toDateString();
+
+
+        
+      /*  $end = $end->createFromFormat('Y-m-d',$enrollmentDates[0]['enrollment_end_date']);
+        $end = $end->subDays(14);*/
+        
+
+
+/*createFromFormat('Y-m-d',$insertDataToStudentClassTable['enrollment_end_date']);
+              $customer_log_data['reminderDate']=$PaymentreminderDate->toDateString();*/
+
+
         if($studentAttendanceRecord){
           
           $attendanceArray[$i]['isAttendanceEntered'] = 'yes';
@@ -1406,7 +1508,7 @@ public function enrollKid2(){
         
         $i++;
       }
-      //print_r($attendanceArray);
+     // print_r($attendanceArray[$i]['endDates']); die();
       return Response::json(array("status"=>"success", 'result'=>$attendanceArray));
     }
     return Response::json(array("status"=>"failed"));
@@ -2587,7 +2689,34 @@ public function enrollKid2(){
             }
         }
         
-        
+  
+  public function getAttendanceDetails(){
+        $inputs=  Input::all();
+        $attendance_date = Attendance::where('student_classes_id','=',$inputs['class_id'])
+                                     ->select('status', 'attendance_date','makeup_class_given')
+                                     ->get();
+        for ($i=0; $i < count($attendance_date); $i++) { 
+          if($attendance_date[$i]['status'] == 'P'){
+            $present_dates = $attendance_date[$i]['attendance_date'];
+            $attendance_date[$i]['present_dates'] = date('d-M-y',strtotime($present_dates));
+          }else if($attendance_date[$i]['status'] == 'A') {
+            $absent_dates = $attendance_date[$i]['attendance_date'];
+            $attendance_date[$i]['absent_dates'] = date('d-M-y',strtotime($absent_dates));
+          }else if($attendance_date[$i]['makeup_class_given'] == '1'){
+            $makeup = $attendance_date[$i]['attendance_date'];
+            $attendance_date[$i]['makeup'] = date('d-M-y',strtotime($makeup));
+          }
+          else{
+            if($attendance_date[$i]['makeup_class_given'] != '1'){
+              $ea_dates = $attendance_date[$i]['attendance_date'];
+              $attendance_date[$i]['ea_dates'] = date('d-M-y',strtotime($ea_dates));
+            }
+          }
+        }
+        return Response::json(array('status'=>'success', 'data'=> $attendance_date));
+
+  }  
+
   public function store()
   {
     //

@@ -265,8 +265,16 @@ function getbatchesStudents(batchId, dateStartEvent){
 					
 				    $.each(response.result, function (index, item) {
 					//attendanceString = '<tr><td><input type="hidden" value="'+dateStartEvent+'"  name="attendanceDate_'+i+'"/><input type="hidden" value="'+batchId+'"  name="batch_'+i+'"/><input type="hidden" value="'+item.studentId+'"  name="student_'+i+'"/>'+item.studentName+'</td><td class="form-group"><input id="attendance_for_userP'+i+'" name="attendance_for_user'+i+'" value="P" type="radio" class="radio-custom" required /><label for="attendance_for_userP'+i+'" class="radio-custom-label">P</label><input id="attendance_for_userA'+i+'" name="attendance_for_user'+i+'" value="A"  type="radio" class="radio-custom" /><label for="attendance_for_userA'+i+'" class="radio-custom-label">A</label><input id="attendance_for_userEA'+i+'" name="attendance_for_user'+i+'" value="EA"  type="radio" class="radio-custom" /><label for="attendance_for_userEA'+i+'" class="radio-custom-label">EA</label></td><td></td></tr>';
+
+					var bg = '';
+					if(item.end == dateStartEvent){
+						bg = 'style="background-color:#F8E0E0"';
+					}
+					if(item.enrollment_end_date == dateStartEvent){
+						bg = 'style="background-color:#BEF781"';
+					}
 				    		
-				    	attendanceString = '<tr>'+
+				    	attendanceString = '<tr '+bg+'>'+
 				    			'<td>'+
 				    				'<input type="hidden" class="attDate" value="'+dateStartEvent+'"  name="attendanceDate_'+i+'"/>'+
 				    				'<input type="hidden" class="batchId" value="'+batchId+'"  name="batch_'+i+'"/>'+
@@ -274,6 +282,12 @@ function getbatchesStudents(batchId, dateStartEvent){
 				    				'<input type="hidden" class="studentId" value="'+item.studentId+'"  name="student_'+i+'"/>'+
 				    				'<input type="hidden" class="ivId" value="'+item.introvisit_id+'"  name="introvisit_id'+i+'"/>'+
 				    					item.studentName+
+				    			'</td>'+
+				    			'<td>'+
+				    				item.enrollment_start_date+
+				    			'</td>'+
+				    			'<td>'+
+				    				item.enrollment_end_date+
 				    			'</td>'+
 				    			'<td class="form-group">'+
 				    				'<input id="attendance_for_userP'+i+'" name="attendance_for_user'+i+'" data="eadisable"  data2='+i+' value="P" type="radio" class="radio-custom" required />'+
@@ -474,7 +488,10 @@ $('#addAttendanceForm').validator().on('submit', function (e) {
 		                            <thead>
 		                            <tr>
 		                                <th>Student Name</th>
+		                                <th>Start Date</th>
+		                                <th>End Date</th>
 		                                <th>Attendance Status</th>
+		                                
 		                                <!-- <th>Action</th> -->
 		                            </tr>
 		                            </thead>

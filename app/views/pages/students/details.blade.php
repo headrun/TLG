@@ -1850,7 +1850,6 @@ $('#batchName').change(function(){
                 $('#Rcount').text('0');
                         $('#makeup-session').text('0');
                         $('#total-session').text(response.totalSession);
-                        
               }else{
                 var markup = '';
                 var Pcount = 0;
@@ -1880,8 +1879,10 @@ $('#batchName').change(function(){
                 $('#EAcount').text(EAcount);
                 $('#Rcount').text(response.totalSession - Pcount);
                         $('#makeup-session').text(makeup);
-                        $('#total-session').text(response.totalSession);
-              } 
+                        $('#total-session').text(response.totalSession); 
+              }
+              
+              
             }
     });
   }else{
@@ -1996,6 +1997,50 @@ $('#enrollmentEndDateForOld').change(function(){
 //        }, 3500)
 //  }
 });
+
+function getDatesForAttendance(class_id) {
+    $.ajax({
+        type: "POST",
+        url: "{{URL::to('/quick/getAttendanceDetails')}}",
+        dataType: 'json',
+        async: true,
+        data:{'class_id': class_id},
+        success: function(response)
+        {
+          if(response.status == "success"){
+              console.log(response);
+              var data = '';
+              $("#attendanceTbody").empty();
+              for(var i=0;i<response.data.length;i++){
+                 data+='<tr>';
+                 if(response.data[i]['present_dates']) {
+                    data += '<td>'+response.data[i]['present_dates']+'</td>';
+                 }else {
+                    data += '<td>-</td>';
+                 }
+                 if(response.data[i]['absent_dates']) {
+                    data += '<td>'+response.data[i]['absent_dates']+'</td>';
+                 } else {
+                    data += '<td>-</td>';
+                 }
+                 if(response.data[i]['ea_dates']) {
+                    data += '<td>'+response.data[i]['ea_dates']+'</td>';
+                 } else {
+                    data += '<td>-</td>';
+                 }
+                 if(response.data[i]['makeup']) {
+                    data += '<td>'+response.data[i]['makeup']+'</td>';
+                 } else {
+                    data += '<td>-</td>';
+                 }
+                '</tr>';
+              }
+              $("#attendanceTbody").append(data);
+              $("#addAttendance").modal('show');           
+          }
+        }
+    });   
+}
 
 
 function parseDate(input) {
@@ -2776,6 +2821,45 @@ $('.deleteenrollmentdata').click(function(){
 </script>
 @stop 
 @section('content')
+<div id="addAttendance" class="modal fade" role="dialog" style="margin-top: 50px; z-index: 99999;"
+  >
+  
+    <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">
+            Attendance
+          </h4>
+        </div>
+      <div class="modal-body">
+          <div id="formBody">
+            <br  clear="all" />
+            <table class="uk-table table-striped" >
+                                <!-- <caption>Table caption</caption> -->
+              <thead>
+                  <tr>
+                      <th>Present Dates</th>
+                      <th>Absent Dates</th>
+                      <th>EA dates</th>
+                      <th>Makeup Dates</th>
+                  </tr>
+              </thead>
+              <tbody id="attendanceTbody"></tbody>
+            </table>
+          
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="closeAttendanceModal" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
 
 <div id="breadcrumb">
   <ul class="crumbs">
@@ -3699,6 +3783,9 @@ $('.deleteenrollmentdata').click(function(){
                                                             </span>
                                                         </div>
                                                     </div>
+              
+                 
+                                
                   <br clear="all"/>
                   <br clear="all"/>
                   <div class="uk-width-medium-1-1"  id = "AttendanceDiv"> 
@@ -3706,6 +3793,43 @@ $('.deleteenrollmentdata').click(function(){
                   </div>
                 </div>
                         </div>
+              <div class="md-card" style="margin-top: 100px;">
+                <div class='uk-overflow-container'>
+                  <table id='reportTable' class='uk-table'>
+                    <thead>
+                      <tr>
+                        <th>Batch Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Total Classes</th>
+                        <th>Present</th>
+                        <th>Absent</th>
+                        <th>EA</th>
+                        <th>Makeup Given</th>
+                        <th>Remining Classes</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody> 
+                        @foreach($batchDetails as $value)
+                          <tr>
+                            <td>{{ $value['batch_name'] }}</td>
+                            <td>{{ $value['enrollment_start_date'] }}</td>
+                            <td>{{ $value['enrollment_end_date'] }}</td>
+                            <td >{{ $value['selected_sessions'] }}</td>
+                            <td >{{ $value['present'] }} </td>
+                            <td >{{ $value['Absent']}}</td>
+                            <td >{{ $value['EA'] }}</td>
+                            <td >{{ $value['makeup']  }}</td>
+                            <td >{{ $value['remaining_classes'] }}&nbsp;<span id="stageChange" class="new badge" style="background-color: #7CB342;">{{ $value['stage'] }}</span></td>
+                           
+                            <td><button class="btn btn-primary" onclick="getDatesForAttendance({{ $value['id'] }})">View Dates</button></td>
+                          </tr>
+                        @endforeach
+                    </tbody>
+                  </table>  
+                 </div>
+              </div>
           </li>
 
                                         
