@@ -65,6 +65,7 @@ Route::group(array('prefix' => 'students'), function() {
 	Route::any('/view/{id}', ['uses' =>"StudentsController@view"]);
 	Route::any('/profile/picture', "StudentsController@uploadProfilePicture");
 
+
 });
 
 
@@ -291,6 +292,7 @@ Route::group(array('prefix' => 'quick'), function() {
 	 */
         Route::any('generatereport', "ReportsController@generatereport");
         Route::any('activityReport',"ReportsController@activityReport");
+        Route::any('getAttendanceDetails',"StudentsController@getAttendanceDetails");
         
         
         
