@@ -28,9 +28,33 @@ $("#customersTable tr").click(function (){
 	
 </script>
 
+<script type="text/javascript">
+
+function deleteUser(user_id) {
+    $.ajax({
+        type: "POST",
+        url: "{{URL::to('/quick/deleteUserFromUsers')}}",
+        dataType: 'json',
+        async: true,
+        data:{'user_id': user_id},
+        success: function(response)
+        {
+          if(response.status == "success"){
+          		$("#messageForUserDelete").html('<p class="uk-alert uk-alert-success">User has been deleted successfully. Please wait till this page reloads</p>');
+	            setTimeout(function(){
+	             window.location.reload(1);
+	          }, 3000);    
+          }else{
+   				$("#messageForUserDelete").html('<p class="uk-alert uk-alert-success">User could not be deleted. Please try again later</p>');	
+          }
+        }
+    });   
+}
+</script>
 @stop
 
 @section('content')
+
 <div id="breadcrumb">
 	<ul class="crumbs">
 		<li class="first"><a href="{{url()}}" style="z-index:9;"><span></span>Home</a></li>
@@ -47,8 +71,8 @@ $("#customersTable tr").click(function (){
 		
 			<h4>List of Users <span style="font-size:12px;">(Other than admins)</span></h4>
 		
-            
-            <div class="md-card">
+            <div id="messageForUserDelete"></div>
+              <div class="md-card">
 	            <div class="md-card-content large-padding">
 		            <h3 class="heading_b uk-margin-bottom">Users</h3>
 		            
@@ -71,7 +95,7 @@ $("#customersTable tr").click(function (){
 		                                <th>Email</th>
 		                                <th>User Type</th>
 		                                <th>Mobile number</th>
-		                                <!-- <th>Action</th> -->
+		                                <th>Action</th>
 		                            </tr>
 		                            </thead>
 		                            <tbody>
@@ -81,9 +105,13 @@ $("#customersTable tr").click(function (){
 		                                	{{$user->first_name}} {{$user->last_name}}
 		                                	<a style="display: none;" href="{{url()}}/admin/users/view/{{$user->id}}">View</a>		                                
 		                                </td>
-		                                <td>{{$user->email}}</td>
-		                                <td>{{$user->user_type}}</td>
-		                                <td>{{$user->mobile_no}}</td>
+		                                <td>{{ $user['id'] }}</td>
+		                                <td>{{ $user['user_type'] }}</td>
+		                                <td>{{ $user['mobile_no'] }}</td>
+		                                <td>
+		                                	<a id='deleteUserbutton' class="btn btn-danger btn-xs" onclick="deleteUser({{ $user['id'] }})"> <i class="Small material-icons" style="font-size:20px;" title="Delete">delete</i></a>
+		                                </td>
+		                                
 		                            </tr>
 		                            @endforeach 
 		                            </tbody>

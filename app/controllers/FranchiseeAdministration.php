@@ -159,18 +159,33 @@ class FranchiseeAdministration extends \BaseController {
 	}
 
         
-        
-        
-        public function getFullFranchiseeData(){
-            if(Auth::check()){
-                $currentPage  =  "";
-                $mainMenu     =  "DASHBOARD";
-                $viewData=array('currentPage','mainMenu');
-                return View::make('pages.franchiseecalendar.calendar',compact($viewData));
-            }else{
-                return Redirect::action('DashboardController@index');
-            }
+    public function getFullFranchiseeData(){
+        if(Auth::check()){
+            $currentPage  =  "";
+            $mainMenu     =  "DASHBOARD";
+            $viewData=array('currentPage','mainMenu');
+            return View::make('pages.franchiseecalendar.calendar',compact($viewData));
+        }else{
+            return Redirect::action('DashboardController@index');
         }
+    }
+
+
+    public static function deleteUserFromUsers(){
+	    if(Auth::check()){	
+			$inputs=Input::all();
+
+			$deleteUser = User::find($inputs['user_id']);
+			$deleteUser->delete();
+			if($deleteUser){
+				return Response::json(array('status'=>'success'));
+			}else{
+				return Response::json(array('status'=>'failure'));
+			}
+		}else{
+		    return Redirect::action('DashboardController@index');	
+		}
+	}
 
 	/**
 	 * Show the form for editing the specified resource.

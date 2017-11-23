@@ -41,6 +41,7 @@ Route::group(array('prefix' => 'admin'), function() {
 	Route::any('/users/add', "FranchiseeAdministration@adduser");
 	Route::get('/users', "FranchiseeAdministration@users");
 	Route::any('/users/view/{id}', ['uses' =>"FranchiseeAdministration@viewUser"]);
+
         
 
 });
@@ -253,6 +254,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('deleteIVdata',"StudentsController@deleteIVdata");
         Route::any('deletebirthdaydata',"StudentsController@deletebirthdaydata");
         Route::any('deleteenrollmentdata',"StudentsController@deleteenrollmentdata");
+        Route::any('deleteUserFromUsers',"FranchiseeAdministration@deleteUserFromUsers");
 	/**
 	 *  --------------------------------------------------------------------------------------------------------------------------------------
 	 * Estimate related Ajax calls
