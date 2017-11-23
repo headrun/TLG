@@ -105,7 +105,7 @@ function deleteUser(user_id) {
 		                                	{{$user->first_name}} {{$user->last_name}}
 		                                	<a style="display: none;" href="{{url()}}/admin/users/view/{{$user->id}}">View</a>		                                
 		                                </td>
-		                                <td>{{ $user['id'] }}</td>
+		                                <td>{{ $user['email'] }}</td>
 		                                <td>{{ $user['user_type'] }}</td>
 		                                <td>{{ $user['mobile_no'] }}</td>
 		                                <td>
