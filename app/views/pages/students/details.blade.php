@@ -333,7 +333,6 @@ $("#finalPaymentDiv").hide();
 
 
 function calculateFinalAmount(){
-
         var enrollmentStartDate = $('#enrollmentStartDate').val();
         var second_child_discount_amt=0;
         var second_class_discount_amt=0;
@@ -348,7 +347,7 @@ function calculateFinalAmount(){
         
         }else{ 
           var second_discount = 0;
-         } 
+        } 
         var finalAmount = (parseFloat($("#totalAmountToPay").val()));
         var percentAmount = parseFloat($("#totalAmountToPaytotals").val()*DiscountPercentage/100);
         $('#discount').html('<p>By Choosing '+selectedNoOfClass+' Classes You are Saving ('+DiscountPercentage+'%:[-'+(percentAmount).toFixed(2)+'Rs])</p>');
@@ -364,15 +363,14 @@ function calculateFinalAmount(){
           finalAmount;
         }
 
-            
      
         <?php if($discount_second_child_elligible){ ?>
 
           $('#second_child_discount_to_form').val({{$discount_second_child}});
-          second_child_discount_amt=parseFloat(finalAmount*{{$discount_second_child}}/100);
+          second_child_discount_amt = parseFloat(finalAmount*{{$discount_second_child}}/100);
           $('#second_child_amount').val('-'+(second_child_discount_amt).toFixed(2));
           
-          finalAmount=parseFloat(finalAmount-second_child_discount_amt);
+          finalAmount = parseFloat(finalAmount-second_child_discount_amt);
           $('#second_child_discount').html('<p>By Enrolling Sibling You are Saving('+{{$discount_second_child}}+'%:[-'+(second_child_discount_amt).toFixed(2)+'Rs])</p>');
           $('#second_child_amountlabel').html((Math.round(finalAmount/10)*10).toFixed(2));
       <?php } ?>
@@ -381,14 +379,14 @@ function calculateFinalAmount(){
           if(enrollmentStartDate <= '{{ $end }}'){   
               $('#second_class_discount_to_form').val({{$discount_second_class}});
               if(second_discount == 0){
-                second_class_discount_amt=parseFloat(finalAmount*{{$discount_second_class}}/100);
+                second_class_discount_amt = parseFloat(finalAmount*{{$discount_second_class}}/100);
                 $('#second_class_amount').val('-'+(finalAmount).toFixed(2));
               }else{
-                second_class_discount_amt=parseFloat(base_price*{{$discount_second_class}}/100);
+                second_class_discount_amt = parseFloat(base_price*{{$discount_second_class}}/100);
                 $('#second_class_amount').val('-'+(base_price).toFixed(2));
               }
               $('#second_class_amountlabel').html('-'+(second_class_discount_amt).toFixed(2));
-              finalAmount=parseFloat(finalAmount-second_class_discount_amt);
+              finalAmount = parseFloat(finalAmount-second_class_discount_amt);
               if(second_discount == '0'){
                 
                 $('#second_class_discount').html('<p>By Enrolling Multiple Classes You are Saving('+{{$discount_second_class}}+'%[-'+(second_class_discount_amt).toFixed(2)+'Rs])</p>');
@@ -409,9 +407,9 @@ function calculateFinalAmount(){
            finalAmount = finalAmount+parseFloat($("#membershipAmount").val());
       <?php }?>
        
-       Adminamountcal=finalAmount;
+       Adminamountcal = finalAmount;
        if(typeof $('#admin_discount_amount').val()!='undefined'){
-          var adminamt=parseFloat($('#admin_discount_amount').val());
+          var adminamt = parseFloat($('#admin_discount_amount').val());
           $("#subtotal").val(((Math.round((finalAmount-adminamt)*100)/100)).toFixed(2));
           $('#subtotallabel').html(((Math.round((finalAmount-adminamt)*100)/100)).toFixed(2));
        }else{
@@ -419,13 +417,13 @@ function calculateFinalAmount(){
           $('#subtotallabel').html(((Math.round((finalAmount)*100)/100)).toFixed(0));
        }
                                  
-      var tax =(finalAmount*tax_Percentage/100);
-            tax=Math.round(tax*100)/100;
+      var tax = (finalAmount*tax_Percentage/100);
+          tax = Math.round(tax*100)/100;
             
             $("#taxAmount").val((tax).toFixed(2));
             $('#taxAmountlabel').html((tax).toFixed(2));
-            finalAmount=finalAmount+tax;
-            finalAmount=Math.round(finalAmount*100)/100;
+            finalAmount = finalAmount+tax;
+            finalAmount = Math.round(finalAmount*100)/100;
             $("#grandTotal").val((finalAmount).toFixed(0));
             $('#grandTotallabel').html((finalAmount).toFixed(0));
             $('#discountPercentage').val((DiscountPercentage).toFixed(2));
@@ -434,38 +432,38 @@ function calculateFinalAmount(){
           $('#emailEnrollPrintDiv').show();
           
           $('#admin_discount_amount').change(function(){
-              if(($('#admin_discount_amount').val()=='')||($('#admin_discount_amount').val()<0)){
+              if(($('#admin_discount_amount').val() == '')||($('#admin_discount_amount').val()<0)){
                  $('#admin_discount_amount').val('0'); 
               }
-              var adminamt=parseFloat($('#admin_discount_amount').val());
-              var subtotal=Adminamountcal;
+              var adminamt = parseFloat($('#admin_discount_amount').val());
+              var subtotal = Adminamountcal;
               
               $("#subtotal").val((subtotal-adminamt).toFixed(2));
               $('#subtotallabel').html((subtotal-adminamt).toFixed(2));
-              var tax =((subtotal-adminamt)*tax_Percentage/100);
+              var tax = ((subtotal-adminamt)*tax_Percentage/100);
               tax=Math.round(tax*100)/100;
               
               $("#taxAmount").val((tax).toFixed(2));
               $('#taxAmountlabel').html((tax).toFixed(2));
-              Amount=Math.round(((subtotal-adminamt)+tax)*100)/100;
+              Amount = Math.round(((subtotal-adminamt)+tax)*100)/100;
               $("#grandTotal").val((Amount).toFixed(0));
               $('#grandTotallabel').html((Amount).toFixed(0));
           });
           $('#admin_discount_amount').keyup(function(){
-              if(($('#admin_discount_amount').val()=='')||($('#admin_discount_amount').val()<0)){
+              if(($('#admin_discount_amount').val() == '')||($('#admin_discount_amount').val()<0)){
                  $('#admin_discount_amount').val('0'); 
               }
-              var adminamt=parseFloat($('#admin_discount_amount').val());
-              var subtotal=Adminamountcal;
+              var adminamt = parseFloat($('#admin_discount_amount').val());
+              var subtotal = Adminamountcal;
               
               $("#subtotal").val((subtotal-adminamt).toFixed(2));
               $('#subtotallabel').html((subtotal-adminamt).toFixed(2));
-              var tax =(((subtotal-adminamt)*tax_Percentage/100).toFixed(2));
-              tax=Math.round(tax*100)/100;
+              var tax = (((subtotal-adminamt)*tax_Percentage/100).toFixed(2));
+              tax = Math.round(tax*100)/100;
               
               $("#taxAmount").val((tax).toFixed(2));
               $('#taxAmountlabel').html((tax).toFixed(2));
-              Amount=Math.round(((subtotal-adminamt)+tax)*100)/100;
+              Amount = Math.round(((subtotal-adminamt)+tax)*100)/100;
               $("#grandTotal").val((Amount).toFixed(0));
               $('#grandTotallabel').html((Amount).toFixed(0));
           });
@@ -919,18 +917,13 @@ function getEligibleClassesForBatch2WithAgeChange(){
         success: function (response)
         {
           $(".eligibleClassesCbx2").empty("");  
-          //$(".eligibleClassesCbx2").empty(""); 
-          //$(".eligibleClassesCbx3").empty(""); 
           $string = '<option value=""></option>';
           $.each(response, function (index, item) {
-            //console.log(index+" = "+item);
             $string += '<option value='+item.id+'>'+item.class_name+'</option>';               
             });
           $('.eligibleClassesCbx2').append($string);
           $('#enrollmentbtnsdisplay1').css('display','none');
           $('#batch2Msg').html('');
-          //$('.eligibleClassesCbx2').append($string);
-          //$('.eligibleClassesCbx3').append($string);
           $('#enrollmentcontinue2').show();
         
         }
@@ -1314,19 +1307,12 @@ $.ajax({
                             }
                         });     
                                 
-                     
-                    //alert('completed');
                 }else{
                     $('#batch1Msg').html('<span class="uk-alert uk-alert-success" >No Of Classes:'+response.classCount+'&nbsp;<i class="fa fa-trash" style = "background: #e53935; padding: 3px"  id = "deleteBtn1"  aria-hidden="true"></i></span></span><input type="hidden" id="batch1SelectedClasses" value="'+response.classCount+'">');
                     enddate1=response.lastdate;
                     firstselectedNoOfClass=response.classCount;
                     batch1ClassCost=response.classAmount;
-                    // **** age changing after enrollment of batch 1 ****//
-                    
-                    
-                   // $('#enrollmentbtnsdisplay1').css('display','block');
-                  //  $('#GoChangeAge').click(function(){
-                        $.ajax({
+                    $.ajax({
                             type: "POST",
                             url: "{{URL::to('/quick/insertEstimateDetails')}}",
                             data: {'customer_id':{{$student->customer_id}},'student_id':studentId,'season_id':$('#SeasonsCbx').val(),
@@ -1336,8 +1322,7 @@ $.ajax({
                                     'no_of_opted_classes':response.classCount,'batch_amount':response.classAmount,'estimate_master_no':estimate_master_no},
                             dataType: 'json',
                             success: function(response){
-                              //console.log(response);
-                              
+
                                 getEligibleClassesForBatch2WithAgeChange();
                                 $('#SeasonsCbx').attr('disabled',true);
                                 $('#eligibleClassesCbx').attr('disabled',true);
@@ -1348,20 +1333,10 @@ $.ajax({
                                 $('#deleteBtn1').attr('onclick','deleteInEstimateTable('+response.data["id"]+')');
                             }
                         });     
-                 //   });
-                    
-                    
-                    //$('#enrollmentcontinue2').show();
                 }
                 $('#eligibleClassesCbx2').val('');
                 $('#batchCbx2').val('');
                 $('batch2Msg').html('');
-                
-                //$('#batch1Msg').html('');
-                
-                 //$('#enrollmentcontinue2').hide();
-                 //$('#enrollmentcontinue3').hide();
-                //$('#MsgDiv').html('<p class="uk-alert uk-alert-success">selected class day:'+response.day+'.</p>');   
             }else{
                 $('#batch1Msg').html('<p class="uk-alert uk-alert-danger">No Of Classes:0</p>');
             }
@@ -1372,8 +1347,6 @@ $('#batch1Msg').html('<p class="uk-alert uk-alert-danger">select date</p>');
 }
 });
 
-
-//for delete in estimate table
 function deleteInEstimateTable(id){
         $("#enrollNow").hide();
   if(id == estimate_id1){
@@ -1394,7 +1367,6 @@ function deleteInEstimateTable(id){
     ajaxCallToDelete(id, "b3");
   }
 }
-
 
 function ajaxCallToDelete(id, Bname){
   $.ajax({
@@ -1504,7 +1476,7 @@ console.log(enddate1);
 $.ajax({
         type: "POST",
         url: "{{URL::to('/quick/getBatchRemainingClassesByBatchId')}}",
-        data: {'batchId':$('#batchCbx2').val(),'preferredStartDate':$('#enrollmentStartDate').val(), 'removalbleClasses': 0, 'selectedNoOfClass': selectedNoOfClass, 'classId' : $('#eligibleClassesCbx2').val(),'studentId' : studentId, 'season_id': $('#SeasonsCbx2').val()},
+        data: {'batchId':$('#batchCbx2').val(),'preferredStartDate':$('#enrollmentStartDate').val(), 'removalbleClasses':firstselectedNoOfClass, 'selectedNoOfClass': selectedNoOfClass, 'classId' : $('#eligibleClassesCbx2').val(),'studentId' : studentId, 'season_id': $('#SeasonsCbx2').val()},
         dataType:"json",
         success: function (response)
         {
@@ -1526,7 +1498,7 @@ $.ajax({
                     $('#batch2Msg').html('<span class="uk-alert  uk-alert-success">No Of Classes:'+(selectedNoOfClass-firstselectedNoOfClass)+'&nbsp;<i class="fa fa-trash" style = "background: #e53935; padding: 3px" id = "deleteBtn2"  aria-hidden="true"></i></span><input type="hidden" id="batch1SelectedClasses" value="'+selectedNoOfClass+'">');
                     $('#enrollmentcontinue3').hide();
                     batch2ClassCost=response.classAmount;
-                    secondselectedNoOfClass=(selectedNoOfClass-firstselectedNoOfClass);
+                    secondselectedNoOfClass = selectedNoOfClass-firstselectedNoOfClass;
                     $.ajax({
                             type: "POST",
                             url: "{{URL::to('/quick/insertEstimateDetails')}}",
@@ -1580,21 +1552,17 @@ $.ajax({
                                 $('#SeasonsCbx2').attr('disabled',true);
                                 $('#eligibleClassesCbx2').attr('disabled',true);
                                 $('#batchCbx2').attr('disabled',true);
-                                estimate_master_no=response.data['estimate_master_no'];
+                                estimate_master_no = response.data['estimate_master_no'];
                                 $('#estimate_master_no').val(response.data['estimate_master_no']);
-                                estimate_id2=response.data['id'];
+                                estimate_id2 = response.data['id'];
                             }
                         });
                         
-                    //});
-                   // $('#enrollmentcontinue3').show();
                 }
                 $('#eligibleClassesCbx3').val('');
                 $('#batchCbx3').val('');
                 $('#batch3Msg').html('');
-                //$('#batch2Msg').html('');
-                 //$('#enrollmentcontinue3').hide();
-                //$('#MsgDiv').html('<p class="uk-alert uk-alert-success">selected class day:'+response.day+'.</p>');   
+
             }else{
                 $('#batch2Msg').html('<p class="uk-alert uk-alert-danger">No Of Classes:0</p>');
             }
@@ -1607,7 +1575,7 @@ console.log(enddate2);
 $.ajax({
         type: "POST",
         url: "{{URL::to('/quick/getBatchRemainingClassesByBatchId')}}",
-        data: {'batchId':$('#batchCbx3').val(),'preferredStartDate':$('#enrollmentStartDate').val(), 'removalbleClasses': 0, 'selectedNoOfClass': selectedNoOfClass, 'classId' : $('#eligibleClassesCbx3').val(),'studentId' : studentId, 'season_id': $('#SeasonsCbx3').val()},
+        data: {'batchId':$('#batchCbx3').val(),'preferredStartDate':$('#enrollmentStartDate').val(), 'removalbleClasses': (firstselectedNoOfClass + secondselectedNoOfClass), 'selectedNoOfClass': selectedNoOfClass, 'classId' : $('#eligibleClassesCbx3').val(),'studentId' : studentId, 'season_id': $('#SeasonsCbx3').val()},
         dataType:"json",
         success: function (response)
         {
@@ -1623,18 +1591,16 @@ $.ajax({
                 $("#messageStudentEnrollmentDiv").html('<p class="uk-alert " style="background-color:#FA8BBA">Just now you selected same class and same batch in the same season.</p>');
             }
           
-            else if(response.status=='available')
+            else if(response.status == 'available')
              {  
                 console.log(response.status);
                 $("#messageStudentEnrollmentDiv").html('<p class="uk-alert " style="background-color:#50C5FC">Already this course is enrolled for the same batch in this Season.</p>');
              }
-            else if(response.status=='success'){
+            else if(response.status == 'success'){
                  if((selectedNoOfClass-(firstselectedNoOfClass+secondselectedNoOfClass)) <= response.classCount){
                     $('#batch3Msg').html('<span class="uk-alert uk-alert-success">No Of Classes:'+(selectedNoOfClass-(firstselectedNoOfClass+secondselectedNoOfClass))+'&nbsp;<i class="fa fa-trash" style = "background: #e53935; padding: 3px" id = "deleteBtn3" aria-hidden="true"></i></span>');
-                    batch3ClassCost=response.classAmount;
-                    thirdselectedNoOfClass=(selectedNoOfClass-(firstselectedNoOfClass+secondselectedNoOfClass));
-                    //$('#enrollmentbtnsdisplay3').css('display','block');
-                    //$('#GoEnrollmentConfirm').click(function(){
+                    batch3ClassCost = response.classAmount;
+                    thirdselectedNoOfClass = (selectedNoOfClass-(firstselectedNoOfClass+secondselectedNoOfClass));
                        $.ajax({
                             type: "POST",
                             url: "{{URL::to('/quick/insertEstimateDetails')}}",
@@ -1658,34 +1624,20 @@ $.ajax({
                                 prepareGetClasses();
                             }
                         }); 
-                        
-                    //});
-        
-                        
-                    
-                    //prepareGetClasses();
-                    //alert('completed');
                     
                 }else{
                     $('#batch3Msg').html('<span class="uk-alert uk-alert-success">No Of Classes:'+response.classCount+'&nbsp;<i class="fa fa-trash" style = "background: #e53935; padding: 3px" id = "deleteBtn3" aria-hidden="true"></i></span>');
                     enddate3=response.lastdate;
                     thirdselectedNoOfClass=response.classCount;
                     batch3ClassCost=response.classAmount;
-                    //selectedNoOfClass=selectedNoOfClass-response.classCount;
-                   // $('#enrollmentcontinue3').show();
-                }
-               // $('#batch3Msg').html('');
-                //$('#MsgDiv').html('<p class="uk-alert uk-alert-success">selected class day:'+response.day+'.</p>');   
+               }  
             }else{
                 $('#batch3Msg').html('<p class="uk-alert uk-alert-danger">No Of Classes:0</p>');
             }
         }
     });
 });
-function getivdata(ivid){
-    //console.log(ivid);
-    
-    
+function getivdata(ivid){ 
     $.ajax({
       type: "POST",
       url: "{{URL::to('/quick/getIntrovisitHistory')}}",
@@ -1998,7 +1950,7 @@ $('#enrollmentEndDateForOld').change(function(){
 //  }
 });
 
-function getDatesForAttendance(class_id) {
+function getDatesForAttendance(class_id, batch_name, startDate, endDate) {
     $.ajax({
         type: "POST",
         url: "{{URL::to('/quick/getAttendanceDetails')}}",
@@ -2011,6 +1963,9 @@ function getDatesForAttendance(class_id) {
               console.log(response);
               var data = '';
               $("#attendanceTbody").empty();
+              $('.title').html(batch_name);
+              $('.startDate').html('Start Date: '+startDate);
+              $('.endDate').html('End Date: '+endDate);
               for(var i=0;i<response.data.length;i++){
                  data+='<tr>';
                  if(response.data[i]['present_dates']) {
@@ -2829,11 +2784,12 @@ $('.deleteenrollmentdata').click(function(){
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">
-            Attendance
-          </h4>
+          <h3 class="title"></h3>
+          <h4 class="startDate"></h4>
+          <h4 class="endDate"></h4>
+
         </div>
-      <div class="modal-body">
+      <div class="modal-body" style="padding-top: 0px">
           <div id="formBody">
             <br  clear="all" />
             <table class="uk-table table-striped" >
@@ -3405,6 +3361,7 @@ $('.deleteenrollmentdata').click(function(){
           <li id="enrollmentsTabheading"class=""><a href="#enrollments">Enrollments</a></li>
           <li id="paymentsTabheading"class=""><a href="#payments">Payments</a></li>
           <li id="attendanceTabheading"class=""><a href="#attendace">Attendance</a></li>
+       
 
                                         <!--<li id="introvisitTabheading"class=""><a href="#introvisit">Intro Visit</a></li>-->
         </ul>
@@ -3823,7 +3780,7 @@ $('.deleteenrollmentdata').click(function(){
                             <td >{{ $value['makeup']  }}</td>
                             <td >{{ $value['remaining_classes'] }}&nbsp;<span id="stageChange" class="new badge" style="background-color: #7CB342;">{{ $value['stage'] }}</span></td>
                            
-                            <td><button class="btn btn-primary" onclick="getDatesForAttendance({{ $value['id'] }})">View Dates</button></td>
+                            <td><button class="btn btn-primary" onclick="getDatesForAttendance('{{ $value['id']}}', '{{ $value['batch_name']}}','{{ $value['enrollment_start_date'] }}', '{{ $value['enrollment_end_date'] }}')">View Dates</button></td>
                           </tr>
                         @endforeach
                     </tbody>
@@ -3833,48 +3790,7 @@ $('.deleteenrollmentdata').click(function(){
           </li>
 
                                         
-          <li id="birthdays">
-
-            <h3 class="heading_c uk-margin-small-bottom">Birthdays</h3> <br
-            clear="all" />
-            <div class="md-card-content large-padding">
-
-              <div class="uk-grid" data-uk-grid-margin id="addbirthday">
-                <div class="uk-width-medium-1-1">
-                  <div class="parsley-row" style="margin-top: -23px;">
-                    <label for="birthdayMonth">Select Birthday Month<span
-                      class="req">*</span></label> <br clear="all" />
-                    {{Form::text('birthdayMonth',
-                    null,array('id'=>'birthdayMonth','required', 'class' => ''))}}
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-
-            <div class="uk-grid" data-uk-grid-margin id="weekendData">              
-              <div class="uk-width-medium-1-3" id="saturdaysDiv">
-                <h4>Saturdays</h4>
-                <div></div>
-              </div>          
-              <div class="uk-width-medium-1-3" id="sundaysDiv">
-                <h4>Sundays</h4>
-                <div></div>             
-              </div>                      
-              <div class="uk-width-medium-1-3">
-                <h4>Timings</h4>
-                <br clear="all"/>
-                <div class="parsley-row" style="margin-top: -23px;">
-                  <label for="birthdayTime">Select Birthday Party Start Time<span class="req">*</span></label> <br clear="all" />
-                  {{Form::text('birthdayTime', null,array('id'=>'birthdayTime','required', 'class' => ''))}}
-                </div>
-              </div>
-            </div>
-            
-          </li>
-
-
+          
         </ul>
       </div>
     </div>

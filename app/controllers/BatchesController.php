@@ -494,42 +494,24 @@ class BatchesController extends \BaseController {
 
         
         public function getBatchRemainingClassesByBatchId(){
-            $inputs=Input::all();
+            $inputs = Input::all();
             $result = DB::select(DB::raw("select * from student_classes where student_id = '$inputs[studentId]' and batch_id = '$inputs[batchId]' and class_id = '$inputs[classId]' and '$inputs[preferredStartDate]' <= enrollment_end_date and '$inputs[preferredStartDate]'>= enrollment_start_date"));
            
             if($result)
             {
-        
-           		return  Response::json(array('status'=>'available'));
-            	
+           		return Response::json(array('status'=>'available'));
         	}
-            $batchClassesData=BatchSchedule::where('franchisee_id','=',Session::get('franchiseId'))
+            $batchClassesData = BatchSchedule::where('franchisee_id','=',Session::get('franchiseId'))
                                               ->where('batch_id','=',$inputs['batchId'])
-                                              
                                               ->whereDate('schedule_date','>=',$inputs['preferredStartDate'])
                                               ->get();
 
-            $batchClassesCount=count($batchClassesData);
-           //  $batch_limt_no = BatchLimit::where('franchisee_id','=',Session::get('franchiseId'))
-           //  						   ->get();
-           //  $batch_count = StudentClasses::where('franchisee_id','=',Session::get('franchiseId'))
-           //  							->where('batch_id','=',$inputs['batchId'])
-           //  							->count();
-           // //return $batch_count;
-           //  //print_r($batch_limt_no[0]['batch_limit_admin']); die();
-           //  if($batch_count >= $batch_limt_no[1]['batch_limit_admin']){
-           //  	return  Response::json(array('status'=>'FULL'));
-           //  }
-
-            //return 'Count is: '.$batchClassesCount;
-            // print_r($batchClassesCount); die;
-            //$batchClassesCount = $batchClassesCount - $inputs['removalbleClasses'];
+            $batchClassesCount = count($batchClassesData);
             $lastEndDate = '';
 
             if($batchClassesCount){
             	$sCount = $inputs['selectedNoOfClass'] - $inputs['removalbleClasses'];
-            	if ($inputs['removalbleClasses'] != 0) {	            	
-	            	//print_r($batchClassesData[$sCount-1]); die;
+            	if ($inputs['removalbleClasses'] != 0) {
 	            	if ($sCount <= $batchClassesCount) {
 	            		$lastEndDate = $batchClassesData[$sCount-1]['schedule_date'];
 	            	}else{
@@ -543,25 +525,18 @@ class BatchesController extends \BaseController {
 	            		$lastEndDate = $batchClassesData[($batchClassesCount-1)]['schedule_date'];
 	            	}
 	            }
-	            //print_r($lastEndDate); die;
-	            $date=  Carbon::now();
-	            $date=$date->createFromFormat('Y-m-d', $lastEndDate);
-	            $date=$date->next(Carbon::MONDAY);
-	            //print_r($date); die;
-	            //getting the batch cost from batch class
-	            
-	            //$class_data=  ClassBasePrice::where('base_price_no','=',Batches::find($inputs['batchId'])->classes()->base_price_no)->select('base_price')->get();
-	            //$classAmount=$batch_data->class_amount;
-	             $base_price_no=Batches::find($inputs['batchId'])->classes()->select('base_price_no')->get();
-	             $base_price=ClassBasePrice::where('base_price_no','=',$base_price_no[0]['base_price_no'])->where('franchise_id','=',Session::get('franchiseId'))->get();
-	             $base_price=$base_price[0]['base_price'];
+	            $date = Carbon::now();
+	            $date = $date->createFromFormat('Y-m-d', $lastEndDate);
+	            $date = $date->next(Carbon::MONDAY);
+	            $base_price_no = Batches::find($inputs['batchId'])->classes()->select('base_price_no')->get();
+	            $base_price = ClassBasePrice::where('base_price_no','=',$base_price_no[0]['base_price_no'])->where('franchise_id','=',Session::get('franchiseId'))->get();
+	             $base_price = $base_price[0]['base_price'];
             }
             if($batchClassesCount){
                 return Response::json(array('status'=>'success',
                 							'classCount'=>$batchClassesCount,
                 							'lastdate'=>$date->toDateString(),
                 							'classAmount'=>$base_price,
-                							//s'enrollment_end_date'=>$batchClassesData[($batchClassesCount-1)]['schedule_date'],
                 							'enrollment_end_date'=>$lastEndDate,
                 							'enrollment_start_date'=>$batchClassesData[0]['schedule_date'],
                 							'batch_Schedule_data'=>$batchClassesData));
@@ -574,15 +549,14 @@ class BatchesController extends \BaseController {
         
         
         public function getBatchDetailsById(){
-            $inputs=Input::all();
-            $batch_data=Batches::getBatchDetailsById($inputs['batch_id']);
-            $instructor_data=User::getTeachersByFranchiseeId($batch_data['franchisee_id']);
-            $location_data=Location::getLocationBySeasonId($batch_data['season_id']);
-            $startDate=new DateTime($batch_data['preferred_time']);
-            $endDate=new DateTime($batch_data['preferred_end_time']);
-            $batch_data['preferred_time']=$startDate->format('G:i A');
-            $batch_data['preferred_end_time']=$endDate->format('G:i A');
-            //$batch_data['end_time']=date_format( $batch_data['end_time'], 'G:ia');
+            $inputs = Input::all();
+            $batch_data = Batches::getBatchDetailsById($inputs['batch_id']);
+            $instructor_data = User::getTeachersByFranchiseeId($batch_data['franchisee_id']);
+            $location_data = Location::getLocationBySeasonId($batch_data['season_id']);
+            $startDate = new DateTime($batch_data['preferred_time']);
+            $endDate = new DateTime($batch_data['preferred_end_time']);
+            $batch_data['preferred_time'] = $startDate->format('G:i A');
+            $batch_data['preferred_end_time'] = $endDate->format('G:i A');
             if($batch_data){
                 return Response::json(array('status'=>'success','batchData'=>$batch_data,'instructorData'=>$instructor_data,'locationData'=>$location_data));
             }else{

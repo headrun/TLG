@@ -1,4 +1,5 @@
 <?php
+use Carbon\Carbon;
 
 class Batches extends \Eloquent {
 	protected $fillable = [];
@@ -30,9 +31,6 @@ class Batches extends \Eloquent {
 		return $this->belongsTo('Seasons','season_id');
 	}
 	static function addBatches($input){
-		
-		
-		
 		$batch = new Batches();
 		$batch->batch_name         = $input['batchName'];
 		$batch->franchisee_id      = Session::get('franchiseId');
@@ -60,8 +58,6 @@ class Batches extends \Eloquent {
 		}else{
 			$batch->alternate_instructor = null;
 		}
-		
-		
 		$batch->created_by         = Session::get('userId');
 		$batch->created_at         = date("Y-m-d H:i:s");
 		$batch->save();
@@ -72,69 +68,56 @@ class Batches extends \Eloquent {
 	
 	static function getAllBatchesByFranchiseeId($franchiseId){
 		
-		//Batches::where('','',$franchiseId)->get();
-		
-		//$batches = DB::table('batches')->join('classes', 'classes.id', '=', 'batches.id')->where('classes.franchisee_id', '=', $franchiseId)->get();
 		$batches = Batches::with('Classes')->where('franchisee_id', '=', Session::get('franchiseId'))->get();
 		return $batches;
 		
-		
-		
 	}
         
-        static function getAllBatchesbySeasonId($franchiseId,$seasonId){
-            return Batches::where('franchisee_id', '=', Session::get('franchiseId'))
-                                            ->where('season_id','=',$seasonId)
-                                            ->get();
-        }
+    static function getAllBatchesbySeasonId($franchiseId,$seasonId){
+        return Batches::where('franchisee_id', '=', Session::get('franchiseId'))
+                                        ->where('season_id','=',$seasonId)
+                                        ->where('end_date','>=', date('Y-m-d'))
+                                        ->get();
+    }
 
-        static function getAllBatchesDatabySeasonId($franchiseId,$seasonId){
-            return Batches:: 
-                            where('franchisee_id', '=', Session::get('franchiseId'))
-                                            ->where('season_id','=',$seasonId)
-                                            ->get();
-        }
+    static function getAllBatchesDatabySeasonId($franchiseId,$seasonId){
+        return Batches::where('franchisee_id', '=', Session::get('franchiseId'))
+                                        ->where('season_id','=',$seasonId)
+                                        ->where('end_date','>=', date('Y-m-d'))
+                                        ->get();
+    }
 
         
 	static function batchesByClassIdSeasonId($classId,$seasonId){
 		
-		
-		return Batches::with('LeadInstructors')
-                                                ->where('season_id','=',$seasonId)
-                                                ->where('class_id', '=', $classId)
+		$today = date('Y-m-d');
+		return Batches::where('franchisee_id','=',Session::get('franchiseId'))
+						->where('season_id','=',$seasonId)
+                        ->where('class_id', '=', $classId)
 						->where('franchisee_id', '=', Session::get('franchiseId'))
-		
-						//->select('id')
+						->where('end_date','>=',$today)
 						->get();
-                 
-             //   return Batches:://where('season_id','=',$seasonId)
-                                //                ->where('class_id', '=', $classId)
-                                //                ->where('franchisee_id', '=', Session::get('franchiseId'))
-             //                                   get();
-		//return Batches::with('Classes')->where('class_id', '=', $classId)->get();
 	}
 	
-	
-	
-        static function getBatchDetailsById($batchId){
+	static function getBatchDetailsById($batchId){
             $data= Batches::where('id','=',$batchId)
                             ->where('franchisee_id', '=', Session::get('franchiseId'))
                             ->get();
             $data=$data[0];
             return $data;
-        }
+    }
         
         
-        static function deleteBatchById($batchId){
-            return Batches::where('id','=',$batchId)->delete();
-        }
+    static function deleteBatchById($batchId){
+        return Batches::where('id','=',$batchId)->delete();
+    }
 	
-        static function getExpiringBatchData(){
-            return Batches::with('LeadInstructors')
-                            ->where('franchisee_id','=',Session::get('franchiseId'))
-                            ->where('end_date','>=',  date("Y-M-d"))
-                            ->orderBy('end_date')
-                            ->get();
-        }
-	
+    static function getExpiringBatchData(){
+        return Batches::with('LeadInstructors')
+                        ->where('franchisee_id','=',Session::get('franchiseId'))
+                        ->where('end_date','>=',  date("Y-M-d"))
+                        ->orderBy('end_date')
+                        ->get();
+    }
+
 }
