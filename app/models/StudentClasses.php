@@ -167,17 +167,15 @@ class StudentClasses extends \Eloquent {
         
 	static function getStudentByBatchId($batchId, $selectedDate){
 		$selectedDate = date('Y-m-d', strtotime($selectedDate));
-		$studentByBatchId  =   StudentClasses::with('Students')
-								->where('batch_id', '=', $batchId)
-                                ->whereIn('status',array('enrolled','makeup','introvisit','transferred_class'))
-								->whereDate('enrollment_start_date', '<=', $selectedDate)
-								->whereDate('enrollment_end_date', '>=', $selectedDate)
-								->groupBy('student_id')
-								->get();
-		//dd(DB::getQueryLog());
-		return $studentByBatchId;
-		
-		
+		$studentByBatchId = StudentClasses::with('Students')
+										  ->where('batch_id', '=', $batchId)
+				                		  ->whereIn('status',array('enrolled','makeup','introvisit','transferred_class'))
+									   	  ->whereDate('enrollment_start_date', '<=', $selectedDate)
+										  ->whereDate('enrollment_end_date', '>=', $selectedDate)
+								          ->groupBy('student_id')
+								          ->get();
+
+		return $studentByBatchId;	
 	}
 	
 	static function discount($studentId, $customerId){

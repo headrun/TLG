@@ -497,8 +497,7 @@ class BatchesController extends \BaseController {
             $inputs = Input::all();
             $result = DB::select(DB::raw("select * from student_classes where student_id = '$inputs[studentId]' and batch_id = '$inputs[batchId]' and class_id = '$inputs[classId]' and '$inputs[preferredStartDate]' <= enrollment_end_date and '$inputs[preferredStartDate]'>= enrollment_start_date"));
            
-            if($result)
-            {
+            if($result){
            		return Response::json(array('status'=>'available'));
         	}
             $batchClassesData = BatchSchedule::where('franchisee_id','=',Session::get('franchiseId'))
@@ -509,7 +508,7 @@ class BatchesController extends \BaseController {
             $batchClassesCount = count($batchClassesData);
             $lastEndDate = '';
 
-            if($batchClassesCount){
+            if(isset($batchClassesCount) && !empty($batchClassesCount)){
             	$sCount = $inputs['selectedNoOfClass'] - $inputs['removalbleClasses'];
             	if ($inputs['removalbleClasses'] != 0) {
 	            	if ($sCount <= $batchClassesCount) {
@@ -528,9 +527,13 @@ class BatchesController extends \BaseController {
 	            $date = Carbon::now();
 	            $date = $date->createFromFormat('Y-m-d', $lastEndDate);
 	            $date = $date->next(Carbon::MONDAY);
-	            $base_price_no = Batches::find($inputs['batchId'])->classes()->select('base_price_no')->get();
-	            $base_price = ClassBasePrice::where('base_price_no','=',$base_price_no[0]['base_price_no'])->where('franchise_id','=',Session::get('franchiseId'))->get();
-	             $base_price = $base_price[0]['base_price'];
+	            $base_price_no = Batches::find($inputs['batchId'])
+	                                    ->classes()
+	                                    ->select('base_price_no')
+	                                    ->get();
+	            $base_price = ClassBasePrice::where('base_price_no', '=', $base_price_no[0]['base_price_no'])->where('franchise_id', '=', Session::get('franchiseId'))
+	                                ->get();
+	            $base_price = $base_price[0]['base_price'];
             }
             if($batchClassesCount){
                 return Response::json(array('status'=>'success',

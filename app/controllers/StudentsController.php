@@ -134,25 +134,21 @@ class StudentsController extends \BaseController {
                        $order_due_data=  PaymentDues::getAllDuebyStudentId($id);
                       //  $dueAmountdata=PaymentDues::getAllDue($id);
                         for($i=0;$i<count($order_due_data);$i++){
-                            
-                           
-                            $studentclasssectiondata=  Classes::getstudentclasses($order_due_data[0]['class_id']);
-                            $order_due_data[$i]['class_name']=$studentclasssectiondata[0]['class_name'];
-                            $user_Data=User::getUsersByUserId($order_due_data[$i]['created_by']);
-                            $order_due_data[$i]['receivedname']=$user_Data[0]['first_name'].$user_Data[0]['last_name'];
-                            
-                            
+                            $studentclasssectiondata = Classes::getstudentclasses($order_due_data[0]['class_id']);
+                            $order_due_data[$i]['class_name'] = $studentclasssectiondata[0]['class_name'];
+                            $user_Data = User::getUsersByUserId($order_due_data[$i]['created_by']);
+                            $order_due_data[$i]['receivedname'] = $user_Data[0]['first_name'].$user_Data[0]['last_name'];
                         }
                         //getting values for present Discount for enrollment
-                        $discount_second_child=0;
-                        $discount_second_class=0;
-                        $discount_second_child_elligible=0;
-                        $discount_second_class_elligible=0;
+                        $discount_second_child = 0;
+                        $discount_second_class = 0;
+                        $discount_second_child_elligible = 0;
+                        $discount_second_class_elligible = 0;
                         $count=0;
                         
                         $DiscountApprove = Discounts::where('franchisee_id', '=', Session::get('franchiseId'))->first();
-                        $end = StudentClasses::where('student_id','=',$id)
-                                               ->where('student_id','=',$id)
+                        $end = StudentClasses::where('student_id', '=', $id)
+                                               ->where('student_id', '=', $id)
                                                ->max('enrollment_end_date'); 
                         if($DiscountApprove['discount_second_child_approve'] == 1){
                             $discount_second_child_elligible = 1;
@@ -164,31 +160,31 @@ class StudentsController extends \BaseController {
                         }
 
                         if($discount_second_class_elligible){
-                              $classes_count = StudentClasses::where('student_id','=',$id)
-                                               ->where('status','=','enrolled')
+                              $classes_count = StudentClasses::where('student_id', '=', $id)
+                                               ->where('status', '=', 'enrolled')
                                                ->count();
 
                               if($classes_count >= 1){
-                                  $discount_second_class_elligible=1;  
+                                  $discount_second_class_elligible = 1;  
                               }else{
-                                  $discount_second_class_elligible=0;
+                                  $discount_second_class_elligible = 0;
                               }
                         }
                         
                         if($discount_second_child_elligible){
-                           $student_ids = Students::where('customer_id','=',$student[0]['customer_id'])->select('id')->get()->toArray();
+                           $student_ids = Students::where('customer_id', '=', $student[0]['customer_id'])->select('id')->get()->toArray();
                            for($i=0; $i<count($student_ids); $i++){
                                if($student_ids[$i]['id'] != $id){
-                                 if(StudentClasses::where('student_id','=',$student_ids[$i]['id'])->where('status','=','enrolled')->exists()){
+                                 if(StudentClasses::where('student_id', '=', $student_ids[$i]['id'])->where('status','=','enrolled')->exists()){
                                     $count++;   
                                   }
                                }
                            }
                          
                            if($count >= 1){
-                                $discount_second_child_elligible=1;
+                                $discount_second_child_elligible = 1;
                             }else{
-                                $discount_second_child_elligible=0;
+                                $discount_second_child_elligible = 0;
                             }
                         }
                     // Getting latest batches for showing in header of student tab
@@ -197,10 +193,10 @@ class StudentsController extends \BaseController {
                                                             ->limit(2)
                                                             ->get();
                         for($i=0;$i<count($latestEnrolledData);$i++){
-                          $temp = Batches::find($latestEnrolledData[$i]['batch_id']);
-                          $latestEnrolledData[$i]['batch_name'] = $temp->batch_name;
-                          $latestEnrolledData[$i]['preferred_time'] = $temp->preferred_time;
-                          $latestEnrolledData[$i]['preferred_end_time'] = $temp->preferred_end_time;
+                          $latest_batch_data = Batches::find($latestEnrolledData[$i]['batch_id']);
+                          $latestEnrolledData[$i]['batch_name'] = $latest_batch_data->batch_name;
+                          $latestEnrolledData[$i]['preferred_time'] = $latest_batch_data->preferred_time;
+                          $latestEnrolledData[$i]['preferred_end_time'] = $latest_batch_data->preferred_end_time;
 
                         }
                         $discountEnrollmentData = Discounts::getEnrollmentDiscontByFranchiseId();     
@@ -217,13 +213,13 @@ class StudentsController extends \BaseController {
                                                                 ->get();
                           
                           for($j=0;$j<count($payment_made_data[$i]);$j++){
-                              $temp = Batches::where('id','=',$payment_made_data[$i][$j]['batch_id'])
+                              $batch_name = Batches::where('id','=',$payment_made_data[$i][$j]['batch_id'])
                                               ->select('batch_name')
                                               ->get();
-                              $temp2 = User::find($payment_made_data[$i][$j]['created_by']);
-                              $payment_made_data[$i][$j]['receivedname'] = $temp2->first_name.$temp2->last_name;
+                              $batch_user = User::find($payment_made_data[$i][$j]['created_by']);
+                              $payment_made_data[$i][$j]['receivedname'] = $batch_user->first_name.$batch_user->last_name;
                               
-                              $payment_made_data[$i][$j]['class_name'] = $temp[0]['batch_name'];
+                              $payment_made_data[$i][$j]['class_name'] = $batch_name[0]['batch_name'];
                               
                            }
                           $payments_master_details[$i]['encrypted_payment_no'] = url().'/orders/print/'.Crypt::encrypt($payments_master_details[$i]['payment_no']);
@@ -235,15 +231,15 @@ class StudentsController extends \BaseController {
                         $membershipTypesAll = MembershipTypes::getMembershipTypes();
                         //2nd class applciable for remaning classes in 1st class
                         
-                        $last = StudentClasses::where('franchisee_id','=',Session::get('franchiseId'))
-                                        ->where('student_id','=',$id)
-                                        ->where('selected_sessions','!=',1)
-                                        ->orderBy('created_at','desc')
+                        $last = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+                                        ->where('student_id', '=', $id)
+                                        ->where('selected_sessions', '!=', 1)
+                                        ->orderBy('created_at', 'desc')
                                         ->limit(1)
                                         ->get(); 
                         if(!empty($last) && count($last) > 0){
-                          $attendance = Attendance::where('student_id','=',$id)
-                                                ->where('student_classes_id','=',$last[0]['id'])
+                          $attendance = Attendance::where('student_id', '=', $id)
+                                                ->where('student_classes_id', '=', $last[0]['id'])
                                                 ->count();
                           if(isset($attendance) && !empty($attendance)){
                             $remaining_classes = $last[0]['selected_sessions'] - $attendance;
@@ -254,19 +250,19 @@ class StudentsController extends \BaseController {
                           $remaining_classes = 0;
                         } 
                          
-                        $base_price = ClassBasePrice::where('franchise_id','=',Session::get('franchiseId'))
+                        $base_price = ClassBasePrice::where('franchise_id', '=', Session::get('franchiseId'))
                                                     ->select('base_price')
                                                     ->get();
                         
                         $present = carbon::now();
-                        $iv = IntroVisit::where('franchisee_id','=',Session::get('franchiseId'))
-                                        ->where('student_id','=',$id)
+                        $iv = IntroVisit::where('franchisee_id', '=', Session::get('franchiseId'))
+                                        ->where('student_id', '=', $id)
                                         ->select('iv_date')
                                         ->get();
                         if(sizeof($iv))
                         {
-                          $iv_date = date('Y-m-d',strtotime($iv[0]['iv_date']));
-                          $present_date = date('Y-m-d',strtotime($present));
+                          $iv_date = date('Y-m-d', strtotime($iv[0]['iv_date']));
+                          $present_date = date('Y-m-d', strtotime($present));
 
                           if(isset($iv_date) != ''){
                             if(($iv_date) >= $present_date){
@@ -279,12 +275,12 @@ class StudentsController extends \BaseController {
                           $stage = '';
                         }
                         $batchDetails = [];
-                        $batch_id = StudentClasses::where('student_id','=',$id)
-                                                    ->select('id','batch_id','enrollment_start_date','enrollment_end_date','selected_sessions','status')
+                        $batch_id = StudentClasses::where('student_id', '=', $id)
+                                                    ->select('id', 'batch_id', 'enrollment_start_date', 'enrollment_end_date', 'selected_sessions', 'status')
                                                     ->get();
 
                         for($i=0;$i<count($batch_id);$i++){
-                              $batch = Batches::where('id','=',$batch_id[$i]['batch_id'])
+                              $batch = Batches::where('id', '=', $batch_id[$i]['batch_id'])
                                               ->select('batch_name')
                                               ->get();
                               $batchDetails[$i]['batch_name'] = $batch[0]['batch_name'];
@@ -293,7 +289,7 @@ class StudentsController extends \BaseController {
                               $batchDetails[$i]['selected_sessions'] = $batch_id[$i]['selected_sessions'];
                               $batchDetails[$i]['id'] = $batch_id[$i]['id'];
 
-                              $transfer = StudentClasses::where('student_id','=',$id)
+                              $transfer = StudentClasses::where('student_id', '=', $id)
                                                     ->select('status')
                                                     ->get();                    
                               if($transfer[$i]['status'] == 'transferred_class'){
@@ -304,37 +300,37 @@ class StudentsController extends \BaseController {
 
                               ////// To get present dates count ////////
 
-                              $present_count = Attendance::where('student_id','=',$id)
-                                                ->where('student_classes_id','=',$batch_id[$i]['id'])
-                                                ->select('status','attendance_date')
-                                                ->where('status','=','P')
+                              $present_count = Attendance::where('student_id', '=', $id)
+                                                ->where('student_classes_id', '=', $batch_id[$i]['id'])
+                                                ->select('status', 'attendance_date')
+                                                ->where('status', '=', 'P')
                                                 ->count();
                               
                               $batchDetails[$i]['present'] = $present_count > 0 ? $present_count : 0;
 
                               ////// To get absent date count ////////
 
-                              $absent_count = Attendance::where('student_id','=',$id)
-                                                ->where('student_classes_id','=',$batch_id[$i]['id'])
+                              $absent_count = Attendance::where('student_id', '=', $id)
+                                                ->where('student_classes_id', '=', $batch_id[$i]['id'])
                                                 ->select('status')
-                                                ->where('status','=','A')
+                                                ->where('status', '=', 'A')
                                                 ->count();
                               $batchDetails[$i]['Absent'] = $absent_count > 0 ? $absent_count : 0;
 
                               ////// To get EA count ////////
 
-                              $EA_count = Attendance::where('student_id','=',$id)
-                                                ->where('student_classes_id','=',$batch_id[$i]['id'])
+                              $EA_count = Attendance::where('student_id', '=', $id)
+                                                ->where('student_classes_id', '=', $batch_id[$i]['id'])
                                                 ->whereNull('makeup_class_given')
-                                                ->where('status','=','EA')
+                                                ->where('status', '=', 'EA')
                                                 ->count(); 
                               $batchDetails[$i]['EA'] = $EA_count > 0 ? $EA_count : 0; 
 
                               ////// To get makeup count ////////
 
-                              $makeup_count = Attendance::where('student_id','=',$id)
-                                                ->where('student_classes_id','=',$batch_id[$i]['id'])
-                                                ->where('makeup_class_given','=','1')
+                              $makeup_count = Attendance::where('student_id', '=', $id)
+                                                ->where('student_classes_id', '=', $batch_id[$i]['id'])
+                                                ->where('makeup_class_given', '=', '1')
                                                 ->count();
                               $batchDetails[$i]['makeup'] = $makeup_count > 0 ? $makeup_count : 0;
 
@@ -342,8 +338,8 @@ class StudentsController extends \BaseController {
                               
                               if(!empty($batch_id[$i]['selected_sessions']) && count($batch_id[$i]['selected_sessions']) > 0){
                                   if($total <= $batch_id[$i]['selected_sessions']){
-                                     $attendance = Attendance::where('student_id','=',$id)
-                                                      ->where('student_classes_id','=',$batch_id[$i]['id'])
+                                     $attendance = Attendance::where('student_id', '=', $id)
+                                                      ->where('student_classes_id', '=', $batch_id[$i]['id'])
                                                       ->count();
 
                                      $batchDetails[$i]['remaining_classes'] = $batchDetails[$i]['selected_sessions'] - $attendance;
