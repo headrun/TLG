@@ -55,40 +55,39 @@ var studentAge    = "{{date_diff(date_create(date('Y-m-d',strtotime($student->st
 
 var ageYear  = '<?php echo date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->y;?>';
 var ageMonth = '<?php echo date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->m;?>';
-var tax_Percentage= "{{$taxPercentage->tax_percentage}}";
+var tax_Percentage = "{{$taxPercentage->tax_percentage}}";
 //getEligibleClasses()
-var selectedNoOfClass=0;
-var DiscountPercentage=0;
-var DiscountAmount=0;
-var selectedNoOfClass1=0;
-var selectedNoOfClass2=0;
-var selectedNoOfClass3=0;
-var firstselectedNoOfClass=0;
-var secondselectedNoOfClass=0;
-var thirdselectedNoOfClass=0;
+var selectedNoOfClass = 0;
+var DiscountPercentage = 0;
+var DiscountAmount = 0;
+var selectedNoOfClass1 = 0;
+var selectedNoOfClass2 = 0;
+var selectedNoOfClass3 = 0;
+var firstselectedNoOfClass = 0;
+var secondselectedNoOfClass = 0;
+var thirdselectedNoOfClass = 0;
 
-var estimate_master_no=0;
+var estimate_master_no = 0;
 var totalCostForpay;
 var Adminamountcal;
-var batch1ClassCost=0;
-var batch2ClassCost=0;
-var batch3ClassCost=0;
+var batch1ClassCost = 0;
+var batch2ClassCost = 0;
+var batch3ClassCost = 0;
 
-var enddate1='';
-var enddate2='';
-var enddate3='';
+var enddate1 = '';
+var enddate2 = '';
+var enddate3 = '';
 
-var estimate_id1=0;
-var estimate_id2=0;
-var estimate_id3=0;
+var estimate_id1 = 0;
+var estimate_id2 = 0;
+var estimate_id3 = 0;
 
 // for payments
 
-var bipay=[];
-var multipay=[];
+var bipay = [];
+var multipay = [];
 
 $('#studentDob').kendoDatePicker();
-
 $("#editKidBtn").click(function (){
   $("#KidsformBody").show();
   $("#messageStudentAddDiv").html("");
@@ -129,12 +128,6 @@ $("#introVisitTxtBox").kendoDatePicker({
     }
 });
 
-
-
-
-
-
-
 function saveKids(event){
 
   var postData = {'studentName'       : $('#studentName').val(),
@@ -169,8 +162,7 @@ function saveKids(event){
         $("#messageStudentAddDiv").html('<p class="uk-alert uk-alert-danger">Sorry! Kid details could not be updated.</p>');
         $("#KidsformBody").hide();
       }
-        
-        
+               
         }
     });
 }
@@ -187,7 +179,7 @@ function getStudentDetails(){
         success: function (response)
         {
             //console.log(response);          
-          $('#studentName').val(response.student_name);
+        $('#studentName').val(response.student_name);
         $('#nickname').val(response.nickname);
         $('#studentDob').val(response.student_date_of_birth);
         $('#studentGender').val(response.student_gender);
@@ -196,12 +188,7 @@ function getStudentDetails(){
         $('#hobbies').val(response.hobbies);
         $('#emergencyContact').val(response.emergency_contact);       
         $('#remarks').val(response.remarks);
-        $('#healthIssue').val(response.health_issue);
-
-        
-        //$("#kidsAddForm select").addClass('md-input-filled');
-
-        
+        $('#healthIssue').val(response.health_issue);        
         }
     });
   
@@ -223,53 +210,44 @@ function fullEnrollmentReset(){
     $('#enrollmentcontinue2').hide();
     $('#enrollmentcontinue3').hide();
     
-    
     //clearing the msgs
     $('#batch1Msg').html('');
     $('#batch2Msg').html('');
     $('#batch3Msg').html('');
     
-    //resetting the variables used
-    //selectedNoOfClass=0;
-    //DiscountPercentage=0;
-    //DiscountAmount=0;
+    selectedNoOfClass1 = 0;
+    selectedNoOfClass2 = 0;
+    selectedNoOfClass3 = 0;
     
-    selectedNoOfClass1=0;
-    selectedNoOfClass2=0;
-    selectedNoOfClass3=0;
+    firstselectedNoOfClass = 0;
+    secondselectedNoOfClass = 0;
+    thirdselectedNoOfClass = 0;
     
-    firstselectedNoOfClass=0;
-    secondselectedNoOfClass=0;
-    thirdselectedNoOfClass=0;
-    
-    estimate_master_no=0;
+    estimate_master_no = 0;
     totalCostForpay;
 
-    batch1ClassCost=0;
-    batch2ClassCost=0;
-    batch3ClassCost=0;
+    batch1ClassCost = 0;
+    batch2ClassCost = 0;
+    batch3ClassCost = 0;
 
-    enddate1='';
-    enddate2='';
-    enddate3='';
+    enddate1 = '';
+    enddate2 = '';
+    enddate3 = '';
 
-    estimate_id1=0;
-    estimate_id2=0;
-    estimate_id3=0;
-
-    
-    
+    estimate_id1 = 0;
+    estimate_id2 = 0;
+    estimate_id3 = 0;
 }
 
 $("#addEnrollment").click(function(){
     fullEnrollmentReset();
     if($('input[name="enrollmentClassesSelect"]').is(':checked')){
-        if($("input[name='enrollmentClassesSelect']:checked").val()!='custom'){
-            selectedNoOfClass=parseInt($("input[name='enrollmentClassesSelect']:checked").val());
-            DiscountPercentage=parseFloat($("input[name='enrollmentClassesSelect']:checked").attr('discountpercentage'));
+        if($("input[name='enrollmentClassesSelect']:checked").val() != 'custom'){
+            selectedNoOfClass = parseInt($("input[name='enrollmentClassesSelect']:checked").val());
+            DiscountPercentage = parseFloat($("input[name='enrollmentClassesSelect']:checked").attr('discountpercentage'));
         }else{
-            selectedNoOfClass=parseInt($('#customEnrollmemtNoofClass').val());
-            DiscountPercentage=parseFloat($('#customEnrollmemtDiscountPercentage').val());
+            selectedNoOfClass = parseInt($('#customEnrollmemtNoofClass').val());
+            DiscountPercentage = parseFloat($('#customEnrollmemtDiscountPercentage').val());
         }
         $('#enrollmentcontinue2').hide();
         $('#enrollmentcontinue3').hide();
@@ -290,21 +268,16 @@ $("#addEnrollment").click(function(){
       
 });
 
-
-//$("#paymentOptions").hide();
-
 $("#enrollmentOptions").click(function (){
-    
-
       <?php if(!$customermembership){?>
-         var membershipAmt={{json_encode($membershipTypesAll)}};  
+         var membershipAmt = {{json_encode($membershipTypesAll)}};  
         $("#membershipAmount").val(membershipAmt[0]['fee_amount']);
         $("#membershipAmounttotals").val(membershipAmt[0]['fee_amount']);
         $('#membershipAmounttotalslabel').html(membershipAmt[0]['fee_amount']);
       <?php }?>
     
       $('#enrollNow').addClass('disabled');
-      totalCostForpay=(firstselectedNoOfClass*batch1ClassCost)+(secondselectedNoOfClass*batch2ClassCost)+(thirdselectedNoOfClass*batch3ClassCost);
+      totalCostForpay = (firstselectedNoOfClass*batch1ClassCost)+(secondselectedNoOfClass*batch2ClassCost)+(thirdselectedNoOfClass*batch3ClassCost);
 
       //$('#selectedPaymentMethod').html('Amount:');
       $("#finalPaymentDiv").show();
@@ -334,8 +307,8 @@ $("#finalPaymentDiv").hide();
 
 function calculateFinalAmount(){
         var enrollmentStartDate = $('#enrollmentStartDate').val();
-        var second_child_discount_amt=0;
-        var second_class_discount_amt=0;
+        var second_child_discount_amt = 0;
+        var second_class_discount_amt = 0;
 
         if($("input[name='enrollmentClassesSelect']:checked").val() == 'custom'){
           var selected = $('#customEnrollmemtNoofClass').val();  
@@ -603,7 +576,7 @@ $(document).on('change', "#AdminRupeeForOld", function() {
 
 function calculateSubTotalForOld() {
     
-    var SubTotalForOld =    parseFloat(
+    var SubTotalForOld = parseFloat(
                                $("#TotalAmountForOld").val() - 
                                $("#DiscountAmountForOld").val() - 
                                $("#SiblingAmountForOld").val() - 
@@ -628,8 +601,6 @@ function calculateGrandTotalForOld() {
    $("#GrandTotalForOld").val(GrandTotalForOld);               
    
 }
-
-
 $("#closeEnrollmentModal").click(function (){
 
   $("#batchCbx").val("");
@@ -650,8 +621,8 @@ $('#enrollmentStartDate').change(function(){
    $('#batch1Msg').html('');
    $('#batchCbx').val('');
    $('input[name=paymentTypeRadio]').prop('checked', false);
-   if(estimate_id1!=0){
-    var data=$('#enrollmentStartDate').val();
+   if(estimate_id1 != 0){
+    var data = $('#enrollmentStartDate').val();
     fullEnrollmentReset();
     $('#enrollmentStartDate').val(data);
    }
@@ -676,12 +647,8 @@ $('#getSchedulesSessions').click(function (){
 var todaysDate = new Date();
 $("#enrollmentStartDate").kendoDatePicker({
             format: "yyyy-MM-dd",
-  // change:function (){
-//    prepareGetClasses()
-//  } 
-  //min: todaysDate
+  
 });
-
 
 $("#enrollmentEndDate").kendoDatePicker({
   change:function (){
@@ -690,17 +657,14 @@ $("#enrollmentEndDate").kendoDatePicker({
   
 });
 
-
 function prepareGetClasses(){
   $("#paymentOptions").hide();
   $("#finalPaymentDiv").hide();
   $("input[name='paymentOptionsRadio']").attr('checked', false);
        
-  //checking for first case 1 season only
-       // console.log('prepareclasses');
-        if(firstselectedNoOfClass===selectedNoOfClass){
+        if(firstselectedNoOfClass === selectedNoOfClass){
            // console.log('==')
-            if($('#SeasonsCbx').val()!='' && $('#batchCbx').val() != "" && $('#enrollmentStartDate').val() != "" && $("#eligibleClassesCbx").val() != ""){
+            if($('#SeasonsCbx').val() != '' && $('#batchCbx').val() != "" && $('#enrollmentStartDate').val() != "" && $("#eligibleClassesCbx").val() != ""){
                     console.log('valid 1 season only');
                     $("#messageStudentEnrollmentDiv").html('');
                     $("#availableSessions").html(firstselectedNoOfClass);
@@ -714,7 +678,7 @@ function prepareGetClasses(){
                     $('#enrollmentcontinue3').hide();
                     
             }
-        }else if((firstselectedNoOfClass+secondselectedNoOfClass)===selectedNoOfClass){
+        }else if((firstselectedNoOfClass+secondselectedNoOfClass) === selectedNoOfClass){
             if($('#SeasonsCbx').val()!='' && $('#batchCbx').val() != "" && $('#enrollmentStartDate').val() != "" && $("#eligibleClassesCbx").val() != "" &&
                $('#SeasonsCbx2').val()!='' && $('#batchCbx2').val() != "" && $("#eligibleClassesCbx2").val() != "" ){
                     console.log('valid 2 seasons only');
@@ -729,7 +693,7 @@ function prepareGetClasses(){
                     $('#enrollmentcontinue3').hide();
                     
             }
-        }else if((firstselectedNoOfClass+secondselectedNoOfClass+thirdselectedNoOfClass)===selectedNoOfClass){
+        }else if((firstselectedNoOfClass+secondselectedNoOfClass+thirdselectedNoOfClass) ===selectedNoOfClass){
                     console.log('valid 3 seasons only');
                     $("#messageStudentEnrollmentDiv").html('');
                     $("#availableSessions").html(firstselectedNoOfClass+'+'+secondselectedNoOfClass+'+'+thirdselectedNoOfClass+'='+(firstselectedNoOfClass+secondselectedNoOfClass+thirdselectedNoOfClass));
@@ -747,8 +711,6 @@ $("#enrollKidForm").validator().on('submit', function (e) {
     if (e.isDefaultPrevented()) {
         // handle the invalid form...
     } else {
-      // everything looks good!
-      //alert("introvisit");
       e.preventDefault();
       enrollnow(event); 
 
@@ -792,7 +754,7 @@ $(".eligibleClassesCbx").change(function (){
         }
 });
 $(".eligibleClassesCbx2").change(function (){
-          if($('#SeasonsCbx2').val()==''){
+          if($('#SeasonsCbx2').val() == ''){
         $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-danger"> please select the season.</p>');
     }else{
   //console.log(this.id);
@@ -825,7 +787,7 @@ $(".eligibleClassesCbx2").change(function (){
         }
 });
 $(".eligibleClassesCbx3").change(function (){
-          if($('#SeasonsCbx3').val()==''){
+          if($('#SeasonsCbx3').val() == ''){
         $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-danger"> please select the season.</p>');
     }else{
   //console.log(this.id);
@@ -873,19 +835,16 @@ $.ajax({
                             for(var i=0;i<response.season_data.length;i++){
                                 string += '<option value='+response.season_data[i]['id']+'>'+response.season_data[i]['season_name']+'</option>';
                             }
-                            //$('#enrollmentEndDate').val(response.season_data[0]['end_date']);
                             $('.SeasonsCbx').append(string); 
                             $('.SeasonsCbx2').append(string);
                             $('.SeasonsCbx3').append(string);
-                           // console.log(string);
                         }
              })  ;
 }
 
 
-
 function getEligibleClasses(){
-    var yearAndMonth= (parseInt(ageYear*12)+parseInt(ageMonth));
+  var yearAndMonth= (parseInt(ageYear*12)+parseInt(ageMonth));
           
   $.ajax({
         type: "POST",
@@ -894,8 +853,6 @@ function getEligibleClasses(){
         dataType:"json",
         success: function (response)
         {
-            
-         // console.log(response);
           if(response.status=='success'){
             $(".eligibleClassesCbx").empty("");
             $string = '<option value=""></option>';
@@ -931,7 +888,6 @@ function getEligibleClassesForBatch2WithAgeChange(){
 }
 
 
-
 function getEligibleClassesForBatch3WithAgeChange(){
     $.ajax({
         type: "POST",
@@ -941,20 +897,14 @@ function getEligibleClassesForBatch3WithAgeChange(){
         success: function (response)
         {
           $(".eligibleClassesCbx3").empty("");  
-          //$(".eligibleClassesCbx2").empty(""); 
-          //$(".eligibleClassesCbx3").empty(""); 
           $string = '<option value=""></option>';
           $.each(response, function (index, item) {
-            //console.log(index+" = "+item);
             $string += '<option value='+item.id+'>'+item.class_name+'</option>';               
             });
           $('.eligibleClassesCbx3').append($string);
           $('#enrollmentbtnsdisplay2').css('display','none');
           $('#batch3Msg').html('');
           $('#enrollmentcontinue3').show();
-          //$('.eligibleClassesCbx2').append($string);
-          //$('.eligibleClassesCbx3').append($string);
-        
         }
     });
 }
@@ -962,8 +912,6 @@ function getEligibleClassesForBatch3WithAgeChange(){
 
 function getBatchesBasedOnClasses(selector, from,seasonId){
   
-//console.log($(from).val());
-//console.log($('#SeasonsCbx').val());
   $.ajax({
         type: "POST",
         url: "{{URL::to('/quick/batchesByClassSeasonId')}}",
@@ -971,8 +919,6 @@ function getBatchesBasedOnClasses(selector, from,seasonId){
         dataType:"json",
         success: function (response)
         {          
-          //  console.log(response[0]['day']);
-            
           $('#'+selector).empty();          
           $string = '<option value=""></option>';
           $.each(response, function (index, item) {
@@ -980,16 +926,10 @@ function getBatchesBasedOnClasses(selector, from,seasonId){
             });
           $('#'+selector).append($string);
           $('#'+selector).val();
-          
-          //$('#introbatchCbx').append($string);
-        
         }
     });
     
 }
-
-
-
 
 var availableSessionCount = 0;
 var eachClassCost=0;
@@ -1001,29 +941,20 @@ function getSessionsForClasses(){
           dataType:"json",
           success: function (response)
           {   
-                    //console.log(response);
-                    
               $("#availableSessions").html(response.availableSession);
               $("#totalAmount").html(response.amountTotal);
                     eachClassCost = response.eachClassAmount;
-                    $("#amountPerSesssion").html(eachClassCost);
+              $("#amountPerSesssion").html(eachClassCost);
               $("#totalEnrollmentAmount").val(response.amountTotal);
               availableSessionCount = response.availableSession;
-
-        
-        
-
-              
-            $("#sessionsTable").show();
+              $("#sessionsTable").show();
                         
           }
       }); 
 
-  
 }
 
 function enrollnow(){
-  //console.log($("#enrollKidForm").serialize());
   event.preventDefault();
   $("#enrollNow").hide();
         $('#MsgDiv').hide();
@@ -1034,21 +965,17 @@ function enrollnow(){
         type: "POST",
         url: "{{URL::to('/quick/enrollkid')}}",
         data:$("#enrollKidForm").serialize(),
-        //data: {'classId': $("#eligibleClassesCbx").val(), 'batchId':$("#batchCbx").val(), "studentId":studentId},
         dataType:"json",
         success: function (response)
         {
             console.log(response);
-                
           if(response.status == "success"){
-                        
-                
               if(response.printUrl == ""){
-          $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-success">Student has been successfully enrolled. Please wait till this page reloads</p>');
-          setTimeout(function(){
-             window.location.reload(1);
-          }, 5000);
-                    }else{
+                $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-success">Student has been successfully enrolled. Please wait till this page reloads</p>');
+                  setTimeout(function(){
+                     window.location.reload(1);
+                  }, 5000);
+              }else{
 
           var printvars = '<a target="_blank" href="'+response.printUrl+'" class="btn btn-primary">Print</a>';
                 $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-success">Student has been successfully enrolled. Please click the print button below.</p>'+printvars);
@@ -1078,9 +1005,7 @@ $('#receivedue').modal('show');
 }
 
 
-
 $('#receivepayment').click(function(){
- 
     var amountAfterDiscount=(($('#pending_discount').val()/100)*parseInt($('#pending_amt').val()));
     if($("input[name=paymentReceiveTypeRadio]:checked").val()=='card'){
         if(($('#receivecard4digits').val()!='') && ($('#receivecardBankName').val()!='' && $('#receivecardRecieptNumber').val()!='')){
@@ -1110,7 +1035,6 @@ $('#receivepayment').click(function(){
                                 $('#receivepayment').addClass('disabled');
                             }
                             
-                            //$('#pendingamount').modal('show'); 
                             $('#receivedueclose').click(function(){
                                 window.location.reload(1);        
                             });
@@ -3756,6 +3680,8 @@ $('.deleteenrollmentdata').click(function(){
                     <thead>
                       <tr>
                         <th>Batch Name</th>
+                        <th>Day</th>
+                        <th>Time</th>
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>Total Classes</th>
@@ -3771,6 +3697,8 @@ $('.deleteenrollmentdata').click(function(){
                         @foreach($batchDetails as $value)
                           <tr>
                             <td>{{ $value['batch_name'] }}</td>
+                            <td>{{ $value['Day'] }}</td>
+                            <td>{{ $value['time'] }}</td>
                             <td>{{ $value['enrollment_start_date'] }}</td>
                             <td>{{ $value['enrollment_end_date'] }}</td>
                             <td >{{ $value['selected_sessions'] }}</td>

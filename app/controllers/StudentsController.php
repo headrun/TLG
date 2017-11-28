@@ -281,9 +281,14 @@ class StudentsController extends \BaseController {
 
                         for($i=0;$i<count($batch_id);$i++){
                               $batch = Batches::where('id', '=', $batch_id[$i]['batch_id'])
-                                              ->select('batch_name')
+                                              ->select('batch_name','preferred_end_time', 'preferred_time','start_date')
                                               ->get();
-                              $batchDetails[$i]['batch_name'] = $batch[0]['batch_name'];
+                              $bacth_name = explode('-', $batch[0 ]['batch_name']); 
+                              $batchDetails[$i]['batch_name'] = $bacth_name[0].' '.$bacth_name[1].' '.$bacth_name[2];
+                              $batchDetails[$i]['Day'] = date('l', strtotime($batch[0]['start_date']));
+                              $timeStart = explode(':',$batch[0]['preferred_time']);
+                              $timeEnd = explode(':',$batch[0]['preferred_end_time']);
+                              $batchDetails[$i]['time'] = $timeStart[0].':'.$timeStart[1].'-'.$timeEnd[0].':'.$timeEnd[1]; 
                               $batchDetails[$i]['enrollment_start_date'] = $batch_id[$i]['enrollment_start_date'];
                               $batchDetails[$i]['enrollment_end_date'] = $batch_id[$i]['enrollment_end_date'];
                               $batchDetails[$i]['selected_sessions'] = $batch_id[$i]['selected_sessions'];
