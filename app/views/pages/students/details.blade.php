@@ -3694,6 +3694,7 @@ $('.deleteenrollmentdata').click(function(){
                       </tr>
                     </thead>
                     <tbody> 
+                      <?php if(isset($batchDetails) && !empty($batchDetails)){?>
                         @foreach($batchDetails as $value)
                           <tr>
                             <td>{{ $value['batch_name'] }}</td>
@@ -3711,6 +3712,13 @@ $('.deleteenrollmentdata').click(function(){
                             <td><button class="btn btn-primary" onclick="getDatesForAttendance('{{ $value['id']}}', '{{ $value['batch_name']}}','{{ $value['enrollment_start_date'] }}', '{{ $value['enrollment_end_date'] }}')">View Dates</button></td>
                           </tr>
                         @endforeach
+                      <?php  }else{ ?>
+                            <tr>
+                              <td>
+                                ------------- No batches found --------------
+                              </td>
+                            </tr>
+                      <?php } ?>
                     </tbody>
                   </table>  
                  </div>
