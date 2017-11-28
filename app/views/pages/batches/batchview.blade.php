@@ -289,6 +289,9 @@ function getbatchesStudents(batchId, dateStartEvent){
 				    			'<td>'+
 				    				item.enrollment_end_date+
 				    			'</td>'+
+				    			'<td>'+
+				    				item.remaining_classes+
+				    			'</td>'+
 				    			'<td class="form-group">'+
 				    				'<input id="attendance_for_userP'+i+'" name="attendance_for_user'+i+'" data="eadisable"  data2='+i+' value="P" type="radio" class="radio-custom" required />'+
 				    					'<label for="attendance_for_userP'+i+'" class="radio-custom-label">P</label>'+
@@ -490,6 +493,7 @@ $('#addAttendanceForm').validator().on('submit', function (e) {
 		                                <th>Student Name</th>
 		                                <th>Start Date</th>
 		                                <th>End Date</th>
+		                                <th>Remaining Classes</th>
 		                                <th>Attendance Status</th>
 		                                
 		                                <!-- <th>Action</th> -->

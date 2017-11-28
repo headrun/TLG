@@ -1475,8 +1475,9 @@ public function enrollKid2(){
 
 
         $attendanceArray[$i]['attended_classes'] = $attended_classes;
-        $attendanceArray[$i]['remaining_classes'] = $enrollmentDates[0]['selected_sessions'] - $attended_classes;                                
-
+        $remaining = $enrollmentDates[0]['selected_sessions'] - $attended_classes;
+        $attendanceArray[$i]['remaining_classes'] = $remaining > 0 ? $remaining : 0;  
+       
         $end = new Carbon();
         $end = $end->createFromFormat('Y-m-d',$attendanceArray[$i]['enrollment_end_date']);
         $end = $end->subDays(7);
