@@ -168,40 +168,27 @@ class StudentClasses extends \Eloquent {
 	static function getStudentByBatchId($batchId, $selectedDate){
 		$selectedDate = date('Y-m-d', strtotime($selectedDate));
 		$studentByBatchId = StudentClasses::with('Students')
-										  ->where('batch_id', '=', $batchId)
-				                		  ->whereIn('status',array('enrolled','makeup','introvisit','transferred_class'))
-									   	  ->whereDate('enrollment_start_date', '<=', $selectedDate)
-										  ->whereDate('enrollment_end_date', '>=', $selectedDate)
-								          ->groupBy('student_id')
-								          ->get();
+				  ->where('batch_id', '=', $batchId)
+        		  ->whereIn('status',array('enrolled','makeup','introvisit','transferred_class'))
+			   	  ->whereDate('enrollment_start_date', '<=', $selectedDate)
+				  ->whereDate('enrollment_end_date', '>=', $selectedDate)
+		          ->groupBy('student_id')
+		          ->get();
 
 		return $studentByBatchId;	
 	}
 	
 	static function discount($studentId, $customerId){
-		
-		/* return StudentClasses::where('student_id', '=', $studentId)
-						->where('class_id', '=', $classid)
-						->first(); */
-		
 		$isEligibleforTwenty = "NO";
 		$isEligibleforFifty  = "NO";
-		
-		
 		$Students = Students::where("customer_id", "=", $customerId)
 							  ->where("id", '<>', $studentId)
 							  ->get();
-		
-		
 		$enrolledStudent = 0;
-		foreach($Students as $student){
-			
+		foreach($Students as $student){	
 				$enrolledStudent = StudentClasses::where('student_id', '=', $student->id)
-				->count();
-				
-			
+												 ->count();
 		}
-		
 		if($enrolledStudent > 0){			
 			$isCurrentStudentEnrolled = StudentClasses::where('student_id', '=', $studentId)
 			->count();			
@@ -209,7 +196,6 @@ class StudentClasses extends \Eloquent {
 				$isEligibleforTwenty = "YES";
 			}			
 		}
-		
 		$isCurrentStudentEnrolled = StudentClasses::where('student_id', '=', $studentId)
                                             ->count();
 		if($isCurrentStudentEnrolled > 0){
@@ -218,8 +204,6 @@ class StudentClasses extends \Eloquent {
 		
 		return array("eligibleForTwenty"=>$isEligibleforTwenty, "eligibleForFifty"=>$isEligibleforFifty);
 		
-		
-	
 	}
 	
         static function getStudentClassbyId($student_class_id){
@@ -228,8 +212,8 @@ class StudentClasses extends \Eloquent {
         }
 	
         static function getAllClassCountByBatchId($inputs){
-            return StudentClasses::where('batch_id','=',$inputs['batchId'])
-                          ->where('student_id','=',$inputs['studentId'])
+            return StudentClasses::where('batch_id', '=', $inputs['batchId'])
+                          ->where('student_id', '=', $inputs['studentId'])
                           ->whereIn('status', array('enrolled','transferred_class'))
                           ->sum('selected_sessions');
             

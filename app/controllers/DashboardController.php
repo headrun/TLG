@@ -401,7 +401,31 @@ class DashboardController extends \BaseController {
           }
       }
   }
+  public function UpdateBatchSchedule(){
+      $getBatchesData = Batches::getBatches();
 
+      for ($i=0; $i <count($getBatchesData) ; $i++) { 
+        for ($j=0; $j < 10 ; $j++) {
+          $batch_schedule = BatchSchedule::where('batch_id', '=', $getBatchesData[$i]['id'])
+                                       ->selectRaw('max(schedule_date) as schedule_date, batch_id')
+                                       ->get();
+          $batch_date[$i]['data'] = $batch_schedule[0]['schedule_date'];
+          $date[$j]['data'] = date('Y-m-d', strtotime('+1 week', strtotime($batch_date[$i]['data'])));
+          $insert = BatchSchedule::where('franchisee_id', '=', Session::get('franchiseId'))
+                                   ->insert(
+                                     array(['schedule_date' => $date[$j]['data'], 
+                                            'batch_id' => $getBatchesData[$i]['id'],
+                                            'franchisee_id' => Session::get('franchiseId'),
+                                            'season_id' => $getBatchesData[$i]['season_id'],
+                                            'start_time' => $getBatchesData[$i]['preferred_time'],
+                                            'end_time' => $getBatchesData[$i]['preferred_end_time'],
+                                            'schedule_type' => 'class'])
+                                    );
+                }
+        }
+       
+      
+  }
 	/**
 	 * Show the form for creating a new resource.
 	 *
