@@ -1,11 +1,13 @@
 @extends('layout.master')
 
 @section('libraryCSS')
-	<!-- <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.min.css" media="all">
-	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.print.css" media="all"> -->
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.min.css" media="all">
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.print.css" media="all">
 	<link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.common-material.min.css"/>
     <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.material.min.css"/>
-    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel='stylesheet' />
+    <!-- <link href='https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css' />
+    <link href='https://cdn.datatables.net/buttons/1.4.0/css/buttons.dataTables.min.css' />
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel='stylesheet' /> -->
 @stop
 
 @section('libraryJS')
@@ -14,9 +16,26 @@
 <script src="{{url()}}/bower_components/datatables-tabletools/js/dataTables.tableTools.js"></script>
 <script src="{{url()}}/assets/js/custom/datatables_uikit.min.js"></script>
 <script src="{{url()}}/assets/js/pages/plugins_datatables.min.js"></script>
-<script type="text/javascript">
 
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.4.0/js/dataTables.buttons.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
+<script src="//cdn.datatables.net/buttons/1.4.0/js/buttons.html5.min.js"></script>
+<script src="{{url()}}/assets/js/kendoui_custom.min.js"></script>
+<script src="{{url()}}/assets/js/pages/kendoui.min.js"></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
+
+<script type="text/javascript">
 	$("#studentsTable").DataTable({
+		dom: 'Bfrtip',
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ],
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
 
             // Bind click event
@@ -86,6 +105,8 @@
 		                                <th>Gender</th>
 		                                <th>Age</th>
 		                                <th>Date Of Birth</th>
+		                                <th>Start Date</th>
+		                                <th>End Date</th>
 		                                <!-- <th>Action</th> -->
 		                            </tr>
 		                            </thead>
@@ -96,13 +117,13 @@
 		                                <td>{{$student->student_name}}</td>
 		                                <td>{{$student->student_gender}}</td>
 		                                <td><?php echo date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->y.'.'.date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->m.'years';?> </td>
+		                                <td>{{$student->student_date_of_birth}} </td>
+		                                <td>{{$student->enrollment_start_date }}</td>
 		                                <td>
-                                                    {{$student->student_date_of_birth}}
-		                                	<a  style="display: none" href="{{url()}}/students/view/{{$student->id}}">View/Edit</a>
-		                                
+		                                	{{$student->enrollment_end_date}}
+		                                	<a style="display: none" href="{{url()}}/students/view/{{$student->student_id}}"></a>
+
 		                                </td>
-		                                
-		                                
 		                            </tr>
                                             <?php } ?>
 		                            @endforeach 

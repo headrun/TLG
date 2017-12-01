@@ -1,22 +1,22 @@
 @extends('layout.master')
 
 @section('libraryCSS')
-	<!-- <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.min.css" media="all">
-	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.print.css" media="all"> -->
-	<!-- <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.common-material.min.css"/>
-    <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.material.min.css"/> -->
-    <link href='https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css' />
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.min.css" media="all">
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.print.css" media="all">
+	<link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.common-material.min.css"/>
+    <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.material.min.css"/>
+    <!-- <link href='https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css' />
     <link href='https://cdn.datatables.net/buttons/1.4.0/css/buttons.dataTables.min.css' />
-    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel='stylesheet' />
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel='stylesheet' /> -->
 @stop
 
 @section('libraryJS')
-<!-- <script src="{{url()}}/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+<script src="{{url()}}/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
 <script src="{{url()}}/bower_components/datatables-colvis/js/dataTables.colVis.js"></script>
 <script src="{{url()}}/bower_components/datatables-tabletools/js/dataTables.tableTools.js"></script>
 <script src="{{url()}}/assets/js/custom/datatables_uikit.min.js"></script>
 <script src="{{url()}}/assets/js/pages/plugins_datatables.min.js"></script>
- -->
+
 <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.4.0/js/dataTables.buttons.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
@@ -278,7 +278,7 @@ $("#customerSubmit").click(function (event){
 		                                <td>{{$customer->customer_email}}</td>
 		                                <td>{{$customer->mobile_no}}</td>
 		                                <td>{{$customer->building}} {{$customer->apartment_name}} {{$customer->lane}}
-		                                <a style="display: none;" href="{{url()}}/customers/view/{{$customer->id}}">View</a>
+		                                <a style="display: none;" href="{{url()}}/customers/view/{{$customer->id}}"></a>
 		                                </td>
 		                                <!-- <td><a class="md-btn md-btn-flat md-btn-flat-primary" href="{{url()}}/customers/view/{{$customer->id}}">View</a></td> -->
 		                                
