@@ -61,6 +61,7 @@ $(document).on('click', '#updateBatchId', function(){
             data: {'update_id': update_id, 'batch_id': batch_id},
             dataType: 'json',
             success: function(response){
+            	
             }
             });
     }
