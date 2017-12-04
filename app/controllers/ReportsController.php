@@ -96,13 +96,30 @@ class ReportsController extends \BaseController {
         }
         public static function UpdateDataBatch(){
         	if(Auth::check()){
-                $inputs=  Input::all();
-        		
-        		$attendance = BatchSchedule::where('franchisee_id', '=', Session::get('franchiseId'))
-        		                        ->where('batch_id', '=', $inputs['batchId'])
-        							    ->update(['batch_id' => $inputs['updateId']]);
+    	        $inputs=  Input::all();
+    	        $batch_ids = explode(',', $inputs['batch_id']);
+    	        
+        		$attendance = Attendance::whereIn('batch_id', $batch_ids)
+        							    ->update(['batch_id' => $inputs['update_id']]);
+
+                $bacthes = BatchSchedule::whereIn('batch_id', $batch_ids)
+                				        ->update(['batch_id' => $inputs['update_id']]);	
+
+                $estimate = Estimate::whereIn('batch_id', $batch_ids)
+                				    ->update(['batch_id' => $inputs['update_id']]);
+
+                $introvisit = IntroVisit::whereIn('batch_id', $batch_ids)
+                				        ->update(['batch_id' => $inputs['update_id']]);
+
+                $paymnet_dues = PaymentDues::whereIn('batch_id', $batch_ids)
+                				           ->update(['batch_id' => $inputs['update_id']]);
+
+                $student_classes = StudentClasses::whereIn('batch_id', $batch_ids)
+                				  ->update(['batch_id' => $inputs['update_id']]);
+	            
         	}
         }
+
     
 
         public static function salesAllocreport(){

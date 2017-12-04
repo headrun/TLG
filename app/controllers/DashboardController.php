@@ -405,7 +405,7 @@ class DashboardController extends \BaseController {
       $getBatchesData = Batches::getBatches();
 
       for ($i=0; $i <count($getBatchesData) ; $i++) { 
-        for ($j=0; $j < 10 ; $j++) {
+        for ($j=0; $j < 1000 ; $j++) {
           $batch_schedule = BatchSchedule::where('batch_id', '=', $getBatchesData[$i]['id'])
                                        ->selectRaw('max(schedule_date) as schedule_date, batch_id')
                                        ->get();
