@@ -197,6 +197,8 @@ class StudentsController extends \BaseController {
                           $latestEnrolledData[$i]['batch_name'] = $latest_batch_data->batch_name;
                           $latestEnrolledData[$i]['preferred_time'] = $latest_batch_data->preferred_time;
                           $latestEnrolledData[$i]['preferred_end_time'] = $latest_batch_data->preferred_end_time;
+                          $latestEnrolledData[$i]['enrollment_start_date'] = date('d-M-Y',strtotime($latestEnrolledData[$i]['enrollment_start_date']));
+                          $latestEnrolledData[$i]['enrollment_end_date'] = date('d-M-Y',strtotime($latestEnrolledData[$i]['enrollment_end_date']));
 
                         }
                         $discountEnrollmentData = Discounts::getEnrollmentDiscontByFranchiseId();     
@@ -289,8 +291,10 @@ class StudentsController extends \BaseController {
                               $timeStart = explode(':',$batch[0]['preferred_time']);
                               $timeEnd = explode(':',$batch[0]['preferred_end_time']);
                               $batchDetails[$i]['time'] = $timeStart[0].':'.$timeStart[1].'-'.$timeEnd[0].':'.$timeEnd[1]; 
-                              $batchDetails[$i]['enrollment_start_date'] = $batch_id[$i]['enrollment_start_date'];
-                              $batchDetails[$i]['enrollment_end_date'] = $batch_id[$i]['enrollment_end_date'];
+                              
+                              $batchDetails[$i]['enrollment_start_date'] = date('d-M-Y',strtotime($batch_id[$i]['enrollment_start_date']));
+
+                              $batchDetails[$i]['enrollment_end_date'] = date('d-M-Y',strtotime($batch_id[$i]['enrollment_end_date']));
                               $batchDetails[$i]['selected_sessions'] = $batch_id[$i]['selected_sessions'];
                               $batchDetails[$i]['id'] = $batch_id[$i]['id'];
 
