@@ -118,9 +118,9 @@
 		                                <td>{{$student->student_gender}}</td>
 		                                <td><?php echo date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->y.'.'.date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->m.'years';?> </td>
 		                                <td>{{$student->student_date_of_birth}} </td>
-		                                <td><?php echo date('d-M-Y',strtotime($student->enrollment_start_date)); ?></td>
+		                                <td>{{ date('d-M-Y',strtotime($student->enrollment_start_date)); }}</td>
 		                                <td>
-		                                	<?php echo date('d-M-Y',strtotime($student->enrollment_end_date)); ?>
+		                                	{{ date('d-M-Y',strtotime($student->enrollment_end_date)); }}
 		                                	<a style="display: none" href="{{url()}}/students/view/{{$student->student_id}}"></a>
 
 		                                </td>
