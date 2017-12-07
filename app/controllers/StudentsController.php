@@ -216,9 +216,16 @@ class StudentsController extends \BaseController {
                           
                           for($j=0;$j<count($payment_made_data[$i]);$j++){
                               $batch_name = Batches::where('id','=',$payment_made_data[$i][$j]['batch_id'])
-                                              ->select('batch_name')
+                                              ->selectRaw('batch_name,preferred_end_time,preferred_time')
                                               ->get();
                               $batch_user = User::find($payment_made_data[$i][$j]['created_by']);
+
+                              $payment_made_data[$i][$j]['day'] = date('l', strtotime($payment_made_data[$i][$j]['start_order_date']));
+                              $start_time = explode(':', $batch_name[0]['preferred_time']);
+                              $end_time = explode(':', $batch_name[0]['preferred_end_time']);
+
+                              $payment_made_data[$i][$j]['time'] = $start_time[0].':'.$start_time[1].'-'.$end_time[0].':'.$end_time[1];
+                              
                               $payment_made_data[$i][$j]['receivedname'] = $batch_user->first_name.$batch_user->last_name;
                               
                               $payment_made_data[$i][$j]['class_name'] = $batch_name[0]['batch_name'];

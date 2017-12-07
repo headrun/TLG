@@ -3534,11 +3534,12 @@ $('.deleteenrollmentdata').click(function(){
                         <thead>
                             <tr>
                             <th class="uk-text-nowrap">Enrolled class</th>
+                            <th class="uk-text-nowrap">Day</th>
+                            <th class="uk-text-nowrap">Time</th>
                             <th class="uk-text-nowrap">class start date</th>
                             <th class="uk-text-nowrap">class end date</th>
                             <th class="uk-text-nowrap">sessions</th>
                             <th class="uk-text-nowrap">Amount</th>
-                            
                             <th class="uk-text-nowrap">Received by</th>
                             <th class="uk-text-nowrap">option</th>
                             
@@ -3552,17 +3553,20 @@ $('.deleteenrollmentdata').click(function(){
                                 
                                 ?>
                                 <tr>
-                                    <td>{{$payment_made_data[$j][$i]['class_name']}}</td>
-                                    <td>{{$payment_made_data[$j][$i]['start_order_date']}}</td>
-                                    <td>{{$payment_made_data[$j][$i]['end_order_date']}}</td>
-                                    <td>{{$payment_made_data[$j][$i]['selected_order_sessions']}}</td>
-                                    <td>{{$payment_made_data[$j][$i]['payment_due_amount']}}</td>
-                                    <td>{{$payment_made_data[$j][$i]['receivedname']}}</td>
-                                    <?php if((count($payment_made_data[$j])>1) && $i==0 ) {?>
-                                    <td style="text-align:justify;vertical-align:middle;"  rowspan=<?php echo count($payment_made_data[$j])?> ><a id='Print' target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
-                                    <?php }else if(count($payment_made_data[$j])==1){ ?>
-                                    <td><a id='Print'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
-                                    <?php } ?>
+                                  <td>{{$payment_made_data[$j][$i]['class_name']}}</td>
+                                  <td>{{ $payment_made_data[$j][$i]['day'] }}</td>
+                                  <td>{{$payment_made_data[$j][$i]['time']}}</td>
+                                  <td>
+                                  {{date('d-M-Y',strtotime($payment_made_data[$j][$i]['start_order_date']))}}</td>
+                                  <td>{{date('d-M-Y',strtotime($payment_made_data[$j][$i]['end_order_date']))}}</td>
+                                  <td>{{$payment_made_data[$j][$i]['selected_order_sessions']}}</td>
+                                  <td>{{$payment_made_data[$j][$i]['payment_due_amount_after_discount']}}</td>
+                                  <td>{{$payment_made_data[$j][$i]['receivedname']}}</td>
+                                  <?php if((count($payment_made_data[$j])>1) && $i==0 ) {?>
+                                  <td style="text-align:justify;vertical-align:middle;"  rowspan=<?php echo count($payment_made_data[$j])?> ><a id='Print' target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
+                                  <?php }else if(count($payment_made_data[$j])==1){ ?>
+                                  <td><a id='Print'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
+                                  <?php } ?>
                                 </tr>
                              <?php }
                                 }
