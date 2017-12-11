@@ -353,7 +353,7 @@ function calculateFinalAmount(){
               $('#second_class_discount_to_form').val({{$discount_second_class}});
               if(second_discount == 0){
                 second_class_discount_amt = parseFloat(finalAmount*{{$discount_second_class}}/100);
-                $('#second_class_amount').val('-'+(finalAmount).toFixed(2));
+                $('#second_class_amount').val('-'+(second_class_discount_amt).toFixed(2));
               }else{
                 second_class_discount_amt = parseFloat(base_price*{{$discount_second_class}}/100);
                 $('#second_class_amount').val('-'+(base_price).toFixed(2));
@@ -1891,28 +1891,53 @@ function getDatesForAttendance(class_id, batch_name, startDate, endDate) {
               $('.startDate').html('Start Date: '+startDate);
               $('.endDate').html('End Date: '+endDate);
               for(var i=0;i<response.data.length;i++){
-                 data+='<tr>';
-                 if(response.data[i]['present_dates']) {
-                    data += '<td>'+response.data[i]['present_dates']+'</td>';
-                 }else {
-                    data += '<td>-</td>';
+                 if(response.data[i]['status'] != 'NMP'){
+                   data+='<tr>';
+                     data += '<td>'+response.data[i]['class_dates']+'</td>';
+                     if(response.data[i]['status'] == 'P') {
+                        data += '<td><span class="glyphicon glyphicon-ok" style="font-size: 20px; color:#20C115"></span></td>';
+                     }else {
+                        data += '<td>-</td>';
+                     }
+                     if(response.data[i]['status'] == 'A') {
+                        data += '<td><span class="glyphicon glyphicon-ok" style="font-size: 20px; color:#20C115""></span></td>';
+                     } else {
+                        data += '<td>-</td>';
+                     }
+                     if(response.data[i]['status'] == 'EA') {
+                        data += '<td><span class="glyphicon glyphicon-ok" style="font-size: 20px; color:#20C115""></span></td>';
+                     } else {
+                       data += '<td>-</td>';
+                     }
+                     if(response.data[i]['status'] == 'MK') {
+                       data += '<td><span class="glyphicon glyphicon-ok" style="font-size: 20px; color:#20C115""></span></td>';
+                     } else {
+                        data += '<td>-</td>';
+                    }
+                      
+                  '</tr>';
+                 }else{
+                  var bg = '';
+                  bg = 'style="background-color:#F78181"';
+                    if(response.data[i]['status'] == 'NMP'){
+                      data+='<tr '+bg+'>';
+                         data += '<td>'+response.data[i]['class_dates']+'</td>';
+                         data += '<td>-</td>';
+                         data += '<td>-</td>';
+                         data += '<td>-</td>';
+                         data += '<td>-</td>';
+                      '</tr>';
+                    }else{
+                      data+='<tr>';
+                         data += '<td>'+response.data[i]['class_dates']+'</td>';
+                         data += '<td>-</td>';
+                         data += '<td>-</td>';
+                         data += '<td>-</td>';
+                         data += '<td>-</td>';
+                      '</tr>';
+                    }
                  }
-                 if(response.data[i]['absent_dates']) {
-                    data += '<td>'+response.data[i]['absent_dates']+'</td>';
-                 } else {
-                    data += '<td>-</td>';
-                 }
-                 if(response.data[i]['ea_dates']) {
-                    data += '<td>'+response.data[i]['ea_dates']+'</td>';
-                 } else {
-                    data += '<td>-</td>';
-                 }
-                 if(response.data[i]['makeup']) {
-                    data += '<td>'+response.data[i]['makeup']+'</td>';
-                 } else {
-                    data += '<td>-</td>';
-                 }
-                '</tr>';
+                
               }
               $("#attendanceTbody").append(data);
               $("#addAttendance").modal('show');           
@@ -2720,6 +2745,7 @@ $('.deleteenrollmentdata').click(function(){
                                 <!-- <caption>Table caption</caption> -->
               <thead>
                   <tr>
+                      <th>Attendance Dates</th>
                       <th>Present Dates</th>
                       <th>Absent Dates</th>
                       <th>EA dates</th>
@@ -3196,7 +3222,7 @@ $('.deleteenrollmentdata').click(function(){
                                              <tbody>
                                              <tr>
                                                  <th>Batch&nbsp;Name&nbsp; </th>
-                                                 <th>Week&nbsp;</th>
+                                                 <th>Day&nbsp;</th>
                                                  <th>Time&nbsp;</th>
                                                  <th>Start&nbsp;Date&nbsp; </th>
                                                  <th>End&nbsp;Date&nbsp; </th>

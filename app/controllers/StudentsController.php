@@ -2685,35 +2685,80 @@ public function enrollKid2(){
   
   public function getAttendanceDetails(){
         $inputs=  Input::all();
-        $attendance_date = Attendance::where('student_classes_id','=',$inputs['class_id'])
-                                     ->select('status', 'attendance_date','makeup_class_given')
+        $class_dates = StudentClasses::where('id', '=', $inputs['class_id'])
+                                     ->select('enrollment_start_date','enrollment_end_date','selected_sessions')
                                      ->get();
-        for ($i=0; $i < count($attendance_date); $i++) { 
-          if($attendance_date[$i]['status'] == 'P'){
-            $present_dates = $attendance_date[$i]['attendance_date'];
-            $attendance_date[$i]['present_dates'] = date('d-M-y',strtotime($present_dates));
-          }else if($attendance_date[$i]['status'] == 'A') {
-            $absent_dates = $attendance_date[$i]['attendance_date'];
-            $attendance_date[$i]['absent_dates'] = date('d-M-y',strtotime($absent_dates));
-          }else if($attendance_date[$i]['makeup_class_given'] == '1'){
-            $makeup = $attendance_date[$i]['attendance_date'];
-            $attendance_date[$i]['makeup'] = date('d-M-y',strtotime($makeup));
-          }
-          else{
-            if($attendance_date[$i]['makeup_class_given'] != '1'){
-              $ea_dates = $attendance_date[$i]['attendance_date'];
-              $attendance_date[$i]['ea_dates'] = date('d-M-y',strtotime($ea_dates));
-            }
-          }
+        $attendance_date = [];               
+        $dates = $class_dates[0]['enrollment_start_date'];
+        $increment['class_dates'] = date('Y-m-d', strtotime($dates));
+        for($i=0; $i < ($class_dates[0]['selected_sessions']); $i++) {
+          $attendance_date[] = $increment;
+          $increment['class_dates'] = date('Y-m-d', strtotime('+1 week', strtotime($dates)));
+          
+          $dates = $increment['class_dates'];
         }
-        return Response::json(array('status'=>'success', 'data'=> $attendance_date));
+        // return $attendance_date;
+        $present_dates=[];
+            $absent_dates=[];
+            $ea_dates=[];
+            $makeup=[];
+
+        foreach ($attendance_date as $key => $value) {
+            $attendance = Attendance::where('student_classes_id', '=', $inputs['class_id'])
+                                  ->where('attendance_date', $value)
+                                  ->select('status', 'makeup_class_given','attendance_date')
+                                  ->get();
+
+          if(isset($attendance[0]))
+          {
+            
+           switch ($attendance[0]->status) {
+             case 'P':
+               $present_dates1 = $attendance[0]->attendance_date;
+               $present_dates[] = date('d-M-y',strtotime($present_dates1));
+               $attendance_date[$key]['status'] = 'P'; 
+               break;
+             case 'A':
+               $present_dates1 = $attendance[0]->attendance_date;
+               $absent_dates[] = date('d-M-y',strtotime($present_dates1));
+               $attendance_date[$key]['status'] = 'A';
+               break;
+
+              case 'EA':
+                $makeup1 = $attendance[0]->attendance_date;
+                if($attendance[0]->makeup_class_given == 1){
+                  $makeup[] = date('d-M-y',strtotime($makeup1));
+                
+                $attendance_date[$key]['status'] = 'MK';
+              }
+                else{ 
+                  $ea_dates[] = date('d-M-y',strtotime($makeup1));
+                  $attendance_date[$key]['status'] = 'EA';
+                }
+               break;
+              
+                
+
+           }
+          }
+          else
+          {
+            if($attendance_date[$key]['class_dates'] < date('Y-m-d'))
+              $attendance_date[$key]['status'] = 'NMP';
+            else
+              $attendance_date[$key]['status'] = 'NMF';
+          }
+          $attendance['present_dates'] = $present_dates;
+          $attendance['absent_dates'] = $absent_dates;
+          $attendance['ea_dates'] = $ea_dates;
+          $attendance['makeup'] = $makeup;
+        }
+        //return $attendance;
+        
+        return Response::json(array('status'=>'success', 'data'=> $attendance_date , 'all_dates' => $attendance_date));
 
   }  
 
-  public function store()
-  {
-    //
-  }
 
 
   /**
