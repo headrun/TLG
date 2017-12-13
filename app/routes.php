@@ -22,6 +22,7 @@ Route::any('/courses', 'CoursesController@viewCourses');
 
 Route::any('/terms_conditions', 'DashboardController@terms_conditions');
 Route::any('dashboard/toDeleteMultiple','DashboardController@toDeleteMultiple');
+Route::any('/dashboard/UpdateBatchSchedule','DashboardController@UpdateBatchSchedule');
 
 Route::any('/classes', 'ClassesController@add_new_classes');
 Route::any('/add_new_class_franchise', 'ClassesController@add_new_class_franchise');
@@ -248,6 +249,7 @@ Route::group(array('prefix' => 'quick'), function() {
 	Route::any('addStudentAttendance', "StudentsController@addStudentAttendance");
 	Route::any('createorder',"StudentsController@createPendingorder");
 	Route::any('creatependingorder',"StudentsController@createPendingOrderForEnrollment");
+	Route::any('insertPastAttendance','StudentsController@insertPastAttendance');
 	Route::any('getStudentsByCustomerid','StudentsController@getStudentsByCustomerid');
         Route::any('transferkid','StudentsController@transferkid');
         Route::any('getUniqueSchoolNames',"StudentsController@getUniqueSchoolNames");
@@ -294,6 +296,7 @@ Route::group(array('prefix' => 'quick'), function() {
 	 */
         Route::any('generatereport', "ReportsController@generatereport");
         Route::any('activityReport',"ReportsController@activityReport");
+        Route::any('UpdateDataBatch',"ReportsController@UpdateDataBatch");
         Route::any('getAttendanceDetails',"StudentsController@getAttendanceDetails");
         
         

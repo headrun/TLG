@@ -337,7 +337,7 @@ class StudentsController extends \BaseController {
 
                               $EA_count = Attendance::where('student_id', '=', $id)
                                                 ->where('student_classes_id', '=', $batch_id[$i]['id'])
-                                                ->whereNull('makeup_class_given')
+                                                ->where('makeup_class_given','=',null)
                                                 ->where('status', '=', 'EA')
                                                 ->count(); 
                               $batchDetails[$i]['EA'] = $EA_count > 0 ? $EA_count : 0; 
@@ -366,6 +366,7 @@ class StudentsController extends \BaseController {
                                   $batchDetails[$i]['remaining_classes'] = 0;
                               }
                         }
+                       // return $batchDetails;
 
       $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll','end',
                                                                 'discountEnrollmentData','latestEnrolledData','taxPercentage','tax_data',
@@ -2683,11 +2684,15 @@ public function enrollKid2(){
         }
         
   
-  public function getAttendanceDetails(){
+  public function getAttendanceDetails() {
         $inputs=  Input::all();
+
         $class_dates = StudentClasses::where('id', '=', $inputs['class_id'])
-                                     ->select('enrollment_start_date','enrollment_end_date','selected_sessions')
+                                     ->select('id','student_id','enrollment_start_date','enrollment_end_date','batch_id','selected_sessions')
                                      ->get();
+              $batch_id = $class_dates[0]->batch_id;
+              $student_id = $class_dates[0]->student_id;
+            $student_classes_id = $class_dates[0]->id;
         $attendance_date = [];               
         $dates = $class_dates[0]['enrollment_start_date'];
         $increment['class_dates'] = date('Y-m-d', strtotime($dates));
@@ -2704,19 +2709,22 @@ public function enrollKid2(){
             $makeup=[];
 
         foreach ($attendance_date as $key => $value) {
+
             $attendance = Attendance::where('student_classes_id', '=', $inputs['class_id'])
                                   ->where('attendance_date', $value)
-                                  ->select('status', 'makeup_class_given','attendance_date')
+                                  ->select('student_classes_id','student_id','batch_id','status', 'makeup_class_given','attendance_date')
                                   ->get();
-
+            
           if(isset($attendance[0]))
           {
+             
             
            switch ($attendance[0]->status) {
              case 'P':
                $present_dates1 = $attendance[0]->attendance_date;
                $present_dates[] = date('d-M-y',strtotime($present_dates1));
                $attendance_date[$key]['status'] = 'P'; 
+
                break;
              case 'A':
                $present_dates1 = $attendance[0]->attendance_date;
@@ -2755,9 +2763,78 @@ public function enrollKid2(){
         }
         //return $attendance;
         
-        return Response::json(array('status'=>'success', 'data'=> $attendance_date , 'all_dates' => $attendance_date));
+        return Response::json(array('status'=>'success', 'data'=> $attendance_date , 'all_dates' => $attendance_date, 'batch_id' => $batch_id, 'student_id' => $student_id, 'student_classes_id' => $student_classes_id ) );
 
   }  
+  public function insertPastAttendance() {
+    $inputs=  Input::all();
+    $absent_dates = json_decode($inputs['absent']);
+    $present_dates = json_decode($inputs['present']);
+    $ea_dates = json_decode($inputs['ea']);
+    $batch_id = $inputs['batch_id'];
+    $student_id = $inputs['student_id'];
+    $student_classes_id = $inputs['student_classes_id'];
+ 
+
+      foreach ($absent_dates as $key => $value) {
+        $insert_absent_data = Attendance::where('franchise_id', '=', Session::get('franchiseId'))
+                                        ->insert(
+                                         array(['batch_id' => $batch_id, 
+                                              'student_id' => $student_id,
+                                              'student_classes_id' => $student_classes_id,
+                                              'attendance_date' => date('Y-m-d', strtotime($value)),
+                                              'status' => 'A',
+                                              'description_absent' => 'not informed',
+                                              'makeup_class_given' => null])
+
+                                            );
+      }
+    
+      foreach ($present_dates as $key => $value) { 
+        $insert_absent_data = Attendance::where('franchise_id', '=', Session::get('franchiseId'))
+                                        ->insert(
+                                         array(['batch_id' => $batch_id, 
+                                              'student_id' => $student_id,
+                                              'student_classes_id' => $student_classes_id,
+                                              'attendance_date' => date('Y-m-d', strtotime($value)),
+                                              'status' => 'P',
+                                              'makeup_class_given' => null])
+
+                                            );
+      }
+    
+    
+      foreach ($ea_dates as $key => $value) { 
+        $insert_absent_data = Attendance::where('franchise_id', '=', Session::get('franchiseId'))
+                                        ->insert(
+                                         array(['batch_id' => $batch_id, 
+                                              'student_id' => $student_id,
+                                              'student_classes_id' => $student_classes_id,
+                                              'attendance_date' => date('Y-m-d', strtotime($value)),
+                                              'status' => 'EA',
+                                              'description_absent' => 'not informed',
+                                              'makeup_class_given' => null])
+
+                                            );
+      }
+      
+      $batch_name = Batches::where('id', '=', $inputs['batch_id'])
+                          ->select('batch_name')
+                          ->get();
+      $enrollment = StudentClasses::where('student_id','=',$inputs['student_id'])
+                                  ->where('id','=',$inputs['student_classes_id'])
+                                  ->selectRaw('id,enrollment_start_date as startDate,enrollment_end_date as endDate')
+                                  ->get();
+      
+      $data = new stdClass();
+      $data->batch_name = $batch_name;
+      $data->class_id = $enrollment[0]['id'];
+      $data->start_date = $enrollment[0]['startDate'];
+      $data->end_date = $enrollment[0]['endDate'];
+
+      return Response::json(array('status'=>'success','data'=>$data));
+
+  }
 
 
 

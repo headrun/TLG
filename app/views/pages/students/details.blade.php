@@ -1885,6 +1885,9 @@ function getDatesForAttendance(class_id, batch_name, startDate, endDate) {
         {
           if(response.status == "success"){
               console.log(response);
+              $('#batch_id_hidden').val(response.batch_id);
+              $('#student_id_hidden').val(response.student_id);
+              $('#student_classes_id_hidden').val(response.student_classes_id);
               var data = '';
               $("#attendanceTbody").empty();
               $('.title').html(batch_name);
@@ -1917,14 +1920,13 @@ function getDatesForAttendance(class_id, batch_name, startDate, endDate) {
                       
                   '</tr>';
                  }else{
-                  var bg = '';
-                  bg = 'style="background-color:#F78181"';
+                  var bg = 'style="background-color:#F78181"';
                     if(response.data[i]['status'] == 'NMP'){
-                      data+='<tr '+bg+'>';
-                         data += '<td>'+response.data[i]['class_dates']+'</td>';
-                         data += '<td>-</td>';
-                         data += '<td>-</td>';
-                         data += '<td>-</td>';
+                      data+='<tr ' +bg+'>';
+                         data += '<td class="attendance" name="attendance_date_past.'+i+'.">'+response.data[i]['class_dates']+'</td>';
+                         data += '<td><input type="radio" class="present" value="P" name= "Mark'+i+'"/><br/><label for="attendance_for_userP" class="radio-custom-label" >P<label></td>';
+                         data += '<td><input type="radio" class="absent" value="A" name= "Mark'+i+'" /><br/><label for="attendance_for_userA" class="radio-custom-label">A<label></td>';
+                         data += '<td><input type="radio" class="ea" id="ea" value="EA" name= "Mark'+i+'" /><br/><label for="attendance_for_userEA" class="radio-custom-label">EA<label></td>';
                          data += '<td>-</td>';
                       '</tr>';
                     }else{
@@ -1944,9 +1946,76 @@ function getDatesForAttendance(class_id, batch_name, startDate, endDate) {
           }
         }
     });   
+}  
+$('#save').hide();
+
+$(document).on('click', '.present', function(){
+  $('#save').show();
+});
+
+$(document).on('click', '.absent', function(){
+  $('#save').show();
+});
+
+$(document).on('click', '.ea', function(){
+  $('#save').show();
+});
+
+$(document).on('click', '#save', function(){
+  var present = [];
+  var absent = [];
+  var ea = [];
+  $('.present:checked').each(function(){
+       console.log();
+      present.push($(this).parent().parent().find('.attendance').text());
+
+     });
+  $('.absent:checked').each(function(){
+       console.log();
+      absent.push($(this).parent().parent().find('.attendance').text());
+
+     });
+  $('.ea:checked').each(function(){
+       console.log();
+      ea.push($(this).parent().parent().find('.attendance').text());
+
+     });
+  console.log(present);
+  console.log(absent);
+  console.log(ea);
+  data = {
+    'present' : JSON.stringify(present), 
+    'absent' : JSON.stringify(absent), 
+    'ea' : JSON.stringify(ea),
+    'batch_id' : $('#batch_id_hidden').val(),
+    'student_id' : $('#student_id_hidden').val(),
+    'student_classes_id' : $('#student_classes_id_hidden').val()
+  };
+  save_attendence(data);
+});
+function save_attendence(attend)
+{
+  $.ajax({
+      type: "POST",
+      url: "{{URL::to('/quick/insertPastAttendance')}}",
+      data: attend,
+      dataType: 'json',
+      success: function(response){
+            console.log(response);
+            if(response.status == "success") {
+              
+              getDatesForAttendance(
+                response.data.class_id,
+                response.data.batch_name,
+                response.data.start_date,
+                response.data.end_date
+              );
+            }
+           }    
+      });
+             
+    
 }
-
-
 function parseDate(input) {
   var parts = input.match(/(\d+)/g);
   // new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
@@ -2740,6 +2809,9 @@ $('.deleteenrollmentdata').click(function(){
         </div>
       <div class="modal-body" style="padding-top: 0px">
           <div id="formBody">
+            <input type="hidden" id="batch_id_hidden">
+            <input type="hidden" id="student_id_hidden">
+            <input type="hidden" id="student_classes_id_hidden">
             <br  clear="all" />
             <table class="uk-table table-striped" >
                                 <!-- <caption>Table caption</caption> -->
@@ -2758,6 +2830,7 @@ $('.deleteenrollmentdata').click(function(){
         </div>
       </div>
       <div class="modal-footer">
+        <button type="button" id="save" id="save" class="btn btn-default"">Save</button>
         <button type="button" id="closeAttendanceModal" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
       </form>
