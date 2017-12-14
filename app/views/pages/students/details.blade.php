@@ -309,18 +309,32 @@ function calculateFinalAmount(){
         var enrollmentStartDate = $('#enrollmentStartDate').val();
         var second_child_discount_amt = 0;
         var second_class_discount_amt = 0;
+        {{ $last_Enrollment_EndDate }} 
+        var date1 = new Date(enrollmentStartDate);
+        var date2 = new Date("{{ $last_Enrollment_EndDate }}");
+        var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        var diffWeeks = diffDays/7;
+        var remaining = (Math.round(diffWeeks));
+
+        if(enrollmentStartDate < "{{ $last_Enrollment_EndDate }}"){
+          var remaining_classes = remaining;
+        }else{
+          var remaining_classes = 0;
+        }
 
         if($("input[name='enrollmentClassesSelect']:checked").val() == 'custom'){
           var selected = $('#customEnrollmemtNoofClass').val();  
         }else{
           var selected = $("input[name='enrollmentClassesSelect']:checked").val();
         }
-        if( {{$remaining_classes}} < selected) {
-          var second_discount = {{ $remaining_classes }};
-        
+
+        if( remaining_classes < selected) {
+          var second_discount =  remaining_classes ;
         }else{ 
           var second_discount = 0;
         } 
+
         var finalAmount = (parseFloat($("#totalAmountToPay").val()));
         var percentAmount = parseFloat($("#totalAmountToPaytotals").val()*DiscountPercentage/100);
         $('#discount').html('<p>By Choosing '+selectedNoOfClass+' Classes You are Saving ('+DiscountPercentage+'%:[-'+(percentAmount).toFixed(2)+'Rs])</p>');
@@ -331,7 +345,7 @@ function calculateFinalAmount(){
         $("#discountTextBoxlabel").html((Math.round(finalAmount/10)*10).toFixed(2));
         var multiple = finalAmount/selected;
         if(second_discount != 0){
-          var base_price = {{ $remaining_classes }}*multiple;
+          var base_price = remaining_classes*multiple;
         }else{
           finalAmount;
         }

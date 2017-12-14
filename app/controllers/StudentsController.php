@@ -246,19 +246,8 @@ class StudentsController extends \BaseController {
                                         ->orderBy('created_at', 'desc')
                                         ->limit(1)
                                         ->get(); 
-                        if(!empty($last) && count($last) > 0){
-                          $attendance = Attendance::where('student_id', '=', $id)
-                                                ->where('student_classes_id', '=', $last[0]['id'])
-                                                ->count();
-                          if(isset($attendance) && !empty($attendance)){
-                            $remaining_classes = $last[0]['selected_sessions'] - $attendance;
-                          }else{
-                            $remaining_classes = 0;
-                          }
-                        }else{
-                          $remaining_classes = 0;
-                        } 
-                         
+                        $last_Enrollment_EndDate = $last[0]['enrollment_end_date'];
+                                                 
                         $base_price = ClassBasePrice::where('franchise_id', '=', Session::get('franchiseId'))
                                                     ->select('base_price')
                                                     ->get();
@@ -368,12 +357,12 @@ class StudentsController extends \BaseController {
                         }
                        // return $batchDetails;
 
-      $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll','end',
+      $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll','end', 'last_Enrollment_EndDate',
                                                                 'discountEnrollmentData','latestEnrolledData','taxPercentage','tax_data',
                                                                 'discount_second_class_elligible','discount_second_child_elligible','discount_second_child','discount_second_class',
                 'studentEnrollments','customermembership','paymentDues',
                 'scheduledIntroVisits', 'introvisit', 'discountEligibility','paidAmountdata','order_due_data',
-                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata','remaining_classes','base_price','stage','batchDetails');
+                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata','base_price','stage','batchDetails');
       return View::make('pages.students.details',compact($dataToView));
     }else{
       return Redirect::action('VaultController@logout');
