@@ -151,6 +151,7 @@
 	                        <li id="CLASSES"><a href="{{url()}}/classes">Classes</a></li> -->
 	                        <li id="USERS"><a href="{{url()}}/admin/users">All Users</a></li>
 	                        <li id="ADD_USERS"><a href="{{url()}}/admin/users/add">Add User</a></li>
+                           <!--  <li id="UPDATE_BATCHES"><a href="{{url()}}/admin/users/updatebatches">Update</a></li> -->
 	                    </ul>
 	                </li>
                     <li id="SEASONS_MENU_MAIN">

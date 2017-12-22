@@ -41,6 +41,7 @@ Route::group(array('prefix' => 'courses'), function() {
 Route::group(array('prefix' => 'admin'), function() {
 	Route::any('/users/add', "FranchiseeAdministration@adduser");
 	Route::get('/users', "FranchiseeAdministration@users");
+	Route::get('/users/updatebatches', "FranchiseeAdministration@updatebatches");
 	Route::any('/users/view/{id}', ['uses' =>"FranchiseeAdministration@viewUser"]);
 
         
@@ -155,6 +156,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('updateFranchisee','FranchiseeController@updateFranchisee');
         Route:: any('addAdminUser','UsersController@addAdminUser');
         Route::any('/salesAllocreport', "ReportsController@salesAllocreport");
+        Route::any('UpdateDataBatch', "ReportsController@UpdateDataBatch");
 
 
         /**
@@ -348,6 +350,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('getTransferkiddata','ClassesController@getTransferkiddatabyBatchId');
         Route::any('BdayPartiesFiltering','DashboardController@BdayPartiesFiltering');
         Route::any('UpdateEaDate','ClassesController@UpdateEaDate');
+        Route::any('UpdateBatchSchedule','DashboardController@UpdateBatchSchedule');
         
 	Route::any('saveSchedule', function(){
 	

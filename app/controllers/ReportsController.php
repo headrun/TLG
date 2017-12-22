@@ -94,6 +94,33 @@ class ReportsController extends \BaseController {
                 return Response::json(array($inputs));
             }
         }
+        public static function UpdateDataBatch(){
+        	if(Auth::check()){
+    	        $inputs=  Input::all();
+    	        $batch_ids = explode(',', $inputs['batch_id']);
+    	        
+        		$attendance = Attendance::whereIn('batch_id', $batch_ids)
+        							    ->update(['batch_id' => $inputs['update_id']]);
+
+                $bacthes = BatchSchedule::whereIn('batch_id', $batch_ids)
+                				        ->update(['batch_id' => $inputs['update_id']]);	
+
+                $estimate = Estimate::whereIn('batch_id', $batch_ids)
+                				    ->update(['batch_id' => $inputs['update_id']]);
+
+                $introvisit = IntroVisit::whereIn('batch_id', $batch_ids)
+                				        ->update(['batch_id' => $inputs['update_id']]);
+
+                $paymnet_dues = PaymentDues::whereIn('batch_id', $batch_ids)
+                				           ->update(['batch_id' => $inputs['update_id']]);
+
+                $student_classes = StudentClasses::whereIn('batch_id', $batch_ids)
+                				  ->update(['batch_id' => $inputs['update_id']]);
+	            
+        	}
+        }
+
+    
 
         public static function salesAllocreport(){
 
@@ -232,7 +259,7 @@ class ReportsController extends \BaseController {
                 return Redirect::action('VaultController@logout');
             }
         }
-    
+
 	/**
 	 * Display a listing of the resource.
 	 * GET /reports

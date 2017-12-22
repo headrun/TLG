@@ -120,11 +120,10 @@ class Batches extends \Eloquent {
                         ->get();
     }
     static function getBatches(){
-     	$today = date('Y-m-d');
-     	return Batches::where('franchisee_id', '=', Session::get('franchiseId'))
-     				  ->selectRaw('id, end_date, season_id, preferred_time, preferred_end_time, season_id')
-     				  ->where('end_date','>=',$today)
-     				  ->get();	
+    	$today = date('Y-m-d');
+    	return Batches::where('franchisee_id', '=', Session::get('franchiseId'))
+    				  ->selectRaw('id, end_date, season_id, preferred_time, preferred_end_time, season_id')
+    				  ->where('end_date','>=',$today)
+    				  ->get();	
     }
-
 }

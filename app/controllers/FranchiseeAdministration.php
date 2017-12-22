@@ -38,6 +38,22 @@ class FranchiseeAdministration extends \BaseController {
                 return Redirect::action('VaultController@logout');
                 }
 	}
+	public function updatebatches()
+	{
+		if(Auth::check()){
+		//echo "Users";
+		$currentPage  =  "UPDATE_BATCHES";
+		$mainMenu     =  "USERS_MAIN";
+		
+		$Users = User::getUsersByFranchisee();
+		
+		//$data = array('Users','currentPage', 'mainMenu');
+		
+		return View::make('pages.users.update_batch_data', compact('Users','currentPage', 'mainMenu') );
+                }else{
+                return Redirect::action('VaultController@logout');
+                }
+	}
 
 
 	/**
