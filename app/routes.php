@@ -40,6 +40,7 @@ Route::group(array('prefix' => 'courses'), function() {
 Route::group(array('prefix' => 'admin'), function() {
 	Route::any('/users/add', "FranchiseeAdministration@adduser");
 	Route::get('/users', "FranchiseeAdministration@users");
+	Route::get('/users/updatebatches', "FranchiseeAdministration@updatebatches");
 	Route::any('/users/view/{id}', ['uses' =>"FranchiseeAdministration@viewUser"]);
 
         
