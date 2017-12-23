@@ -50,6 +50,24 @@ function deleteUser(user_id) {
         }
     });   
 }
+$(document).on('click', '#updateBatchId', function(){
+
+    var update_id = $('#updateId').val();
+    var batch_id = $('#batchId').val();
+    if (typeof update_id !== 'undefined' && typeof batch_id !== 'undefined' ) {
+        $.ajax({
+            type: "POST",
+            url: "{{URL::to('/quick/UpdateDataBatch')}}",
+            data: {'update_id': update_id, 'batch_id': batch_id},
+            dataType: 'json',
+            success: function(response){
+            	
+            }
+            });
+    }
+
+ 
+});
 </script>
 @stop
 
@@ -68,7 +86,29 @@ function deleteUser(user_id) {
 	
 		
 		
-		
+		    <h3 class="heading_b uk-margin-bottom">Update Batch Details</h3>
+                        {{ Form::open(array('url' => '/reports/updateDataBatch', 'id'=>"updateDataBatchform", "class"=>"uk-form-stacked", 'method' => 'post')) }} 
+                          <div class="uk-grid" data-uk-grid-margin>
+                              <div class="uk-width-medium-1-4">
+                                <div class="parsley-row form-group">
+                                  <label for="updateId">Update batch ID</label><br>
+                                    {{Form::text('updateId', null,array('id'=>'updateId'))}} 
+                                </div>
+                              </div>
+                              <div class="uk-width-medium-1-4">
+                               <div class="parsley-row form-group">
+                                  <label for="batchId">Batch ID</label><br>
+                                    {{Form::text('batchId', null,array('id'=>'batchId'))}} 
+                               </div>
+                            </div>
+
+                              <div class="uk-width-1-4">
+                                <div class="parsley-row" style="padding: 25px 30px;">
+                                  <button type="button" class="md-btn md-btn-primary" id="updateBatchId">Update</button>
+                                </div>
+                              </div>
+                            </div>
+                        {{ Form::close() }}
 			<h4>List of Users <span style="font-size:12px;">(Other than admins)</span></h4>
 		
             <div id="messageForUserDelete"></div>

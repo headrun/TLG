@@ -495,7 +495,7 @@ class BatchesController extends \BaseController {
         
         public function getBatchRemainingClassesByBatchId(){
             $inputs = Input::all();
-            $result = DB::select(DB::raw("select * from student_classes where student_id = '$inputs[studentId]' and batch_id = '$inputs[batchId]' and class_id = '$inputs[classId]' and '$inputs[preferredStartDate]' <= enrollment_end_date and '$inputs[preferredStartDate]'>= enrollment_start_date"));
+            $result = DB::select(DB::raw("select * from student_classes where student_id = '$inputs[studentId]' and batch_id = '$inputs[batchId]' and class_id = '$inputs[classId]' and '$inputs[preferredStartDate]' <= enrollment_end_date"));
            
             if($result){
            		return Response::json(array('status'=>'available'));

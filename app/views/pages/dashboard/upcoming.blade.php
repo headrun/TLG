@@ -542,7 +542,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    	<?php foreach($activeRemindersCount as $items){?>
+                                        <?php foreach($activeRemindersCount as $items){?>
                                         <tr class="uk-table-middle smallText">
                                             <td class="uk-width-3-10 uk-text-nowrap">{{$items['customer_name']}}{{$items['customer_lastname']}}<a href="{{url()}}/customers/view/{{$items['id']}}?tab=ivfollowup"></a></td>
                                             <td class="uk-width-3-10 uk-text-nowrap">{{$items['followup_type']}}</td>
@@ -569,7 +569,8 @@
                                         <tr>
                                             <th class="uk-text-nowrap">Customer</th>
                                             <th class="uk-text-nowrap">Kid</th>
-                                            <th class="uk-text-nowrap">Mobile No</th>                                        <th class="uk-text-nowrap">B'day</th>    
+                                            <th class="uk-text-nowrap">Mobile No</th>  
+                                            <th class="uk-text-nowrap">B'day</th>    
                                             <th class="uk-text-nowrap">DOB</th>
                                             <th class="uk-text-nowrap">Type</th>
                                          

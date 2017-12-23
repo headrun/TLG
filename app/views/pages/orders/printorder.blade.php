@@ -181,8 +181,8 @@ print_r($orders); */
 									<td>{{$getSeasonName[$i][0]['season_name']}}</td>
 									<td>{{$getBatchNname[$i][0]['batch_name']}}</td>
 									<td>{{$selectedSessionsInEachBatch[$i]}}</td>
-									<td>{{$classStartDate[$i]}}</td>
-									<td>{{$classEndDate[$i]}}</td>
+									<td>{{date('d-M-Y',strtotime($classStartDate[$i]))}}</td>
+									<td>{{date('d-M-Y',strtotime($classEndDate[$i]))}}</td>
 									<td>{{$totalAmountForEachBach[$i]}}</td>
 								</tr>
 							@endfor

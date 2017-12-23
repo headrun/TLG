@@ -309,18 +309,32 @@ function calculateFinalAmount(){
         var enrollmentStartDate = $('#enrollmentStartDate').val();
         var second_child_discount_amt = 0;
         var second_class_discount_amt = 0;
+        {{ $last_Enrollment_EndDate }} 
+        var date1 = new Date(enrollmentStartDate);
+        var date2 = new Date("{{ $last_Enrollment_EndDate }}");
+        var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        var diffWeeks = diffDays/7;
+        var remaining = (Math.round(diffWeeks));
+
+        if(enrollmentStartDate < "{{ $last_Enrollment_EndDate }}"){
+          var remaining_classes = remaining;
+        }else{
+          var remaining_classes = 0;
+        }
 
         if($("input[name='enrollmentClassesSelect']:checked").val() == 'custom'){
           var selected = $('#customEnrollmemtNoofClass').val();  
         }else{
           var selected = $("input[name='enrollmentClassesSelect']:checked").val();
         }
-        if( {{$remaining_classes}} < selected) {
-          var second_discount = {{ $remaining_classes }};
-        
+
+        if( remaining_classes < selected) {
+          var second_discount =  remaining_classes ;
         }else{ 
           var second_discount = 0;
         } 
+
         var finalAmount = (parseFloat($("#totalAmountToPay").val()));
         var percentAmount = parseFloat($("#totalAmountToPaytotals").val()*DiscountPercentage/100);
         $('#discount').html('<p>By Choosing '+selectedNoOfClass+' Classes You are Saving ('+DiscountPercentage+'%:[-'+(percentAmount).toFixed(2)+'Rs])</p>');
@@ -331,7 +345,7 @@ function calculateFinalAmount(){
         $("#discountTextBoxlabel").html((Math.round(finalAmount/10)*10).toFixed(2));
         var multiple = finalAmount/selected;
         if(second_discount != 0){
-          var base_price = {{ $remaining_classes }}*multiple;
+          var base_price = remaining_classes*multiple;
         }else{
           finalAmount;
         }
@@ -353,7 +367,7 @@ function calculateFinalAmount(){
               $('#second_class_discount_to_form').val({{$discount_second_class}});
               if(second_discount == 0){
                 second_class_discount_amt = parseFloat(finalAmount*{{$discount_second_class}}/100);
-                $('#second_class_amount').val('-'+(finalAmount).toFixed(2));
+                $('#second_class_amount').val('-'+(second_class_discount_amt).toFixed(2));
               }else{
                 second_class_discount_amt = parseFloat(base_price*{{$discount_second_class}}/100);
                 $('#second_class_amount').val('-'+(base_price).toFixed(2));
@@ -1885,43 +1899,137 @@ function getDatesForAttendance(class_id, batch_name, startDate, endDate) {
         {
           if(response.status == "success"){
               console.log(response);
+              $('#batch_id_hidden').val(response.batch_id);
+              $('#student_id_hidden').val(response.student_id);
+              $('#student_classes_id_hidden').val(response.student_classes_id);
               var data = '';
               $("#attendanceTbody").empty();
               $('.title').html(batch_name);
               $('.startDate').html('Start Date: '+startDate);
               $('.endDate').html('End Date: '+endDate);
               for(var i=0;i<response.data.length;i++){
-                 data+='<tr>';
-                 if(response.data[i]['present_dates']) {
-                    data += '<td>'+response.data[i]['present_dates']+'</td>';
-                 }else {
-                    data += '<td>-</td>';
+                 if(response.data[i]['status'] != 'NMP'){
+                   data+='<tr>';
+                     data += '<td>'+response.data[i]['class_dates']+'</td>';
+                     if(response.data[i]['status'] == 'P') {
+                        data += '<td><span class="glyphicon glyphicon-ok" style="font-size: 20px; color:#20C115"></span></td>';
+                     }else {
+                        data += '<td>-</td>';
+                     }
+                     if(response.data[i]['status'] == 'A') {
+                        data += '<td><span class="glyphicon glyphicon-ok" style="font-size: 20px; color:#20C115""></span></td>';
+                     } else {
+                        data += '<td>-</td>';
+                     }
+                     if(response.data[i]['status'] == 'EA') {
+                        data += '<td><span class="glyphicon glyphicon-ok" style="font-size: 20px; color:#20C115""></span></td>';
+                     } else {
+                       data += '<td>-</td>';
+                     }
+                     if(response.data[i]['status'] == 'MK') {
+                       data += '<td><span class="glyphicon glyphicon-ok" style="font-size: 20px; color:#20C115""></span></td>';
+                     } else {
+                        data += '<td>-</td>';
+                    }
+                      
+                  '</tr>';
+                 }else{
+                  var bg = 'style="background-color:#F78181"';
+                    if(response.data[i]['status'] == 'NMP'){
+                      data+='<tr ' +bg+'>';
+                         data += '<td class="attendance" name="attendance_date_past.'+i+'.">'+response.data[i]['class_dates']+'</td>';
+                         data += '<td><input type="radio" class="present" value="P" name= "Mark'+i+'"/><br/><label for="attendance_for_userP" class="radio-custom-label" >P<label></td>';
+                         data += '<td><input type="radio" class="absent" value="A" name= "Mark'+i+'" /><br/><label for="attendance_for_userA" class="radio-custom-label">A<label></td>';
+                         data += '<td><input type="radio" class="ea" id="ea" value="EA" name= "Mark'+i+'" /><br/><label for="attendance_for_userEA" class="radio-custom-label">EA<label></td>';
+                         data += '<td>-</td>';
+                      '</tr>';
+                    }else{
+                      data+='<tr>';
+                         data += '<td>'+response.data[i]['class_dates']+'</td>';
+                         data += '<td>-</td>';
+                         data += '<td>-</td>';
+                         data += '<td>-</td>';
+                         data += '<td>-</td>';
+                      '</tr>';
+                    }
                  }
-                 if(response.data[i]['absent_dates']) {
-                    data += '<td>'+response.data[i]['absent_dates']+'</td>';
-                 } else {
-                    data += '<td>-</td>';
-                 }
-                 if(response.data[i]['ea_dates']) {
-                    data += '<td>'+response.data[i]['ea_dates']+'</td>';
-                 } else {
-                    data += '<td>-</td>';
-                 }
-                 if(response.data[i]['makeup']) {
-                    data += '<td>'+response.data[i]['makeup']+'</td>';
-                 } else {
-                    data += '<td>-</td>';
-                 }
-                '</tr>';
+                
               }
               $("#attendanceTbody").append(data);
               $("#addAttendance").modal('show');           
           }
         }
     });   
+}  
+$('#save').hide();
+
+$(document).on('click', '.present', function(){
+  $('#save').show();
+});
+
+$(document).on('click', '.absent', function(){
+  $('#save').show();
+});
+
+$(document).on('click', '.ea', function(){
+  $('#save').show();
+});
+
+$(document).on('click', '#save', function(){
+  var present = [];
+  var absent = [];
+  var ea = [];
+  $('.present:checked').each(function(){
+       console.log();
+      present.push($(this).parent().parent().find('.attendance').text());
+
+     });
+  $('.absent:checked').each(function(){
+       console.log();
+      absent.push($(this).parent().parent().find('.attendance').text());
+
+     });
+  $('.ea:checked').each(function(){
+       console.log();
+      ea.push($(this).parent().parent().find('.attendance').text());
+
+     });
+  console.log(present);
+  console.log(absent);
+  console.log(ea);
+  data = {
+    'present' : JSON.stringify(present), 
+    'absent' : JSON.stringify(absent), 
+    'ea' : JSON.stringify(ea),
+    'batch_id' : $('#batch_id_hidden').val(),
+    'student_id' : $('#student_id_hidden').val(),
+    'student_classes_id' : $('#student_classes_id_hidden').val()
+  };
+  save_attendence(data);
+});
+function save_attendence(attend)
+{
+  $.ajax({
+      type: "POST",
+      url: "{{URL::to('/quick/insertPastAttendance')}}",
+      data: attend,
+      dataType: 'json',
+      success: function(response){
+            console.log(response);
+            if(response.status == "success") {
+              
+              getDatesForAttendance(
+                response.data.class_id,
+                response.data.batch_name,
+                response.data.start_date,
+                response.data.end_date
+              );
+            }
+           }    
+      });
+             
+    
 }
-
-
 function parseDate(input) {
   var parts = input.match(/(\d+)/g);
   // new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
@@ -2715,11 +2823,15 @@ $('.deleteenrollmentdata').click(function(){
         </div>
       <div class="modal-body" style="padding-top: 0px">
           <div id="formBody">
+            <input type="hidden" id="batch_id_hidden">
+            <input type="hidden" id="student_id_hidden">
+            <input type="hidden" id="student_classes_id_hidden">
             <br  clear="all" />
             <table class="uk-table table-striped" >
                                 <!-- <caption>Table caption</caption> -->
               <thead>
                   <tr>
+                      <th>Attendance Dates</th>
                       <th>Present Dates</th>
                       <th>Absent Dates</th>
                       <th>EA dates</th>
@@ -2732,6 +2844,7 @@ $('.deleteenrollmentdata').click(function(){
         </div>
       </div>
       <div class="modal-footer">
+        <button type="button" id="save" id="save" class="btn btn-default"">Save</button>
         <button type="button" id="closeAttendanceModal" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
       </form>
@@ -3196,7 +3309,7 @@ $('.deleteenrollmentdata').click(function(){
                                              <tbody>
                                              <tr>
                                                  <th>Batch&nbsp;Name&nbsp; </th>
-                                                 <th>Week&nbsp;</th>
+                                                 <th>Day&nbsp;</th>
                                                  <th>Time&nbsp;</th>
                                                  <th>Start&nbsp;Date&nbsp; </th>
                                                  <th>End&nbsp;Date&nbsp; </th>
@@ -3534,11 +3647,12 @@ $('.deleteenrollmentdata').click(function(){
                         <thead>
                             <tr>
                             <th class="uk-text-nowrap">Enrolled class</th>
+                            <th class="uk-text-nowrap">Day</th>
+                            <th class="uk-text-nowrap">Time</th>
                             <th class="uk-text-nowrap">class start date</th>
                             <th class="uk-text-nowrap">class end date</th>
                             <th class="uk-text-nowrap">sessions</th>
                             <th class="uk-text-nowrap">Amount</th>
-                            
                             <th class="uk-text-nowrap">Received by</th>
                             <th class="uk-text-nowrap">option</th>
                             
@@ -3552,17 +3666,20 @@ $('.deleteenrollmentdata').click(function(){
                                 
                                 ?>
                                 <tr>
-                                    <td>{{$payment_made_data[$j][$i]['class_name']}}</td>
-                                    <td>{{$payment_made_data[$j][$i]['start_order_date']}}</td>
-                                    <td>{{$payment_made_data[$j][$i]['end_order_date']}}</td>
-                                    <td>{{$payment_made_data[$j][$i]['selected_order_sessions']}}</td>
-                                    <td>{{$payment_made_data[$j][$i]['payment_due_amount']}}</td>
-                                    <td>{{$payment_made_data[$j][$i]['receivedname']}}</td>
-                                    <?php if((count($payment_made_data[$j])>1) && $i==0 ) {?>
-                                    <td style="text-align:justify;vertical-align:middle;"  rowspan=<?php echo count($payment_made_data[$j])?> ><a id='Print' target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
-                                    <?php }else if(count($payment_made_data[$j])==1){ ?>
-                                    <td><a id='Print'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
-                                    <?php } ?>
+                                  <td>{{$payment_made_data[$j][$i]['class_name']}}</td>
+                                  <td>{{ $payment_made_data[$j][$i]['day'] }}</td>
+                                  <td>{{$payment_made_data[$j][$i]['time']}}</td>
+                                  <td>
+                                  {{date('d-M-Y',strtotime($payment_made_data[$j][$i]['start_order_date']))}}</td>
+                                  <td>{{date('d-M-Y',strtotime($payment_made_data[$j][$i]['end_order_date']))}}</td>
+                                  <td>{{$payment_made_data[$j][$i]['selected_order_sessions']}}</td>
+                                  <td>{{$payment_made_data[$j][$i]['payment_due_amount_after_discount']}}</td>
+                                  <td>{{$payment_made_data[$j][$i]['receivedname']}}</td>
+                                  <?php if((count($payment_made_data[$j])>1) && $i==0 ) {?>
+                                  <td style="text-align:justify;vertical-align:middle;"  rowspan=<?php echo count($payment_made_data[$j])?> ><a id='Print' target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
+                                  <?php }else if(count($payment_made_data[$j])==1){ ?>
+                                  <td><a id='Print'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
+                                  <?php } ?>
                                 </tr>
                              <?php }
                                 }
