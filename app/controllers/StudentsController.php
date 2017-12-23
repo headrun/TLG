@@ -246,7 +246,8 @@ class StudentsController extends \BaseController {
                                         ->orderBy('created_at', 'desc')
                                         ->limit(1)
                                         ->get(); 
-                        $last_Enrollment_EndDate = $last[0]['enrollment_end_date'];
+
+                        $last_Enrollment_EndDate = count($last) > 0 ? $last[0]['enrollment_end_date'] : '';
                                                  
                         $base_price = ClassBasePrice::where('franchise_id', '=', Session::get('franchiseId'))
                                                     ->select('base_price')
