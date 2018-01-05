@@ -397,6 +397,7 @@ function calculateFinalAmount(){
        Adminamountcal = finalAmount;
        if(typeof $('#admin_discount_amount').val()!='undefined'){
           var adminamt = parseFloat($('#admin_discount_amount').val());
+          finalAmount = finalAmount - adminamt;
           $("#subtotal").val(((Math.round((finalAmount-adminamt)*100)/100)).toFixed(2));
           $('#subtotallabel').html(((Math.round((finalAmount-adminamt)*100)/100)).toFixed(2));
        }else{
