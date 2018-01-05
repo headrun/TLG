@@ -488,7 +488,7 @@ class Orders extends \Eloquent {
                                 $each_sales_data[]= $membership_amount;*/
 
                                 //$fees = $payment_data[0]['each_class_amount'] * $payment_data[0]['selected_classes'];
-                                $total_amt_after_disc = $Sales['data'][$i]['amount'] + $membership_amount - $payment_data[0]['discount_amount'] -  $payment_data[0]['discount_sibling_amount'] - $payment_data[0]['discount_multipleclasses_amount'];
+                                $total_amt_after_disc = $Sales['data'][$i]['amount'] + $membership_amount - $payment_data[0]['discount_amount'] -  $payment_data[0]['discount_sibling_amount'] - $payment_data[0]['discount_multipleclasses_amount'] - $payment_data[0]['discount_admin_amount'];
                                 
 
                                 
@@ -505,7 +505,7 @@ class Orders extends \Eloquent {
                                 $each_sales_data[]= $payment_data[0]['discount_admin_amount'];
 
 
-                                $each_sales_data[]= number_format($total_amt_after_disc - $payment_data[0]['discount_admin_amount'] + $tax_amt , 2, '.', '');;
+                                $each_sales_data[]= number_format($total_amt_after_disc + $tax_amt , 2, '.', '');;
                                 $each_sales_data[]= $Sales['data'][$i]['payment_mode'];
 
                                 $final_sales_data[] = $each_sales_data;
