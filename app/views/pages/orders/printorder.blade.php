@@ -293,7 +293,7 @@ print_r($orders); */
                             </td>
                             <td style="text-align:right">
                             	<strong>
-                            		{{number_format((float)( (((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * $tax_data[$i]['tax_percentage'] /100), 2, '.', '') }}
+                            		{{number_format((float)( (((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_admin_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * $tax_data[$i]['tax_percentage'] /100), 2, '.', '') }}
                             	</strong>
                             </td>
 						</tr>
