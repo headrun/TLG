@@ -6,21 +6,23 @@
     <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.material.min.css"/>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel='stylesheet' />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://cdn.datatables.net/buttons/1.2.0/css/buttons.dataTables.min.css" rel="stylesheet">
+    <!-- <link href="https://cdn.datatables.net/buttons/1.2.0/css/buttons.dataTables.min.css" rel="stylesheet"> -->
 @stop
 
 @section('libraryJS')
 <script src="{{url()}}/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
 <script src="{{url()}}/bower_components/datatables-colvis/js/dataTables.colVis.js"></script>
 <script src="{{url()}}/bower_components/datatables-tabletools/js/dataTables.tableTools.js"></script>
-    <!-- datatables custom integration -->
-    <script src="http://localhost/TLG/assets/js/custom/datatables_uikit.min.js"></script>
+<script src="{{url()}}/assets/js/custom/datatables_uikit.min.js"></script>
+<script src="{{url()}}/assets/js/pages/plugins_datatables.min.js"></script>
 
-    <!--  datatables functions -->
-    <script src="http://localhost/TLG/assets/js/pages/plugins_datatables.min.js"></script>
-   
-
-<script src="{{url()}}/assets/js/kendoui_custom.min.js"></script>
+ <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.4.0/js/dataTables.buttons.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
+<script src="//cdn.datatables.net/buttons/1.4.0/js/buttons.html5.min.js"></script>
+ <script src="{{url()}}/assets/js/kendoui_custom.min.js"></script>
 <script src="{{url()}}/assets/js/pages/kendoui.min.js"></script>
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
 <script type="text/javascript">
@@ -82,7 +84,31 @@
                                     header_data+="</table></div></div>";
                                     console.log(header_data);
                                     $('#reportdata').html(header_data);
-                                    $('#reportTable').DataTable();
+                                    $("#reportTable").DataTable({
+                                        dom: 'Bfrtip',
+                                            buttons: [
+                                                'copyHtml5',
+                                                'excelHtml5',
+                                                'csvHtml5',
+                                                'pdfHtml5'
+                                            ],
+                                            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+
+                                                // Bind click event
+                                                $(nRow).click(function() {
+                                                      //window.open($(this).find('a').attr('href'));
+                                            window.location = $(this).find('a').attr('href');
+                                                      //OR
+
+                                                    // window.open(aData.url);
+
+                                                });
+
+                                                return nRow;
+                                           },
+                                           "iDisplayLength": 50,
+                                           "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                       });
                             }
                         }
              }); 
@@ -126,9 +152,31 @@
                             header_data+="</table></div></div>";
                             console.log(header_data);
                             $('#reportdata').html(header_data);
-                            $('#reportTable').DataTable(//{dom:'T<"clear">lfrtip',
-                                       //"tableTools": {"sSwfPath": "/swf/copy_csv_xls_pdf.swf"}}
-                            );
+                            $("#reportTable").DataTable({
+                                        dom: 'Bfrtip',
+                                            buttons: [
+                                                'copyHtml5',
+                                                'excelHtml5',
+                                                'csvHtml5',
+                                                'pdfHtml5'
+                                            ],
+                                            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+
+                                                // Bind click event
+                                                $(nRow).click(function() {
+                                                      //window.open($(this).find('a').attr('href'));
+                                            window.location = $(this).find('a').attr('href');
+                                                      //OR
+
+                                                    // window.open(aData.url);
+
+                                                });
+
+                                                return nRow;
+                                           },
+                                           "iDisplayLength": 50,
+                                           "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                       });
                                     
                             }else if(response[1]==='Enrollment'){
                                 var header_data="<div class='md-card-content'>"+
@@ -158,9 +206,31 @@
                                     header_data+="</table></div></div>";
                                     console.log(header_data);
                                     $('#reportdata').html(header_data);
-                                    $('#reportTable').DataTable(//{dom:'T<"clear">lfrtip',
-                                       //"tableTools": {"sSwfPath": "/swf/copy_csv_xls_pdf.swf"}}
-                                    );
+                                    $("#reportTable").DataTable({
+                                        dom: 'Bfrtip',
+                                            buttons: [
+                                                'copyHtml5',
+                                                'excelHtml5',
+                                                'csvHtml5',
+                                                'pdfHtml5'
+                                            ],
+                                            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+
+                                                // Bind click event
+                                                $(nRow).click(function() {
+                                                      //window.open($(this).find('a').attr('href'));
+                                            window.location = $(this).find('a').attr('href');
+                                                      //OR
+
+                                                    // window.open(aData.url);
+
+                                                });
+
+                                                return nRow;
+                                           },
+                                           "iDisplayLength": 50,
+                                           "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                       });
                                 
                             
                             
@@ -201,9 +271,31 @@
                                     header_data+="</table></div></div>";
                                     console.log(header_data);
                                     $('#reportdata').html(header_data);
-                                    $('#reportTable').DataTable(//{dom:'T<"clear">lfrtip',
-                                       //"tableTools": {"sSwfPath": "/swf/copy_csv_xls_pdf.swf"}}
-                                    );
+                                    $("#reportTable").DataTable({
+                                        dom: 'Bfrtip',
+                                            buttons: [
+                                                'copyHtml5',
+                                                'excelHtml5',
+                                                'csvHtml5',
+                                                'pdfHtml5'
+                                            ],
+                                            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+
+                                                // Bind click event
+                                                $(nRow).click(function() {
+                                                      //window.open($(this).find('a').attr('href'));
+                                            window.location = $(this).find('a').attr('href');
+                                                      //OR
+
+                                                    // window.open(aData.url);
+
+                                                });
+
+                                                return nRow;
+                                           },
+                                           "iDisplayLength": 50,
+                                           "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                       });
                                 
                             }else if(response[1]==='Membership'){
                                 var header_data="<div class='md-card-content'>"+
@@ -225,22 +317,31 @@
                                     header_data+="</table></div></div>";
                                     console.log(header_data);
                                     $('#reportdata').html(header_data);
-                                    $('#reportTable').DataTable({
-                                        "dom" :'T<"clear">lfrtip',
-                                       "tableTools": {"sSwfPath": "/swf/copy_csv_xls_pdf.swf"},
-                                       "oTableTools": {
-                                           "aButtons": [
-                                                "copy",
-                                                "print",
-                                                {
-                                                    "sExtends":    "collection",
-                                                    "sButtonText": "Save",
-                                                    "aButtons":    [ "csv", "xls", "pdf" ]
-                                                }
-                                            ]
-                                        }
+                                    $("#reportTable").DataTable({
+                                        dom: 'Bfrtip',
+                                            buttons: [
+                                                'copyHtml5',
+                                                'excelHtml5',
+                                                'csvHtml5',
+                                                'pdfHtml5'
+                                            ],
+                                            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
 
-                                    });
+                                                // Bind click event
+                                                $(nRow).click(function() {
+                                                      //window.open($(this).find('a').attr('href'));
+                                            window.location = $(this).find('a').attr('href');
+                                                      //OR
+
+                                                    // window.open(aData.url);
+
+                                                });
+
+                                                return nRow;
+                                           },
+                                           "iDisplayLength": 50,
+                                           "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                       });
                                 
                             }else if(response[1]==='Introvisit'){
                                 var header_data="<div class='md-card-content'>"+
@@ -266,9 +367,31 @@
                                     header_data+="</table></div></div>";
                                     console.log(header_data);
                                     $('#reportdata').html(header_data);
-                                    $('#reportTable').DataTable(//{dom:'T<"clear">lfrtip',
-                                       //"tableTools": {"sSwfPath": "/swf/copy_csv_xls_pdf.swf"}}
-                                    );
+                                    $("#reportTable").DataTable({
+                                        dom: 'Bfrtip',
+                                            buttons: [
+                                                'copyHtml5',
+                                                'excelHtml5',
+                                                'csvHtml5',
+                                                'pdfHtml5'
+                                            ],
+                                            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+
+                                                // Bind click event
+                                                $(nRow).click(function() {
+                                                      //window.open($(this).find('a').attr('href'));
+                                            window.location = $(this).find('a').attr('href');
+                                                      //OR
+
+                                                    // window.open(aData.url);
+
+                                                });
+
+                                                return nRow;
+                                           },
+                                           "iDisplayLength": 50,
+                                           "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                       });
                                 
                             }else if(response[1]==='Inquiry'){
                             var header_data="<div class='md-card-content'>"+
@@ -286,9 +409,31 @@
                                     header_data+="</table></div></div>";
                                     console.log(header_data);
                                     $('#reportdata').html(header_data);
-                                    $('#reportTable').DataTable(//{dom:'T<"clear">lfrtip',
-                                    //   "tableTools": {"sSwfPath": "/swf/copy_csv_xls_pdf.swf"}}
-                                    );
+                                    $("#reportTable").DataTable({
+                                        dom: 'Bfrtip',
+                                            buttons: [
+                                                'copyHtml5',
+                                                'excelHtml5',
+                                                'csvHtml5',
+                                                'pdfHtml5'
+                                            ],
+                                            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+
+                                                // Bind click event
+                                                $(nRow).click(function() {
+                                                      //window.open($(this).find('a').attr('href'));
+                                            window.location = $(this).find('a').attr('href');
+                                                      //OR
+
+                                                    // window.open(aData.url);
+
+                                                });
+
+                                                return nRow;
+                                           },
+                                           "iDisplayLength": 50,
+                                           "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                       });
                             }else if(response[1]==='Weekly'){
                                 var header_data="<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
@@ -619,10 +764,10 @@ $(document).on('click', '.salse_alloc_btn', function(){
                                                     <option value="Membership">Membership</option>
                                                     <option value="Introvisit">Introvisit</option>
                                                     <option value="Inquiry">Inquiry</option>
-                                                    <!--<option value="Weekly">SAR(Weekly)</option>
-                                                    <option value="BySchool">By School</option>
+                                                    <!-- <option value="Weekly">SAR(Weekly)</option> -->
+                                                   <!--  <option value="BySchool">By School</option>
                                                     <option value="ByLocality">By Locality</option>
-                                                    <option value="ByApartment">By Apartmnet</option>-->
+                                                    <option value="ByApartment">By Apartmnet</option> -->
                                             </select>
                                                  
                                    </div>
