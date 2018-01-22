@@ -446,6 +446,37 @@ class StudentsController extends \BaseController {
     
     
   }
+   public function uploadDiscoveryPicture(){
+    
+    $file = Input::file('discoveryPicture');
+    $studentId = Input::get('studentId');
+    
+    
+    $destinationPath = 'assets/discovery_images/';
+    
+    $filename = $file->getClientOriginalName();   
+    $fileExtension = '.'.$file->getClientOriginalExtension();
+    
+        
+    $filename = 'discovery_'.$studentId.'_medium'.$fileExtension;
+        
+    $result = Input::file('discoveryPicture')->move($destinationPath, $filename);
+    
+    if($result){  
+        
+      $student = Students::find($studentId);
+      $student->profile_image = $filename;
+      $student->save();
+
+    
+    }
+    
+    Session::flash('imageUploadMessage', "Discovery Sheet is uploaded successfully." );
+    return Redirect::to("/students/view/".$studentId);
+    
+    
+    
+  }
         
         
         public function enrollOldCustomer(){

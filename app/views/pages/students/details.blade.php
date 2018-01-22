@@ -3398,6 +3398,7 @@ $('.deleteenrollmentdata').click(function(){
           <li id="enrollmentsTabheading"class=""><a href="#enrollments">Enrollments</a></li>
           <li id="paymentsTabheading"class=""><a href="#payments">Payments</a></li>
           <li id="attendanceTabheading"class=""><a href="#attendace">Attendance</a></li>
+          <li id="discoveryTabheading"class=""><a href="#discovery">Discovery</a></li>
        
 
                                         <!--<li id="introvisitTabheading"class=""><a href="#introvisit">Intro Visit</a></li>-->
@@ -3630,6 +3631,8 @@ $('.deleteenrollmentdata').click(function(){
                                          
                                         
                                 </li>
+
+                               
           <li id="payments">
 
             <h4 class="heading_c uk-margin-small-bottom">Payments made</h4>
@@ -3841,7 +3844,31 @@ $('.deleteenrollmentdata').click(function(){
                  </div>
               </div>
           </li>
-
+          <div>
+              <li id="discovery">
+                 
+                <div class="alert alert-success">
+                  <a href="#" class="uk-alert-close uk-close"></a> 
+                  {{Session::get('imageUploadMessage') }}
+                </div> <br clear="all" />
+                <h3>Uplaod Discovery Sheet</h3>
+                <div class="uk-width-medium-1-2">
+                    <div class="md-card">
+                        <div class="md-card-content">
+                          {{Form::open(array('files'=> true,
+                          'url'=>'students/discovery/picture'))}} <span
+                            class="md-list-heading">{{Form::file('discoveryPicture',array('required', 'class'=>'form-control'))}}</span><br>
+                          <span class="uk-text-small uk-text-muted">Change Profile
+                            Picture</span> <input name="studentId"
+                            value="{{$student->id}}" type="hidden" /> <input
+                            type="submit" class="btn btn-sm btn-primary"
+                            value="Upload Discovery Picture" /> {{Form::close()}}
+                        </div>
+                      </div>
+                  </div>
+                </div> <br clear="all" />
+              </li> 
+            </div>  
                                         
           
         </ul>
