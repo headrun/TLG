@@ -3847,10 +3847,10 @@ $('.deleteenrollmentdata').click(function(){
           <div>
               <li id="discovery">
                  
-                <div class="alert alert-success">
+                <!-- <div class="alert alert-success">
                   <a href="#" class="uk-alert-close uk-close"></a> 
                   {{Session::get('imageUploadMessage') }}
-                </div> <br clear="all" />
+                </div> <br clear="all" /> -->
                 <h3>Uplaod Discovery Sheet</h3>
                 <div class="uk-width-medium-1-2">
                     <div class="md-card">
