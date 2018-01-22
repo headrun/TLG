@@ -391,24 +391,21 @@ class CustomersController extends \BaseController {
 				
 				// adding to membershiptable
     			$membership_data=CustomerMembership::addMembership($inputs);
-    			//adding to payment_duetable
-    			$inputs['membership_id']=$membership_data->id;
+    			$inputs['membership_id'] = $membership_data['id'];
     			$memdata=MembershipTypes::find($inputs['membership_type_id']);
+    			$inputs['membership_id'] = $membership_data['id'];
     			$inputs['membership_name']=$memdata->name;
     			$inputs['amount']=$memdata->fee_amount;
     			$inputs['membership_amount']=$inputs['amount'];
     			$inputs['payment_due_amount']=$inputs['amount'];
     			$inputs['payment_due_amount_after_discount']=$inputs['amount'];
-    			$tax=PaymentTax::where('franchisee_id','=',Session::get('franchiseId'))
+     			$tax=PaymentTax::where('franchisee_id','=',Session::get('franchiseId'))
     						->select('tax_percentage')->get();
     			$tax=$tax[0];
     			$inputs['tax']= $tax['tax_percentage'];
-    			
-    			$payment_data=PaymentDues::createMembershipPaymentDues($inputs);
+     			$payment_data=PaymentDues::createMembershipPaymentDues($inputs);
     			$inputs['payment_due_id']=$payment_data->id;
     			$inputs['taxamt']=($inputs['membership_amount']*$inputs['tax'])/100;
-    			// /return Response::json(array('status'=>'success','data'=>$inputs));
-    			//adding to orderstable
     			$order_data=Orders::CreateMembershipOrder($inputs);
     			
     			DB::commit();

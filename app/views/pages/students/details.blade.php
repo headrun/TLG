@@ -329,7 +329,7 @@ function calculateFinalAmount(){
           var selected = $("input[name='enrollmentClassesSelect']:checked").val();
         }
 
-        if( remaining_classes < selected) {
+        if( remaining_classes < selected && selected-remaining_classes != 1) {
           var second_discount =  remaining_classes ;
         }else{ 
           var second_discount = 0;

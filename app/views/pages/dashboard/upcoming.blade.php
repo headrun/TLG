@@ -558,134 +558,11 @@
                     </div>
                 </div>
                  
-                <div class="uk-width-medium-1-2">
-                    <div class="md-card">
-                        <div class="md-card-content">
-                            <div class="uk-overflow-container">
-                                <h3>Upcoming Birthdays</h3>
-                                
-                                <table class="uk-table" id="birthdayLog">
-                                    <thead>
-                                        <tr>
-                                            <th class="uk-text-nowrap">Customer</th>
-                                            <th class="uk-text-nowrap">Kid</th>
-                                            <th class="uk-text-nowrap">Mobile No</th>  
-                                            <th class="uk-text-nowrap">B'day</th>    
-                                            <th class="uk-text-nowrap">DOB</th>
-                                            <th class="uk-text-nowrap">Type</th>
-                                         
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                       <?php if(isset($birthday_data)){for($i=0;$i<count($birthday_data);$i++){?>
-                                        <tr>
-                                            <td>
-                                                {{$birthday_data[$i]['customer_name']}}
-                                                <a href="{{url()}}/customers/view/{{$birthday_data[$i]['customer_id']}}?tab=birthdayparty"></a>
-                                            </td>
-                                            <td> 
-                                                {{$birthday_data[$i]['student_name']}}
-                                            </td>
-                                            <td> 
-                                                {{$birthday_data[$i]['mobile_no']}}
-                                            </td>
-                                            <td>
-                                                {{date('M d', strtotime($birthday_data[$i]['student_date_of_birth']));}}
-                                            </td>
-                                            <td> {{$birthday_data[$i]['student_date_of_birth']}}
-                                            
-                                            </td>
-                                            <td> <?php if($birthday_data[$i]['membership']==0){
-                                                 echo "Non member";
-                                                }else{
-                                                    echo "Member";
-                                                }
-                                                 ?>
-                                            </td>
-                                        </tr>
-                                        
-                                       <?php }} ?>
-                                      
-                                        
-           <?php 
-
-            for($i=0;$i<count($birthday_data_month);$i++){
-              if(isset($birthday_data_month[$i][0])){
-                for($j=0;$j<count($birthday_data_month[$i]);$j++){
-                ?>   
-                    <tr>
-                                            <td>
-                                                {{$birthday_data_month[$i][$j]['customer_name']}}
-                                                <a href="{{url()}}/customers/view/{{$birthday_data_month[$i][$j]['customer_id']}}?tab=birthdayparty"></a>
-                                            </td>
-                                            <td> {{$birthday_data_month[$i][$j]['student_name']}}
-                                            
-                                            </td>
-                                            <td> {{$birthday_data_month[$i][$j]['mobile_no']}}
-                                            
-                                            </td>
-                                            <td>
-                                                {{date('M d', strtotime($birthday_data_month[$i][$j]['student_date_of_birth']))}}
-                                            </td>
-                                            <td> {{$birthday_data_month[$i][$j]['student_date_of_birth']}}
-                                            
-                                            </td>
-                                            <td> <?php if($birthday_data_month[$i][$j]['membership']==0){
-                                                 echo "Non member";
-                                                }else{
-                                                    echo "Member";
-                                                }
-                                                 ?>
-                                            </td>
-                      </tr>
-      <?php    }
-              }
-            }
-      ?>
-                      
-                      
-                      <?php if(isset($birthday_month_startdays[0])){ for($i=0;$i<count($birthday_month_startdays);$i++){ ?>
-                            <tr>
-                                            <td>
-                                                {{$birthday_month_startdays[$i]['customer_name']}}{{$birthday_month_startdays[$i]['customer_lastname']}}
-                                                <a href="{{url()}}/customers/view/{{$birthday_month_startdays[$i]['customer_id']}}?tab=birthdayparty"></a>
-                                            </td>
-                                            <td> {{$birthday_month_startdays[$i]['student_name']}}
-                                            
-                                            </td>
-                                            <td> {{$birthday_month_startdays[$i]['mobile_no']}}
-                                            
-                                            </td>
-                                            <td>
-                                                {{date('M d', strtotime($birthday_month_startdays[$i]['student_date_of_birth']))}}
-                                            </td>
-                                            <td> {{$birthday_month_startdays[$i]['student_date_of_birth_vasu']}}
-                                            
-                                            </td>
-                                            <td> <?php if($birthday_month_startdays[$i]['membership']==0){
-                                                 echo "Non member";
-                                                }else{
-                                                    echo "Member";
-                                                }
-                                                 ?>
-                                            </td>
-                            </tr>
-                      <?php }}?>
-
-                                        
-                                    </tbody>
-                                </table>
-                               
-                            </div>
-                        </div>
-                    </div>
-                </div> 
-             </div>
-            
+                
 			
             <!-- info cards -->
             
-            <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
+            <!-- <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
             
                 <div class="uk-width-medium-1-2">
                     <div class="md-card">
@@ -717,7 +594,7 @@
                               
                                         </tr>
                                     </thead>
-                                    <tbody id = "BirthdayTableBody">
+                                    <tbody id = "BirthdayTableBody"> -->
                                         <?php for($i=0;$i<count($birthdayPresentWeek);$i++){
 
                                             if($birthdayPresentWeek[$i]['franchisee_id']==Session::get('franchiseId'))
@@ -732,13 +609,13 @@
                                             <td>{{$birthdayPresentWeek[$i]['birthday_party_time']}}</td>
                                         </tr>
                                             <?php }} ?>
-                                    </tbody>
+                                    <!-- </tbody>
                                 </table>
                                
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 
                 <div class="uk-width-medium-1-2">
                     <div class="md-card">

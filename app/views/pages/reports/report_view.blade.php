@@ -174,7 +174,7 @@
 
                                                 return nRow;
                                            },
-                                           "iDisplayLength": 50,
+                                           "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
                                     
@@ -228,7 +228,7 @@
 
                                                 return nRow;
                                            },
-                                           "iDisplayLength": 50,
+                                           "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
                                 
@@ -293,7 +293,7 @@
 
                                                 return nRow;
                                            },
-                                           "iDisplayLength": 50,
+                                           "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
                                 
@@ -339,7 +339,7 @@
 
                                                 return nRow;
                                            },
-                                           "iDisplayLength": 50,
+                                           "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
                                 
@@ -389,7 +389,7 @@
 
                                                 return nRow;
                                            },
-                                           "iDisplayLength": 50,
+                                           "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
                                 
@@ -431,10 +431,10 @@
 
                                                 return nRow;
                                            },
-                                           "iDisplayLength": 50,
+                                           "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
-                            }else if(response[1]==='Weekly'){
+                            }else if(response[1]==='Calls'){
                                 var header_data="<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
@@ -442,23 +442,48 @@
                                             '<tr>'+
                                             '<th>Customer Name</th>'+
                                             '<th>Kid Name</th>'+
-                                            '<th>Invoice No</th>'+
-                                            '<th>Amount</th>'+
-                                            '<th>Class</th>'+
-                                            '</tr></thead>';
+                                            '<th>Type of Call</th>'+
+                                            '<th>Schedule Date</th>'+
+                                            '<th>Comment</th>'+
+                                            '<th>Status</th>'+
+                                            '</tr>'+
+                                            '</thead>';
                                 for(var i=0;i<response[0]['data'].length;i++){
                                     header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
                                           response[0]['data'][i]['student_name']+"</td><td>"+
-                                          response[0]['data'][i]['invoice_no']+"</td><td>"+
-                                          response[0]['data'][i]['payment_due_amount_after_discount']+"</td><td>"+
-                                          response[0]['data'][i]['batch_name']+"</td></tr>";
+                                          response[0]['data'][i]['followup_type']+"</td><td>"+
+                                          response[0]['data'][i]['reminder_date']+"</td><td>"+
+                                          response[0]['data'][i]['log_text']+"</td><td>"+
+                                          response[0]['data'][i]['followup_status']+"</td></tr>";
                                     }
                                     header_data+="</table></div></div>";
-                                    //console.log(header_data);
+                                    console.log(header_data);
                                     $('#reportdata').html(header_data);
-                                    $('#reportTable').DataTable(//{dom:'T<"clear">lfrtip',
-                                    //   "tableTools": {"sSwfPath": "/swf/copy_csv_xls_pdf.swf"}}
-                                    );
+                                    $("#reportTable").DataTable({
+                                        dom: 'Bfrtip',
+                                            buttons: [
+                                                'copyHtml5',
+                                                'excelHtml5',
+                                                'csvHtml5',
+                                                'pdfHtml5'
+                                            ],
+                                            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+
+                                                // Bind click event
+                                                $(nRow).click(function() {
+                                                      //window.open($(this).find('a').attr('href'));
+                                            window.location = $(this).find('a').attr('href');
+                                                      //OR
+
+                                                    // window.open(aData.url);
+
+                                                });
+
+                                                return nRow;
+                                           },
+                                           "iDisplayLength": 10,
+                                           "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                       });
                             }else if(response[1]==='BySchool'){
                             
                                 var header_data="<div class='md-card-content'>"+
@@ -711,8 +736,8 @@ $(document).on('click', '.salse_alloc_btn', function(){
                 <div class="md-card uk-margin-medium-bottom">
 		    <div class="md-card-content">
                         <br>
-                        <h3 class="heading_b uk-margin-bottom">Activity Report</h3>
-                        {{ Form::open(array('url' => '/reports/activityReport', 'id'=>"activityReportform", "class"=>"uk-form-stacked", 'method' => 'post')) }} 
+                        <!-- <h3 class="heading_b uk-margin-bottom">Activity Report</h3> -->
+                        <!-- {{ Form::open(array('url' => '/reports/activityReport', 'id'=>"activityReportform", "class"=>"uk-form-stacked", 'method' => 'post')) }} 
                           <div class="uk-grid" data-uk-grid-margin>
                               <div class="uk-width-medium-1-4">
                                 <div class="parsley-row form-group">
@@ -735,7 +760,7 @@ $(document).on('click', '.salse_alloc_btn', function(){
                                 </div>
                               </div>
                             </div>
-                        {{ Form::close() }}
+                        {{ Form::close() }} -->
                         <h3 class="heading_b uk-margin-bottom">General Report</h3>
                         {{ Form::open(array('url' => '/reports/generatereport', 'id'=>"generatereportform", "class"=>"uk-form-stacked", 'method' => 'post')) }}    
                            <div class="uk-grid" data-uk-grid-margin>
@@ -764,7 +789,7 @@ $(document).on('click', '.salse_alloc_btn', function(){
                                                     <option value="Membership">Membership</option>
                                                     <option value="Introvisit">Introvisit</option>
                                                     <option value="Inquiry">Inquiry</option>
-                                                    <!-- <option value="Weekly">SAR(Weekly)</option> -->
+                                                    <option value="Calls">Calls Report</option>
                                                    <!--  <option value="BySchool">By School</option>
                                                     <option value="ByLocality">By Locality</option>
                                                     <option value="ByApartment">By Apartmnet</option> -->
