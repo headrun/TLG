@@ -3851,24 +3851,36 @@ $('.deleteenrollmentdata').click(function(){
                   <a href="#" class="uk-alert-close uk-close"></a> 
                   {{Session::get('imageUploadMessage') }}
                 </div> <br clear="all" /> -->
+                
                 <h3>Uplaod Discovery Sheet</h3>
-                <div class="uk-width-medium-1-2">
-                    <div class="md-card">
-                        <div class="md-card-content">
-                          {{Form::open(array('files'=> true,
-                          'url'=>'students/discovery/picture'))}} <span
-                            class="md-list-heading">{{Form::file('discoveryPicture',array('required', 'class'=>'form-control'))}}</span><br>
-                          <span class="uk-text-small uk-text-muted">Change Profile
-                            Picture</span> <input name="studentId"
-                            value="{{$student->id}}" type="hidden" /> <input
-                            type="submit" class="btn btn-sm btn-primary"
-                            value="Upload Discovery Picture" /> {{Form::close()}}
-                        </div>
-                      </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="col-md-6">
+                      {{Form::open(array('files'=> true, 'url'=>'students/discovery/picture'))}} 
+                      <span class="md-list-heading">{{Form::file('discoveryPicture',array('required', 'class'=>'form-control'))}}</span><br>
+                      <span class="uk-text-small uk-text-muted"></span>
+                      <input name="studentId"
+                        value="{{$student->id}}" type="hidden" /> 
+                      <input
+                        type="submit" class="md-btn md-btn-primary"
+                        value="Upload Discovery Picture" /> 
+                        {{Form::close()}}
+                    </div>
+                    <div class="col-md-6" style="margin-top: 50px;">
+                      {{Form::open(array('files'=> true,
+                      'url'=>'students/discovery/download'))}}
+                      <span class="uk-text-small uk-text-muted"></span>
+                      <input name="studentId"
+                        value="{{$student->id}}" type="hidden" /> 
+                      <input type="submit" class="md-btn md-btn-primary"
+                        value="Download Discovery Picture" />
+                            {{Form::close()}}      
+                    </div>
+                    
                   </div>
+                </div>
                 </div> <br clear="all" />
               </li> 
-            </div>  
                                         
           
         </ul>

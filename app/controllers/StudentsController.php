@@ -458,7 +458,7 @@ class StudentsController extends \BaseController {
     $fileExtension = '.'.$file->getClientOriginalExtension();
     
         
-    $filename = 'discovery_'.$studentId.'_medium'.$fileExtension;
+    $filename = 'discovery_'.$studentId.''.$fileExtension;
         
     $result = Input::file('discoveryPicture')->move($destinationPath, $filename);
     
@@ -476,6 +476,30 @@ class StudentsController extends \BaseController {
     
     
     
+  }
+  public function downloadDiscoveryPicture(){
+    $studentId = Input::get('studentId');
+
+    $name = "discovery_".$studentId."_medium.jpg";
+    $file = glob("assets/discovery_images/discovery_".$studentId."*.{jpg,gif,png,csv,pdf,tif,xls,odt}", GLOB_BRACE);
+    $file_extention = explode(".", $file[0]);
+    $attachment_location = "assets/discovery_images/discovery_".$studentId.".".$file_extention[1];
+   // return $attachment_location;
+    if (file_exists($attachment_location)) {
+
+        header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
+        header("Cache-Control: public"); // needed for internet explorer
+        header("Content-Type: application/zip");
+        header("Content-Transfer-Encoding: Binary");
+        header("Content-Length:".filesize($attachment_location));
+        header("Content-Disposition: attachment; filename=filePath");
+        readfile($attachment_location);
+        die();
+    } else {
+        die("Error: File not found.");
+    }
+        Session::flash('imageDownloadMessage', "Discovery Sheet has been downloaded." );
+        return Redirect::to("/students/view/".$studentId);
   }
         
         
