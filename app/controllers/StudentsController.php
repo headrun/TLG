@@ -459,6 +459,12 @@ class StudentsController extends \BaseController {
     $filename = 'discovery_'.$studentId.''.$fileExtension;
     $discovery_image = Input::file('discoveryPicture')->move($destinationPath, $filename);
 
+    if($discovery_image){  
+      $student = Students::find($studentId);
+      $student->discovery_image = $filename;
+      $student->save();
+    }
+
     Session::flash('imageUploadMessage', "Discovery Sheet is uploaded successfully." );    
     return Redirect::to("/students/view/".$studentId); 
     
