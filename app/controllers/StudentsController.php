@@ -501,7 +501,7 @@ class StudentsController extends \BaseController {
         header("Content-Type: application/zip");
         header("Content-Transfer-Encoding: Binary");
         header("Content-Length:".filesize($attachment_location));
-        header("Content-Disposition: attachment; filename=DiscoverySheet".$student."");
+        header("Content-Disposition: attachment; filename=DiscoverySheet");
         readfile($attachment_location);
         die();
     } else {
