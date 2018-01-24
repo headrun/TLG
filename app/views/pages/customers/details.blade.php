@@ -2558,7 +2558,7 @@ $('.membershipPurchase').click(function(){
 
             	}else{
 
-            		$('.membershippurchasemsg').html("<p class='uk-alert-danger uk-alert'>Under development</p>");
+            		$('.membershippurchasemsg').html("<p class='uk-alert-danger uk-alert'>Please try again.</p>");
 
             		
 				}

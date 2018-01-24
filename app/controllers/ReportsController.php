@@ -81,6 +81,8 @@ class ReportsController extends \BaseController {
                     return Response::json(array(IntroVisit::getAllIntrovisitforReport($inputs),'Introvisit'));
                 }else if($inputs['reportType']=='Inquiry'){
                     return Response::json(array(Inquiry::getAllInquiryforReport($inputs),'Inquiry'));
+               /*	}else if($inputs['reportType']=='Weekly'){
+ -                    return Response::json(array(PaymentDues::getWeeklyEnrollmentReport($inputs),'Weekly'));*/
                 }else if($inputs['reportType']=='Calls'){
                     return Response::json(array(Comments::getAllFollowupReports($inputs),'Calls'));
                 }else if($inputs['reportType']=='BySchool'){

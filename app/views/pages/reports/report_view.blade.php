@@ -87,21 +87,13 @@
                                     $("#reportTable").DataTable({
                                         dom: 'Bfrtip',
                                             buttons: [
-                                                'copyHtml5',
                                                 'excelHtml5',
                                                 'csvHtml5',
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-
-                                                // Bind click event
                                                 $(nRow).click(function() {
-                                                      //window.open($(this).find('a').attr('href'));
-                                            window.location = $(this).find('a').attr('href');
-                                                      //OR
-
-                                                    // window.open(aData.url);
-
+                                                  window.location = $(this).find('a').attr('href');
                                                 });
 
                                                 return nRow;
@@ -114,8 +106,6 @@
              }); 
     
     });
-  // var dtable= $("#ReportTable").DataTable();
-    
 
     $('#generatereportform').submit(function(event){
         event.preventDefault();
@@ -155,23 +145,15 @@
                             $("#reportTable").DataTable({
                                         dom: 'Bfrtip',
                                             buttons: [
-                                                'copyHtml5',
                                                 'excelHtml5',
                                                 'csvHtml5',
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-
-                                                // Bind click event
                                                 $(nRow).click(function() {
-                                                      //window.open($(this).find('a').attr('href'));
-                                            window.location = $(this).find('a').attr('href');
-                                                      //OR
-
-                                                    // window.open(aData.url);
-
+                                                    window.location = $(this).find('a').attr('href');
+                                                      
                                                 });
-
                                                 return nRow;
                                            },
                                            "iDisplayLength": 10,
@@ -209,30 +191,19 @@
                                     $("#reportTable").DataTable({
                                         dom: 'Bfrtip',
                                             buttons: [
-                                                'copyHtml5',
                                                 'excelHtml5',
                                                 'csvHtml5',
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-
-                                                // Bind click event
                                                 $(nRow).click(function() {
-                                                      //window.open($(this).find('a').attr('href'));
-                                            window.location = $(this).find('a').attr('href');
-                                                      //OR
-
-                                                    // window.open(aData.url);
-
+                                                    window.location = $(this).find('a').attr('href');
                                                 });
-
                                                 return nRow;
                                            },
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
-                                
-                            
                             
                             }else if(response[1]==='both'){
                                 var header_data="<div class='md-card-content'>"+
@@ -274,21 +245,13 @@
                                     $("#reportTable").DataTable({
                                         dom: 'Bfrtip',
                                             buttons: [
-                                                'copyHtml5',
                                                 'excelHtml5',
                                                 'csvHtml5',
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-
-                                                // Bind click event
                                                 $(nRow).click(function() {
-                                                      //window.open($(this).find('a').attr('href'));
                                             window.location = $(this).find('a').attr('href');
-                                                      //OR
-
-                                                    // window.open(aData.url);
-
                                                 });
 
                                                 return nRow;
@@ -320,23 +283,15 @@
                                     $("#reportTable").DataTable({
                                         dom: 'Bfrtip',
                                             buttons: [
-                                                'copyHtml5',
                                                 'excelHtml5',
                                                 'csvHtml5',
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-
-                                                // Bind click event
                                                 $(nRow).click(function() {
-                                                      //window.open($(this).find('a').attr('href'));
-                                            window.location = $(this).find('a').attr('href');
-                                                      //OR
-
-                                                    // window.open(aData.url);
+                                                window.location = $(this).find('a').attr('href');
 
                                                 });
-
                                                 return nRow;
                                            },
                                            "iDisplayLength": 10,
@@ -370,23 +325,14 @@
                                     $("#reportTable").DataTable({
                                         dom: 'Bfrtip',
                                             buttons: [
-                                                'copyHtml5',
                                                 'excelHtml5',
                                                 'csvHtml5',
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-
-                                                // Bind click event
                                                 $(nRow).click(function() {
-                                                      //window.open($(this).find('a').attr('href'));
-                                            window.location = $(this).find('a').attr('href');
-                                                      //OR
-
-                                                    // window.open(aData.url);
-
+                                                  window.location = $(this).find('a').attr('href');
                                                 });
-
                                                 return nRow;
                                            },
                                            "iDisplayLength": 10,
@@ -412,21 +358,13 @@
                                     $("#reportTable").DataTable({
                                         dom: 'Bfrtip',
                                             buttons: [
-                                                'copyHtml5',
                                                 'excelHtml5',
                                                 'csvHtml5',
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-
-                                                // Bind click event
                                                 $(nRow).click(function() {
-                                                      //window.open($(this).find('a').attr('href'));
-                                            window.location = $(this).find('a').attr('href');
-                                                      //OR
-
-                                                    // window.open(aData.url);
-
+                                                  window.location = $(this).find('a').attr('href');
                                                 });
 
                                                 return nRow;
@@ -462,21 +400,13 @@
                                     $("#reportTable").DataTable({
                                         dom: 'Bfrtip',
                                             buttons: [
-                                                'copyHtml5',
                                                 'excelHtml5',
                                                 'csvHtml5',
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-
-                                                // Bind click event
                                                 $(nRow).click(function() {
-                                                      //window.open($(this).find('a').attr('href'));
-                                            window.location = $(this).find('a').attr('href');
-                                                      //OR
-
-                                                    // window.open(aData.url);
-
+                                                  window.location = $(this).find('a').attr('href');
                                                 });
 
                                                 return nRow;
@@ -737,7 +667,7 @@ $(document).on('click', '.salse_alloc_btn', function(){
 		    <div class="md-card-content">
                         <br>
                         <!-- <h3 class="heading_b uk-margin-bottom">Activity Report</h3> -->
-                        <!-- {{ Form::open(array('url' => '/reports/activityReport', 'id'=>"activityReportform", "class"=>"uk-form-stacked", 'method' => 'post')) }} 
+                        {{------ {{ Form::open(array('url' => '/reports/activityReport', 'id'=>"activityReportform", "class"=>"uk-form-stacked", 'method' => 'post')) }} 
                           <div class="uk-grid" data-uk-grid-margin>
                               <div class="uk-width-medium-1-4">
                                 <div class="parsley-row form-group">
@@ -760,7 +690,7 @@ $(document).on('click', '.salse_alloc_btn', function(){
                                 </div>
                               </div>
                             </div>
-                        {{ Form::close() }} -->
+                        {{ Form::close() }} -------}}
                         <h3 class="heading_b uk-margin-bottom">General Report</h3>
                         {{ Form::open(array('url' => '/reports/generatereport', 'id'=>"generatereportform", "class"=>"uk-form-stacked", 'method' => 'post')) }}    
                            <div class="uk-grid" data-uk-grid-margin>

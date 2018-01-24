@@ -277,12 +277,10 @@ class StudentsController extends \BaseController {
                           $file_extention = explode(".", $file[0]);
                           $url = "assets/discovery_images/discovery_".$id.".".$file_extention[1];
                           $attachment_location  = url().'/'.$url;
-                         // $attachment_location = '<img src="$url_image"/>';
-                          //return $attachment_location;
                         }else{  
                           $attachment_location = "";
                         }
-                      //  $last_Enrollment_EndDate = count($file) > 0 ? $last[0]['enrollment_end_date'] : '';
+                        $last_Enrollment_EndDate = count($file) > 0 ? $last[0]['enrollment_end_date'] : '';
                         
                         
                         $batchDetails = [];
@@ -434,68 +432,48 @@ class StudentsController extends \BaseController {
     
     $file = Input::file('profileImage');
     $studentId = Input::get('studentId');
-    
     $destinationPath = 'upload/profile/student/';
-    
     $filename = $file->getClientOriginalName();   
     $fileExtension = '.'.$file->getClientOriginalExtension();
-    
-        
-    $filename = 'student_profile_'.$studentId.'_medium'.$fileExtension;
-        
+    $filename = 'student_profile_'.$studentId.'_medium'.$fileExtension;    
     $result = Input::file('profileImage')->move($destinationPath, $filename);
     
     if($result){  
-        
       $student = Students::find($studentId);
       $student->profile_image = $filename;
       $student->save();
-    
     }
     
     Session::flash ( 'imageUploadMessage', "Profile picture updated successfully." );
     return Redirect::to("/students/view/".$studentId);
     
-    
-    
   }
+  
    public function uploadDiscoveryPicture(){
     
     $file = Input::file('discoveryPicture');
     $studentId = Input::get('studentId');
-    
     $destinationPath = 'assets/discovery_images/';
-    
     $filename = $file->getClientOriginalName();   
     $fileExtension = '.'.$file->getClientOriginalExtension();
-    
-        
     $filename = 'discovery_'.$studentId.''.$fileExtension;
-        
     $discovery_image = Input::file('discoveryPicture')->move($destinationPath, $filename);
 
-    if($discovery_image){  
-        
-      $student = Students::find($studentId);
-      $student->profile_image = $filename;
-      $student->save();
-    }
-    
-    Session::flash('imageUploadMessage', "Discovery Sheet is uploaded successfully." );
-    
+    Session::flash('imageUploadMessage', "Discovery Sheet is uploaded successfully." );    
     return Redirect::to("/students/view/".$studentId); 
     
   }
+
   public function downloadDiscoveryPicture(){
     $studentId = Input::get('studentId');
-
     $name = "discovery_".$studentId."_medium.jpg";
+    $attachment_location = '';
     $file = glob("assets/discovery_images/discovery_".$studentId."*.{jpg,gif,png,csv,pdf,tif,xls,odt}", GLOB_BRACE);
-    $file_extention = explode(".", $file[0]);
-    $attachment_location = "assets/discovery_images/discovery_".$studentId.".".$file_extention[1];
-   // return $attachment_location;
+    if(isset($file) && !empty($file)){
+      $file_extention = explode(".", $file[0]);
+      $attachment_location = "assets/discovery_images/discovery_".$studentId.".".$file_extention[1];
+    }
     if (file_exists($attachment_location)) {
-
         header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
         header("Cache-Control: public"); // needed for internet explorer
         header("Content-Type: application/zip");
@@ -503,12 +481,14 @@ class StudentsController extends \BaseController {
         header("Content-Length:".filesize($attachment_location));
         header("Content-Disposition: attachment; filename=DiscoverySheet");
         readfile($attachment_location);
-        die();
-    } else {
-        die("Error: File not found.");
+        exit();
+    }else{
+      Session::flash('imageDownloadError', "Respective file is not found.Please upload it." );
+      return Redirect::to("/students/view/".$studentId);
     }
-        Session::flash('imageDownloadMessage', "Discovery Sheet has been downloaded." );
-        return Redirect::to("/students/view/".$studentId);
+    Session::flash('imageDownloadMessage', "Discovery Sheet has been downloaded." );
+    return Redirect::to("/students/view/".$studentId);
+ 
   }
         
         
