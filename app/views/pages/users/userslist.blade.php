@@ -86,7 +86,7 @@ $(document).on('click', '#updateBatchId', function(){
 	
 		
 		
-		    <h3 class="heading_b uk-margin-bottom">Update Batch Details</h3>
+		    <!-- <h3 class="heading_b uk-margin-bottom">Update Batch Details</h3>
                         {{ Form::open(array('url' => '/reports/updateDataBatch', 'id'=>"updateDataBatchform", "class"=>"uk-form-stacked", 'method' => 'post')) }} 
                           <div class="uk-grid" data-uk-grid-margin>
                               <div class="uk-width-medium-1-4">
@@ -108,7 +108,7 @@ $(document).on('click', '#updateBatchId', function(){
                                 </div>
                               </div>
                             </div>
-                        {{ Form::close() }}
+                        {{ Form::close() }} -->
 			<h4>List of Users <span style="font-size:12px;">(Other than admins)</span></h4>
 		
             <div id="messageForUserDelete"></div>

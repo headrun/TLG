@@ -29,7 +29,6 @@ Route::any('/add_new_class_franchise', 'ClassesController@add_new_class_franchis
 Route::any('/calendar', 'CalenderController@index');
 
 
-
 Route::group(array('prefix' => 'courses'), function() {
 	Route::any('/add', "CoursesController@addCourses");
     Route::any('/name_list', "CoursesController@courseNameList");
@@ -67,6 +66,8 @@ Route::group(array('prefix' => 'students'), function() {
     Route::any('/enrolled', "StudentsController@enrolledstudents");
 	Route::any('/view/{id}', ['uses' =>"StudentsController@view"]);
 	Route::any('/profile/picture', "StudentsController@uploadProfilePicture");
+	Route::any('/discovery/picture', "StudentsController@uploadDiscoveryPicture");
+	Route::any('/discovery/download', "StudentsController@downloadDiscoveryPicture");
 
 
 });

@@ -2558,7 +2558,7 @@ $('.membershipPurchase').click(function(){
 
             	}else{
 
-            		$('.membershippurchasemsg').html("<p class='uk-alert-danger uk-alert'> Please try again later...</p>");
+            		$('.membershippurchasemsg').html("<p class='uk-alert-danger uk-alert'>Please try again.</p>");
 
             		
 				}
@@ -2801,7 +2801,7 @@ $('#memberhsipchequeNumber').keyup(function(){
                                 <li id="customerInfoTabMenu" class="uk-active"><a href="#">About</a></li>
                                 <li id="studentInfoTabMenu" class=""><a href="#">Kids</a></li> 
                                 <li id="birthdayPartyInfoTabMenu"><a>Birthday Parties</a></li>
-                                <!--<li id="customerMembershipInfoTabMenu" class="" ><a href='#'>Membership</a></li> --> 
+                                <li id="customerMembershipInfoTabMenu" class="" ><a href='#'>Membership</a></li>  
                                 <li id="commentsInfoTabMenu" class="" data-target="#commentsandlogsdivTab"><a href="#" data-target="#commentsandlogsdivTab">Comments and logs</a></li> 
                                 <li id="followupTabMenu" class="" data-target="#followupTab"><a href="#" data-target="#followupTab">Followup</a></li> 
                                
@@ -3504,7 +3504,7 @@ $('#memberhsipchequeNumber').keyup(function(){
 										</li>
 
 
-										<!--
+										
                                             <li id="membershipdivTab">
                                                 <div class="md-card-content large-padding">
                                                     <div class="membershipcomments"></div>
@@ -3710,7 +3710,7 @@ $('#memberhsipchequeNumber').keyup(function(){
                                            	 </div>
 
 
-                                            </li> -->
+                                            </li> 
 
 
                                           

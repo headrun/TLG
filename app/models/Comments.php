@@ -319,6 +319,30 @@ class Comments extends \Eloquent {
                              ->orderBy('id','DESC')
                              ->get();
         }
+
+        static function getAllFollowupReports($inputs){
+           $comment_data['data'] = Comments::where('franchisee_id','=',Session::get('franchiseId'))
+                                    ->where('created_at','>=',$inputs['reportGenerateStartdate'])
+                                    ->where('created_at','<=',$inputs['reportGenerateEnddate'])
+                                    //->selectRaw('max(reminder_date)')
+                                    ->orderBy('reminder_date','DESC')
+                                    ->groupBy('student_id')
+                                    ->get();
+
+           for($i=0;$i<count($comment_data['data']);$i++){
+
+              $temp=  Customers::find($comment_data['data'][$i]['customer_id']);
+              
+              $comment_data['data'][$i]['customer_name']=$temp['customer_name']." ".$temp['customer_lastname'];
+          
+              $temp2 =  Students::find($comment_data['data'][$i]['student_id']);
+              $comment_data['data'][$i]['student_name'] = $temp2['student_name'];
+
+
+
+            }
+           return $comment_data;   
+        }   
 	
 	
 	

@@ -307,34 +307,39 @@ class Orders extends \Eloquent {
 
     static public function CreateMembershipOrder($inputs) {
         $order = new Orders();
-        $order -> customer_id = $inputs['customer_id'];
-        $order -> payment_dues_id = $inputs['payment_due_id'];
+        //print_r($inputs); die();
+        $order->customer_id = $inputs['customer_id'];
+        $order->payment_dues_id = $inputs['payment_due_id'];
         $order->franchisee_id=Session::get('franchiseId');
         $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
+        //print_r($order->payment_dues_id); die();
 
-        $order -> payment_for = 'membership';
-        $order -> membership_id = $inputs['membership_id'];
-        $order -> membership_type = $inputs['membership_type_id'];
-        $order -> membership_name = $inputs['membership_name'];
-        $order -> payment_mode = $inputs['payment_mode'];
+        $order->payment_for = 'membership';
+        $order->membership_id = $inputs['membership_id'];
+
+        //$order->membership_id = $inputs['membership_type_id'];
+        $order->membership_type = $inputs['membership_type_id'];
+
+        $order->payment_mode = $inputs['payment_mode'];
+      //  print_r($order->payment_mode); die();       
         
          if( $inputs['payment_mode'] == 'cheque'){
 
-            $order -> bank_name = $inputs['chequeBankName'];
-            $order -> cheque_number = $inputs['chequeNumber']; 
+            $order->bank_name = $inputs['chequeBankName'];
+            $order->cheque_number = $inputs['chequeNumber']; 
          
          }else if($inputs['payment_mode'] == 'card'){
             
-            $order -> bank_name = $inputs['bankName'];
-            $order -> card_type =$inputs['cardType'];
+            $order->bank_name = $inputs['bankName'];
+            $order->card_type =$inputs['cardType'];
          } 
          
-        $order -> amount = $inputs['payment_due_amount'];
-        $order -> tax_percentage = $inputs['tax']; 
-        $order -> tax_amount = $inputs['taxamt'];
-        $order -> order_status = 'completed';
-        $order -> created_by = Session::get ( 'userId' );
-        $order -> created_at = date ( "Y-m-d H:i:s" );
+        $order->amount = $inputs['payment_due_amount'];
+        $order->tax_percentage = $inputs['tax']; 
+        $order->tax_amount = $inputs['taxamt'];
+        $order->order_status = 'completed';
+        $order->created_by = Session::get ( 'userId' );
+        $order->created_at = date ( "Y-m-d H:i:s" );
 
         $order -> save();
         return $order;
@@ -488,7 +493,7 @@ class Orders extends \Eloquent {
                                 $each_sales_data[]= $membership_amount;*/
 
                                 //$fees = $payment_data[0]['each_class_amount'] * $payment_data[0]['selected_classes'];
-                                $total_amt_after_disc = $Sales['data'][$i]['amount'] + $membership_amount - $payment_data[0]['discount_amount'] -  $payment_data[0]['discount_sibling_amount'] - $payment_data[0]['discount_multipleclasses_amount'];
+                                $total_amt_after_disc = $Sales['data'][$i]['amount'] + $membership_amount - $payment_data[0]['discount_amount'] -  $payment_data[0]['discount_sibling_amount'] - $payment_data[0]['discount_multipleclasses_amount'] - $payment_data[0]['discount_admin_amount'];
                                 
 
                                 
@@ -505,7 +510,7 @@ class Orders extends \Eloquent {
                                 $each_sales_data[]= $payment_data[0]['discount_admin_amount'];
 
 
-                                $each_sales_data[]= number_format($total_amt_after_disc - $payment_data[0]['discount_admin_amount'] + $tax_amt , 2, '.', '');;
+                                $each_sales_data[]= number_format($total_amt_after_disc + $tax_amt , 2, '.', '');;
                                 $each_sales_data[]= $Sales['data'][$i]['payment_mode'];
 
                                 $final_sales_data[] = $each_sales_data;
