@@ -3845,44 +3845,52 @@ $('.deleteenrollmentdata').click(function(){
               </div>
           </li>
           <div>
-              <li id="discovery">
-                 
-                <!-- <div class="alert alert-success">
+            <li id="discovery">   
+              @if(Session::has('imageUploadMessage')) 
+                <div class="uk-alert uk-alert-success" data-uk-alert>
                   <a href="#" class="uk-alert-close uk-close"></a> 
                   {{Session::get('imageUploadMessage') }}
-                </div> <br clear="all" /> -->
-                
-                <h3>Uplaod Discovery Sheet</h3>
-                <div class="row">
-                  <div class="col-sm-6">
-                    <div class="col-md-6">
-                      {{Form::open(array('files'=> true, 'url'=>'students/discovery/picture'))}} 
-                      <span class="md-list-heading">{{Form::file('discoveryPicture',array('required', 'class'=>'form-control'))}}</span><br>
-                      <span class="uk-text-small uk-text-muted"></span>
-                      <input name="studentId"
-                        value="{{$student->id}}" type="hidden" /> 
-                      <input
-                        type="submit" class="md-btn md-btn-primary"
-                        value="Upload Discovery Picture" /> 
-                        {{Form::close()}}
-                    </div>
-                    <div class="col-md-6" style="margin-top: 50px;">
-                      {{Form::open(array('files'=> true,
-                      'url'=>'students/discovery/download'))}}
-                      <span class="uk-text-small uk-text-muted"></span>
-                      <input name="studentId"
-                        value="{{$student->id}}" type="hidden" /> 
-                      <input type="submit" class="md-btn md-btn-primary"
-                        value="Download Discovery Picture" />
-                            {{Form::close()}}      
-                    </div>
-                    
-                  </div>
-                </div>
                 </div> <br clear="all" />
-              </li> 
-                                        
-          
+              @endif
+              <h3>Uplaod Discovery Sheet</h3>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="col-md-6">
+                    {{Form::open(array('files'=> true, 'url'=>'students/discovery/picture'))}} 
+                    <span class="md-list-heading">{{Form::file('discoveryPicture',array('required', 'class'=>'form-control'))}}</span><br>
+                    <span class="uk-text-small uk-text-muted"></span>
+                    <input name="studentId"
+                      value="{{$student->id}}" type="hidden" /> 
+                    <input
+                      type="submit" class="md-btn md-btn-primary"
+                      value="Upload Discovery Picture" /><br>
+                      {{Form::close()}}
+                  </div>
+                  <div class="col-md-6" style="margin-top: 50px;">
+                    {{Form::open(array('files'=> true,
+                    'url'=>'students/discovery/download'))}}
+                    <span class="uk-text-small uk-text-muted"></span>
+                    <input name="studentId"
+                      value="{{$student->id}}" type="hidden" /> 
+                    <input type="submit" class="md-btn md-btn-primary"
+                      value="Download Discovery Picture" />
+                          {{Form::close()}}      
+                  </div>
+                  
+              </div>
+            </div>
+            @if($attachment_location)
+              <h3 style="margin-top: 50px;margin-bottom: 10px">Uplaoded Discovery Sheets</h3>
+              <div class="col-md-7">
+                <div>
+                  <?php
+                    echo '<img src="'.$attachment_location.'", alt="Discovery Sheet", width="400", height="300" margin-top="200"><br />';
+                  ?>
+                </div>  
+              </div>
+            @endif
+              </div> <br clear="all" />
+            </li>
         </ul>
       </div>
     </div>
