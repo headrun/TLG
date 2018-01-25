@@ -415,11 +415,22 @@
                             <span class="uk-text-muted uk-text-small" id = "Titles">Current Enrollment</span>
                             
                             <div class = "row" style = "">
-                                <div class = "col-md-12">  
+                                <div class = "col-md-12"> 
+                                    <br>
+                                    <small>
+                                        Discovery Sheet's Uploaded :
+                                        <strong>{{$discovery_sheet}}</strong>
+                                    </small>
+                                    <small>
                                         @foreach($courses as $course)
-                                        <h5><span class="uk-text-muted uk-text-small_"><span>{{$course->course_name}} :</span><b>{{$course->totalno}} &nbsp;&nbsp;</b></span></h5>
+                                        {{$course->course_name}} :
+                                        <strong>{{$course->totalno}}</strong></br>
                                         @endforeach
-                                        <h5><span class="uk-text-muted uk-text-small_"><span>Total :</span><b>{{$totalclasses}} &nbsp;&nbsp;</b></span></h5>
+                                    </small>
+                                    <small>
+                                        Total :
+                                        <strong>{{$totalclasses}}</strong>
+                                    </small>
                                 </div>
                             </div>
                             
@@ -594,22 +605,22 @@
                               
                                         </tr>
                                     </thead>
-                                    <tbody id = "BirthdayTableBody"> -->
-                                        <?php for($i=0;$i<count($birthdayPresentWeek);$i++){
+                                    <tbody id = "BirthdayTableBody"> 
+                                      <?php //for($i=0;$i<count($birthdayPresentWeek);$i++){
 
-                                            if($birthdayPresentWeek[$i]['franchisee_id']==Session::get('franchiseId'))
-                                            { ?>
-                                        <tr>
-                                            <td>{{$birthdayPresentWeek[$i]['customer_name']}}{{$birthdayPresentWeek[$i]['customer_lastname']}}
-                                            <a href="{{url()}}/customers/view/{{$birthdayPresentWeek[$i]['customer_id']}}?tab=birthdayparty"></a>
-                                            </td>
-                                            <td>{{$birthdayPresentWeek[$i]['student_name']}}</td>
-                                            <td>{{$birthdayPresentWeek[$i]['mobile_no']}}</td>
-                                            <td>{{$birthdayPresentWeek[$i]['birthday_party_date']}}</td>
-                                            <td>{{$birthdayPresentWeek[$i]['birthday_party_time']}}</td>
-                                        </tr>
-                                            <?php }} ?>
-                                    <!-- </tbody>
+                                          // if($birthdayPresentWeek[$i]['franchisee_id']==Session::get('franchiseId'))
+                                           //{ ?>
+                                       <tr>
+                                           <td>{{-- $birthdayPresentWeek[$i]['customer_name']}}{{$birthdayPresentWeek[$i]['customer_lastname'] --}}
+                                           <a href="{{url()}}/customers/view/{{-- $birthdayPresentWeek[$i]['customer_id'] --}}?tab=birthdayparty"></a>
+                                           </td>
+                                           <td>{{-- $birthdayPresentWeek[$i]['student_name'] --}}</td>
+                                           <td>{{-- $birthdayPresentWeek[$i]['mobile_no'] --}}</td>
+                                           <td>{{-- $birthdayPresentWeek[$i]['birthday_party_date'] --}}</td>
+                                           <td>{{-- $birthdayPresentWeek[$i]['birthday_party_time'] --}}</td>
+                                       </tr>
+                                           <?php //}} ?> 
+                                    </tbody>
                                 </table>
                                
                             </div>
