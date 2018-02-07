@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Crypt;
+include 'mpdf60/mpdf.php';
 class StudentsController extends \BaseController {
 
   /**
@@ -192,11 +193,12 @@ class StudentsController extends \BaseController {
                                                             ->orderBy('created_at','desc')
                                                             ->limit(2)
                                                             ->get();
+                        //return $latestEnrolledData;
                         for($i=0;$i<count($latestEnrolledData);$i++){
                           $latest_batch_data = Batches::find($latestEnrolledData[$i]['batch_id']);
-                          $latestEnrolledData[$i]['batch_name'] = $latest_batch_data->batch_name;
-                          $latestEnrolledData[$i]['preferred_time'] = $latest_batch_data->preferred_time;
-                          $latestEnrolledData[$i]['preferred_end_time'] = $latest_batch_data->preferred_end_time;
+                          $latestEnrolledData[$i]['batch_name'] = $latest_batch_data['batch_name'];
+                          $latestEnrolledData[$i]['preferred_time'] = $latest_batch_data['preferred_time'];
+                          $latestEnrolledData[$i]['preferred_end_time'] = $latest_batch_data['preferred_end_time'];
                           $latestEnrolledData[$i]['enrollment_start_date'] = date('d-M-Y',strtotime($latestEnrolledData[$i]['enrollment_start_date']));
                           $latestEnrolledData[$i]['enrollment_end_date'] = date('d-M-Y',strtotime($latestEnrolledData[$i]['enrollment_end_date']));
 
@@ -218,6 +220,7 @@ class StudentsController extends \BaseController {
                               $batch_name = Batches::where('id','=',$payment_made_data[$i][$j]['batch_id'])
                                               ->selectRaw('batch_name,preferred_end_time,preferred_time')
                                               ->get();
+                            if(isset($batch_name) && !empty($batch_name)){  
                               $batch_user = User::find($payment_made_data[$i][$j]['created_by']);
 
                               $payment_made_data[$i][$j]['day'] = date('l', strtotime($payment_made_data[$i][$j]['start_order_date']));
@@ -229,6 +232,7 @@ class StudentsController extends \BaseController {
                               $payment_made_data[$i][$j]['receivedname'] = $batch_user->first_name.$batch_user->last_name;
                               
                               $payment_made_data[$i][$j]['class_name'] = $batch_name[0]['batch_name'];
+                            }
                               
                            }
                           $payments_master_details[$i]['encrypted_payment_no'] = url().'/orders/print/'.Crypt::encrypt($payments_master_details[$i]['payment_no']);
@@ -280,7 +284,7 @@ class StudentsController extends \BaseController {
                         }else{  
                           $attachment_location = "";
                         }
-                        $last_Enrollment_EndDate = count($file) > 0 ? $last[0]['enrollment_end_date'] : '';
+                        
                         
                         
                         $batchDetails = [];
@@ -467,21 +471,18 @@ class StudentsController extends \BaseController {
   public function downloadDiscoveryPicture(){
     $studentId = Input::get('studentId');
     $name = "discovery_".$studentId."_medium.jpg";
-    $attachment_location = '';
+    $attachment_location = '';  
     $file = glob("assets/discovery_images/discovery_".$studentId."*.{jpg,gif,png,csv,pdf,tif,xls,odt}", GLOB_BRACE);
     if(isset($file) && !empty($file)){
       $file_extention = explode(".", $file[0]);
       $attachment_location = "assets/discovery_images/discovery_".$studentId.".".$file_extention[1];
     }
+    
     if (file_exists($attachment_location)) {
-        header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
-        header("Cache-Control: public"); // needed for internet explorer
-        header("Content-Type: application/zip");
-        header("Content-Transfer-Encoding: Binary");
-        header("Content-Length:".filesize($attachment_location));
-        header("Content-Disposition: attachment; filename=DiscoverySheet");
-        readfile($attachment_location);
-        exit();
+        $pdf = new MPDF();
+        $pdf->AddPage();
+        $pdf->Image($attachment_location,15,20,300,240);
+        $pdf->Output('discovery_'.$studentId.'.pdf','D');
     }else{
       Session::flash('imageDownloadError', "Respective file is not found.Please upload it." );
       return Redirect::to("/students/view/".$studentId);

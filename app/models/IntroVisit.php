@@ -111,39 +111,129 @@ class IntroVisit extends \Eloquent {
 							->where('franchisee_id', '=',  Session::get('franchiseId'))
 							->get();
 	}
-        static function getIntrovistCount(){
-            return  IntroVisit:: where('franchisee_id', '=',  Session::get('franchiseId'))
-                                ->count();
-        }
+
+    static function getIntrovistCount(){
+        return IntroVisit::where('franchisee_id', '=',  Session::get('franchiseId'))
+                           ->count();
+    }
+
+    static function getTodayScheduledIvs(){
+    	return IntroVisit::where('franchisee_id', '=', Session::get('franchiseId'))
+    					 ->where('iv_date', '=', date('Y-m-d'))
+    					 ->count();
+    }
+
+    static function getTodayAttendedIvs(){
+    	$iv_dates = '';
+    	$todayIvs = IntroVisit::where('franchisee_id', '=', Session::get('franchiseId'))
+    					 ->where('iv_date', '=', date('Y-m-d'))
+    					 ->get();
+         if(!empty($todayIvs) && isset($todayIvs)){
+		    foreach ($todayIvs as $iv) {
+		    	$attended = Attendance::where('introvisit_id', $iv['id'])
+		    						   ->where('student_id', '=', $iv['student_id'])
+		    						   ->count();	
+		    	if($attended >= 1){
+		    		$iv_dates[] = $attended;
+		    	}
+		    }
+		    return count($iv_dates);                         
+		}  
+    }
+
+    static function getThisWeekScheduledIv(){
+    	$weeekdate= new carbon();
+        $presentdate= Carbon::now();
+        $time = strtotime($presentdate);
+        $end = strtotime('last sunday, 11:59pm', $time);
+        return IntroVisit::whereDate('iv_date','<=',date('Y-m-d', $time))
+                            ->where('franchisee_id','=',Session::get('franchiseId'))
+                            ->whereDate('iv_date','>=',date('Y-m-d', $end))
+                            ->count();
+    }
+
+    static function getThisWeekAttendedIvs(){
+    	$weeekdate= new carbon();
+        $presentdate= Carbon::now();
+        $time = strtotime($presentdate);
+        $end = strtotime('last sunday, 11:59pm', $time);
+        $iv_dates = '';
+        $week = IntroVisit::whereDate('iv_date','<=',date('Y-m-d', $time))
+                            ->where('franchisee_id','=',Session::get('franchiseId'))
+                            ->whereDate('iv_date','>=',date('Y-m-d', $end))
+                            ->get();
+        if(!empty($week) && isset($week)){
+		    foreach ($week as $iv) {
+		    	$attended = Attendance::where('introvisit_id', $iv['id'])
+		    						   ->where('student_id', '=', $iv['student_id'])
+		    						   ->count();	
+		    	if($attended >= 1){
+		    		$iv_dates[] = $attended;
+		    	}
+		    }
+		    return count($iv_dates);                         
+		}
+    }
+
+    static function getThisMonthAttendedIv(){
+    	$iv_dates = '';
+    	$ivs = IntroVisit::where('franchisee_id', '=', Session::get('franchiseId'))
+    		   			    ->whereRaw('MONTH(iv_date) = MONTH(NOW())')
+	                        ->whereRaw('YEAR(iv_date) = YEAR(NOW())')
+	                        ->get();
+	    
+	    if(!empty($ivs) && isset($ivs)){
+		    foreach ($ivs as $iv) {
+		    	//$iv_dates[] = $iv['id'];
+		    	$attended = Attendance::where('introvisit_id', $iv['id'])
+		    						   ->where('student_id', '=', $iv['student_id'])
+		    						   ->count();	
+		    	if($attended >= 1){
+		    		$iv_dates[] = $attended;
+		    	//	return $iv_dates;	 
+		    	}
+		    }
+		    return count($iv_dates);                         
+		}    
+                                
+    }
 	
-        static function getAllIntrovisitforReport($inputs){
-        	$present_date = Carbon::now();
-            $introvisit['data']= Introvisit::where('franchisee_id','=',Session::get('franchiseId'))
-                               ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
-                               ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
-                               ->get();
-            //return $present_date;
-            for($i=0;$i<count($introvisit['data']);$i++){
-                $temp=  Customers::find($introvisit['data'][$i]['customer_id']);
-                $introvisit['data'][$i]['customer_name']=$temp->customer_name." ".$temp->customer_lastname;
-                $temp2=  Students::find($introvisit['data'][$i]['student_id']);
-                $introvisit['data'][$i]['student_name']=$temp2->student_name;
-                $temp4= StudentClasses::find($introvisit['data'][$i]['student_id']);
-                $introvisit['data'][$i]['status']=$temp2->status;
-                if($introvisit['data'][$i]['status']==''){
-                	if($introvisit['data'][$i]['iv_date'] <= $present_date){
-                	   $introvisit['data'][$i]['status'] ='Attended';
-                	}
-                	else{
-                	   $introvisit['data'][$i]['status'] ='IV SCHEDULED';
-                	}
-                }
-                if($introvisit['data'][$i]['batch_id']!=null){
-                    $temp3= Batches::find($introvisit['data'][$i]['batch_id']);
-                    $introvisit['data'][$i]['batch_name']=$temp3->batch_name;
-                }
+	static function getThisMonthIv(){
+    	return IntroVisit::where('franchisee_id', '=', Session::get('franchiseId'))
+    		   			    ->whereRaw('MONTH(iv_date) = MONTH(NOW())')
+	                        ->whereRaw('YEAR(iv_date) = YEAR(NOW())')
+	                        ->count();
+                                
+    }
+
+    static function getAllIntrovisitforReport($inputs){
+    	$present_date = Carbon::now();
+        $introvisit['data']= Introvisit::where('franchisee_id','=',Session::get('franchiseId'))
+                           ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                           ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                           ->get();
+        //return $present_date;
+        for($i=0;$i<count($introvisit['data']);$i++){
+            $temp=  Customers::find($introvisit['data'][$i]['customer_id']);
+            $introvisit['data'][$i]['customer_name']=$temp->customer_name." ".$temp->customer_lastname;
+            $temp2=  Students::find($introvisit['data'][$i]['student_id']);
+            $introvisit['data'][$i]['student_name']=$temp2->student_name;
+            $temp4= StudentClasses::find($introvisit['data'][$i]['student_id']);
+            $introvisit['data'][$i]['status']=$temp2->status;
+            if($introvisit['data'][$i]['status']==''){
+            	if($introvisit['data'][$i]['iv_date'] <= $present_date){
+            	   $introvisit['data'][$i]['status'] ='Attended';
+            	}
+            	else{
+            	   $introvisit['data'][$i]['status'] ='IV SCHEDULED';
+            	}
             }
-            return $introvisit;
-        }	
+            if($introvisit['data'][$i]['batch_id']!=null){
+                $temp3= Batches::find($introvisit['data'][$i]['batch_id']);
+                $introvisit['data'][$i]['batch_name']=$temp3->batch_name;
+            }
+        }
+        return $introvisit;
+    }	
 	
 }

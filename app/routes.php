@@ -23,6 +23,7 @@ Route::any('/courses', 'CoursesController@viewCourses');
 Route::any('/terms_conditions', 'DashboardController@terms_conditions');
 Route::any('dashboard/toDeleteMultiple','DashboardController@toDeleteMultiple');
 Route::any('/dashboard/UpdateBatchSchedule','DashboardController@UpdateBatchSchedule');
+Route::any('/dashboard/toEditTheEnrollmentEndDates','DashboardController@toEditTheEnrollmentEndDates');
 
 Route::any('/classes', 'ClassesController@add_new_classes');
 Route::any('/add_new_class_franchise', 'ClassesController@add_new_class_franchise');

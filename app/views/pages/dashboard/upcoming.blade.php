@@ -274,15 +274,19 @@
                     <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
-                            <center><span class="uk-text-muted uk-text-small" id = "Titles">Inquiries</span></center>
+                            <center><span class="uk-text-muted uk-text-small" id = "Titles">Enrolled Information</span></center>
                             <div class = "row" style = "">
-                                <div class = "col-md-6">
-                                    <center><span class="uk-text-muted uk-text-small">Today</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$todaysCustomerReg}}<noscript>12456</noscript></span></h2></center>
+                                <div class = "col-md-4" align="center">
+                                    <span class="uk-text-muted uk-text-small">Today</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">{{$todayEnrolledList}}<noscript>12456</noscript></span></h2>
                                 </div>
-                                <div class = "col-md-6" align= "center">
-                                    <center><span class="uk-text-muted uk-text-small">Till now</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$customerCount}}<noscript>12456</noscript></span></h2></center>
+                                <div class = "col-md-4" align= "center">
+                                    <span class="uk-text-muted uk-text-small">Week</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">{{$thisWeekEnrollment}}<noscript>12456</noscript></span></h2>
+                                </div>
+                                <div class = "col-md-4" align= "center">
+                                    <span class="uk-text-muted uk-text-small">Month</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">{{$thisMonthEnrollment}}<noscript>12456</noscript></span></h2>
                                 </div>
                             </div>
                             
@@ -293,19 +297,36 @@
                     <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
-                            <center><span class="uk-text-muted uk-text-small" id = "Titles">Family Memberships</span></center>
+                            <center><span class="uk-text-muted uk-text-small" id = "Titles">Revenue Details</span></center>
                              
-
-                            <div class = "row" style = "">
-                                <div class = "col-md-6">
-                                    <center><span class="uk-text-muted uk-text-small">Today</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$todaysMemberReg}}<noscript>12456</noscript></span></h2></center>
+                            <table style="width:100%;text-align: center;">
+                              <tr>
+                                <td>Today</td>
+                                <td>Rs. {{$todayRevenueDetails}}/-</td>
+                              </tr>
+                              <tr>
+                                <td>Week</td>
+                                <td>Rs. {{$thisWeekRevenueDetails}}/-</td>
+                              </tr>
+                              <tr>
+                                <td>MTD</td>
+                                <td>Rs. {{$thisMonthRevenueDetails}}/-</td>
+                              </tr>
+                            </table>
+                           <!--  <div class = "row" style = "">
+                                <div class = "col-md-4">
+                                    <span class="uk-text-muted uk-text-small">Today</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">{{ 5555555}}<noscript>12456</noscript></span></h2>
                                 </div>
-                                <div class = "col-md-6" align= "center">
-                                    <center><span class="uk-text-muted uk-text-small">Till now</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$membersCount}}<noscript>12456</noscript></span></h2></center>
+                                <div class = "col-md-4" align= "center">
+                                    <span class="uk-text-muted uk-text-small">Week</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">{{$membersCount}}<noscript>12456</noscript></span></h2>
                                 </div>
-                            </div>
+                                <div class = "col-md-4" align= "center">
+                                    <span class="uk-text-muted uk-text-small">MTD</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">{{$membersCount}}<noscript>12456</noscript></span></h2>
+                                </div>
+                            </div> -->
                             
                         </div>
                     </div>
@@ -314,15 +335,15 @@
                     <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
-                            <center><span class="uk-text-muted uk-text-small" id = "Titles"> Prospects</span></center>
-                            <div class = "row" style = "">
-                                <div class = "col-md-6">
-                                    <center><span class="uk-text-muted uk-text-small">Today</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$todaysNonmemberReg}}<noscript>12456</noscript></span></h2></center>
+                            <center><span class="uk-text-muted uk-text-small" id = "Titles">Leads Information</span></center>
+                            <div class = "row" style="text-align: center;">
+                                <div class = "col-md-6" >
+                                    <span class="uk-text-muted uk-text-small">Open</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">{{count($openLeads)}}<noscript>12456</noscript></span></h2>
                                 </div>
-                                <div class = "col-md-6" align= "center">
-                                    <center><span class="uk-text-muted uk-text-small">Till now</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$NonmembersCount}}<noscript>12456</noscript></span></h2></center>
+                                <div class = "col-md-6">
+                                    <span class="uk-text-muted uk-text-small">Hot</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">{{count($hotLeads)}}<noscript>12456</noscript></span></h2>
                                 </div>
                             </div>
                             
@@ -335,20 +356,31 @@
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <center><span class="uk-text-muted uk-text-small" id = "Titles">Enrolled Kids</span></center>
                             <div class = "row" style = "">
-                                <div class = "col-md-6">
-                                    <center><span class="uk-text-muted uk-text-small">Today</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">@if($todaysEnrolledCustomers){{$todaysEnrolledCustomers}}@else 0 @endif<noscript>12456</noscript></span></h2></center>
+                                <div class = "col-md-4">
+                                    <center><span class="uk-text-muted uk-text-small">Total</span></center>
+                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">    
+                                    {{ $singleEnrollments + $multipleEnrollments }}
+                                    <noscript>12456</noscript></span></h2></center>
                                 </div>
-                                <div class = "col-md-6" align= "center">
-                                    <center><span class="uk-text-muted uk-text-small">Till now</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">
-                                                 @if($enrolledCustomers)
-                            
-                                                 {{$enrolledCustomers}}
-                                                  @else
-                                0
-                          @endif
-                                            <noscript>12456</noscript></span></h2></center>
+                                <div class = "col-md-4">
+                                    <span class="uk-text-muted uk-text-small">Single</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">@if($singleEnrollments)
+                                        {{$singleEnrollments}}
+                                    @else 
+                                        0 
+                                    @endif
+                                    <noscript>12456</noscript></span></h2>
+                                </div>
+
+                                <div class = "col-md-3" align= "center">
+                                    <span class="uk-text-muted uk-text-small">Multiple</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">
+                                     @if($multipleEnrollments)
+                                        {{$multipleEnrollments}}
+                                     @else 
+                                        0 
+                                     @endif
+                                    <noscript>12456</noscript></span></h2>
                                 </div>
                             </div>
                             
@@ -362,9 +394,17 @@
                             <center><span class="uk-text-muted uk-text-small" id = "Titles">Follow-up Customers</span></center>
                             <!--<center><h2 class="uk-margin-remove"><span class="countUpMe">{{$reminderCount}}<noscript>64</noscript></span></h2></center>-->
                             <div class = "row" style = "">
-                                <div class = "col-md-12">  
-                                    <center><span class="uk-text-muted uk-text-small">Today</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$reminderCount}}<noscript>64</noscript></span></h2></center>
+                                <div class = "col-md-4">  
+                                    <span class="uk-text-muted uk-text-small">Today</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">{{count($todaysFollowup)}}<noscript>64</noscript></span></h2>
+                                </div>
+                                <div class = "col-md-4">  
+                                    <span class="uk-text-muted uk-text-small">Pending</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">{{count($activeRemindersCount)}}<noscript>64</noscript></span></h2>
+                                </div>
+                                <div class = "col-md-4">  
+                                    <span class="uk-text-muted uk-text-small">Future</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">{{count($futurefollowups)}}<noscript>64</noscript></span></h2>
                                 </div>
                             </div>
                         </div>
@@ -375,17 +415,47 @@
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <center><span class="uk-text-muted uk-text-small" id = "Titles">Introductory Visit</span></center>
-                            <div class = "row" style = "">
-                                <div class = "col-md-6">
-                                    <center><span class="uk-text-muted uk-text-small">Today</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$introVisitCount}}<noscript>12456</noscript></span></h2></center>
+                            <table style="width:100%; text-align: center;" >
+                              <tr class="uk-text-muted uk-text-small">
+                                <th></th>
+                                <th>Scheduled</th> 
+                                <th>Attended</th>
+                              </tr>
+                              <tr>
+                                <td>Today</td>
+                                <td>{{$todayScheduledIvs}}</td>
+                                <td>{{$todayAttendedIvs}}</td>
+                              </tr>
+                              <tr>
+                                <td>Week</td>
+                                <td>{{$thisWeekScheduledIvs}}</td>
+                                <td>{{$thisWeekAttendedIvs}}</td>
+                              </tr>
+                              <tr>
+                                <td>Month</td>
+                                <td>{{$thisMonthIvScheduled}}</td>
+                                <td>{{$thisMonthAttendedIvs}}</td>
+                              </tr>
+                            </table>
+                            <!-- <table>
+                                <div class = "row" style = "">
+                                    <div class = "col-md-4">
+                                        <span class="uk-text-muted uk-text-small">Today</span>
+                                        <span class="uk-text-muted uk-text-small">Today</span>
+                                        <span class="uk-text-muted uk-text-small">Week</span>
+                                        <span class="uk-text-muted uk-text-small">Month</span> -->
+                                        <!-- <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$introVisitCount}}<noscript>12456</noscript></span></h2></center> -->
+                                   <!--  </div>
+                                    <div class = "col-md-4">
+                                        <span class="uk-text-muted uk-text-small">Scheduled</span>
+                                        <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$introVisitCount}}<noscript>12456</noscript></span></h2></center>
+                                    </div>
+                                    <div class = "col-md-4" align= "center">
+                                        <span class="uk-text-muted uk-text-small">Attended</span>
+                                        <h2 class="uk-margin-remove"><span class="countUpMe">{{$totalIntrovisitCount}}<noscript>12456</noscript></span></h2>
+                                    </div>
                                 </div>
-                                <div class = "col-md-6" align= "center">
-                                    <center><span class="uk-text-muted uk-text-small">Till now</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$totalIntrovisitCount}}<noscript>12456</noscript></span></h2></center>
-                                </div>
-                            </div>
-                            
+                            </table> -->
                         </div>
                     </div>
                 </div>
@@ -395,13 +465,17 @@
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <center><span class="uk-text-muted uk-text-small" id = "Titles">Birthday Party</span></center>
                             <div class = "row" style = "">
-                                <div class = "col-md-6">
+                                <div class = "col-md-4">
                                     <center><span class="uk-text-muted uk-text-small">Today</span></center>
                                     <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$todaysbpartycount}}<noscript>12456</noscript></span></h2></center>
                                 </div>
-                                <div class = "col-md-6" align= "center">
-                                    <center><span class="uk-text-muted uk-text-small">Till now</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$totalbpartyCount}}<noscript>12456</noscript></span></h2></center>
+                                <div class = "col-md-4">
+                                    <center><span class="uk-text-muted uk-text-small">Week</span></center>
+                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$bdayPartyInThisWeek}}<noscript>12456</noscript></span></h2></center>
+                                </div>
+                                <div class = "col-md-4" align= "center">
+                                    <center><span class="uk-text-muted uk-text-small">Month</span></center>
+                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">{{$bdayPartyInThisMonth}}<noscript>12456</noscript></span></h2></center>
                                 </div>
                             </div>
                             

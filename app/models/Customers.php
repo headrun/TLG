@@ -91,7 +91,88 @@ class Customers extends \Eloquent {
             }
 	}
 	
-	
+	static function getOpenLeads(){
+		$presentdate=  Carbon::now();
+	    $customer_members=  CustomerMembership::
+                                  where('membership_start_date','<=',$presentdate->toDateString())
+                                  ->where('membership_end_date','>=',$presentdate->toDateString())
+                                  ->select('customer_id')
+                                  ->get();
+           
+            $id;
+            foreach($customer_members as $c){
+                $id[]=$c['customer_id'];
+            }
+           
+           
+            $customers = Customers::where('franchisee_id','=',Session::get('franchiseId'))
+                        ->whereNotIn('id',$id)
+                        ->orderBy('id','Desc')
+                        ->get();
+            $customer_id;
+            foreach($customers as $c){
+                $customer_id[]=$c['id'];
+            }
+
+            $iv = IntroVisit::where('franchisee_id', '=', Session::get('franchiseId'))
+            				->whereIn('customer_id',$customer_id)
+            				->get();
+
+            $iv_customer_id;
+            foreach($iv as $c){
+                $iv_customer_id[]=$c['student_id'];
+            }
+            					
+            $class_moreThan_one = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+            					->whereIn('student_id', $iv_customer_id)
+            					->where('status', '!=', 'introvisit')
+            					->get();
+            //print_r(count($class_moreThan_one)); die();		 
+        return $class_moreThan_one;
+            
+	}
+
+	static function getHotLeads(){
+		$presentdate=  Carbon::now();
+	    $customer_members=  CustomerMembership::
+                                  where('membership_start_date','<=',$presentdate->toDateString())
+                                  ->where('membership_end_date','>=',$presentdate->toDateString())
+                                  ->select('customer_id')
+                                  ->get();
+           
+            $id;
+            foreach($customer_members as $c){
+                $id[]=$c['customer_id'];
+            }
+           
+           
+            $customers = Customers::where('franchisee_id','=',Session::get('franchiseId'))
+                        ->whereNotIn('id',$id)
+                        ->orderBy('id','Desc')
+                        ->get();
+            $customer_id;
+            foreach($customers as $c){
+                $customer_id[]=$c['id'];
+            }
+
+            $iv = IntroVisit::where('franchisee_id', '=', Session::get('franchiseId'))
+            				->whereIn('customer_id',$customer_id)
+            				->get();
+
+            $iv_customer_id;
+            foreach($iv as $c){
+                $iv_customer_id[]=$c['student_id'];
+            }
+            					
+            $class_moreThan_one = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+            					->whereIn('student_id', $iv_customer_id)
+            					->where('status', '=', 'introvisit')
+            					->get();
+            //print_r(count($class_moreThan_one)); die();		 
+        return $class_moreThan_one;
+            
+	}
+    
 	static function saveCustomers($inputs){
 	
 	

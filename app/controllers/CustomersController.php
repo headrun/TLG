@@ -316,7 +316,7 @@ class CustomersController extends \BaseController {
                         for($i=0;$i<count($customer_student_data);$i++){
                             for($j=0;$j<count($customer_student_data[$i]['student_classes_data']);$j++){
                                 $find=  Batches::find($customer_student_data[$i]['student_classes_data'][$j]['batch_id']);
-                                $customer_student_data[$i]['student_classes_data'][$j]['batch_name']=$find->batch_name;
+                                $customer_student_data[$i]['student_classes_data'][$j]['batch_name']=$find['batch_name'];
                             }
                         }
                         

@@ -97,6 +97,53 @@ class StudentClasses extends \Eloquent {
                                       
 		return $students;
 	}
+
+    
+	static function getMultipleEnrolledList(){
+		$total;
+		$multipleEnrollments;
+		$totalEnrollments = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+							->where('status','!=','introvisit')
+							->where('enrollment_end_date', '>=',date('Y-m-d') )
+							->groupBy('student_id')
+							->groupBy(DB::Raw("date('created_at')"))
+							->get();
+
+		foreach($totalEnrollments as $c){
+                $total[] = $c['student_id'];
+                $list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                				   ->where('student_id', '=', $c['student_id'])
+                				   ->where('end_order_date', '>=', date('Y-m-d') )
+                				   ->count();
+                if($list >1){
+                	$multipleEnrollments[] = $list;
+                }   		
+        }
+        return count($multipleEnrollments);
+	}
+
+	static function getSingleEnrolledList(){
+		$total;
+		$singleEnrollments;
+		$totalEnrollments = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+							->where('status','!=','introvisit')
+							->where('enrollment_end_date', '>=',date('Y-m-d') )
+							->groupBy('student_id')
+							->groupBy(DB::Raw("date('created_at')"))
+							->get();
+		foreach($totalEnrollments as $c){
+                $total[] = $c['student_id'];
+                $list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                				   ->where('student_id', '=', $c['student_id'])
+                				   ->where('end_order_date', '>=', date('Y-m-d'))
+                				   ->count();
+
+                if($list == 1){
+                	$singleEnrollments[] = $list;
+                }   		
+        }
+        return count($singleEnrollments);
+	}
 	
         
         
@@ -151,8 +198,8 @@ class StudentClasses extends \Eloquent {
                                
                                   
 		$enrolledCustomers=$enrolledCustomers[0]->enrollmentno;	
-                if($enrolledCustomers){
-		return $enrolledCustomers;
+        if($enrolledCustomers){
+			return $enrolledCustomers;
 		}
 		return false;
 	}
@@ -226,6 +273,33 @@ class StudentClasses extends \Eloquent {
                           ->sum('selected_sessions');
             
         }
+	static public function getTodayEnrollment(){
+        $presentDate = Carbon::now();
+        return StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+                             ->whereRaw('MONTH(created_at) = MONTH(NOW())')
+                             ->whereRaw('YEAR(created_at) = YEAR(NOW())')
+                             ->whereRaw('DAY(created_at) = DAY(NOW())')
+                             ->count();
+
+    }
 	
-	
+	static public function getThisWeekEnrollment(){
+        $weeekdate= new carbon();
+        $presentdate= Carbon::now();
+        $time = strtotime($presentdate);
+        $end = strtotime('last sunday, 11:59pm', $time);
+        return StudentClasses::whereDate('created_at','<=',date('Y-m-d', $time))
+                            ->where('franchisee_id','=',Session::get('franchiseId'))
+                            ->whereDate('created_at','>=',date('Y-m-d', $end))
+                            ->count();
+
+    }
+    static public function getThisMonthEnrollment(){
+        $presentDate = Carbon::now();
+        return StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+                             ->whereRaw('MONTH(created_at) = MONTH(NOW())')
+                             ->whereRaw('YEAR(created_at) = YEAR(NOW())')
+                             ->count();
+
+    }
 }

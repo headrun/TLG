@@ -20,6 +20,11 @@ class DashboardController extends \BaseController {
 			$mainMenu     =  "DASHBOARD";
 			  
 
+                        //Enrolled Kid's
+                        $singleEnrollments = StudentClasses::getSingleEnrolledList();
+                        $multipleEnrollments = StudentClasses::getMultipleEnrolledList();
+
+
 
                         //customers or Inquiries
                         $todaysCustomerReg= Customers::getCustomertodaysRegCount();
@@ -39,20 +44,54 @@ class DashboardController extends \BaseController {
                            $NonmembersCount = $emp->total;
 
                         }
-                        
+                        $weeekdate= new carbon();
+                        $presentdate= Carbon::now();
+                        //return $presentdate;
+                        $time = strtotime($presentdate);
+                        $end = strtotime('last sunday, 11:59pm', $time);
+                        //Enrolled Information
+                        $todayEnrolledList = StudentClasses::getTodayEnrollment();
+                        $thisMonthEnrollment = StudentClasses::getThisMonthEnrollment();
+                        $thisWeekEnrollment = StudentClasses::getThisWeekEnrollment();
+                       
                         //Enrolled customers(kids)
                         $todaysEnrolledCustomers=StudentClasses::getTodaysEnrolledCustomers();
 			                  $enrolledCustomers = StudentClasses::getEnrolledCustomers();
-			
-                        
-                        //for followups
+			     
+                        //Revenue Details
+                        $todayRevenueDetails = PaymentDues::whereDate('created_at','=',date('Y-m-d', $time))
+                                            ->where('franchisee_id','=',Session::get('franchiseId'))
+                                            ->sum('payment_due_amount_after_discount');
+                       
+
+                        $thisWeekRevenueDetails = PaymentDues::whereDate('created_at','<=',date('Y-m-d'))
+                                            ->where('franchisee_id','=',Session::get('franchiseId'))
+                                            ->whereDate('created_at','>=',date('Y-m-d', $end))
+                                            ->sum('payment_due_amount_after_discount');
+
+
+                        $thisMonthRevenueDetails = PaymentDues::where('franchisee_id','=',Session::get('franchiseId'))
+                                            ->whereRaw('MONTH(created_at) = MONTH(NOW())')
+                                            ->whereRaw('YEAR(created_at) = YEAR(NOW())')
+                                            ->sum('payment_due_amount_after_discount');
+
                         $reminderCount = Comments::getReminderCountByFranchiseeId();
+
+                        //get Leads Information
+                        $openLeads = Customers::getOpenLeads();
+                        $hotLeads = Customers::getHotLeads();
+                        //return $openLeads;
                         
 			                   //Introvisit
                         $totalIntrovisitCount = IntroVisit::getIntrovistCount();
 			                  $introVisitCount = IntroVisit::getIntrovisitBytoday();
 			                  $allIntrovisits  = IntroVisit::getAllActiveIntrovisit();
-
+                        $thisMonthIvScheduled = IntroVisit::getThisMonthIv();
+                        $thisMonthAttendedIvs = IntroVisit::getThisMonthAttendedIv();
+                        $todayScheduledIvs = Introvisit::getTodayScheduledIvs();
+                        $todayAttendedIvs = IntroVisit::getTodayAttendedIvs();
+                        $thisWeekScheduledIvs = IntroVisit::getThisWeekScheduledIv();
+                        $thisWeekAttendedIvs = IntroVisit::getThisWeekAttendedIvs();
                         
                         
                         for($i=0;$i<count($allIntrovisits);$i++){
@@ -83,29 +122,22 @@ class DashboardController extends \BaseController {
                               $totalclasses+=0;
                             }
                         }
-                        //return $totalclasses;
-                        /*
-                        foreach($courses as $course){
-                          $temp= DB::select(DB::raw("SELECT sum(selected_sessions) as totalno
-                                                     FROM student_classes 
-                                                     WHERE franchisee_id = ".Session::get('franchiseId').
-                                                     " AND class_id IN (select id from classes where course_id =".$course->id .")".
-                                                     " AND student_classes.status IN ('enrolled')"));
-                          if($temp[0]->totalno){
-                            $course->totalno=$temp[0]->totalno;
-                            $totalclasses+=$temp[0]->totalno;
-                          }else{
-                            $course->totalno=0;
-                            $totalclasses+=0;
-                          }
-                        }
-                        */
-                       
                         
 			//for birthdayparty
                         
-                        $totalbpartyCount=BirthdayParties::getBpartyCount();
-                        $todaysbpartycount=BirthdayParties::getBpartyCountBytoday();
+
+                        $totalbpartyCount = BirthdayParties::getBpartyCount();
+                        $todaysbpartycount = BirthdayParties::getBpartyCountBytoday();
+                        $bdayPartyInThisWeek = BirthdayParties::whereDate('birthday_party_date','<=',date('Y-m-d', $time))
+                                            ->where('franchisee_id','=',Session::get('franchiseId'))
+                                            ->whereDate('birthday_party_date','>=',date('Y-m-d', $end))
+                                            ->count();
+
+                        $bdayPartyInThisMonth  = BirthdayParties::whereRaw('MONTH(birthday_party_date) = MONTH(NOW())')
+                                            ->whereRaw('YEAR(birthday_party_date) = YEAR(NOW())')
+                                            ->where('franchisee_id','=',Session::get('franchiseId'))
+                                            ->orderBy('birthday_party_date','ASC')
+                                            ->count();
                                 
 			                  $todaysFollowup = Comments::getAllFollowup();
                         $futurefollowups= Comments::getFutureFollowup();
@@ -215,39 +247,26 @@ class DashboardController extends \BaseController {
                             
                         }
                         
-                        
-                        
-                        
-                        
                         //for birthday celebration this week
                         
-                        $presentdate= Carbon::now();;
-                        $weeekdate= new carbon();
+                        $presentdate = Carbon::now();;
+                        $weeekdate = new carbon();
                         $time = strtotime($presentdate);
                         $end = strtotime('next sunday, 11:59pm', $time);
-                        //print_r(date('Y-m-d', strtotime('+1', $end))); die;
-                        //$weekdatemon= $presentdate->endOfWeek();
-                        //$weeekdate->addDays(7);
-                        //return date('Y-m-d', $end);
                        
-                        $birthdayPresentWeek=BirthdayParties::whereDate('birthday_party_date','>=',date('Y-m-d', $time))
-                              // ->where('birthday_party_date','>=',$weekdatemon)
-                              //  ->where('birthday_party_date','<=',$weeekdate->toDateString())
-                                //->whereDate('birthday_party_date','<=',$weekdatemon->toDateString())
+                        $birthdayPresentWeek = BirthdayParties::whereDate('birthday_party_date','>=',date('Y-m-d', $time))
                                 ->whereDate('birthday_party_date','<=',date('Y-m-d', $end))
                                 ->where('franchisee_id','=',Session::get('franchiseId'))
                                 ->orderBy('birthday_party_date','ASC')
                                 ->get();
-                        //print_r(array($presentdate, $weeekdate->toDateString(), $end));
-                        //return $birthdayPresentWeek;
 
                         for($i=0;$i<count($birthdayPresentWeek);$i++){
-                          $customer_data=Customers::where('id','=',$birthdayPresentWeek[$i]['customer_id'])->distinct()->get();
-                          $birthdayPresentWeek[$i]['customer_name']= $customer_data[0]['customer_name'];
-                          $birthdayPresentWeek[$i]['mobile_no']= $customer_data[0]['mobile_no'];
-                          $birthdayPresentWeek[$i]['franchisee_id']= $customer_data[0]['franchisee_id'];
-                          $student_data=  Students::where('id','=',$birthdayPresentWeek[$i]['student_id'])->distinct()->get();
-                          $birthdayPresentWeek[$i]['student_name']=$student_data[0]['student_name'];
+                          $customer_data = Customers::where('id','=',$birthdayPresentWeek[$i]['customer_id'])->distinct()->get();
+                          $birthdayPresentWeek[$i]['customer_name'] = $customer_data[0]['customer_name'];
+                          $birthdayPresentWeek[$i]['mobile_no'] = $customer_data[0]['mobile_no'];
+                          $birthdayPresentWeek[$i]['franchisee_id'] = $customer_data[0]['franchisee_id'];
+                          $student_data = Students::where('id','=',$birthdayPresentWeek[$i]['student_id'])->distinct()->get();
+                          $birthdayPresentWeek[$i]['student_name'] = $student_data[0]['student_name'];
                         }
                         //return Session::get('franchisee_id');
 
@@ -263,7 +282,7 @@ class DashboardController extends \BaseController {
                                                             'totalbpartyCount','todaysbpartycount',
                                                            'courses','futurefollowups',
 							  'todaysCustomerReg','todaysEnrolledCustomers','enrolledCustomers','totalIntrovisitCount', 'introVisitCount', 'allIntrovisits', 'todaysFollowup', 
-							  'todaysIntrovisit','activeRemindersCount','totalclasses', 'expiringbatch');
+							  'todaysIntrovisit','activeRemindersCount','totalclasses', 'expiringbatch', 'bdayPartyInThisWeek', 'bdayPartyInThisMonth', 'todayEnrolledList', 'thisMonthEnrollment', 'thisWeekEnrollment', 'todayRevenueDetails', 'thisWeekRevenueDetails', 'thisMonthRevenueDetails', 'openLeads', 'hotLeads', 'singleEnrollments', 'multipleEnrollments', 'thisMonthIvScheduled', 'thisMonthAttendedIvs', 'todayScheduledIvs','thisWeekScheduledIvs','todayAttendedIvs','thisWeekAttendedIvs');
    
 			return View::make('pages.dashboard.upcoming',compact($viewData));
      
@@ -410,7 +429,7 @@ class DashboardController extends \BaseController {
                                        ->selectRaw('max(schedule_date) as schedule_date, batch_id')
                                        ->get();
           $batch_date[$i]['data'] = $batch_schedule[0]['schedule_date'];
-          $date[$j]['data'] = date('Y-m-d', strtotime('+1 week', strtotime($batch_date[$i]['data'])));
+          $date[$j]['data'] = date('Y-m-d', strtotime('+1 week', strtotime($batch_date[$i]['data'])));;
           $insert = BatchSchedule::where('franchisee_id', '=', Session::get('franchiseId'))
                                    ->insert(
                                      array(['schedule_date' => $date[$j]['data'], 
@@ -425,6 +444,19 @@ class DashboardController extends \BaseController {
         }
        
       
+  }
+
+  public function toEditTheEnrollmentEndDates(){
+      $enrollments = StudentClasses::where('franchisee_id','=',Session::get('franchiseId'))
+                                    ->where('status','=','enrolled')
+                                    ->get();
+      foreach ($enrollments as $enrollment) {
+        $selected_sessions = $enrollment['selected_sessions']-1;
+        $enrollment_end_date = date('Y-m-d', strtotime('+'.$selected_sessions.' week', strtotime($enrollment['enrollment_start_date'])));
+        $update_enrollment = StudentClasses::where('id','=',$enrollment['id'])
+                                           ->update(['enrollment_end_date' => $enrollment_end_date]);
+      
+      }     
   }
 	/**
 	 * Show the form for creating a new resource.
