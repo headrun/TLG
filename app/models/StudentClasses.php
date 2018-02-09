@@ -31,18 +31,14 @@ class StudentClasses extends \Eloquent {
 	
 	static function getAllEnrolledStudents($franchiseeId){
 		$present_date=Carbon::now();
-        
-        $students = StudentClasses::join('students', 'students.id','=' ,'student_classes.student_id')
-					     ->where('student_classes.franchisee_id', '=', $franchiseeId)
-					     ->where("student_classes.enrollment_end_date", ">=", $present_date)
-					     ->where('student_classes.status', '!=', 'waiting')
-					     ->where('student_classes.status', '!=', 'pending')
-					     ->where('student_classes.status', '!=', 'introvisit')
-					     ->where('student_classes.status', '!=', 'makeup')
-					     ->selectRaw('min(student_classes.enrollment_start_date) as enrollment_start_date, max(student_classes.enrollment_end_date) as enrollment_end_date, student_classes.student_id, students.student_name, students.student_gender, students.student_date_of_birth,students.franchisee_id')
-					     ->groupBy('students.id')
-					     ->get();
-       					     
+        	$students = StudentClasses::join('students', 'students.id','=' ,'student_classes.student_id')
+                                                        ->where('student_classes.franchisee_id', '=', $franchiseeId)
+                                                        ->where('student_classes.status','!=','introvisit')
+                                                        ->where('student_classes.enrollment_end_date', '>=',date('Y-m-d'))
+                                                        ->selectRaw('min(student_classes.enrollment_start_date) as enrollment_start_date,max(student_classes.enrollment_end_date) as enrollment_end_date,student_classes.student_id, students.student_name, students.student_gender, students.student_date_of_birth,students.franchisee_id')  
+                                                        ->groupBy('student_classes.student_id')
+                                                       // ->groupBy(DB::Raw("date('student_classes.created_at')"))
+                                                        ->get();
         return $students;
 	}
 
@@ -109,6 +105,7 @@ class StudentClasses extends \Eloquent {
 							->groupBy(DB::Raw("date('created_at')"))
 							->get();
 
+	//	print_r(count($totalEnrollments)); die();
 		foreach($totalEnrollments as $c){
                 $total[] = $c['student_id'];
                 $list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
@@ -131,6 +128,7 @@ class StudentClasses extends \Eloquent {
 							->groupBy('student_id')
 							->groupBy(DB::Raw("date('created_at')"))
 							->get();
+              //  print_r(count($totalEnrollments)); die();
 		foreach($totalEnrollments as $c){
                 $total[] = $c['student_id'];
                 $list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
@@ -190,18 +188,19 @@ class StudentClasses extends \Eloquent {
 		
 		$franchiseeId = Session::get('franchiseId');
 		$present_date=Carbon::now();
-
+	
 		$enrolledCustomers = DB::select(DB::raw("SELECT count(distinct(students.id)) as enrollmentno
                     FROM student_classes INNER JOIN students ON student_classes.student_id = students.id
                     WHERE  students.franchisee_id='".$franchiseeId."' AND student_classes.status IN ('enrolled', 'transferred_to_other_class', 'transferred_class') AND enrollment_end_date >= '".$present_date->toDateString()."'")
       );
-                               
-                                  
-		$enrolledCustomers=$enrolledCustomers[0]->enrollmentno;	
-        if($enrolledCustomers){
-			return $enrolledCustomers;
-		}
-		return false;
+
+
+                $enrolledCustomers=$enrolledCustomers[0]->enrollmentno;
+                if($enrolledCustomers){
+	                return $enrolledCustomers;
+                }
+                return false;		
+ 
 	}
 	
   static function getTodaysEnrolledCustomers(){

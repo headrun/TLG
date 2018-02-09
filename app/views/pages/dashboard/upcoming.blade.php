@@ -343,7 +343,7 @@
                                 </div>
                                 <div class = "col-md-6">
                                     <span class="uk-text-muted uk-text-small">Hot</span>
-                                    <h2 class="uk-margin-remove"><span class="countUpMe">{{count($hotLeads)}}<noscript>12456</noscript></span></h2>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">{{ $hotLeads }}<noscript>12456</noscript></span></h2>
                                 </div>
                             </div>
                             
@@ -359,13 +359,13 @@
                                 <div class = "col-md-4">
                                     <center><span class="uk-text-muted uk-text-small">Total</span></center>
                                     <center><h2 class="uk-margin-remove"><span class="countUpMe">    
-                                    {{ $singleEnrollments + $multipleEnrollments }}
+                                    {{ $enrolledCustomers }}
                                     <noscript>12456</noscript></span></h2></center>
                                 </div>
                                 <div class = "col-md-4">
                                     <span class="uk-text-muted uk-text-small">Single</span>
                                     <h2 class="uk-margin-remove"><span class="countUpMe">@if($singleEnrollments)
-                                        {{$singleEnrollments}}
+                                        {{$enrolledCustomers - $multipleEnrollments}}
                                     @else 
                                         0 
                                     @endif

@@ -23,7 +23,7 @@ class DashboardController extends \BaseController {
                         //Enrolled Kid's
                         $singleEnrollments = StudentClasses::getSingleEnrolledList();
                         $multipleEnrollments = StudentClasses::getMultipleEnrolledList();
-
+			$enrolledCustomers = StudentClasses::getEnrolledCustomers();
 
 
                         //customers or Inquiries
@@ -110,20 +110,22 @@ class DashboardController extends \BaseController {
                         $present_date=Carbon::now();
                         $totalclasses=0;
                         foreach($courses as $course){
-                          $temp= DB::select(DB::raw("SELECT count('student_id') as totalno FROM student_classes 
-                                                     WHERE franchisee_id = '".Session::get('franchiseId')."' AND enrollment_end_date >= '".date('Y-m-d')."' AND class_id IN (select id from classes where course_id =".$course->id .") AND student_classes.status IN ('enrolled')"));
-
-
-                            if($temp[0]->totalno){
-                              $course->totalno=$temp[0]->totalno;
-                              $totalclasses+=$temp[0]->totalno;
+                          $temp= DB::select(DB::raw("SELECT student_id FROM student_classes 
+                                                     WHERE franchisee_id = '".Session::get('franchiseId')."' AND enrollment_end_date >= '".date('Y-m-d')."' AND class_id IN (select id from classes where course_id =".$course->id .") AND student_classes.status IN ('enrolled') GROUP BY student_id ORDER BY count('student_id')"));
+                          //	var_dump($temp); die;
+			//$totalclasses = $totalclasses + count($temp);
+			
+			 if($temp){
+                              $course->totalno=count($temp);
+                              $totalclasses+=count($temp);
                             }else{
                               $course->totalno=0;
                               $totalclasses+=0;
-                            }
-                        }
+                            } 
                         
-			//for birthdayparty
+			}
+                                
+				//for birthdayparty
                         
 
                         $totalbpartyCount = BirthdayParties::getBpartyCount();
