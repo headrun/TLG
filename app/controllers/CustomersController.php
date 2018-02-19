@@ -40,24 +40,29 @@ class CustomersController extends \BaseController {
 			$followUpsArray = array();
                         if(CustomerMembership::count()){
 			    $customers = Customers::getAllCustomerNonMembersByFranchiseeId ( Session::get ( 'franchiseId' ) );
-                        }else{
+			}else{
                             $customers=Customers::where('franchisee_id','=',Session::get ( 'franchiseId' ))->get();    
                         }
+		//	return $customers;
                         $hotLeads = Customers::getHotLeadsForProspects();
                         $openLeads =  Customers::getOpenLeadsForProspects();
 			$follow_ups = Customers::FollowupSForProspects();  
+//			return $follow_ups;
 			foreach($follow_ups as $key=> $value) {
 			    $followUpsArray[$value['customer_id']] = array('reminder_date'=> $value['reminder_date'],
-									'followup_type'=> $value['followup_type']	 
+									'followup_type'=> $value['followup_type'],
+									'lead_status'=>$value['lead_status']	 
 							             );
 			}
-	                
+				                
 			foreach($customers as $key=> $value) {
 			    $customers[$key]['reminder_date'] = '';
 			    $customers[$key]['followup_type'] = '';
+			    $customers[$key]['lead_status'] = '';
 			    if(array_key_exists($value['id'], $followUpsArray)) {
 				$customers[$key]['reminder_date'] = $followUpsArray[$value['id']]['reminder_date'];
 				$customers[$key]['followup_type'] = $followUpsArray[$value['id']]['followup_type'];
+				$customers[$key]['lead_status'] = $followUpsArray[$value['id']]['lead_status'];
 			    }
 			}
 
@@ -599,7 +604,17 @@ class CustomersController extends \BaseController {
             return Response::json(array('status'=>'success'));
         }
         
-        
+        public function UpdateCustomerLogs(){
+		$inputs=Input::all();
+	//	return $inputs
+		$updateLeadStatus =  Comments::where('customer_id', '=', $inputs['customer_id'])
+				->update(['lead_status' => $inputs['lead_type']]);
+		if($updateLeadStatus){
+			return Response::json(array('status'=>'success'));
+		}else {
+			return Response::json(array('status'=>'failed'));
+		}				
+	} 
         
         public function getUniqueLocality(){
             if(Auth::check()){

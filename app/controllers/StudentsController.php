@@ -1750,8 +1750,15 @@ public function enrollKid2(){
                      
                         $commentsInput['followupType']  = $introvisit['followup_type'];
                         $commentsInput['commentStatus']= $inputs['ivstatus'];
-                        $commentsInput['commentType']   = $inputs['iveditAction']; 
-                           
+                        $commentsInput['commentType']   = $inputs['iveditAction'];
+			if($inputs['lead_status'] == 'Yes'){  
+                        	$commentsInput['LeadStatus'] = 'very_interested';
+			}else if($inputs['lead_status'] == 'May be'){
+				$commentsInput['LeadStatus'] = 'interested';
+			}else {
+				$commentsInput['LeadStatus'] = 'not_interested';
+			}
+		//	return $commentsInput['leadStatus'];  
       $commentsInput['commentText']    = $commentText;
             
                         if($inputs['ivstatus']!= 'ENROLLED'){

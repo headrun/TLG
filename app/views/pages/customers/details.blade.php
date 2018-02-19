@@ -1446,13 +1446,13 @@ function saveIv(){
 
 	//var ivid = $("#iveditSelect").data('iveditid');
 	//var ivstatus = $("#iveditSelect").val();
-
+       //var lead_status = $("input[name='leads']:checked").val();
 	$.ajax({
         type: "POST",
         url: "{{URL::to('/quick/editIntrovisit')}}",
         data:{'iv_id':$('#iv_id').val(), "customerCommentTxtarea":$("#ivcustomerCommentTxtarea").val(),
               'reminder-date':$('#Reminder-date').val(),'ivstatus':$('#iveditstatusSelect').val(),
-              'iveditAction':$('#iveditActionSelect').val(),'reschedule_date':$('#Reschedule-date').val()},
+              'iveditAction':$('#iveditActionSelect').val(),'reschedule_date':$('#Reschedule-date').val(), 'lead_status':$("input[name='leads']:checked").val()},
         //data: {'classId': $("#eligibleClassesCbx").val(), 'batchId':$("#batchCbx").val(), "studentId":studentId},
         dataType:"json",
         success: function (response)
@@ -4729,6 +4729,24 @@ $('#memberhsipchequeNumber').keyup(function(){
 										{{Form::text('Reschedule-date',
 										null,array('id'=>'Reschedule-date','class' =>
 										'uk-form-width-medium'))}}
+								</div>
+			       </div>
+			<div class="uk-width-1-4" id="leadsInfo"></div>
+				<div>
+								<div class="parsley-row"><br><br>											
+									<label for="forLeadsInfo" class="inline-label">For Leads info<span
+                                                                                                class="req">*</span></label>	
+    										<label>
+        										<input type="radio" name="leads" value="Yes"> Yes
+    										</label>
+    										<label>
+        										<input type="radio" name="leads" value="No"> No
+    										</label>
+    										<label>
+        										<input type="radio" name="leads" value="May be"> May be
+    										</label>
+
+                           
 								</div>
 							</div>
                         </div>

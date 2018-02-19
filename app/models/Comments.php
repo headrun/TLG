@@ -48,6 +48,9 @@ class Comments extends \Eloquent {
                 if(isset($input['commentStatus'])){
                     $comments['followup_status']=$input['commentStatus'];
                 }
+		if(isset($input['LeadStatus'])){
+                    $comments['lead_status']=$input['LeadStatus'];
+                }
                 if(isset($input['complaint_id'])){
                     $comments['complaint_id']=$input['complaint_id'];
                 }

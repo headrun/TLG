@@ -263,7 +263,7 @@ class Customers extends \Eloquent {
             $iv = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
                                         ->whereIn('customer_id',$customer_id)
                                       //  ->where('followup_status', '=', 'FOLLOW_CALL')
-					->selectRaw('reminder_date, followup_type, customer_id')
+					->selectRaw('reminder_date, followup_type, customer_id, lead_status')
                                         ->where('reminder_date','!=','NULL')
 					->where('followup_type', '!=','PAYMENT')
 				        ->groupBy('customer_id')
