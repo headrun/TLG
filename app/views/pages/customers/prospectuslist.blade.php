@@ -266,7 +266,9 @@ $("#customerSubmit").click(function (event){
 		                                <th>Customer</th>
 		                                <th>Email</th>
 		                                <th>Mobile No</th>
-		                                <th>Address</th>
+                                                <th>Followup Type</th>
+		                                <th>Followup Date</th>
+                                                <th>Lead Type</th>
 		                                <!-- <th>Action</th> -->
 		                            </tr>
 		                            </thead>
@@ -277,11 +279,23 @@ $("#customerSubmit").click(function (event){
 		                                <td>{{$customer->customer_name.' '}}&nbsp;{{$customer->customer_lastname}}</td>
 		                                <td>{{$customer->customer_email}}</td>
 		                                <td>{{$customer->mobile_no}}</td>
-		                                <td>{{$customer->building}} {{$customer->apartment_name}} {{$customer->lane}}
-		                                <a style="display: none;" href="{{url()}}/customers/view/{{$customer->id}}"></a>
-		                                </td>
+						<td>{{$customer->followup_type}}</td>
+						<td>{{$customer->reminder_date}}</td>
+						@if(in_array($customer->id, $hotLeads))	
+							<td>{{ 'Hot' }}
+		                                		<a style="display: none;" href="{{url()}}/customers/view/{{$customer->id}}"></a>
+		                                        </td>
+		                                @elseif(in_array($customer->id, $openLeads))
+							<td>{{ 'Open' }}
+                                                		<a style="display: none;" href="{{url()}}/customers/view/{{$customer->id}}"></a>
+                                                        </td>
+						@else
+							<td>
+                                                		<a style="display: none;" href="{{url()}}/customers/view/{{$customer->id}}"></a>
+                                                        </td>
+						@endif
 		                                <!-- <td><a class="md-btn md-btn-flat md-btn-flat-primary" href="{{url()}}/customers/view/{{$customer->id}}">View</a></td> -->
-		                                
+		                             
 		                            </tr>
 		                            @endforeach
                                             <?php } ?>

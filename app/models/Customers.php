@@ -190,9 +190,95 @@ class Customers extends \Eloquent {
                                      ->where('followup_status', '=', 'ATTENDED/CELEBRATED')
                                      ->groupBy('customer_id')
                                      ->get();
-            return ($student_classes);
+	    $hotLead_id;
+            foreach($student_classes as $c){
+		$hotLead_id[] = $c['customer_id'];
+	    }           
+	    return $hotLead_id;
         }
     
+	static function getOpenLeadsForProspects(){
+                $presentdate=  Carbon::now();
+            $customer_members=  CustomerMembership::
+                                  where('membership_start_date','<=',$presentdate->toDateString())
+                                  ->where('membership_end_date','>=',$presentdate->toDateString())
+                                  ->select('customer_id')
+                                  ->get();
+
+            $id;
+            foreach($customer_members as $c){
+                $id[]=$c['customer_id'];
+            }
+
+
+            $customers = Customers::where('franchisee_id','=',Session::get('franchiseId'))
+                        ->whereNotIn('id',$id)
+                        ->orderBy('id','Desc')
+                        ->get();
+    //        print_r(count($customers)); die();
+            $customer_id;
+            foreach($customers as $c){
+                $customer_id[]=$c['id'];
+            }
+
+            $iv = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                        ->whereIn('customer_id',$customer_id)
+                                        ->where('followup_status', '=', 'FOLLOW_CALL')
+                                        ->groupBy('customer_id')
+                                        ->get();
+
+
+            $hotLead_id;
+            foreach($iv as $c){
+                $hotLead_id[] = $c['customer_id'];
+            }
+            return $hotLead_id;
+
+        }
+
+	static function FollowupSForProspects(){
+	    $presentdate=  Carbon::now();
+            $customer_members=  CustomerMembership::
+                                  where('membership_start_date','<=',$presentdate->toDateString())
+                                  ->where('membership_end_date','>=',$presentdate->toDateString())
+                                  ->select('customer_id')
+                                  ->get();
+
+            $id;
+            foreach($customer_members as $c){
+                $id[]=$c['customer_id'];
+            }
+
+
+            $customers = Customers::where('franchisee_id','=',Session::get('franchiseId'))
+                        ->whereNotIn('id',$id)
+                        ->orderBy('id','Desc')
+                        ->get();
+    //        print_r(count($customers)); die();
+            $customer_id;
+            foreach($customers as $c){
+                $customer_id[]=$c['id'];
+            }
+
+            $iv = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                        ->whereIn('customer_id',$customer_id)
+                                      //  ->where('followup_status', '=', 'FOLLOW_CALL')
+					->selectRaw('reminder_date, followup_type, customer_id')
+                                        ->where('reminder_date','!=','NULL')
+					->where('followup_type', '!=','PAYMENT')
+				        ->groupBy('customer_id')
+                                        ->get();	
+
+        //            ->havingRaw('max(customer_logs.reminder_date) < "'.$today.'"')
+            $follow_ups;
+            foreach($iv as $c){
+                $follow_ups[] = $c['customer_id'];
+            }
+            return $iv;
+
+        }
+
+
 	static function saveCustomers($inputs){
 	
 	
@@ -289,7 +375,13 @@ class Customers extends \Eloquent {
                             ->whereNotIn('id',$id)
                             ->orderBy('id','Desc')
                             ->get();
-    
+ 		$comment_id;
+
+		foreach($customers as $c){
+		    $commit_id[] = $c['id'];
+		}
+   
+
                 return $customers;        
 	}
 	

@@ -37,20 +37,39 @@ class CustomersController extends \BaseController {
 			
 			$currentPage = "PROSPECTUS_LIST";
 			$mainMenu = "CUSTOMERS_MAIN";
-			//$customer_members=  CustomerMembership::count();
+			$followUpsArray = array();
                         if(CustomerMembership::count()){
-			$customers = Customers::getAllCustomerNonMembersByFranchiseeId ( Session::get ( 'franchiseId' ) );
+			    $customers = Customers::getAllCustomerNonMembersByFranchiseeId ( Session::get ( 'franchiseId' ) );
                         }else{
-                        $customers=Customers::where('franchisee_id','=',Session::get ( 'franchiseId' ))->get();    
+                            $customers=Customers::where('franchisee_id','=',Session::get ( 'franchiseId' ))->get();    
                         }
-                        
+                        $hotLeads = Customers::getHotLeadsForProspects();
+                        $openLeads =  Customers::getOpenLeadsForProspects();
+			$follow_ups = Customers::FollowupSForProspects();  
+			foreach($follow_ups as $key=> $value) {
+			    $followUpsArray[$value['customer_id']] = array('reminder_date'=> $value['reminder_date'],
+									'followup_type'=> $value['followup_type']	 
+							             );
+			}
+	                
+			foreach($customers as $key=> $value) {
+			    $customers[$key]['reminder_date'] = '';
+			    $customers[$key]['followup_type'] = '';
+			    if(array_key_exists($value['id'], $followUpsArray)) {
+				$customers[$key]['reminder_date'] = $followUpsArray[$value['id']]['reminder_date'];
+				$customers[$key]['followup_type'] = $followUpsArray[$value['id']]['followup_type'];
+			    }
+			}
+
                         $provinces = Provinces::getProvinces ( "IN" );
 			$viewData = array (
 					'customers',
+                                        'hotLeads',
+			                'openLeads',
 					'currentPage',
 					'mainMenu',
 					'provinces' 
-			);
+			            );
 			return View::make ( 'pages.customers.prospectuslist', compact ( $viewData ) );
 		} else {
 			return Redirect::to ( "/" );
@@ -88,7 +107,7 @@ class CustomersController extends \BaseController {
 						
 						$membershipInput['customer_id']           = $addCustomerResult->id;
 						$membershipInput['membership_type_id']    = $inputs['membershipType'];						
-						CustomerMembership::addMembership($membershipInput);
+							CustomerMembership::addMembership($membershipInput);
 						
 						$order['customer_id']     = $addCustomerResult->id;
 						$order['payment_for']     = "membership";
