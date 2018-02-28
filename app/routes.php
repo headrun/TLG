@@ -292,7 +292,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('getBatchesForOldCustomer','BatchesController@getBatchesForOldCustomer');
         Route::any('getbatchesbybatchidanddate','BatchesController@getbatchesbybatchidanddate');
         Route::any('getBatchDatesByBatchId','BatchesController@getBatchDatesByBatchId');
-        
+        Route::any('getTotalBatchesForSelectedDate','BatchesController@getTotalBatchesForSelectedDate'); 
         /**
 	 *  --------------------------------------------------------------------------------------------------------------------------------------
 	 * Reports related Ajax calls

@@ -4734,8 +4734,8 @@ $('#memberhsipchequeNumber').keyup(function(){
 			<div class="uk-width-1-4" id="leadsInfo"></div>
 				<div>
 								<div class="parsley-row"><br><br>											
-									<label for="forLeadsInfo" class="inline-label">For Leads info<span
-                                                                                                class="req">*</span></label>	
+									<label for="forLeadsInfo" class="inline-label">For Leads info
+                                                                                                </label>	
     										<label>
         										<input type="radio" name="leads" value="Yes"> Yes
     										</label>

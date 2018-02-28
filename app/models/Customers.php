@@ -117,8 +117,9 @@ class Customers extends \Eloquent {
             }
 
             $iv = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
-            				->whereIn('customer_id',$customer_id)
-            				->where('followup_status', '=', 'FOLLOW_CALL')
+            			//	->whereIn('customer_id',$customer_id)
+            			//	->where('followup_status', '=', 'FOLLOW_CALL')
+					->where('lead_status','=','new')
                                         ->groupBy('customer_id')
                                         ->get();
                                           
@@ -151,16 +152,17 @@ class Customers extends \Eloquent {
 		$customer_id[] = $c['id']; 
 		 
 	    }
-            $student_classes = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
-                                     ->whereIn('customer_id',$customer_id)
-                                     ->where('followup_type', '=', 'INQUIRY')
-                                     ->where('followup_status', '=', 'ATTENDED/CELEBRATED')  
+            $lead_types = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+				    // ->where('lead_status','!=','')
+				     ->whereIn('customer_id',$customer_id)
+				     ->where('lead_status','=','hot')	
                                      ->groupBy('customer_id')
                                      ->get();
-            return count($student_classes);
+	    // print_r($lead_types); die();
+            return count($lead_types);
 	}
        
-        static function getHotLeadsForProspects(){
+       /* static function getHotLeadsForProspects(){
             $presentdate=  Carbon::now();
             $customer_members=  CustomerMembership::
                                   where('membership_start_date','<=',$presentdate->toDateString())
@@ -195,7 +197,7 @@ class Customers extends \Eloquent {
 		$hotLead_id[] = $c['customer_id'];
 	    }           
 	    return $hotLead_id;
-        }
+        }*/
     
 	static function getOpenLeadsForProspects(){
                 $presentdate=  Carbon::now();
@@ -254,26 +256,18 @@ class Customers extends \Eloquent {
                         ->whereNotIn('id',$id)
                         ->orderBy('id','Desc')
                         ->get();
-    //        print_r(count($customers)); die();
-            $customer_id;
+            
+	    $customer_id;
             foreach($customers as $c){
                 $customer_id[]=$c['id'];
             }
-
-            $iv = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+             $iv = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
                                         ->whereIn('customer_id',$customer_id)
-                                      //  ->where('followup_status', '=', 'FOLLOW_CALL')
 					->selectRaw('reminder_date, followup_type, customer_id, lead_status')
-                                        ->where('reminder_date','!=','NULL')
-					->where('followup_type', '!=','PAYMENT')
-				        ->groupBy('customer_id')
+					->orderBy('customer_id','Desc')
+					->groupBy('customer_id')
                                         ->get();	
 
-        //            ->havingRaw('max(customer_logs.reminder_date) < "'.$today.'"')
-            $follow_ups;
-            foreach($iv as $c){
-                $follow_ups[] = $c['customer_id'];
-            }
             return $iv;
 
         }
@@ -327,9 +321,40 @@ class Customers extends \Eloquent {
                             ->get();
                 return $customers;
         }
+	
+	static function getMembershipDates(){
+		$presentdate=  Carbon::now();
+		$customer_members=  CustomerMembership::where('franchisee_id', '=', Session::get('franchiseId'))
+                                      ->where('membership_start_date','<=',$presentdate->toDateString())
+                                      ->where('membership_end_date','>=',$presentdate->toDateString())
+                                      ->select('customer_id')
+                                      ->get();
+
+                $id;
+                foreach($customer_members as $c){
+                    $id[]=$c['customer_id'];
+                }
+		$customers = Customers::where('franchisee_id','=',Session::get('franchiseId'))
+                            ->whereIn('id',$id)
+                            ->orderBy('id','Desc')
+                            ->get();
+		$membership;
+		foreach($customers as $customer){
+			$membership[] = $customer['id'];
+		}
+		
+		$membership_dates = CustomerMembership::where('franchisee_id', '=', Session::get('franchiseId'))
+						      ->whereIn('customer_id',$membership)
+						      ->selectRaw('customer_id, max(membership_end_date) as membership_end_date')
+						      ->orderBy('id','DESC')
+						      ->groupBy('customer_id')
+						      ->get();
+		return $membership_dates;
+	}	
+
         
 	static function getAllCustomerMembersByFranchiseeId($franchiseeId){
-    $presentdate=  Carbon::now();
+    		$presentdate=  Carbon::now();
 		$customer_members=  CustomerMembership::
                                       where('membership_start_date','<=',$presentdate->toDateString())
                                       ->where('membership_end_date','>=',$presentdate->toDateString())

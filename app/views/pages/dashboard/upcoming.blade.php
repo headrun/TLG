@@ -265,9 +265,9 @@
 @section('content')
              
 
-            <a href="{{url()}}/customers/add" class="md-fab md-fab-accent" id="addEnrollment" title="Add customers" data-uk-tooltip="{pos:'left'}" style="float:right; margin-top: 11em;">
+     <!--       <a href="{{url()}}/customers/add" class="md-fab md-fab-accent" id="addEnrollment" title="Add customers" data-uk-tooltip="{pos:'left'}" style="float:right; margin-top: 11em;">
 				<i class="material-icons">&#xE03B;</i>
-			</a>
+			</a> -->
             <!-- statistics (small charts) -->
             <div class="uk-grid uk-grid-width-large-1-4 uk-grid-width-medium-1-2 uk-grid-medium uk-sortable sortable-handler hierarchical_show" data-uk-sortable data-uk-grid-margin>
                 <div>
@@ -297,9 +297,9 @@
                     <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
-                            <center><span class="uk-text-muted uk-text-small" id = "Titles">Revenue Details</span></center>
+                           <center><span class="uk-text-muted uk-text-small" id = "Titles">Revenue Details</span></center>
                              
-                            <table style="width:100%;text-align: center;">
+                           <table style="width:100%;text-align: center;">
                               <tr>
                                 <td>Today</td>
                                 <td>Rs. {{$todayRevenueDetails}}/-</td>
@@ -313,6 +313,10 @@
                                 <td>Rs. {{$thisMonthRevenueDetails}}/-</td>
                               </tr>
                             </table>
+                         </div>
+			</div>
+		      </div>
+		    
                            <!--  <div class = "row" style = "">
                                 <div class = "col-md-4">
                                     <span class="uk-text-muted uk-text-small">Today</span>
@@ -326,11 +330,11 @@
                                     <span class="uk-text-muted uk-text-small">MTD</span>
                                     <h2 class="uk-margin-remove"><span class="countUpMe">{{$membersCount}}<noscript>12456</noscript></span></h2>
                                 </div>
-                            </div> -->
+                            </div> 
                             
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div>
                     <div class="md-card">
                         <div class="md-card-content">
@@ -410,8 +414,8 @@
                         </div>
                     </div>
                 </div>
-                 <div>
-                    <div class="md-card">
+               <!--  <div>
+                    <div class="md-card-4">
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <center><span class="uk-text-muted uk-text-small" id = "Titles">Introductory Visit</span></center>
@@ -437,7 +441,7 @@
                                 <td>{{$thisMonthAttendedIvs}}</td>
                               </tr>
                             </table>
-                            <!-- <table>
+                             <table>
                                 <div class = "row" style = "">
                                     <div class = "col-md-4">
                                         <span class="uk-text-muted uk-text-small">Today</span>
@@ -456,9 +460,6 @@
                                     </div>
                                 </div>
                             </table> -->
-                        </div>
-                    </div>
-                </div>
                                 <div>
                     <div class="md-card">
                         <div class="md-card-content">
@@ -496,12 +497,107 @@
                                         <h5><span class="uk-text-muted uk-text-small_"><span>Total :</span><b>{{$totalclasses}} &nbsp;&nbsp;</b></span></h5>
                                 </div>
                             </div>
-                            
+       			  </div>                     
                         </div>
                     </div>
                 </div>
             </div>
-
+             <div>
+      	      <div class="uk-width-medium">
+                    <div class="md-card">
+                        <div class="md-card-content">
+				<center><span class="uk-text-muted uk-text-small" id = "Titles">Leads Info</span></center>
+				
+			<table class="table table-bordered">
+ 				<thead>
+  				  <tr>
+  					<th></th>
+					<th><center>Current Week<br><span class='uk-text-muted uk-text-small_'>({{ $endOfWeekDate }} - Today)</span></center></th>
+					@foreach($weeks as $date)
+    						<th><center>{{ $date['start']}} - {{ $date['end']}}</center></th>
+    					@endforeach
+					<th><center>Current Month<br><span class='uk-text-muted uk-text-small_'>({{ $currentMonthStartDate }} - Today)</span></center></th>
+  				  </tr>
+				</thead>
+				<tbody>
+  				  <tr>
+    					<th>New Leads</th>
+    					<td><center>{{ $newLeadsForcurrentWeek }}</center></td>
+					<td><center>{{ $newLeadsForWeek1 }}</center></td>
+					<td><center>{{ $newLeadsForWeek2 }}</center></td>
+					<td><center>{{ $newLeadsForWeek3 }}</center></td>
+					<td><center>{{ $newLeadsForWeek4}}</center></td>
+					<td><center>{{ $currentMonthNewLeads }}</center></td>
+  			 	  </tr>  
+  				  <tr> 
+    					<th>IV Attended</th>
+					<td><center>{{ $currentWeekIvAttended }}</center></td>
+                                        <td><center>{{ $IvAttendedInWeek1 }}</center></td>
+                                        <td><center>{{ $IvAttendedInWeek2 }}</center></td>
+                                        <td><center>{{ $IvAttendedInWeek3 }}</center></td>
+  					<td><center>{{ $IvAttendedInWeek4 }}</center></td>
+					<td><center>{{ $IvAttendedInThisMonth}}</center></td>
+				  </tr>
+				  <tr>
+                                        <th>Outstanding Leads</th>
+                                        <td><center>{{ 0 }}</center></td>
+                                        <td><center>{{ 0 }}</center></td>
+                                        <td><center>{{ 0 }}</center></td>
+                                        <td><center>{{ 0 }}</center></td>
+                                        <td><center>{{ 0 }}</center></td>
+					<td><center>{{ 0 }}</center></td>
+                                  </tr> 
+  				  <tr>
+    					<th>IV Scheduled</th>
+					<td><center>{{ $currentWeekIvScheduled }}</center></td>
+                                        <td><center>{{ $IvScheduledInWeek1 }}</center></td>
+                                        <td><center>{{ $IvScheduledInWeek2 }}</center></td>
+                                        <td><center>{{ $IvScheduledInWeek3 }}</center></td>
+					<td><center>{{ $IvScheduledInWeek4 }}</center></td>
+					<td><center>{{ $IvScheduledInThisMonth }}</center></td>
+  				  </tr>
+  				  <tr>
+    					<th>Hot Leads</th>
+					<td><center>{{ $currentWeekHotLeadsYes }}</center></td>
+                                        <td><center>{{ $hotLeadsYesWeek1 }}</center></td>
+                                        <td><center>{{ $hotLeadsYesWeek2 }}</center></td>
+                                        <td><center>{{ $hotLeadsYesWeek3 }}</center></td>
+                                        <td><center>{{ $hotLeadsYesWeek4 }}</center></td>
+					<td><center>{{ $currentMonthHotLeads }}</center></td>
+ 				  </tr>
+  				  <tr>
+    					<th>Archived - No</th>
+					<td><center>{{ $currentWeekHotLeadsNo }}</center></td>
+                                        <td><center>{{ $hotLeadsNoWeek1 }}</center></td>
+                                        <td><center>{{ $hotLeadsNoWeek2 }}</center></td>
+                                        <td><center>{{ $hotLeadsNoWeek3 }}</center></td>
+                                        <td><center>{{ $hotLeadsNoWeek4 }}</center></td>
+					<td><center>{{ $currentMonthNoLeads }}</center></td>
+  				  </tr>
+  				  <tr>
+    					<th>Archived - Future</th>
+					<td><center>{{ $currentWeekHotLeadsMaybe }}</center></td>
+                                        <td><center>{{ $hotLeadsMaybeWeek1 }}</center></td>
+                                        <td><center>{{ $hotLeadsMaybeWeek2 }}</center></td>
+                                        <td><center>{{ $hotLeadsMaybeWeek3 }}</center></td>
+                                        <td><center>{{ $hotLeadsMaybeWeek4 }}</center></td>
+					<td><center>{{ $currentMonthMaybeLeads }}</center></td>
+  				  </tr>
+ 				  <tr>
+					<th>Renewals Due</th>
+					<td><center>{{ $currentWeekRenewalDue }}</center></td>			
+					<td><center>{{ $renewalDueWeek1 }}</center></td>
+					<td><center>{{ $renewalDueWeek2 }}</center></td>
+					<td><center>{{ $renewalDueWeek3}}</center></td>
+					<td><center>{{ $renewalDueWeek4}}</center></td>
+					<td><center>{{ $currentMonthRenewalDue }}</center></td>
+  				 </tr>
+ 			     </tbody>
+			</table>
+		    </div>
+		</div>
+	     </div>
+	    </div><br><br>
             <!-- large chart -->
             
 

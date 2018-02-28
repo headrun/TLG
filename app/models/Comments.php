@@ -347,6 +347,245 @@ class Comments extends \Eloquent {
            return $comment_data;   
         }   
 	
+	static function getThisWeekNewLeads($customer_id, $presentdate, $endOfWeek) {
+		$end = date('Y-m-d', $endOfWeek);
+		$leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                                    ->whereIn('customer_id',$customer_id)
+                                                    ->whereDate('updated_at', '<=', $presentdate)
+                                                    ->whereDate('updated_at', '>=', $end)
+                                                    ->where('lead_status', '=', 'new')
+                                                    ->groupBy('customer_id')
+                                                    ->get();
+
+		return count($leads);
+	}	
+	
+	static function getNewLeadsForWeekWise($customer_id, $dates_start, $dates_end ){
+
+		$leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                                    ->whereIn('customer_id',$customer_id)
+                                                    ->whereDate('updated_at', '>=', $dates_start)
+                                                    ->whereDate('updated_at', '<=', $dates_end)
+                                                    ->where('lead_status', '=', 'new')
+                                                    ->groupBy('customer_id')
+                                                    ->get();
+		return count($leads);
+
+	}
+	static function getNewLeadsForThisMonth($customer_id, $presentdate, $currentMonthStartDate){
+		$leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                                    ->whereIn('customer_id',$customer_id)
+                                                    ->whereDate('updated_at', '>=', $currentMonthStartDate)
+                                                    ->whereDate('updated_at', '<=', $presentdate)
+                                                    ->where('lead_status', '=', 'new')
+                                                    ->groupBy('customer_id')
+                                                    ->get();
+                return count($leads);
+
+	}
+
+	static function getCurrentWeekIvAttended($customer_id, $presentdate, $endOfWeek){
+		$end_date = date('Y-m-d', $endOfWeek);
+		$leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                                         ->whereIn('customer_id',$customer_id)
+                                                         ->whereDate('created_at', '<=', $presentdate)
+                                                         ->whereDate('created_at', '>=', $end_date)
+                                                         ->where('followup_type','=','INQUIRY')
+                                                         ->where('followup_status', '=', 'ATTENDED/CELEBRATED')
+                                                         ->groupBy('customer_id')
+                                                         ->get();
+//		print_r($leads); die();
+		return count($leads);
+	
+	}
+
+	static function getWeekWiseIvAtteded($customer_id, $dates_start, $dates_end){
+		$leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+					->whereIn('customer_id',$customer_id)
+					->whereDate('created_at', '>=', $dates_start)
+                                	->whereDate('created_at', '<=', $dates_end)
+					->where('followup_type','=','INQUIRY')
+                                        ->where('followup_status', '=', 'ATTENDED/CELEBRATED')
+                                        ->groupBy('customer_id')
+                                        ->get();
+		return count($leads);
+
+	}
+
+	static function getThisMonthIvAttended($customer_id, $presentdate, $currentMonthStartDate){
+	
+		$leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                        ->whereIn('customer_id',$customer_id)
+                                        ->whereDate('created_at', '>=', $currentMonthStartDate)
+                                        ->whereDate('created_at', '<=', $presentdate)
+                                        ->where('followup_type','=','INQUIRY')
+                                        ->where('followup_status', '=', 'ATTENDED/CELEBRATED')
+                                        ->groupBy('customer_id')
+                                        ->get();
+	//	print_r($leads); die();
+                return count($leads);
+	
+
+
+	}
+	
+	static function getCurrentWeekIvScheduled($customer_id, $presentdate, $endOfWeek){
+		$end_date = date('Y-m-d', $endOfWeek);
+		$leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+				  ->whereIn('customer_id',$customer_id)
+				  ->where('followup_type','=','INQUIRY')
+				  ->whereDate('created_at', '<=', $presentdate)
+				  ->whereDate('created_at', '>=', $end_date)
+				  ->where('followup_status', '=', 'ACTIVE/SCHEDULED')
+				  ->groupBy('customer_id')
+			          ->get();	
+
+		return count($leads);
+	}	
+	
+	static function getWeekWiseIvScheduled($customer_id, $dates_start, $dates_end){
+		$leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+ 	 			 ->whereIn('customer_id',$customer_id)
+				 ->whereDate('created_at', '>=', $dates_start)
+      				 ->whereDate('created_at', '<=', $dates_end)
+				 ->where('followup_type','=','INQUIRY')
+				 ->where('followup_status', '=', 'ACTIVE/SCHEDULED')
+				 ->groupBy('customer_id')
+				 ->get();
+				 
+		return count($leads);
+
+	}
+
+	static function getThisMonthIvScheduled($customer_id, $presentdate, $currentMonthStartDate){
+		$leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                 ->whereIn('customer_id',$customer_id)
+                                 ->whereDate('created_at', '>=', $currentMonthStartDate)
+                                 ->whereDate('created_at', '<=', $presentdate)
+                                 ->where('followup_type','=','INQUIRY')
+                                 ->where('followup_status', '=', 'ACTIVE/SCHEDULED')
+                                 ->groupBy('customer_id')
+                                 ->get();
+
+                return count($leads);
+
+	}
+		
+	static function getCurrentWeekHotLeadsYes($customer_id, $presentdate, $endOfWeek){
+		$end_date = date('Y-m-d', $endOfWeek);
+		$leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+				->whereIn('customer_id',$customer_id)	
+				->whereDate('updated_at', '<=', $presentdate)
+				->whereDate('updated_at', '>=', $end_date)
+				->where('lead_status', '=','hot')
+				->groupBy('customer_id')
+				->get();
+	//	print_r($leads); die();
+		return count($leads);
+	}	
+
+	static function getWeekWiseHotLeadsYes($customer_id, $dates_start, $dates_end){
+		$leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                ->whereIn('customer_id',$customer_id)
+                                ->whereDate('updated_at', '<=', $dates_start)
+                                ->whereDate('updated_at', '>=', $dates_end)
+                                ->where('lead_status', '=', 'hot')
+                                ->groupBy('customer_id')
+                                ->get();
+                return count($leads);
+
+
+	}
+	
+	static function getHotLeadsForThisMonth($customer_id, $presentdate, $currentMonthStartDate){
+                $leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                                    ->whereIn('customer_id',$customer_id)
+                                                    ->whereDate('updated_at', '>=', $currentMonthStartDate)
+                                                    ->whereDate('updated_at', '<=', $presentdate)
+                                                    ->where('lead_status', '=', 'hot')
+                                                    ->groupBy('customer_id')
+                                                    ->get();
+                return count($leads);
+
+        }
+
+	static function getCurrentWeekHotLeadsNo($customer_id, $presentdate, $endOfWeek){
+                $end_date = date('Y-m-d', $endOfWeek);
+                $leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                ->whereIn('customer_id',$customer_id)
+                                ->whereDate('updated_at', '<=', $presentdate)
+                                ->whereDate('updated_at', '>=', $end_date)
+                                ->where('lead_status', '=', 'not_interested')
+                                ->groupBy('customer_id')
+                                ->get();
+                return count($leads);
+        }
+
+        static function getWeekWiseHotLeadsNo($customer_id, $dates_start, $dates_end){
+
+                $leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                ->whereIn('customer_id',$customer_id)
+                                ->whereDate('updated_at', '<=', $dates_start)
+                                ->whereDate('updated_at', '>=', $dates_end)
+                                ->where('lead_status', '=', 'not_interested')
+                                ->groupBy('customer_id')
+                                ->get();
+
+                return count($leads);
+
+
+        }
+	
+	static function getNoLeadsForThisMonth($customer_id, $presentdate, $currentMonthStartDate){
+                $leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                                    ->whereIn('customer_id',$customer_id)
+                                                    ->whereDate('updated_at', '>=', $currentMonthStartDate)
+                                                    ->whereDate('updated_at', '<=', $presentdate)
+                                                    ->where('lead_status', '=', 'not_interested')
+                                                    ->groupBy('customer_id')
+                                                    ->get();
+                return count($leads);
+
+        }
+
+	static function getCurrentWeekHotLeadsMaybe($customer_id, $presentdate, $endOfWeek){
+                $end_date = date('Y-m-d', $endOfWeek);
+                $leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                ->whereIn('customer_id',$customer_id)
+                                ->whereDate('updated_at', '<=', $presentdate)
+                                ->whereDate('updated_at', '>=', $end_date)
+                                ->where('lead_status', '=', 'interested')
+                                ->groupBy('customer_id')
+                                ->get();
+                return count($leads);
+        }
+
+        static function getWeekWiseHotLeadsMaybe($customer_id, $dates_start, $dates_end){
+
+                $leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                ->whereIn('customer_id',$customer_id)
+                                ->whereDate('updated_at', '<=', $dates_start)
+                                ->whereDate('updated_at', '>=', $dates_end)
+                                ->where('lead_status', '=', 'interested')
+                                ->groupBy('customer_id')
+                                ->get();
+
+                return count($leads);
+
+
+        }
+	
+	static function getMaybeLeadsForThisMonth($customer_id, $presentdate, $currentMonthStartDate){
+                $leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                                    ->whereIn('customer_id',$customer_id)
+                                                    ->whereDate('updated_at', '>=', $currentMonthStartDate)
+                                                    ->whereDate('updated_at', '<=', $presentdate)
+                                                    ->where('lead_status', '=', 'interested')
+                                                    ->groupBy('customer_id')
+                                                    ->get();
+                return count($leads);
+
+        }
 	
 	
 }

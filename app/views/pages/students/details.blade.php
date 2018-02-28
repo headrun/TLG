@@ -3740,13 +3740,13 @@ id="user_profile">
                                                                           </span>
                                                                         </div>
                                                                       </div>
-                                                                      <div class="uk-width-medium-1-4">
+                                                                   <!--   <div class="uk-width-medium-1-4">
                                                                         <div class="parsley-row">
                                                                           <span class="md-btn md-btn-warning" style="border-radius: 15px; font-size:12px;" id="excusedabsent">
                                                                             Excused absent - <span class = "badge" id = "EAcount" style = "background: #000"></span>
                                                                           </span>
                                                                         </div>
-                                                                      </div>
+                                                                      </div> -->
                                                                       <div class="uk-width-medium-1-4">
                                                                         <div class="parsley-row">
                                                                           <span class="md-btn md-btn-danger" style="border-radius: 15px; font-size:12px;">

@@ -30,25 +30,23 @@
 
 	$("#customersTable").DataTable({
 		dom: 'Bfrtip',
-        buttons: [
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5'
-        ],
-        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-
-            // Bind click event
-            $(nRow).click(function() {
-		//window.location = $(this).find('a').attr('href');
-
-            });
-
-            return nRow;
-       },
-       "iDisplayLength": 50,
-       "lengthMenu": [ 10, 50, 100, 150, 200 ]
+        	buttons: [
+            		'copyHtml5',
+           		 'excelHtml5',
+           		 'csvHtml5',
+            		'pdfHtml5'
+        		],
+        	"fnRowCallback": function (nRow, aData, iDisplayIndex) {
+			$(document).find('#customersTable td').click(function(){
+        		//	console.log($(this).attr('customer_id'));   
+			});
+        	
+            		return nRow;
+      		 },
+       		"iDisplayLength": 50,
+       		"lengthMenu": [ 10, 50, 100, 150, 200 ]
 	 });
+
 
 	$("#introVisitDateDiv").hide();
 	$("#state").change(function (){
@@ -213,10 +211,10 @@ $("#customerSubmit").click(function (event){
 	
 });
 
-$('#customersTable').find('.leadTypeDropdown').change(function() { 
+$(document).on('change', 'tbody td .leadTypeDropdown', function() { 
     var lead_type = $(this).val();
     var customer_id = $(this).attr('data');
-    var customer_id = '1253';
+  //  var customer_id = '1253';
     $.ajax({
     	type: "POST",
     	url: "{{URL::to('/quick/UpdateCustomerLogs')}}",
@@ -285,8 +283,12 @@ $('#customersTable').find('.leadTypeDropdown').change(function() {
                                                 <?php if(isset($customers)){ ?>
 		                            @foreach($customers as $customer)
 		                            <tr id="{{ $customer->id }}">
-		                                <td>{{$customer->customer_name.' '}}&nbsp;{{$customer->customer_lastname}}</td>
-		                                <td>{{$customer->customer_email}}</td>
+		                                <td>
+                                                  <a href="{{url()}}/customers/view/{{$customer->id}}">
+                                                    {{$customer->customer_name.' '}}&nbsp;{{$customer->customer_lastname}}
+                                                  </a>
+                                                </td>
+						<td>{{$customer->customer_email}}</td>
 		                                <td>{{$customer->mobile_no}}</td>
 						<td>{{$customer->followup_type}}</td>
 						<td>{{$customer->reminder_date}}</td>
