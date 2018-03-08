@@ -303,11 +303,10 @@ class DashboardController extends \BaseController {
 			$endOfWeekDate = date('d-M', $endOfWeek);
 			$currentMonth = new Carbon('first day of this month');
 			$currentMonthStartDate = date('d-M', strtotime($currentMonth));
-
+			$currentMonth = date('Y-m-d',strtotime($currentMonth));
 			//************ProspectS Info**********//
 
-			$customer_members=  CustomerMembership::
-                                  where('membership_start_date','<=',$presentdate->toDateString())
+			$customer_members=  CustomerMembership::where('membership_start_date','<=',$presentdate->toDateString())
                                   ->where('membership_end_date','>=',$presentdate->toDateString())
                                   ->select('customer_id')
                                   ->get();
@@ -324,9 +323,9 @@ class DashboardController extends \BaseController {
             		foreach($customers as $c){
                 		$customer_id[]=$c['id'];
             		}
-		
+			
 			//*************NewLeads Information************//
-				
+							
 				$newLeadsForcurrentWeek = Comments::getThisWeekNewLeads($customer_id, $presentdate, $endOfWeek);
 				$newLeadsForWeek1 = Comments::getNewLeadsForWeekWise($customer_id, $dates[1]['start'],  $dates[1]['end']);
 				$newLeadsForWeek2 = Comments::getNewLeadsForWeekWise($customer_id, $dates[2]['start'],  $dates[2]['end']);
@@ -343,8 +342,14 @@ class DashboardController extends \BaseController {
 				$IvAttendedInWeek4 = Comments::getWeekWiseIvAtteded($customer_id, $dates[4]['start'],  $dates[4]['end']);
 				$IvAttendedInThisMonth = Comments::getThisMonthIvAttended($customer_id, $presentdate, $currentMonth);	
 			//*************Outstanding Leads Info ***********//
+				
+				$currentWeekOutStandLeads = Comments::getThisWeekOsLeads($customer_id, $presentdate, $endOfWeek);
+				$outStandLeadsWeek1 = Comments::getWeekWiseOsLeads($customer_id, $dates[1]['start'],  $dates[1]['end']);
+				$outStandLeadsWeek2 = Comments::getWeekWiseOsLeads($customer_id, $dates[2]['start'],  $dates[2]['end']);
+				$outStandLeadsWeek3 = Comments::getWeekWiseOsLeads($customer_id, $dates[3]['start'],  $dates[3]['end']);
+				$outStandLeadsWeek4 = Comments::getWeekWiseOsLeads($customer_id, $dates[4]['start'],  $dates[4]['end']);		
+				$thisMonthOutStandLeads = Comments::getThisMonthOutStands($customer_id, $presentdate, $currentMonth);	
 
-			
 			//************IV Scheduled Info **************//
 
 				$currentWeekIvScheduled = Comments::getCurrentWeekIvScheduled($customer_id, $presentdate, $endOfWeek);
@@ -397,7 +402,7 @@ class DashboardController extends \BaseController {
                                                             'totalbpartyCount','todaysbpartycount',
                                                            'courses','futurefollowups',
 							  'todaysCustomerReg','todaysEnrolledCustomers','enrolledCustomers','totalIntrovisitCount', 'introVisitCount', 'allIntrovisits', 'todaysFollowup', 
-							  'todaysIntrovisit','activeRemindersCount','totalclasses', 'expiringbatch', 'bdayPartyInThisWeek', 'bdayPartyInThisMonth', 'todayEnrolledList', 'thisMonthEnrollment', 'thisWeekEnrollment', 'todayRevenueDetails', 'thisWeekRevenueDetails', 'thisMonthRevenueDetails', 'openLeads', 'hotLeads', 'singleEnrollments', 'multipleEnrollments', 'thisMonthIvScheduled', 'thisMonthAttendedIvs', 'todayScheduledIvs','thisWeekScheduledIvs','todayAttendedIvs','thisWeekAttendedIvs','weeks', 'newLeadsForWeek1','newLeadsForWeek2','newLeadsForcurrentWeek','newLeadsForWeek3','newLeadsForWeek4','currentWeekIvAttended','IvAttendedInWeek1','IvAttendedInWeek2','IvAttendedInWeek3','IvAttendedInWeek4','currentWeekIvScheduled','IvScheduledInWeek1','IvScheduledInWeek2','IvScheduledInWeek3','IvScheduledInWeek4','currentWeekHotLeadsYes','hotLeadsYesWeek1','hotLeadsYesWeek2','hotLeadsYesWeek3','hotLeadsYesWeek4','currentWeekHotLeadsNo','hotLeadsNoWeek1','hotLeadsNoWeek2','hotLeadsNoWeek3','hotLeadsNoWeek4','currentWeekHotLeadsMaybe', 'hotLeadsMaybeWeek1','hotLeadsMaybeWeek2','hotLeadsMaybeWeek3','hotLeadsMaybeWeek4','endOfWeekDate','currentMonthStartDate','currentMonthNoLeads','currentMonthNewLeads','currentMonthHotLeads','currentMonthMaybeLeads','IvScheduledInThisMonth','IvAttendedInThisMonth','currentWeekRenewalDue','currentMonthRenewalDue','renewalDueWeek1','renewalDueWeek2','renewalDueWeek3','renewalDueWeek4');
+							  'todaysIntrovisit','activeRemindersCount','totalclasses', 'expiringbatch', 'bdayPartyInThisWeek', 'bdayPartyInThisMonth', 'todayEnrolledList', 'thisMonthEnrollment', 'thisWeekEnrollment', 'todayRevenueDetails', 'thisWeekRevenueDetails', 'thisMonthRevenueDetails', 'openLeads', 'hotLeads', 'singleEnrollments', 'multipleEnrollments', 'thisMonthIvScheduled', 'thisMonthAttendedIvs', 'todayScheduledIvs','thisWeekScheduledIvs','todayAttendedIvs','thisWeekAttendedIvs','weeks', 'newLeadsForWeek1','newLeadsForWeek2','newLeadsForcurrentWeek','newLeadsForWeek3','newLeadsForWeek4','currentWeekIvAttended','IvAttendedInWeek1','IvAttendedInWeek2','IvAttendedInWeek3','IvAttendedInWeek4','currentWeekIvScheduled','IvScheduledInWeek1','IvScheduledInWeek2','IvScheduledInWeek3','IvScheduledInWeek4','currentWeekHotLeadsYes','hotLeadsYesWeek1','hotLeadsYesWeek2','hotLeadsYesWeek3','hotLeadsYesWeek4','currentWeekHotLeadsNo','hotLeadsNoWeek1','hotLeadsNoWeek2','hotLeadsNoWeek3','hotLeadsNoWeek4','currentWeekHotLeadsMaybe', 'hotLeadsMaybeWeek1','hotLeadsMaybeWeek2','hotLeadsMaybeWeek3','hotLeadsMaybeWeek4','endOfWeekDate','currentMonthStartDate','currentMonthNoLeads','currentMonthNewLeads','currentMonthHotLeads','currentMonthMaybeLeads','IvScheduledInThisMonth','IvAttendedInThisMonth','currentWeekRenewalDue','currentMonthRenewalDue','renewalDueWeek1','renewalDueWeek2','renewalDueWeek3','renewalDueWeek4','currentWeekOutStandLeads','thisMonthOutStandLeads','outStandLeadsWeek1','outStandLeadsWeek2','outStandLeadsWeek3','outStandLeadsWeek4');
    
 			return View::make('pages.dashboard.upcoming',compact($viewData));
      

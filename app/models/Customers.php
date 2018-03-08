@@ -93,7 +93,7 @@ class Customers extends \Eloquent {
 	}
 	
 	static function getOpenLeads(){
-		$presentdate=  Carbon::now();
+	    $presentdate=  Carbon::now();
 	    $customer_members=  CustomerMembership::
                                   where('membership_start_date','<=',$presentdate->toDateString())
                                   ->where('membership_end_date','>=',$presentdate->toDateString())
@@ -110,21 +110,30 @@ class Customers extends \Eloquent {
                         ->whereNotIn('id',$id)
                         ->orderBy('id','Desc')
                         ->get();
-    //        print_r(count($customers)); die();
             $customer_id;
             foreach($customers as $c){
                 $customer_id[]=$c['id'];
             }
 
             $iv = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
-            			//	->whereIn('customer_id',$customer_id)
-            			//	->where('followup_status', '=', 'FOLLOW_CALL')
+            				->whereIn('customer_id',$customer_id)
 					->where('lead_status','=','new')
                                         ->groupBy('customer_id')
                                         ->get();
+
+	    $iv_ids;
+	    foreach($iv as $iv_id){
+		$iv_ids[] = $iv_id['customer_id'];
+	    }
                                           
-                                  					
-            return $iv;
+            $new = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+			   ->whereNotIn('customer_id',$iv_ids)
+			   ->whereIn('customer_id',$customer_id)
+			   ->where('followup_status','=','ACTIVE/SCHEDULED') 
+			   ->where('followup_type','=','INQUIRY') 
+		           ->groupBy('customer_id')
+			   ->get();                    					
+            return count($iv)+count($new);
             
 	}
 

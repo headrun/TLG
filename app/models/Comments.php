@@ -487,8 +487,8 @@ class Comments extends \Eloquent {
 	static function getWeekWiseHotLeadsYes($customer_id, $dates_start, $dates_end){
 		$leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
                                 ->whereIn('customer_id',$customer_id)
-                                ->whereDate('updated_at', '<=', $dates_start)
-                                ->whereDate('updated_at', '>=', $dates_end)
+                                ->whereDate('updated_at', '>=', $dates_start)
+                                ->whereDate('updated_at', '<=', $dates_end)
                                 ->where('lead_status', '=', 'hot')
                                 ->groupBy('customer_id')
                                 ->get();
@@ -525,8 +525,8 @@ class Comments extends \Eloquent {
 
                 $leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
                                 ->whereIn('customer_id',$customer_id)
-                                ->whereDate('updated_at', '<=', $dates_start)
-                                ->whereDate('updated_at', '>=', $dates_end)
+                                ->whereDate('updated_at', '>=', $dates_start)
+                                ->whereDate('updated_at', '<=', $dates_end)
                                 ->where('lead_status', '=', 'not_interested')
                                 ->groupBy('customer_id')
                                 ->get();
@@ -564,8 +564,8 @@ class Comments extends \Eloquent {
 
                 $leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
                                 ->whereIn('customer_id',$customer_id)
-                                ->whereDate('updated_at', '<=', $dates_start)
-                                ->whereDate('updated_at', '>=', $dates_end)
+                                ->whereDate('updated_at', '<=', $dates_end)
+                                ->whereDate('updated_at', '>=', $dates_start)
                                 ->where('lead_status', '=', 'interested')
                                 ->groupBy('customer_id')
                                 ->get();
@@ -586,7 +586,38 @@ class Comments extends \Eloquent {
                 return count($leads);
 
         }
-	
-	
-}
+		
+	static function getThisWeekOsLeads($customer_id, $presentdate, $endOfWeek){
+		$end_date = date('Y-m-d', $endOfWeek);
+		$leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+				 ->whereDate('updated_at', '=',$presentdate)
+                                 ->whereDate('updated_at', '>=', $end_date)
+				 ->whereIn('customer_id',$customer_id)
+				 ->where('lead_status','=','')
+				 ->groupBy('customer_id')
+				 ->get();
+		return count($leads);
+	}
 
+	static function getWeekWiseOsLeads($customer_id, $dates_start, $dates_end){
+		$leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+				->whereDate('created_at','>=',$dates_start)
+				->whereDate('created_at', '<=',$dates_end)
+				->whereIn('customer_id',$customer_id)
+				->where('lead_status','=','')
+				->groupBy('customer_id')
+				->get();
+		return count($leads);
+	}
+	
+	static function getThisMonthOutStands($customer_id, $presentdate, $currentMonthStartDate){
+                $leads = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                ->whereDate('updated_at','>=',$currentMonthStartDate)
+                                ->whereDate('updated_at', '<=',$presentdate)
+                                ->whereIn('customer_id',$customer_id)
+                                ->where('lead_status','=','')
+				->groupBy('customer_id')
+				->get();
+                return count($leads);
+        }
+}

@@ -343,7 +343,7 @@
                             <div class = "row" style="text-align: center;">
                                 <div class = "col-md-6" >
                                     <span class="uk-text-muted uk-text-small">Open</span>
-                                    <h2 class="uk-margin-remove"><span class="countUpMe">{{count($openLeads)}}<noscript>12456</noscript></span></h2>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">{{ $openLeads }}<noscript>12456</noscript></span></h2>
                                 </div>
                                 <div class = "col-md-6">
                                     <span class="uk-text-muted uk-text-small">Hot</span>
@@ -512,85 +512,93 @@
  				<thead>
   				  <tr>
   					<th></th>
+					<th><center>Current Month<br><span class='uk-text-muted uk-text-small_'>({{ $currentMonthStartDate }} - Today)</span></center></th>
 					<th><center>Current Week<br><span class='uk-text-muted uk-text-small_'>({{ $endOfWeekDate }} - Today)</span></center></th>
 					@foreach($weeks as $date)
     						<th><center>{{ $date['start']}} - {{ $date['end']}}</center></th>
     					@endforeach
-					<th><center>Current Month<br><span class='uk-text-muted uk-text-small_'>({{ $currentMonthStartDate }} - Today)</span></center></th>
+				<!--	<th><center>Current Month<br><span class='uk-text-muted uk-text-small_'>({{ $currentMonthStartDate }} - Today)</span></center></th> -->
   				  </tr>
 				</thead>
 				<tbody>
   				  <tr>
     					<th>New Leads</th>
-    					<td><center>{{ $newLeadsForcurrentWeek }}</center></td>
-					<td><center>{{ $newLeadsForWeek1 }}</center></td>
-					<td><center>{{ $newLeadsForWeek2 }}</center></td>
-					<td><center>{{ $newLeadsForWeek3 }}</center></td>
-					<td><center>{{ $newLeadsForWeek4}}</center></td>
-					<td><center>{{ $currentMonthNewLeads }}</center></td>
+					<td><center>{{ $currentMonthNewLeads + $IvScheduledInThisMonth }}</center></td>
+    					<td><center>{{ $newLeadsForcurrentWeek + $currentWeekIvScheduled }}</center></td>
+					<td><center>{{ $newLeadsForWeek1 + $IvScheduledInWeek1}}</center></td>
+					<td><center>{{ $newLeadsForWeek2 + $IvScheduledInWeek2}}</center></td>
+					<td><center>{{ $newLeadsForWeek3 + $IvScheduledInWeek3}}</center></td>
+					<td><center>{{ $newLeadsForWeek4 + $IvScheduledInWeek4}}</center></td>
+				<!--	<td><center>{{ $currentMonthNewLeads }}</center></td> -->
   			 	  </tr>  
   				  <tr> 
     					<th>IV Attended</th>
+					<td><center>{{ $IvAttendedInThisMonth}}</center></td>
 					<td><center>{{ $currentWeekIvAttended }}</center></td>
                                         <td><center>{{ $IvAttendedInWeek1 }}</center></td>
                                         <td><center>{{ $IvAttendedInWeek2 }}</center></td>
                                         <td><center>{{ $IvAttendedInWeek3 }}</center></td>
   					<td><center>{{ $IvAttendedInWeek4 }}</center></td>
-					<td><center>{{ $IvAttendedInThisMonth}}</center></td>
+				<!--	<td><center>{{ $IvAttendedInThisMonth}}</center></td> -->
 				  </tr>
 				  <tr>
                                         <th>Outstanding Leads</th>
-                                        <td><center>{{ 0 }}</center></td>
-                                        <td><center>{{ 0 }}</center></td>
-                                        <td><center>{{ 0 }}</center></td>
-                                        <td><center>{{ 0 }}</center></td>
-                                        <td><center>{{ 0 }}</center></td>
-					<td><center>{{ 0 }}</center></td>
+                                        <td><center>{{ $currentMonthNewLeads + $IvScheduledInThisMonth + $thisMonthOutStandLeads }}</center></td>
+                                        <td><center>{{ $newLeadsForcurrentWeek + $currentWeekIvScheduled + $currentWeekOutStandLeads }}</center></td>
+                                        <td><center>{{ $newLeadsForWeek1 + $IvScheduledInWeek1 + $outStandLeadsWeek1 }}</center></td>
+                                        <td><center>{{ $newLeadsForWeek2 + $IvScheduledInWeek2 + $outStandLeadsWeek2 }}</center></td>
+                                        <td><center>{{ $newLeadsForWeek3 + $IvScheduledInWeek3 + $outStandLeadsWeek3 }}</center></td>
+					<td><center>{{ $newLeadsForWeek4 + $IvScheduledInWeek4 + $outStandLeadsWeek4 }}</center></td>
                                   </tr> 
   				  <tr>
     					<th>IV Scheduled</th>
+					<td><center>{{ $IvScheduledInThisMonth}}</center></td>
 					<td><center>{{ $currentWeekIvScheduled }}</center></td>
                                         <td><center>{{ $IvScheduledInWeek1 }}</center></td>
                                         <td><center>{{ $IvScheduledInWeek2 }}</center></td>
                                         <td><center>{{ $IvScheduledInWeek3 }}</center></td>
 					<td><center>{{ $IvScheduledInWeek4 }}</center></td>
-					<td><center>{{ $IvScheduledInThisMonth }}</center></td>
+				<!--	<td><center>{{ $IvScheduledInThisMonth }}</center></td> -->
   				  </tr>
   				  <tr>
     					<th>Hot Leads</th>
+					<td><center>{{ $currentMonthHotLeads }}</center></td>
 					<td><center>{{ $currentWeekHotLeadsYes }}</center></td>
                                         <td><center>{{ $hotLeadsYesWeek1 }}</center></td>
                                         <td><center>{{ $hotLeadsYesWeek2 }}</center></td>
                                         <td><center>{{ $hotLeadsYesWeek3 }}</center></td>
                                         <td><center>{{ $hotLeadsYesWeek4 }}</center></td>
-					<td><center>{{ $currentMonthHotLeads }}</center></td>
+				<!--	<td><center>{{ $currentMonthHotLeads }}</center></td> -->
  				  </tr>
   				  <tr>
     					<th>Archived - No</th>
+					<td><center>{{ $currentMonthNoLeads }}</center></td>
 					<td><center>{{ $currentWeekHotLeadsNo }}</center></td>
                                         <td><center>{{ $hotLeadsNoWeek1 }}</center></td>
                                         <td><center>{{ $hotLeadsNoWeek2 }}</center></td>
                                         <td><center>{{ $hotLeadsNoWeek3 }}</center></td>
                                         <td><center>{{ $hotLeadsNoWeek4 }}</center></td>
-					<td><center>{{ $currentMonthNoLeads }}</center></td>
+				<!--	<td><center>{{ $currentMonthNoLeads }}</center></td>--->
   				  </tr>
   				  <tr>
     					<th>Archived - Future</th>
+					<td><center>{{ $currentMonthMaybeLeads }}</center></td>
 					<td><center>{{ $currentWeekHotLeadsMaybe }}</center></td>
                                         <td><center>{{ $hotLeadsMaybeWeek1 }}</center></td>
                                         <td><center>{{ $hotLeadsMaybeWeek2 }}</center></td>
                                         <td><center>{{ $hotLeadsMaybeWeek3 }}</center></td>
                                         <td><center>{{ $hotLeadsMaybeWeek4 }}</center></td>
-					<td><center>{{ $currentMonthMaybeLeads }}</center></td>
+				<!--	<td><center>{{ $currentMonthMaybeLeads }}</center></td> -->
   				  </tr>
  				  <tr>
 					<th>Renewals Due</th>
+					<td><center>{{ $currentMonthRenewalDue }}</center></td>
 					<td><center>{{ $currentWeekRenewalDue }}</center></td>			
 					<td><center>{{ $renewalDueWeek1 }}</center></td>
 					<td><center>{{ $renewalDueWeek2 }}</center></td>
 					<td><center>{{ $renewalDueWeek3}}</center></td>
 					<td><center>{{ $renewalDueWeek4}}</center></td>
-					<td><center>{{ $currentMonthRenewalDue }}</center></td>
+				<!--	<td><center>{{ $currentMonthRenewalDue }}</center></td> -->
   				 </tr>
  			     </tbody>
 			</table>

@@ -44,8 +44,8 @@ class CustomersController extends \BaseController {
                             $customers=Customers::where('franchisee_id','=',Session::get ( 'franchiseId' ))->get();    
                         }
 		//	return $customers;
-                        $hotLeads = Customers::getHotLeadsForProspects();
-                        $openLeads =  Customers::getOpenLeadsForProspects();
+                 //       $hotLeads = Customers::getHotLeadsForProspects();
+                  //      $openLeads =  Customers::getOpenLeadsForProspects();
 			$follow_ups = Customers::FollowupSForProspects();  
 //			return $follow_ups;
 			foreach($follow_ups as $key=> $value) {

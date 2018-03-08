@@ -1325,6 +1325,14 @@ function getivdata(ivid){
              });      
 }
 
+$(document).on('change','#iveditstatusSelect', function(){
+	var selectedValue = $(this).val();
+	if(selectedValue == 'ENROLLED'){
+		$('#leadStatus').css('display','none');
+	}else{
+		$('#leadStatus').show();
+	}
+});
 
 function selectstatus(ivId,ivStatus,comment_type){
 //console.log(ivId);     
@@ -4733,7 +4741,7 @@ $('#memberhsipchequeNumber').keyup(function(){
 			       </div>
 			<div class="uk-width-1-4" id="leadsInfo"></div>
 				<div>
-								<div class="parsley-row"><br><br>											
+								<div class="parsley-row" id="leadStatus"><br><br>											
 									<label for="forLeadsInfo" class="inline-label">For Leads info
                                                                                                 </label>	
     										<label>
