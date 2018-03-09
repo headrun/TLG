@@ -177,24 +177,13 @@ class IntroVisit extends \Eloquent {
 
     static function getThisMonthAttendedIv(){
     	$iv_dates = '';
-    	$ivs = IntroVisit::where('franchisee_id', '=', Session::get('franchiseId'))
-    		   			    ->whereRaw('MONTH(iv_date) = MONTH(NOW())')
-	                        ->whereRaw('YEAR(iv_date) = YEAR(NOW())')
-	                        ->get();
-	    
-	    if(!empty($ivs) && isset($ivs)){
-		    foreach ($ivs as $iv) {
-		    	//$iv_dates[] = $iv['id'];
-		    	$attended = Attendance::where('introvisit_id', $iv['id'])
-		    						   ->where('student_id', '=', $iv['student_id'])
-		    						   ->count();	
-		    	if($attended >= 1){
-		    		$iv_dates[] = $attended;
-		    	//	return $iv_dates;	 
-		    	}
-		    }
-		    return count($iv_dates);                         
-		}    
+    	$ivs = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+    		         	->whereRaw('MONTH(created_at) = MONTH(NOW())')
+	                        ->whereRaw('YEAR(created_at) = YEAR(NOW())')
+	                        ->where('followup_status','=','ATTENDED')
+				->groupBy('customer_id')
+				->get();
+	return count($ivs);                         
                                 
     }
 	

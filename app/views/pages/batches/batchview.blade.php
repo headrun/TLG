@@ -256,7 +256,7 @@ function getbatchesStudents(batchId, dateStartEvent){
 		  success: function(response, textStatus, jqXHR)
 		  {
 			  if (response.status == "success"){	
-				    console.log(response.result);	
+				   // console.log(response.result);	
 
 					var i = 0;
 					var attendanceString = "";
@@ -315,11 +315,55 @@ function getbatchesStudents(batchId, dateStartEvent){
                                     //console.log(this.id);
                                     var i=$(this).attr('data2');
                                     $('#absent'+i).remove();
-                                    $(this).parent().append("<div class='uk-grid'data-uk-grid-margin id='ea"+i+"'><div class='uk-width-medium-1-3'><input id='Description_user_"+i+"' required class='form-control input-sm  Description_user' name='description_user_"+i+"' style='' type='text' placeholder='Description' /></div><div class='uk-width-medium-1-3'><input type='text'  name='reminderdate_user_"+i+"' class='userRemDate form-control input-sm' required style='width:100%' placeholder='ReminderDate' /><div class='uk-width-medium-1-3'></div></div><button type='button' style= margin-left:40px; class=' btn btn-success eaDateSave'>Save</button></div><div id='makeupmsg' class='parsley-row'><div>");
+                                    $(this).parent().append("<div class='uk-grid'data-uk-grid-margin id='ea"+i+"'>"+
+								"<div class='uk-width-medium-1-3'>"+
+									"<input id='Description_user_"+i+"' required class='form-control input-sm  Description_user' name='description_user_"+i+"' style='' type='text' placeholder='Description' />"+
+							  	"</div>"+
+							  	"<div class='uk-width-medium-1-3'>"+
+									"<input type='text'  name='reminderdate_user_"+i+"' class='userRemDate form-control input-sm' required style='width:100%' placeholder='Select Date for Class' />"+
+							   	"</div>"+
+							  	"<div class='uk-width-medium-1-3'>"+
+									"<select id='batches"+i+"' name='select_batch_"+i+"' class='selectBatch form-control input-sm md-input' placeholder='Select Batch' style='padding:0px; font-weight:bold;color: #727272;'>"+"<option></option>"+"</select>"+
+							   	"</div>"+
+							   	"</div><button type='button' style= margin-left:40px; class=' btn btn-success eaDateSave pull-right'>Save</button></div><div id='makeupmsg' class='parsley-row'>"+
+								"<div>"+
+							   "</div>");
                                     $('input[name="reminderdate_user_'+i+'"]').datepicker({ dateFormat: 'yy-mm-dd'}).val();
                                     // $('input[name="reminderdate_user_'+i+'"]').datepicker({ dateFormat: 'yy-mm-dd'}).val();
+			            $(document).on('change', '.userRemDate', function(){
+   					var selectedDate = $(this).val();
+   					$.ajax({
+        				type: "POST",
+        				url: "{{ URL::to('/quick/getTotalBatchesForSelectedDate')}}",
+        				data:{'date':selectedDate},
+        				success: function(response){
+                			    if(response.status ==  "success"){
+                        			string = '<option value=""></options>';
+                        			if(response.batch_list.length == 0){
+                          	 			$('#makeupmsg').html('<h5 class="uk-alert uk-alert-warning" data-uk-alert>No Batches Found</h5>')
+                               				setTimeout(function(){
+                               				$('#makeupmsg').html('');
+                      	         			}, 3500)
+                           			}else{
+                        		    		for(var x=0;x<response.batch_list.length;x++){
+                              						string += '<option value="'+response.batch_list[x]['id']+'">'+response.batch_list[x]['batch_name']+' '+response.batch_list[x]['day']+' '+response.batch_list[x]['preferred_time']+' '+response.batch_list[x]['preferred_end_time']+'</option>';
+                        		    		}
+					 	}	
+                        			$('#batches'+i).html(string);
+                			     }
 
-                                    //console.log($(this).parent());
+        				}
+   					});
+
+				   });
+			          
+			/*	   $('select[data="batch"]').change(function(){
+                             		 var i=$(this).attr('data2');
+					 var batch_id = $('#batches'+i).val();
+					console.log(i);
+					console.log(batch_id);
+				   }); */
+
                                 });
                                 
                                 $('input[type="radio"][data="eadisable"]').change(function(){
@@ -331,7 +375,7 @@ function getbatchesStudents(batchId, dateStartEvent){
                                 $('input[type="radio"][data3="Aenable"]').change(function(){
                                         var i=$(this).attr('data2');
                                         $('#ea'+i).remove();
-                                        $(this).parent().append("<div class='uk-grid'data-uk-grid-margin id='absent"+i+"'><div class='uk-width-medium-1-3'><input id='Description_user_absent_"+i+"' required class='form-control input-sm ' name='description_user_absent_"+i+"' style='' type='text' placeholder='Description' /></div><div class='uk-width-medium-1-3'><input type='text'  name='reminderdate_user_absent_"+i+"'  class='form-control input-sm' required style='width:100%' placeholder='ReminderDate' /><div class='uk-width-medium-1-3'></div></div></div>");
+                                        $(this).parent().append("<div class='uk-grid'data-uk-grid-margin id='absent"+i+"'></div>");
                                         $('input[name="reminderdate_user_absent_'+i+'"]').kendoDatePicker();
                                     
                                 });
@@ -356,17 +400,51 @@ function getbatchesStudents(batchId, dateStartEvent){
 	console.log(isExists);
 	return isExists;
 }
+/* $(document).on('change', '.userRemDate', function(){
+   var selectedDate = $(this).val();
+   $.ajax({
+	type: "POST",
+	url: "{{ URL::to('/quick/getTotalBatchesForSelectedDate')}}",
+	data:{'date':selectedDate},
+	success: function(response){
+		if(response.status ==  "success"){
+			string = '<option value=""></options>';
+                        if(response.batch_list.length == 0){
+                           $('#makeupmsg').html('<h5 class="uk-alert uk-alert-warning" data-uk-alert>No Batches Found</h5>')
+                               setTimeout(function(){
+                               $('#makeupmsg').html('');
+                               }, 3500)
+                           }else{
+                        for(var x=0;x<response.batch_list.length;x++){
+                           if(typeof(response.batch_list[i]['Leadinstructor'])!=='undefined'){
+                              string += '<option value="'+response.batch_list[x]['id']+'">'+response.batch_list[x]['batch_name']+' '+response.batch_list[x]['day']+' '+response.batch_list[x]['preferred_time']+' '+response.batch_list[x]['preferred_end_time'] +' ('+response.batch_list[x]['Leadinstructor'] +')</option>';
+                           }else{
+                              string += '<option value="'+response.batch_list[x]['id']+'">'+response.batch_list[x]['batch_name']+' '+response.batch_list[x]['day']+' '+response.batch_list[x]['preferred_time']+' '+response.batch_list[x]['preferred_end_time']+'</option>';
+                            }
+                        }
+			$('#batches'+i).html(string);
+                }
+
+		}else{
+			alert('failed');
+		}
+	}
+   });
+
+}); */
 
 $(document).on('click', '.eaDateSave', function(){
 	// 'i[data="makeupsave"]'
 	//return $('i[data="attendance_for_userEA"]').val();
-	var desc = $(this).closest('.uk-grid').find('.Description_user').val();
-	var date = $(this).closest('.uk-grid').find('input.userRemDate').val();
-	var studentId = $(this).closest('td').prev('td').find('.studentId').val();
-	var ivId = $(this).closest('td').prev('td').find('.ivId').val();
-	var batchId = $(this).closest('td').prev('td').find('.batchId').val();
-	var classId = $(this).closest('td').prev('td').find('.classId').val();
-	var attDate = $(this).closest('td').prev('td').find('.attDate').val();
+	var desc = $(this).closest('tr').find('.Description_user').val();
+	var date = $(this).closest('tr').find('input.userRemDate').val();
+	var studentId = $(this).closest('tr').find('.studentId').val();
+	var ivId = $(this).closest('tr').find('.ivId').val();
+	var batchId = $(this).closest('tr').find('.batchId').val();
+	var classId = $(this).closest('tr').find('.classId').val();
+	var attDate = $(this).closest('tr').find('.attDate').val();
+	var updateToBatchId = $(this).closest('tr').find('.selectBatch').val();
+	console.log(updateToBatchId)
 	// var alert = $(this).closest('td').prev('td').find('.attDate').val();
 
 
@@ -380,7 +458,8 @@ $(document).on('click', '.eaDateSave', function(){
 		    	  'ivId': ivId,
 		    	  'batchId': batchId,
 		    	  'classId': classId,
-		    	  'attDate': attDate },
+		    	  'attDate': attDate,
+			  'updateToBatchId':updateToBatchId },
 		  	success: function(response){
 			  	if(response.status == "success"){
 			  		 $('#makeupmsg').hide();
@@ -432,7 +511,7 @@ $('#addAttendanceForm').validator().on('submit', function (e) {
   		  success: function(response, textStatus, jqXHR)
   		  {
                                 
-  				console.log(response);
+  			
   				if(response.status == "success"){
                                         $("#messageAttendanceAddDiv").hide();
                                         $("#messageAttendanceAddDiv").html('<p class="uk-alert uk-alert-success">Attendance has been added successfully.</p>');

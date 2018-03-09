@@ -30,29 +30,23 @@
 
 	$("#customersTable").DataTable({
 		dom: 'Bfrtip',
-        buttons: [
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5'
-        ],
-        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-
-            // Bind click event
-            $(nRow).click(function() {
-                  //window.open($(this).find('a').attr('href'));
-				window.location = $(this).find('a').attr('href');
-                  //OR
-
-                // window.open(aData.url);
-
-            });
-
-            return nRow;
-       },
-       "iDisplayLength": 50,
-       "lengthMenu": [ 10, 50, 100, 150, 200 ]
+        	buttons: [
+            		'copyHtml5',
+           		 'excelHtml5',
+           		 'csvHtml5',
+            		'pdfHtml5'
+        		],
+        	"fnRowCallback": function (nRow, aData, iDisplayIndex) {
+			$(document).find('#customersTable td').click(function(){
+        		//	console.log($(this).attr('customer_id'));   
+			});
+        	
+            		return nRow;
+      		 },
+       		"iDisplayLength": 50,
+       		"lengthMenu": [ 10, 50, 100, 150, 200 ]
 	 });
+
 
 	$("#introVisitDateDiv").hide();
 	$("#state").change(function (){
@@ -217,12 +211,24 @@ $("#customerSubmit").click(function (event){
 	
 });
 
-/* $("#customersTable tr").click(function (){
-
-	window.location = $(this).find('a').attr('href');
-})
- */
-	
+$(document).on('change', 'tbody td .leadTypeDropdown', function() { 
+    var lead_type = $(this).val();
+    var customer_id = $(this).attr('data');
+  //  var customer_id = '1253';
+    $.ajax({
+    	type: "POST",
+    	url: "{{URL::to('/quick/UpdateCustomerLogs')}}",
+        data: {'customer_id':customer_id, 'lead_type':lead_type},
+    	dataType:"json", 
+	success: function (response) {
+		if(response.status == "success"){
+			setTimeout(function(){
+                           window.location.reload(1);
+                         }, 2000);
+		}
+	}
+   });
+});
 	
 </script>
 
@@ -266,22 +272,36 @@ $("#customerSubmit").click(function (event){
 		                                <th>Customer</th>
 		                                <th>Email</th>
 		                                <th>Mobile No</th>
-		                                <th>Address</th>
+                                                <th>Followup Type</th>
+		                                <th>Followup Date</th>
+                                                <th>Lead Type</th>
+						<th>Created at</th>
 		                                <!-- <th>Action</th> -->
 		                            </tr>
 		                            </thead>
 		                            <tbody>
                                                 <?php if(isset($customers)){ ?>
 		                            @foreach($customers as $customer)
-		                            <tr>
-		                                <td>{{$customer->customer_name.' '}}&nbsp;{{$customer->customer_lastname}}</td>
-		                                <td>{{$customer->customer_email}}</td>
+		                            <tr id="{{ $customer->id }}">
+		                                <td>
+                                                  <a href="{{url()}}/customers/view/{{$customer->id}}">
+                                                    {{$customer->customer_name.' '}}&nbsp;{{$customer->customer_lastname}}
+                                                  </a>
+                                                </td>
+						<td>{{$customer->customer_email}}</td>
 		                                <td>{{$customer->mobile_no}}</td>
-		                                <td>{{$customer->building}} {{$customer->apartment_name}} {{$customer->lane}}
-		                                <a style="display: none;" href="{{url()}}/customers/view/{{$customer->id}}"></a>
-		                                </td>
-		                                <!-- <td><a class="md-btn md-btn-flat md-btn-flat-primary" href="{{url()}}/customers/view/{{$customer->id}}">View</a></td> -->
-		                                
+						<td>{{$customer->followup_type}}</td>
+						<td>{{$customer->reminder_date}}</td>
+							<td>
+                         			     		<select class="leadTypeDropdown form-control" data="{{ $customer->id }}">
+                            						<option value=""></option>
+                            						<option value="new" {{ $customer->lead_status == 'new' ? 'selected' : '' }}>New</option>
+                            						<option value="hot" {{ $customer->lead_status == 'hot' ? 'selected' : '' }}>Hot</option>
+                            						<option value="not_interested" {{ $customer->lead_status == 'not_interested' ? 'selected' : '' }}>Archived - No</option>
+									<option value="interested" {{  $customer->lead_status == 'interested' ? 'selected' : '' }}>Archived - Future</option>
+                        			     		</select>
+                    					</td>		
+		                                <td>{{ date('d-M-Y',strtotime($customer->created_at)); }}<a style="display: none;" href="{{url()}}/customers/view/{{$customer->id}}"></a></td>
 		                            </tr>
 		                            @endforeach
                                             <?php } ?>

@@ -23,7 +23,7 @@ class DashboardController extends \BaseController {
                         //Enrolled Kid's
                         $singleEnrollments = StudentClasses::getSingleEnrolledList();
                         $multipleEnrollments = StudentClasses::getMultipleEnrolledList();
-
+			$enrolledCustomers = StudentClasses::getEnrolledCustomers();
 
 
                         //customers or Inquiries
@@ -110,20 +110,22 @@ class DashboardController extends \BaseController {
                         $present_date=Carbon::now();
                         $totalclasses=0;
                         foreach($courses as $course){
-                          $temp= DB::select(DB::raw("SELECT count('student_id') as totalno FROM student_classes 
-                                                     WHERE franchisee_id = '".Session::get('franchiseId')."' AND enrollment_end_date >= '".date('Y-m-d')."' AND class_id IN (select id from classes where course_id =".$course->id .") AND student_classes.status IN ('enrolled')"));
-
-
-                            if($temp[0]->totalno){
-                              $course->totalno=$temp[0]->totalno;
-                              $totalclasses+=$temp[0]->totalno;
+                          $temp= DB::select(DB::raw("SELECT student_id FROM student_classes 
+                                                     WHERE franchisee_id = '".Session::get('franchiseId')."' AND enrollment_end_date >= '".date('Y-m-d')."' AND class_id IN (select id from classes where course_id =".$course->id .") AND student_classes.status IN ('enrolled') GROUP BY student_id ORDER BY count('student_id')"));
+                          //	var_dump($temp); die;
+			//$totalclasses = $totalclasses + count($temp);
+			
+			 if($temp){
+                              $course->totalno=count($temp);
+                              $totalclasses+=count($temp);
                             }else{
                               $course->totalno=0;
                               $totalclasses+=0;
-                            }
-                        }
+                            } 
                         
-			//for birthdayparty
+			}
+                                
+				//for birthdayparty
                         
 
                         $totalbpartyCount = BirthdayParties::getBpartyCount();
@@ -142,7 +144,6 @@ class DashboardController extends \BaseController {
 			                  $todaysFollowup = Comments::getAllFollowup();
                         $futurefollowups= Comments::getFutureFollowup();
                         
-                        //return $todaysFollowup;
 			                  $todaysIntrovisit = BatchSchedule::getTodaysIntroVisits();
 			
 			                  $activeRemindersCount = Comments::getAllFollowupActive();
@@ -172,7 +173,6 @@ class DashboardController extends \BaseController {
                         $birthday_data= Students::whereNotIn('id',$student_id)
                                                   ->where('student_date_of_birth','<>','')
                                                   ->where( DB::raw('MONTH(student_date_of_birth)'), '=', $month)
-                                                  //->where( DB::raw('DAY(student_date_of_birth)'), '>', $presentdate )
                                                   ->where('franchisee_id','=',Session::get('franchiseId'))
                                                   ->orderBy(DB::raw('DAY(student_date_of_birth)'))
                                                   -> get();
@@ -249,7 +249,7 @@ class DashboardController extends \BaseController {
                         
                         //for birthday celebration this week
                         
-                        $presentdate = Carbon::now();;
+                        $presentdate = Carbon::now();
                         $weeekdate = new carbon();
                         $time = strtotime($presentdate);
                         $end = strtotime('next sunday, 11:59pm', $time);
@@ -268,12 +268,130 @@ class DashboardController extends \BaseController {
                           $student_data = Students::where('id','=',$birthdayPresentWeek[$i]['student_id'])->distinct()->get();
                           $birthdayPresentWeek[$i]['student_name'] = $student_data[0]['student_name'];
                         }
-                        //return Session::get('franchisee_id');
-
-                        //return $birthdayPresentWeek;
                         $expiringbatch= Batches::getExpiringBatchData();
                         
-                        //return $birthday_data; die();
+			//FOR LEADS INFORMATION
+			//***********Week Days***********//
+
+			$timestamp = strtotime($presentdate);
+			$day_of_the_week = date('N', $timestamp); // N returns mon-sun as digits 1 - 7. 
+			$sunday_ts = $timestamp + ( 7 - $day_of_the_week) * 24 * 60 * 60;
+			$monday_ts = $timestamp - ( $day_of_the_week - 1) * 24 * 60 * 60;
+			$dates = array();
+			for($i = 1; $i < 5; $i++) {
+    				$dates_key = $i;
+    				$dates[$dates_key] = array(
+        			'start' => date('Y-m-d', $monday_ts - $i * 7 * 24 * 60 * 60),
+        			'end' => date('Y-m-d', $sunday_ts - $i * 7 * 24 * 60 * 60)
+        			);
+			}
+			
+			$weeks = array();
+			for($i = 1; $i < 5; $i++) {
+                                $dates_key = $i;
+                                $weeks[$dates_key] = array(
+                                'start' => date('d-M', $monday_ts - $i * 7 * 24 * 60 * 60),
+                                'end' => date('d-M', $sunday_ts - $i * 7 * 24 * 60 * 60)
+                                );
+                        }
+			
+			//***********Current DAY, WEEK********//
+
+                        $endOfWeek = strtotime('last sunday, 11:59pm', $time);
+			$endOfWeekDate = date('d-M', $endOfWeek);
+			$currentMonth = new Carbon('first day of this month');
+			$currentMonthStartDate = date('d-M', strtotime($currentMonth));
+			$currentMonth = date('Y-m-d',strtotime($currentMonth));
+			//************ProspectS Info**********//
+
+			$customer_members=  CustomerMembership::where('membership_start_date','<=',$presentdate->toDateString())
+                                  ->where('membership_end_date','>=',$presentdate->toDateString())
+                                  ->select('customer_id')
+                                  ->get();
+
+            		$id;
+            		foreach($customer_members as $c){
+                		$id[]=$c['customer_id'];
+            		}
+            		$customers = Customers::where('franchisee_id','=',Session::get('franchiseId'))
+                        			->whereNotIn('id',$id)
+                        			->orderBy('id','Desc')
+                        			->get();
+			$customer_id;
+            		foreach($customers as $c){
+                		$customer_id[]=$c['id'];
+            		}
+			
+			//*************NewLeads Information************//
+							
+				$newLeadsForcurrentWeek = Comments::getThisWeekNewLeads($customer_id, $presentdate, $endOfWeek);
+				$newLeadsForWeek1 = Comments::getNewLeadsForWeekWise($customer_id, $dates[1]['start'],  $dates[1]['end']);
+				$newLeadsForWeek2 = Comments::getNewLeadsForWeekWise($customer_id, $dates[2]['start'],  $dates[2]['end']);
+				$newLeadsForWeek3 = Comments::getNewLeadsForWeekWise($customer_id, $dates[3]['start'],  $dates[3]['end']);
+				$newLeadsForWeek4 = Comments::getNewLeadsForWeekWise($customer_id, $dates[4]['start'],  $dates[4]['end']);
+				$currentMonthNewLeads = Comments::getNewLeadsForThisMonth($customer_id, $presentdate, $currentMonth);
+
+			//**************IV Attended Information**********//
+
+				$currentWeekIvAttended = Comments::getCurrentWeekIvAttended($customer_id, $presentdate, $endOfWeek);
+				$IvAttendedInWeek1 = Comments::getWeekWiseIvAtteded($customer_id, $dates[1]['start'],  $dates[1]['end']);
+				$IvAttendedInWeek2 = Comments::getWeekWiseIvAtteded($customer_id, $dates[2]['start'],  $dates[2]['end']);
+				$IvAttendedInWeek3 = Comments::getWeekWiseIvAtteded($customer_id, $dates[3]['start'],  $dates[3]['end']);
+				$IvAttendedInWeek4 = Comments::getWeekWiseIvAtteded($customer_id, $dates[4]['start'],  $dates[4]['end']);
+				$IvAttendedInThisMonth = Comments::getThisMonthIvAttended($customer_id, $presentdate, $currentMonth);	
+			//*************Outstanding Leads Info ***********//
+				
+				$currentWeekOutStandLeads = Comments::getThisWeekOsLeads($customer_id, $presentdate, $endOfWeek);
+				$outStandLeadsWeek1 = Comments::getWeekWiseOsLeads($customer_id, $dates[1]['start'],  $dates[1]['end']);
+				$outStandLeadsWeek2 = Comments::getWeekWiseOsLeads($customer_id, $dates[2]['start'],  $dates[2]['end']);
+				$outStandLeadsWeek3 = Comments::getWeekWiseOsLeads($customer_id, $dates[3]['start'],  $dates[3]['end']);
+				$outStandLeadsWeek4 = Comments::getWeekWiseOsLeads($customer_id, $dates[4]['start'],  $dates[4]['end']);		
+				$thisMonthOutStandLeads = Comments::getThisMonthOutStands($customer_id, $presentdate, $currentMonth);	
+
+			//************IV Scheduled Info **************//
+
+				$currentWeekIvScheduled = Comments::getCurrentWeekIvScheduled($customer_id, $presentdate, $endOfWeek);
+				$IvScheduledInWeek1 = Comments::getWeekWiseIvScheduled($customer_id, $dates[1]['start'],  $dates[1]['end']);
+				$IvScheduledInWeek2 = Comments::getWeekWiseIvScheduled($customer_id, $dates[2]['start'],  $dates[2]['end']);
+				$IvScheduledInWeek3 = Comments::getWeekWiseIvScheduled($customer_id, $dates[3]['start'],  $dates[3]['end']);
+				$IvScheduledInWeek4 = Comments::getWeekWiseIvScheduled($customer_id, $dates[4]['start'],  $dates[4]['end']);
+				$IvScheduledInThisMonth = Comments::getThisMonthIvScheduled($customer_id, $presentdate, $currentMonth);
+			//*********** HOT Leads YES*****************//
+			
+				$currentWeekHotLeadsYes = Comments::getCurrentWeekHotLeadsYes($customer_id, $presentdate, $endOfWeek);
+				$hotLeadsYesWeek1 = Comments::getWeekWiseHotLeadsYes($customer_id, $dates[1]['start'],  $dates[1]['end']);
+				$hotLeadsYesWeek2 = Comments::getWeekWiseHotLeadsYes($customer_id, $dates[2]['start'],  $dates[2]['end']);
+				$hotLeadsYesWeek3 = Comments::getWeekWiseHotLeadsYes($customer_id, $dates[3]['start'],  $dates[3]['end']);
+				$hotLeadsYesWeek4 = Comments::getWeekWiseHotLeadsYes($customer_id, $dates[4]['start'],  $dates[4]['end']);
+				$currentMonthHotLeads = Comments::getHotLeadsForThisMonth($customer_id, $presentdate, $currentMonth);
+
+			//********* HOT Leads NO******************//
+			
+				$currentWeekHotLeadsNo = Comments::getCurrentWeekHotLeadsNo($customer_id, $presentdate, $endOfWeek);
+                                $hotLeadsNoWeek1 = Comments::getWeekWiseHotLeadsNo($customer_id, $dates[1]['start'],  $dates[1]['end']);
+                                $hotLeadsNoWeek2 = Comments::getWeekWiseHotLeadsNo($customer_id, $dates[2]['start'],  $dates[2]['end']);
+                                $hotLeadsNoWeek3 = Comments::getWeekWiseHotLeadsNo($customer_id, $dates[3]['start'],  $dates[3]['end']);
+                                $hotLeadsNoWeek4 = Comments::getWeekWiseHotLeadsNo($customer_id, $dates[4]['start'],  $dates[4]['end']);
+				$currentMonthNoLeads = Comments::getNoLeadsForThisMonth($customer_id, $presentdate, $currentMonth);
+		
+			//******** Hot Leads May be *************//
+
+				$currentWeekHotLeadsMaybe = Comments::getCurrentWeekHotLeadsMaybe($customer_id, $presentdate, $endOfWeek);
+                                $hotLeadsMaybeWeek1 = Comments::getWeekWiseHotLeadsMaybe($customer_id, $dates[1]['start'],  $dates[1]['end']);
+                                $hotLeadsMaybeWeek2 = Comments::getWeekWiseHotLeadsMaybe($customer_id, $dates[2]['start'],  $dates[2]['end']);
+                                $hotLeadsMaybeWeek3 = Comments::getWeekWiseHotLeadsMaybe($customer_id, $dates[3]['start'],  $dates[3]['end']);
+                                $hotLeadsMaybeWeek4 = Comments::getWeekWiseHotLeadsMaybe($customer_id, $dates[4]['start'],  $dates[4]['end']);
+				$currentMonthMaybeLeads = Comments::getMaybeLeadsForThisMonth($customer_id, $presentdate, $currentMonth);
+				
+			//********* Renewals Due ****************//
+
+				$currentWeekRenewalDue = PaymentDues::getCurrentWeekRenewalsDue($presentdate, $endOfWeek);				       		       $renewalDueWeek1 = PaymentDues::getWeekWiseRenewalsDue($dates[1]['start'],  $dates[1]['end']);
+                                $renewalDueWeek2 = PaymentDues::getWeekWiseRenewalsDue($dates[2]['start'],  $dates[2]['end']);
+                                $renewalDueWeek3 = PaymentDues::getWeekWiseRenewalsDue($dates[3]['start'],  $dates[3]['end']);
+                                $renewalDueWeek4 = PaymentDues::getWeekWiseRenewalsDue($dates[4]['start'],  $dates[4]['end']);				       		       $currentMonthRenewalDue = PaymentDues::getCurrentMonthRenewalsDue($presentdate, $currentMonth);
+		
+
+
 			$viewData = array('currentPage', 'mainMenu',
                                                            'birthday_data','birthday_data_month','birthday_month_startdays','birthdayPresentWeek',
                                                            'todaysMemberReg','membersCount',
@@ -282,7 +400,7 @@ class DashboardController extends \BaseController {
                                                             'totalbpartyCount','todaysbpartycount',
                                                            'courses','futurefollowups',
 							  'todaysCustomerReg','todaysEnrolledCustomers','enrolledCustomers','totalIntrovisitCount', 'introVisitCount', 'allIntrovisits', 'todaysFollowup', 
-							  'todaysIntrovisit','activeRemindersCount','totalclasses', 'expiringbatch', 'bdayPartyInThisWeek', 'bdayPartyInThisMonth', 'todayEnrolledList', 'thisMonthEnrollment', 'thisWeekEnrollment', 'todayRevenueDetails', 'thisWeekRevenueDetails', 'thisMonthRevenueDetails', 'openLeads', 'hotLeads', 'singleEnrollments', 'multipleEnrollments', 'thisMonthIvScheduled', 'thisMonthAttendedIvs', 'todayScheduledIvs','thisWeekScheduledIvs','todayAttendedIvs','thisWeekAttendedIvs');
+							  'todaysIntrovisit','activeRemindersCount','totalclasses', 'expiringbatch', 'bdayPartyInThisWeek', 'bdayPartyInThisMonth', 'todayEnrolledList', 'thisMonthEnrollment', 'thisWeekEnrollment', 'todayRevenueDetails', 'thisWeekRevenueDetails', 'thisMonthRevenueDetails', 'openLeads', 'hotLeads', 'singleEnrollments', 'multipleEnrollments', 'thisMonthIvScheduled', 'thisMonthAttendedIvs', 'todayScheduledIvs','thisWeekScheduledIvs','todayAttendedIvs','thisWeekAttendedIvs','weeks', 'newLeadsForWeek1','newLeadsForWeek2','newLeadsForcurrentWeek','newLeadsForWeek3','newLeadsForWeek4','currentWeekIvAttended','IvAttendedInWeek1','IvAttendedInWeek2','IvAttendedInWeek3','IvAttendedInWeek4','currentWeekIvScheduled','IvScheduledInWeek1','IvScheduledInWeek2','IvScheduledInWeek3','IvScheduledInWeek4','currentWeekHotLeadsYes','hotLeadsYesWeek1','hotLeadsYesWeek2','hotLeadsYesWeek3','hotLeadsYesWeek4','currentWeekHotLeadsNo','hotLeadsNoWeek1','hotLeadsNoWeek2','hotLeadsNoWeek3','hotLeadsNoWeek4','currentWeekHotLeadsMaybe', 'hotLeadsMaybeWeek1','hotLeadsMaybeWeek2','hotLeadsMaybeWeek3','hotLeadsMaybeWeek4','endOfWeekDate','currentMonthStartDate','currentMonthNoLeads','currentMonthNewLeads','currentMonthHotLeads','currentMonthMaybeLeads','IvScheduledInThisMonth','IvAttendedInThisMonth','currentWeekRenewalDue','currentMonthRenewalDue','renewalDueWeek1','renewalDueWeek2','renewalDueWeek3','renewalDueWeek4','currentWeekOutStandLeads','thisMonthOutStandLeads','outStandLeadsWeek1','outStandLeadsWeek2','outStandLeadsWeek3','outStandLeadsWeek4');
    
 			return View::make('pages.dashboard.upcoming',compact($viewData));
      

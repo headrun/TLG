@@ -754,6 +754,31 @@ class BatchesController extends \BaseController {
                 return Response::json(array('status'=>'success','class_count'=>$class_data));
             }
         }
+	
+	public function getTotalBatchesForSelectedDate(){
+	     $inputs = Input::all();
+	     $selectedDate = date('l',strtotime($inputs['date']));
+	
+	     $batch_id = BatchSchedule::where('franchisee_id','=',Session::get('franchiseId'))
+				     ->select('batch_id')
+				     ->where('schedule_date','=',$inputs['date'])
+				     ->get();
+	   
+	     $ids;
+	     foreach($batch_id as $batch_id){
+		$ids[] = $batch_id['batch_id'];
+	     } 
+	     $batchData = Batches::where('franchisee_id','=',Session::get('franchiseId'))
+			       ->selectRaw('id,batch_name,start_date,preferred_time,preferred_end_time,lead_instructor')
+			       ->whereIn('id',$ids)
+			       ->get();
+	     	     
+             if ($batchData) {
+               return Response::json(array('status' => 'success', 'batch_list'=> $batchData));
+             } else {
+               return Response::json(array('status' => 'failure'));
+             }
+	}
         /**
 	 * Show the form for creating a new resource.
 	 *

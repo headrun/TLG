@@ -231,7 +231,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('getUniqueApartmentNames',"CustomersController@getUniqueApartmentNames");
 	Route::any('deleteCustomer',"CustomersController@deleteCustomer");
 	Route::any('deleteMembership',"CustomersController@deleteMembership");
-	
+	Route::any('UpdateCustomerLogs', "CustomersController@UpdateCustomerLogs");
 	/**
 	 *  --------------------------------------------------------------------------------------------------------------------------------------
 	 * Students related Ajax calls
@@ -292,7 +292,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('getBatchesForOldCustomer','BatchesController@getBatchesForOldCustomer');
         Route::any('getbatchesbybatchidanddate','BatchesController@getbatchesbybatchidanddate');
         Route::any('getBatchDatesByBatchId','BatchesController@getBatchDatesByBatchId');
-        
+        Route::any('getTotalBatchesForSelectedDate','BatchesController@getTotalBatchesForSelectedDate'); 
         /**
 	 *  --------------------------------------------------------------------------------------------------------------------------------------
 	 * Reports related Ajax calls
@@ -337,7 +337,7 @@ Route::group(array('prefix' => 'quick'), function() {
 	Route::any('getEvents', "EventsController@getEvents");		
 	Route::any('getPaymentTypes', "PaymentsController@index");
 	Route::any('navigateToProfile', "VaultController@navigateToProfile");	
-	
+		
 	Route::any('eventTypeById', "EventsController@getEventTypeById");
 	Route::any('saveEventType', "EventsController@saveEventType");
 	

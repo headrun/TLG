@@ -618,5 +618,38 @@ class PaymentDues extends \Eloquent {
     return $final_sales_data;
 
   }
-  
+	
+  static function getCurrentWeekRenewalsDue($presentdate, $endOfWeek){
+	$end_date = date('Y-m-d', $endOfWeek);
+     	$classes = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+			      ->where('end_order_date', '<=', $presentdate)
+		     	      ->where('end_order_date', '>=', $end_date)
+			      ->where('payment_due_for','=', 'enrollment')
+			      ->groupBy('student_id')
+			      ->get();	
+	return count($classes);
+  }  
+
+  static function getWeekWiseRenewalsDue($start_date, $end_date){
+	$classes = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+			      ->where('end_order_date', '<=', $end_date)
+			      ->where('end_order_date', '>=', $start_date)
+			      ->where('payment_due_for','=', 'enrollment')
+			      ->groupBy('student_id')
+			      ->get();
+	return count($classes);
+
+  }
+
+  static function getCurrentMonthRenewalsDue($presentdate, $currentMonth){
+	$classes = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+			      ->where('end_order_date', '<=', $presentdate)
+                              ->where('end_order_date', '>=', $currentMonth)
+			      ->where('payment_due_for','=', 'enrollment')
+			      ->groupBy('student_id')
+                              ->get();
+        return count($classes);
+
+  }
+
 }
