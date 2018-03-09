@@ -394,7 +394,6 @@ class Comments extends \Eloquent {
                                                          ->where('followup_status', '=', 'ATTENDED/CELEBRATED')
                                                          ->groupBy('customer_id')
                                                          ->get();
-//		print_r($leads); die();
 		return count($leads);
 	
 	}
@@ -422,7 +421,6 @@ class Comments extends \Eloquent {
                                         ->where('followup_status', '=', 'ATTENDED/CELEBRATED')
                                         ->groupBy('customer_id')
                                         ->get();
-	//	print_r($leads); die();
                 return count($leads);
 	
 
@@ -480,7 +478,6 @@ class Comments extends \Eloquent {
 				->where('lead_status', '=','hot')
 				->groupBy('customer_id')
 				->get();
-	//	print_r($leads); die();
 		return count($leads);
 	}	
 

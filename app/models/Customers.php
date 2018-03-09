@@ -155,7 +155,6 @@ class Customers extends \Eloquent {
                         ->whereNotIn('id',$id)
                         ->orderBy('id','Desc')
                         ->get();
-           // print_r(count($customers)); die();
             $customer_id;
             foreach($customers as $c){
 		$customer_id[] = $c['id']; 
@@ -167,7 +166,6 @@ class Customers extends \Eloquent {
 				     ->where('lead_status','=','hot')	
                                      ->groupBy('customer_id')
                                      ->get();
-	    // print_r($lead_types); die();
             return count($lead_types);
 	}
        
@@ -226,7 +224,6 @@ class Customers extends \Eloquent {
                         ->whereNotIn('id',$id)
                         ->orderBy('id','Desc')
                         ->get();
-    //        print_r(count($customers)); die();
             $customer_id;
             foreach($customers as $c){
                 $customer_id[]=$c['id'];

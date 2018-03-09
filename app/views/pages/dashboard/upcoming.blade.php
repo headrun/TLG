@@ -529,7 +529,6 @@
 					<td><center>{{ $newLeadsForWeek2 + $IvScheduledInWeek2}}</center></td>
 					<td><center>{{ $newLeadsForWeek3 + $IvScheduledInWeek3}}</center></td>
 					<td><center>{{ $newLeadsForWeek4 + $IvScheduledInWeek4}}</center></td>
-				<!--	<td><center>{{ $currentMonthNewLeads }}</center></td> -->
   			 	  </tr>  
   				  <tr> 
     					<th>IV Attended</th>
@@ -539,7 +538,6 @@
                                         <td><center>{{ $IvAttendedInWeek2 }}</center></td>
                                         <td><center>{{ $IvAttendedInWeek3 }}</center></td>
   					<td><center>{{ $IvAttendedInWeek4 }}</center></td>
-				<!--	<td><center>{{ $IvAttendedInThisMonth}}</center></td> -->
 				  </tr>
 				  <tr>
                                         <th>Outstanding Leads</th>
@@ -558,7 +556,6 @@
                                         <td><center>{{ $IvScheduledInWeek2 }}</center></td>
                                         <td><center>{{ $IvScheduledInWeek3 }}</center></td>
 					<td><center>{{ $IvScheduledInWeek4 }}</center></td>
-				<!--	<td><center>{{ $IvScheduledInThisMonth }}</center></td> -->
   				  </tr>
   				  <tr>
     					<th>Hot Leads</th>
@@ -568,7 +565,6 @@
                                         <td><center>{{ $hotLeadsYesWeek2 }}</center></td>
                                         <td><center>{{ $hotLeadsYesWeek3 }}</center></td>
                                         <td><center>{{ $hotLeadsYesWeek4 }}</center></td>
-				<!--	<td><center>{{ $currentMonthHotLeads }}</center></td> -->
  				  </tr>
   				  <tr>
     					<th>Archived - No</th>
@@ -578,7 +574,6 @@
                                         <td><center>{{ $hotLeadsNoWeek2 }}</center></td>
                                         <td><center>{{ $hotLeadsNoWeek3 }}</center></td>
                                         <td><center>{{ $hotLeadsNoWeek4 }}</center></td>
-				<!--	<td><center>{{ $currentMonthNoLeads }}</center></td>--->
   				  </tr>
   				  <tr>
     					<th>Archived - Future</th>
@@ -588,7 +583,6 @@
                                         <td><center>{{ $hotLeadsMaybeWeek2 }}</center></td>
                                         <td><center>{{ $hotLeadsMaybeWeek3 }}</center></td>
                                         <td><center>{{ $hotLeadsMaybeWeek4 }}</center></td>
-				<!--	<td><center>{{ $currentMonthMaybeLeads }}</center></td> -->
   				  </tr>
  				  <tr>
 					<th>Renewals Due</th>
@@ -598,7 +592,6 @@
 					<td><center>{{ $renewalDueWeek2 }}</center></td>
 					<td><center>{{ $renewalDueWeek3}}</center></td>
 					<td><center>{{ $renewalDueWeek4}}</center></td>
-				<!--	<td><center>{{ $currentMonthRenewalDue }}</center></td> -->
   				 </tr>
  			     </tbody>
 			</table>

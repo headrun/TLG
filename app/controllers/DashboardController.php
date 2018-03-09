@@ -144,7 +144,6 @@ class DashboardController extends \BaseController {
 			                  $todaysFollowup = Comments::getAllFollowup();
                         $futurefollowups= Comments::getFutureFollowup();
                         
-                        //return $todaysFollowup;
 			                  $todaysIntrovisit = BatchSchedule::getTodaysIntroVisits();
 			
 			                  $activeRemindersCount = Comments::getAllFollowupActive();
@@ -174,7 +173,6 @@ class DashboardController extends \BaseController {
                         $birthday_data= Students::whereNotIn('id',$student_id)
                                                   ->where('student_date_of_birth','<>','')
                                                   ->where( DB::raw('MONTH(student_date_of_birth)'), '=', $month)
-                                                  //->where( DB::raw('DAY(student_date_of_birth)'), '>', $presentdate )
                                                   ->where('franchisee_id','=',Session::get('franchiseId'))
                                                   ->orderBy(DB::raw('DAY(student_date_of_birth)'))
                                                   -> get();
