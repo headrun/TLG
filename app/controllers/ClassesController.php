@@ -1,8 +1,6 @@
 <?php
-
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Input;
-use DB;
 use Carbon\Carbon;
 class ClassesController extends \BaseController {
 
@@ -199,7 +197,7 @@ class ClassesController extends \BaseController {
 		$yearandMonth = Input::get('yearAndMonth');
       if($yearandMonth >= 4){
         $classesMaster = ClassesMaster::select('id')->where("class_start_age", "<=", $yearandMonth)
-																				->where("class_end_age", ">=", $yearandMonth)
+																	->where("class_end_age", ">=", $yearandMonth)
 																				->where("age_start_limit_unit", "=", "months")
                         								->where("age_end_limit_unit", "=", "months")
 																				->get();

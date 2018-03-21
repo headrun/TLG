@@ -125,14 +125,18 @@ class Customers extends \Eloquent {
 	    foreach($iv as $iv_id){
 		$iv_ids[] = $iv_id['customer_id'];
 	    }
-                                          
-            $new = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
-			   ->whereNotIn('customer_id',$iv_ids)
-			   ->whereIn('customer_id',$customer_id)
-			   ->where('followup_status','=','ACTIVE/SCHEDULED') 
-			   ->where('followup_type','=','INQUIRY') 
-		           ->groupBy('customer_id')
-			   ->get();                    					
+            
+	    if(!empty($iv_ids)){
+             $new = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                           ->whereNotIn('customer_id',$iv_ids)
+                           ->whereIn('customer_id',$customer_id)
+                           ->where('followup_status','=','ACTIVE/SCHEDULED')
+                           ->where('followup_type','=','INQUIRY')
+                           ->groupBy('customer_id')
+                           ->get();
+            } else {
+                $new = 0;
+            }                              
             return count($iv)+count($new);
             
 	}
