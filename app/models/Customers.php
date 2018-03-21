@@ -287,8 +287,8 @@ class Customers extends \Eloquent {
 	
 	
 		$customer = Customers::find($inputs['customerId']);
-		$customer->franchisee_id  = iiSession::get('franchiseId');
-		$customer->customer_namiiiiie  = $inputs['customerName'];
+		$customer->franchisee_id  = Session::get('franchiseId');
+		$customer->customer_name  = $inputs['customerName'];
     $customer->customer_lastname  = $inputs['customerLastName'];
 		$customer->alt_mobile_no  = $inputs['altMobileNo'];
     $customer->landline_no    = $inputs['landlineNo'];
