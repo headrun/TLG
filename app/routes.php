@@ -105,9 +105,10 @@ Route::group(array('prefix' => 'events'), function() {
 
 Route::group(array('prefix' => 'orders'), function() {
 	Route::any('/print/{id}', "PaymentsController@printOrder");
-    Route::any('/Bprint/{id}',"PaymentsController@printBdayOrder");
-    Route::any('/Membershipprint/{id}',"PaymentsController@printMembershipOrder");
+    	Route::any('/Bprint/{id}',"PaymentsController@printBdayOrder");
+    	Route::any('/Membershipprint/{id}',"PaymentsController@printMembershipOrder");
 	Route::any('/types', "EventsController@eventTypes");
+	Route::any('/printSummerOrder/{id}', "PaymentsController@printSummerOrder");
 
 
 });
@@ -242,6 +243,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('getStudentDetailsByIdForBatches','StudentsController@getStudentDetailsByIdForBatches');
 	Route::any('saveKids', "StudentsController@saveKids");
 	Route::any('enrollkid', "StudentsController@enrollKid2");
+        Route::any('enrollYard', "StudentsController@enrollYard");
         Route::any('checkBiPayOrderDate',"StudentsController@checkBiPayOrderDate");
         Route::any('checkmultiPayOrderDate',"StudentsController@checkmultiPayOrderDate");
 	Route::any('checkenrollmentExists', "StudentsController@checkenrollmentExists");

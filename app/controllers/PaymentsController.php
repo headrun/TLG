@@ -284,7 +284,30 @@ class PaymentsController extends \BaseController {
                     return Redirect::action('VaultController@logout');
                 }
 	}
-	
+
+	public function printSummerOrder($id){
+		if(Auth::check()){
+                $payment_no = Crypt::decrypt($id);
+                $invoice_data = InvoiceData::where('franchise_id', '=', Session::get('franchiseId'))->get();
+                $paymentDueDetails = PaymentDues::where('payment_no', '=', $payment_no)->get();
+		$getCustomerName = Customers::select('customer_name','customer_lastname')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
+                $getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
+                $paymentMode = Orders::where('payment_no', '=', $payment_no)->get();
+                $getTermsAndConditions = TermsAndConditions::where('franchisee_id', '=', Session::get('franchiseId'))->get();
+                $franchisee_name=Franchisee::find(Session::get('franchiseId'));
+                $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
+                $data = compact('classStartDate','franchisee_name',
+                  'classEndDate', 'getCustomerName', 'getStudentName','tax_data',
+                   'paymentDueDetails', 'paymentMode', 'getTermsAndConditions', 'invoice_data');
+                return View::make('pages.orders.printSummerOrder', $data);
+                //return $discounts_amount;     
+                }else{
+                    return Redirect::action('VaultController@logout');
+                }
+			$payment_no = Crypt::decrypt($id);
+			return $payment_no;
+		
+	}	
 	
 	public function printBdayOrder($oid) {
      	if(Auth::check()){

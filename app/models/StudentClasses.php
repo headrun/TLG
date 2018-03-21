@@ -105,42 +105,48 @@ class StudentClasses extends \Eloquent {
 							->groupBy(DB::Raw("date('created_at')"))
 							->get();
 
-	//	print_r(count($totalEnrollments)); die();
-		foreach($totalEnrollments as $c){
-                $total[] = $c['student_id'];
-                $list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+		if(count($totalEnrollments) > 0){
+			foreach($totalEnrollments as $c){
+                		$total[] = $c['student_id'];
+                		$list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
                 				   ->where('student_id', '=', $c['student_id'])
                 				   ->where('end_order_date', '>=', date('Y-m-d') )
                 				   ->count();
-                if($list >1){
-                	$multipleEnrollments[] = $list;
-                }   		
-        }
-        return count($multipleEnrollments);
+                	if($list >1){
+                		$multipleEnrollments[] = $list;
+                	}   	
+		     }		
+		     return count($multipleEnrollments);	
+        	}else{
+			return 0;
+		}
 	}
 
 	static function getSingleEnrolledList(){
 		$total;
-		$singleEnrollments;
+		$singleEnrollments = [];
 		$totalEnrollments = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
 							->where('status','!=','introvisit')
 							->where('enrollment_end_date', '>=',date('Y-m-d') )
 							->groupBy('student_id')
 							->groupBy(DB::Raw("date('created_at')"))
 							->get();
-              //  print_r(count($totalEnrollments)); die();
-		foreach($totalEnrollments as $c){
-                $total[] = $c['student_id'];
-                $list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+		if(count($totalEnrollments) > 0){
+			foreach($totalEnrollments as $c){
+                		$total[] = $c['student_id'];
+                		$list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
                 				   ->where('student_id', '=', $c['student_id'])
                 				   ->where('end_order_date', '>=', date('Y-m-d'))
                 				   ->count();
 
-                if($list == 1){
-                	$singleEnrollments[] = $list;
-                }   		
-        }
-        return count($singleEnrollments);
+                	if($list == 1){
+                		$singleEnrollments[] = $list;
+                		}   		
+        		}
+			return count($singleEnrollments);
+		}else{
+			return 0;
+		}
 	}
 	
         
@@ -273,32 +279,33 @@ class StudentClasses extends \Eloquent {
             
         }
 	static public function getTodayEnrollment(){
-        $presentDate = Carbon::now();
-        return StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
-                             ->whereRaw('MONTH(created_at) = MONTH(NOW())')
-                             ->whereRaw('YEAR(created_at) = YEAR(NOW())')
-                             ->whereRaw('DAY(created_at) = DAY(NOW())')
-                             ->count();
-
-    }
+        	$presentDate = Carbon::now();
+		return PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+			  ->where('payment_due_for', '=', 'enrollment')
+                          ->whereDate('created_at', '=', date('Y-m-d', strtotime($presentDate)))
+                          ->count();
+    	}
 	
 	static public function getThisWeekEnrollment(){
-        $weeekdate= new carbon();
-        $presentdate= Carbon::now();
-        $time = strtotime($presentdate);
-        $end = strtotime('last sunday, 11:59pm', $time);
-        return StudentClasses::whereDate('created_at','<=',date('Y-m-d', $time))
+        	$weeekdate= new carbon();
+        	$presentdate= Carbon::now();
+        	$time = strtotime($presentdate);
+        	$end = strtotime('last monday, 11:59pm', $time);
+        	return PaymentDues::whereDate('created_at','<=',date('Y-m-d', $time))
+                            ->where('payment_due_for', '=', 'enrollment')
                             ->where('franchisee_id','=',Session::get('franchiseId'))
                             ->whereDate('created_at','>=',date('Y-m-d', $end))
                             ->count();
 
-    }
-    static public function getThisMonthEnrollment(){
-        $presentDate = Carbon::now();
-        return StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+    	}
+
+	static public function getThisMonthEnrollment(){
+        	$presentDate = Carbon::now();
+        	return PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                             ->where('payment_due_for', '=', 'enrollment')
                              ->whereRaw('MONTH(created_at) = MONTH(NOW())')
                              ->whereRaw('YEAR(created_at) = YEAR(NOW())')
                              ->count();
 
-    }
+    	}
 }

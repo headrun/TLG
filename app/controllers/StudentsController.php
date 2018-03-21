@@ -203,7 +203,21 @@ class StudentsController extends \BaseController {
                           $latestEnrolledData[$i]['enrollment_end_date'] = date('d-M-Y',strtotime($latestEnrolledData[$i]['enrollment_end_date']));
 
                         }
-                        $discountEnrollmentData = Discounts::getEnrollmentDiscontByFranchiseId();     
+                        $discountEnrollmentData = Discounts::getEnrollmentDiscontByFranchiseId();    
+			//getting the date from payment_master for camps or yards
+
+			$payment_made_data_summer = PaymentDues::where('student_id','=',$id)
+								->where('payment_due_for','!=','enrollment')
+								->where('payment_due_for','!=','birthday')
+                                                                ->get();
+			   for($i=0;$i<count($payment_made_data_summer);$i++){	
+				$payment_made_data_summer[$i]['day'] = date('l', strtotime($payment_made_data_summer[$i]['start_order_date']));
+			  	$payment_made_data_summer[$i]['encrypted_payment_no'] = url().'/orders/printSummerOrder/'.Crypt::encrypt($payment_made_data_summer[$i]['payment_no']);
+				$userName = User::find($payment_made_data_summer[$i]['created_by']);
+				$payment_made_data_summer[$i]['receivedBy'] = $userName['first_name'].''.$userName['last_name'];
+			  }
+			 
+			
                     //getting the data from payment_master
                         $payments_master_details = PaymentMaster::where('student_id','=',$id)
                                                                   ->where('order_id','<>','0')
@@ -377,7 +391,7 @@ class StudentsController extends \BaseController {
                                                                 'discount_second_class_elligible','discount_second_child_elligible','discount_second_child','discount_second_class',
                 'studentEnrollments','customermembership','paymentDues',
                 'scheduledIntroVisits', 'introvisit', 'discountEligibility','paidAmountdata','order_due_data',
-                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata','base_price','stage','batchDetails');
+                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata','base_price','stage','batchDetails','payment_made_data_summer');
       return View::make('pages.students.details',compact($dataToView));
     }else{
       return Redirect::action('VaultController@logout');
@@ -1591,7 +1605,7 @@ public function enrollKid2(){
                                     
                                 }else if($inputs['attendance_for_user'.$i]==='A'){
                                     //** Add description for Excused Absent **// 
-                                    $attendanceData->description_absent =$inputs['description_user_absent_'.$i];
+                                //    $attendanceData->description_absent =$inputs['description_user_absent_'.$i];
                                     // creating the retention id
                                     $getcustomerdetails=Students::find($inputs['student_'.$i]);
                                     $retentionData['customer_id']=$getcustomerdetails->customer_id;
@@ -1604,11 +1618,11 @@ public function enrollKid2(){
                                     $customer_logdata['followupType']='RETENTION';
                                     $customer_logdata['commentStatus']='REMINDER_CALL';
                                     $customer_logdata['retention_id']=$rdata->id;
-                                    $customer_logdata['commentText']=$inputs['description_user_absent_'.$i];
+                                    $customer_logdata['commentText']='ABSENT';
                                     $customer_logdata['commentType']='INTERESTED';       
                                     if($inputs['reminderdate_user_absent_'.$i]!=""){
                                         //create followup
-                                        $customer_logdata['reminderDate']=$inputs['reminderdate_user_absent_'.$i];
+                                  //      $customer_logdata['reminderDate']=$inputs['reminderdate_user_absent_'.$i];
                                     }
                                     $customer_log_data=  Comments::addComments($customer_logdata);
                                     
@@ -2877,7 +2891,116 @@ public function enrollKid2(){
 
   }
 
+  public function enrollYard(){
+	$inputs = Input::all();
+	$presentDate = Carbon::now();
+	if($inputs['typeOfClass'] == '0'){
+		$typeOfClass = 'camps';
+	} else {
+		$typeOfClass = 'yard';
+	}
+	$no_of_classes = $inputs['NoOfWeeksForSummer'] - 1;
+	$totalAmount = $inputs['amountForSummer'] * $inputs['NoOfWeeksForSummer'];
+	$end_date = date('Y-m-d', strtotime('+'.$no_of_classes.' week', strtotime($inputs['startDateForSummer'])));
+	$discount_amount = ($inputs['discountPercentageForSummer']/100)*$totalAmount;
+	$customerId = Students::where('franchisee_id', '=', Session::get('franchiseId'))
+				->where('id','=',$inputs['studentId'])
+				->selectRaw('customer_id')
+				->get();
 
+	 $getPayment_no = PaymentMaster::selectRaw('max(payment_no) as payment_no')	
+						 ->get();
+	 $payment_no = $getPayment_no[0]['payment_no'] + 1;
+	
+
+	 $getInvoiceId = Orders::where('franchisee_id', '=', Session::get('franchiseId'))
+				->selectRaw('max(invoice_id) as invoice_id')
+				->get();
+	
+	 $invoice_id = $getInvoiceId[0]['invoice_id'] + 1;
+	
+	 $userId =  Session::get('userId');
+
+	 $insertIntoPaymentDues = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+						  ->insert(
+							array(['franchisee_id' => Session::get('franchiseId'),
+					                    'customer_id' => $customerId[0]['customer_id'],
+							    'student_id' => $inputs['studentId'],
+							    'payment_due_for' => $typeOfClass,
+							    'each_class_amount' => $inputs['amountForSummer'],
+							    'payment_due_amount' => $totalAmount,
+						            'payment_due_amount_after_discount' => $inputs['totalAmountForSummer'],
+							    'discount_applied' => $inputs['discountPercentageForSummer'],
+							    'discount_amount' => $discount_amount,
+							    'tax_percentage' => $inputs['taxPercentageForSummer'],
+							    'payment_type' => 'singlepay',
+							    'payment_status' => 'paid',
+							    'payment_no' => $payment_no,
+							    'selected_sessions' => $inputs['NoOfWeeksForSummer'],
+							    'selected_order_sessions' => $inputs['NoOfWeeksForSummer'],
+							    'start_order_date' => $inputs['startDateForSummer'],
+							    'end_order_date' => $end_date,
+							    'created_by' => $userId,
+							    'created_at' => $presentDate,
+							    'updated_at' => $presentDate	
+							])			
+						    ); 
+	$getPaymentDuesId = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+				       ->where('student_id','=',$inputs['studentId'])
+				       ->where('payment_due_for','=',$typeOfClass)
+				       ->where('start_order_date','=',$inputs['startDateForSummer'])
+				       ->get();
+	$insertIntoOrdersTable = Orders::where('franchisee_id', '=', Session::get('franchiseId'))
+				       ->insert(
+						array(
+						      ['franchisee_id' => Session::get('franchiseId'),
+							'invoice_id' => $invoice_id,
+							'customer_id' => $customerId[0]['customer_id'],
+							'student_id' => $inputs['studentId'],
+							'payment_for' => $typeOfClass,
+							'payment_dues_id' => $getPaymentDuesId[0]['id'],
+							'payment_mode' => 'cash',
+							'amount' => $inputs['totalAmountForSummer'],
+							'payment_no' => $payment_no,
+							'tax_percentage' => $inputs['taxPercentageForSummer'],
+							'created_by' => $userId,
+						        'created_at' => $presentDate,
+							'updated_at' => $presentDate
+						      ]) 
+
+						); 
+	$getOrdersId = Orders::where('franchisee_id','=', Session::get('franchiseId'))
+			     ->where('student_id','=',$inputs['studentId'])
+			     ->where('payment_for','=',$typeOfClass)
+			     ->where('payment_no','=',$payment_no)
+			     ->get();
+//	return $getOrdersId;
+
+	$insertIntoPaymentMaster = PaymentMaster::insert(
+						         array([
+								'customer_id' => $customerId[0]['customer_id'],
+								'student_id' => $inputs['studentId'],
+								'payment_no' => $payment_no,
+								'payment_due_id' => $getPaymentDuesId[0]['id'],
+								'order_id' => $getOrdersId[0]['id'],
+								'created_by' => $userId,
+								'created_at' => $presentDate,
+								'updated_at' => $presentDate
+							])
+
+				);
+
+	    if($insertIntoPaymentDues){
+		return Response::json(array('status'=>'success'));
+
+            }else{
+                return Response::json(array('status'=>'failure'));
+            } 
+
+	
+	
+	
+  }
 
   /**
    * Display the specified resource.

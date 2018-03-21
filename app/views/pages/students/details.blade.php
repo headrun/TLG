@@ -86,7 +86,7 @@ var estimate_id3 = 0;
 
 var bipay = [];
 var multipay = [];
-
+$('#summerWeekStartdate').kendoDatePicker( {format: "yyyy-MM-dd"});
 $('#studentDob').kendoDatePicker();
 $("#editKidBtn").click(function (){
   $("#KidsformBody").show();
@@ -2805,6 +2805,55 @@ $('.deleteenrollmentdata').click(function(){
   });
 });
 
+$(document).on('change','#discountPercentageForSummer, #no_of_classes, #pricePerClass', function() {
+	var discount = $('#discountPercentageForSummer').val();
+	var noOfClasses = $('#no_of_classes').val();
+	var perClassAmount = $('#pricePerClass').val();
+	var amountForSummer = noOfClasses * perClassAmount;
+	var amountAfterDiscount = (discount/100)*amountForSummer;
+	var beforeTax = amountForSummer - amountAfterDiscount;
+	var tax = $('#taxPercentageForSummer').val();
+	var finalAmountForSummer = ((tax/100)*beforeTax) + beforeTax;
+	$('#totalAmountForSummer').val(finalAmountForSummer);
+});
+
+$(document).on('click','.summer-cls-btn', function(){
+	$('.summer-cls-btn').addClass('disabled');
+        var startDateForSummer = $('#summerWeekStartdate').val();
+        var NoOfWeeksForSummer = $('#no_of_classes').val();
+	var amountForSummer = $('#pricePerClass').val();
+	var typeOfClass = $('#typeOfClass').val();
+	var taxPercentageForSummer = $('#taxPercentageForSummer').val();
+	var discountPercentageForSummer = $('#discountPercentageForSummer').val();
+	var totalAmountForSummer = $('#totalAmountForSummer').val();
+	$.ajax({
+
+            type: "POST",
+            url: "{{URL::to('/quick/enrollYard')}}",
+            data: {'studentId': studentId, 
+		   'startDateForSummer': startDateForSummer, 
+		   'NoOfWeeksForSummer': NoOfWeeksForSummer, 
+		   'amountForSummer': amountForSummer, 
+		   'typeOfClass':typeOfClass, 
+		   'discountPercentageForSummer':discountPercentageForSummer,
+		   'totalAmountForSummer':totalAmountForSummer,
+		   'taxPercentageForSummer':taxPercentageForSummer
+		  },
+            dataType: 'json',
+            success: function(response){
+                if(response.status === "success"){
+		    $('#summerMsgDiv').html("<p class='uk-alert uk-alert-success'>Camps / Yard has been taken successfully.Please wait untill the page reloads</p>");
+                    setTimeout(function(){
+             		window.location.reload(1);
+           	    }, 4000);
+                } else {
+		    $('#summerMsgDiv').html("<p class='uk-alert uk-alert-warning'>Camps / Yard not yet taken.Please try again.</P>");
+		}
+            }
+        });
+});
+
+
 </script>
 @stop 
 @section('content')
@@ -3399,7 +3448,7 @@ id="user_profile">
                                 <li id="paymentsTabheading"class=""><a href="#payments">Payments</a></li>
                                 <li id="attendanceTabheading"class=""><a href="#attendace">Attendance</a></li>
                                 <li id="discoveryTabheading"class=""><a href="#discovery">Discovery</a></li>
-                                
+                                <li id="summerTabheading" class=""><a href="#yard">Camps/Yard</a></li>
 
                                 <!--<li id="introvisitTabheading"class=""><a href="#introvisit">Intro Visit</a></li>-->
                               </ul>
@@ -3666,7 +3715,7 @@ id="user_profile">
                                                                               <?php if(isset($payment_made_data[0])){ 
                                                                                 for($j=0;$j<count($payment_made_data);$j++){
                                                                                   for($i=0;$i<sizeof($payment_made_data[$j]);$i++){ 
-                                                                                    
+                                                                                   if($payment_made_data[$j][$i]['class_name'] != ''){ 
                                                                                     ?>
                                                                                     <tr>
                                                                                       <td>{{$payment_made_data[$j][$i]['class_name']}}</td>
@@ -3678,13 +3727,14 @@ id="user_profile">
                                                                                       <td>{{$payment_made_data[$j][$i]['selected_order_sessions']}}</td>
                                                                                       <td>{{$payment_made_data[$j][$i]['payment_due_amount_after_discount']}}</td>
                                                                                       <td>{{$payment_made_data[$j][$i]['receivedname']}}</td>
-                                                                                      <?php if((count($payment_made_data[$j])>1) && $i==0 ) {?>
+										      <?php if((count($payment_made_data[$j])>1) && $i==0 ) {?>
                                                                                       <td style="text-align:justify;vertical-align:middle;"  rowspan=<?php echo count($payment_made_data[$j])?> ><a id='Print' target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
                                                                                       <?php }else if(count($payment_made_data[$j])==1){ ?>
                                                                                       <td><a id='Print'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
                                                                                       <?php } ?>
                                                                                     </tr>
                                                                                     <?php }
+										     }
                                                                                   }
                                                                                 } ?>
                                                                                 
@@ -3844,7 +3894,7 @@ id="user_profile">
                                                               </div>
                                                             </div>
                                                           </li>
-                                                          <div>
+                                                          
                                                             <li id="discovery">   
                                                               @if(Session::has('imageUploadMessage')) 
                                                               <div class="uk-alert uk-alert-success" data-uk-alert>
@@ -3899,8 +3949,112 @@ id="user_profile">
                                                                 </div>  
                                                               </div>
                                                               @endif
-                                                            </div> <br clear="all" />
                                                           </li>
+							  <li id="yard">
+							     <div id = "summerMsgDiv"></div>
+							     <h3>Camps / Yard</h3></br>
+							     {{ Form::open(array('url' => '/students/enrollYard', "class"=>"uk-form-stacked", 'method' => 'post')) }}
+                        					<div class="uk-grid" data-uk-grid-margin>
+								    <div class="uk-width-medium-1-5">
+                                                                        <div class="parsley-row form-group">
+                                                                                <label for="typeOfClass">Type Of Class</label><br>
+                                                                                        {{Form::select('typeOfClass',array('Camps','Yard'),
+                                                                        null,array('id'=>'typeOfClass', 'class' => 'form-control','required'))}}
+                                                                        </div>
+                                                                    </div>
+                           					    <div class="uk-width-medium-1-5">
+                             						<div class="parsley-row form-group">
+                                						<label for="startDate">Start Date</label><br>
+                                							{{Form::text('summerWeekStartdate',
+                                					null,array('id'=>'summerWeekStartdate', 'class' => '','required'))}}
+                             						</div>
+                           					    </div>
+								</div>
+								<div class="uk-grid" data-uk-grid-margin>
+                           					    <div class="uk-width-medium-1-5">
+                             						<div class="parsley-row form-group">
+                                						<label for="numberOfWeeks">No.of Classes</label><br>
+                                							{{Form::number('no_of_classes',
+                                					null,array('id'=>'no_of_classes', 'class' => 'form-control','required'))}}
+                             						</div>
+                           					    </div>
+								    <div class="uk-width-medium-1-5">
+									<div class="parsley-row form-group">
+										<label for="amountPerClass">Price per Class</label><br>
+											{{Form::number('amountPerClass',null,array('id'=>'pricePerClass','class'=>'form-control','required'))}}
+									</div>
+								    </div>
+								    <div class="uk-width-medium-1-5">
+									<div class="parsely-row form-group">
+										<label for="discountPercentageForSummer">Discount %</label><br>
+											{{Form::number('discountPercentageForSummer',null,array('id'=>'discountPercentageForSummer','class'=>'form-control','required'))}}
+									</div>
+								    </div>
+								    <div class="uk-width-medium-1-5">
+                                                                        <div class="parsely-row form-group">
+                                                                                <label for="taxPercentageForSummer">Tax %</label><br>
+                                                                                        {{Form::number('taxPercentageForSummer',18,array('id'=>'taxPercentageForSummer','class'=>'form-control','readonly'))}}
+                                                                        </div>
+                                                                    </div>
+								 </div>
+								 <div class="uk-grid" data-uk-grid-margin>
+								    <div class="uk-width-medium-1-5">
+									<div class="parsely-row form-group">
+										<label for="totalAmountForYard">Total Amount</label><br>
+											{{Form::number('totalAmountForSummer',null,array('id'=>'totalAmountForSummer','class'=>'form-control','readonly'))}}
+
+									</div>
+								    </div>
+								</div>
+								<div class="row pull-right">
+                           					    <div class="uk-width-1-2">
+                             					    	<div class="parsley-row" style="padding: 25px 30px;">
+                                						<button type="button" class="md-btn md-btn-primary summer-cls-btn">Enroll</button>
+                             						</div>
+                           					    </div>
+                         					</div>
+                      					       {{ Form::close() }}<br>
+				
+							    <div class="md-card" style="margin-top: 100px;">
+                                                              <div class='uk-overflow-container'>
+								<h3>Payments Made</h3>
+                                                                <table id='reportTable' class='uk-table'>
+                                                                  <thead>
+                                                                    <tr>
+                                                                      <th>Type of Class</th>
+                                                                      <th>Start Date</th>
+                                                                      <th>Sessions</th>
+							              <th>Amount</th>
+                                                                      <th>Received By</th>
+                                                                      <th>Actions</th>
+                                                                    </tr>
+                                                                  </thead>
+                                                                  <tbody>
+									
+									 <?php if(isset($payment_made_data_summer[0])){
+                                                                                for($j=0;$j<count($payment_made_data_summer);$j++){
+                                                                                    ?>
+                                                                                    <tr>
+                                                                                      <td>{{$payment_made_data_summer[$j]['payment_due_for']}}</td>
+                                                                                      <td>
+                                                                                      {{date('d-M-Y',strtotime($payment_made_data_summer[$j]['start_order_date']))}}</td>
+                                                                                      <td>{{$payment_made_data_summer[$j]['selected_order_sessions']}}</td>
+                                                                                      <td>{{$payment_made_data_summer[$j]['payment_due_amount_after_discount']}}</td>
+                                                                                      <td>{{$payment_made_data_summer[$j]['receivedBy']}}</td>
+                                                                                      <?php if((count($payment_made_data_summer[$j])>1) && $i==0 ) {?>
+                                                                                      <td style="text-align:justify;vertical-align:middle;"  rowspan=<?php echo count($payment_made_data_summer[$j])?> ><a id='Print' target="_blank" class="btn btn-primary btn-xs" href="{{$payment_made_data_summer[$j]['encrypted_payment_no']}}">Print</a></td>
+                                                                                      <?php }else if(count($payment_made_data_summer[$j])==1){ ?>
+                                                                                      <td><a id='Print'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" href="{{$payment_made_data_summer[$j]['encrypted_payment_no']}}">Print</a></td>
+                                                                                      <?php } ?>
+                                                                                    </tr>
+                                                                                    <?php }	 
+                                                                                  
+                                                                                } ?>										
+								  </tbody>
+								</table>
+							      </div>
+							     </div>
+							  </li>
                                                         </ul>
                                                       </div>
                                                     </div>

@@ -363,7 +363,11 @@
                                 <div class = "col-md-4">
                                     <center><span class="uk-text-muted uk-text-small">Total</span></center>
                                     <center><h2 class="uk-margin-remove"><span class="countUpMe">    
-                                    {{ $enrolledCustomers }}
+				   @if($enrolledCustomers)
+                                       {{$enrolledCustomers}}
+                                   @else
+                                       0
+                                   @endif
                                     <noscript>12456</noscript></span></h2></center>
                                 </div>
                                 <div class = "col-md-4">
@@ -503,7 +507,7 @@
                 </div>
             </div>
              <div>
-      	      <div class="uk-width-medium">
+      	    <!--  <div class="uk-width-medium">
                     <div class="md-card">
                         <div class="md-card-content">
 				<center><span class="uk-text-muted uk-text-small" id = "Titles">Leads Info</span></center>
@@ -517,7 +521,7 @@
 					@foreach($weeks as $date)
     						<th><center>{{ $date['start']}} - {{ $date['end']}}</center></th>
     					@endforeach
-				<!--	<th><center>Current Month<br><span class='uk-text-muted uk-text-small_'>({{ $currentMonthStartDate }} - Today)</span></center></th> -->
+					<th><center>Current Month<br><span class='uk-text-muted uk-text-small_'>({{ $currentMonthStartDate }} - Today)</span></center></th> 
   				  </tr>
 				</thead>
 				<tbody>
@@ -596,8 +600,8 @@
  			     </tbody>
 			</table>
 		    </div>
-		</div>
-	     </div>
+		</div> 
+	     </div> -->
 	    </div><br><br>
             <!-- large chart -->
             
@@ -766,7 +770,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id = "BirthdayTableBody"> -->
-                                        <?php for($i=0;$i<count($birthdayPresentWeek);$i++){
+                            <!--            <?php for($i=0;$i<count($birthdayPresentWeek);$i++){
 
                                             if($birthdayPresentWeek[$i]['franchisee_id']==Session::get('franchiseId'))
                                             { ?>
@@ -779,7 +783,7 @@
                                             <td>{{$birthdayPresentWeek[$i]['birthday_party_date']}}</td>
                                             <td>{{$birthdayPresentWeek[$i]['birthday_party_time']}}</td>
                                         </tr>
-                                            <?php }} ?>
+                                            <?php }} ?> -->
                                     <!-- </tbody>
                                 </table>
                                
