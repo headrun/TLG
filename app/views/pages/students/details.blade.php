@@ -3993,7 +3993,7 @@ id="user_profile">
 								    <div class="uk-width-medium-1-5">
                                                                         <div class="parsely-row form-group">
                                                                                 <label for="taxPercentageForSummer">Tax %</label><br>
-                                                                                        {{Form::number('taxPercentageForSummer',18,array('id'=>'taxPercentageForSummer','class'=>'form-control','readonly'))}}
+                                                                                        {{Form::number('taxPercentageForSummer',18,array('id'=>'taxPercentageForSummer','class'=>'form-control'))}}
                                                                         </div>
                                                                     </div>
 								 </div>

@@ -110,11 +110,9 @@ class DashboardController extends \BaseController {
                         $present_date=Carbon::now();
                         $totalclasses=0;
                         foreach($courses as $course){
-                          $temp= DB::select(DB::raw("SELECT student_id FROM student_classes 
-                                                     WHERE franchisee_id = '".Session::get('franchiseId')."' AND enrollment_end_date >= '".date('Y-m-d')."' AND class_id IN (select id from classes where course_id =".$course->id .") AND student_classes.status IN ('enrolled') GROUP BY student_id ORDER BY count('student_id')"));
-                          //	var_dump($temp); die;
-			//$totalclasses = $totalclasses + count($temp);
-			
+                          $temp= DB::select(DB::raw("SELECT student_id,".$course->id." FROM payments_dues 
+                                                     WHERE franchisee_id = '".Session::get('franchiseId')."' AND end_order_date >= '".date('Y-m-d')."' AND class_id IN (select id from classes where course_id =".$course->id.") AND payments_dues.payment_due_for IN ('enrollment') GROUP BY student_id ORDER BY count('student_id')"));
+                 //        	var_dump($temp); die;
 			 if($temp){
                               $course->totalno=count($temp);
                               $totalclasses+=count($temp);
@@ -123,11 +121,52 @@ class DashboardController extends \BaseController {
                               $totalclasses+=0;
                             } 
                         
-			}
-                                
-				//for birthdayparty
-                        
+			}	
+			
+           	/*		$classes = Courses::join('classes','classes.course_id','=','courses.id')
+					 ->join('payments_dues','payments_dues.class_id','=','classes.id')
+					 ->where('courses.franchisee_id','=',Session::get('franchiseId'))
+					 ->where('classes.franchisee_id','=',Session::get('franchiseId'))
+					 ->where('payments_dues.franchisee_id','=',Session::get('franchiseId'))
+					 ->whereDate('payments_dues.end_order_date', '>=', date('Y-m-d'))
+					 ->where('payments_dues.payment_due_for','=','enrollment')
+					 ->select('payments_dues.student_id','classes.course_id')
+					 ->get();
+			//	return count($classes); 
+			$student = array();
+			$final_array = array();
+			foreach($classes as $k => $class){	
+				$key  = $class['course_id'];
+				if (!array_key_exists($key, $final_array)) {
+					array_push($student, $class['student_id']);
+				} else {
+					array_push($student, $class['student_id']);
+				}
+				$final_array[$key] = $student;
+				
+			 }
+			return $final_array;
+			$final_dict = array();
+			$single = 0 ;
+			$multiple = 0;
+			foreach($final_array as $k => $v){
+				$course_id = Courses::where('franchisee_id','=',Session::get('franchiseId'))
+						    ->where('id','=',$k)
+						    ->get();
+				$value = array_count_values($v);
+				foreach($value as $id => $count) {
+				        if($count > 1){
+						$multiple = $multiple + 1;
+						$final_dict[$course_id[0]['course_name']]['multiple'] = $multiple;
+					}else{
+						$single = $single + 1;
+						$final_dict[$course_id[0]['course_name']]['single'] = $single;
+					}				
+				}
+			}    
 
+			return $final_dict;  */
+	
                         $totalbpartyCount = BirthdayParties::getBpartyCount();
                         $todaysbpartycount = BirthdayParties::getBpartyCountBytoday();
                         $bdayPartyInThisWeek = BirthdayParties::whereDate('birthday_party_date','<=',date('Y-m-d', $time))
@@ -559,7 +598,7 @@ class DashboardController extends \BaseController {
                                             'schedule_type' => 'class'])
                                     );
                 }
-        }
+        } 
        
       
   }

@@ -314,7 +314,9 @@ class PaymentDues extends \Eloquent {
                                                     ->where('student_class_id','<>',0)
                                                     ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
                                                     ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
-                                                    ->sum('payment_due_amount_after_discount');
+						    ->selectRaw('sum(selected_order_sessions) as selected_order_sessions, sum(payment_due_amount_after_discount) as payment_due_amount_after_discount')
+						    ->groupBy('created_at')
+						    ->get();
         $enrollmentReportDetails['membershipAmount']=PaymentDues::where('payment_due_for','=','enrollment')
                                                     ->where('payment_status','=','paid')
                                                     ->where('birthday_id','<>',0)
