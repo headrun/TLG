@@ -479,18 +479,17 @@ function calculateBirthdayPartyPrice(){
             $("#defaultBirthdayPrice").val(member_birthday_price)
 	}
         
-            // if member are selected 
-            
+            // if member are selected
+	    var discountAmount = parseFloat($('#discountAmount').val()); 
             var additionalGuestPrice    = parseFloat($("#additionalGuestPrice").val());
             var additionalHalfHourPrice = parseFloat($("#additionalHalfHourPrice").val());
             if(($('#membershipType').val()!="")){
                 var membershipPrice         = parseFloat( $("#membershipPriceBday").val());
                 var defaultBirthdayPrice    = parseFloat($("#defaultBirthdayPrice").val());
-                var grandTotal = (additionalGuestPrice + additionalHalfHourPrice + membershipPrice + defaultBirthdayPrice);
+                var grandTotal = (additionalGuestPrice + additionalHalfHourPrice + membershipPrice + defaultBirthdayPrice - discountAmount);
             }else {
-                var grandTotal = (additionalGuestPrice + additionalHalfHourPrice + defaultBirthdayPrice);
+                var grandTotal = (additionalGuestPrice + additionalHalfHourPrice + defaultBirthdayPrice - discountAmount);
             }
-            
 	
             $("#grandTotal").val(grandTotal);
             //console.log($("#grandTotal").val());
@@ -517,7 +516,7 @@ function calculateBirthdayPartyPrice(){
                     $("#defaultBirthdayPrice").val(member_birthday_price);
                 }
 	}
-
+	var discountAmount = parseInt($("#discountAmount").val());
 	var additionalGuestPrice    = parseInt($("#additionalGuestPrice").val());
 	var additionalHalfHourPrice = parseInt($("#additionalHalfHourPrice").val());
         
@@ -525,9 +524,8 @@ function calculateBirthdayPartyPrice(){
 	
         var defaultBirthdayPrice    = parseFloat($("#defaultBirthdayPrice").val());
 		
-	var grandTotal = (additionalGuestPrice + additionalHalfHourPrice + membershipPrice + defaultBirthdayPrice);
+	var grandTotal = (additionalGuestPrice + additionalHalfHourPrice + membershipPrice + defaultBirthdayPrice - discountAmount);
 
-	
 	
 	$("#grandTotal").val(grandTotal);
 
@@ -577,6 +575,18 @@ $('#advanceAmount').change(function(){
 	calculateBirthdayPartyPrice();
 });
 
+$('#discountAmount').change(function () {
+	if(parseInt($('#discountAmount').val())<0){
+	   $('#discountAmount').val('0');
+	}
+	if(parseInt($('#discountAmount').val())==''){
+	   $('#discountAmount').val('0');
+	}
+	if(parseInt($('#discountAmount').val()) > parseInt($('#grandTotal').val())){
+            $('#discountAmount').val($('#grandTotal').val());
+        }
+        calculateBirthdayPartyPrice();
+});
 
 //additionalGuestCount for keyup action
 $('#additionalGuestCount').keyup(function (){
@@ -3146,10 +3156,17 @@ $('#memberhsipchequeNumber').keyup(function(){
 																	<td>
 																		{{Form::number('additionalHalfHourCount', '',array('id'=>'additionalHalfHourCount',  'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
 																	</td>
+															
 																	<td>
 																		{{Form::text('additionalHalfHourPrice', '0',array('id'=>'additionalHalfHourPrice', 'readonly', 'required',  'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
 																	</td>															
 																</tr>
+																<tr>                                                                                                                                                    <td>Discount Amount</td>
+                                                                                                                                        <td>
+
+ {{Form::number('discountAmount', '0',array('id'=>'discountAmount', 'class' => 'form-control input-sm md-input','style'=>'padding:0px', 'min'=>0))}}
+                                                                                                                                        </td>
+                                                                                                                                </tr>
 																
 																<tr>
 																	<td colspan="2">Grand Total</td>

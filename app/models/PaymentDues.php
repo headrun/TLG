@@ -136,6 +136,7 @@ class PaymentDues extends \Eloquent {
 		$paymentDues->customer_id          = $addBirthday['customer_id'];
 		$paymentDues->franchisee_id        = Session::get('franchiseId');
                 $paymentDues->payment_due_amount   = $addBirthday['advance_amount_paid'];
+		$paymentDues->discount_amount      = $addBirthday['discount_amount'];
                 if(isset($addBirthday['membership_id'])){
                     $paymentDues->membership_id=$addBirthday['membership_id'];
                 }
