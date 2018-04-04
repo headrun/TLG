@@ -136,6 +136,7 @@ class PaymentDues extends \Eloquent {
 		$paymentDues->customer_id          = $addBirthday['customer_id'];
 		$paymentDues->franchisee_id        = Session::get('franchiseId');
                 $paymentDues->payment_due_amount   = $addBirthday['advance_amount_paid'];
+		$paymentDues->discount_amount      = $addBirthday['discount_amount'];
                 if(isset($addBirthday['membership_id'])){
                     $paymentDues->membership_id=$addBirthday['membership_id'];
                 }
@@ -314,7 +315,9 @@ class PaymentDues extends \Eloquent {
                                                     ->where('student_class_id','<>',0)
                                                     ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
                                                     ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
-                                                    ->sum('payment_due_amount_after_discount');
+						    ->selectRaw('sum(selected_order_sessions) as selected_order_sessions, sum(payment_due_amount_after_discount) as payment_due_amount_after_discount')
+						    ->groupBy('created_at')
+						    ->get();
         $enrollmentReportDetails['membershipAmount']=PaymentDues::where('payment_due_for','=','enrollment')
                                                     ->where('payment_status','=','paid')
                                                     ->where('birthday_id','<>',0)

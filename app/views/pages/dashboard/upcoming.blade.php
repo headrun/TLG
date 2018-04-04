@@ -363,17 +363,13 @@
                                 <div class = "col-md-4">
                                     <center><span class="uk-text-muted uk-text-small">Total</span></center>
                                     <center><h2 class="uk-margin-remove"><span class="countUpMe">    
-				   @if($enrolledCustomers)
-                                       {{$enrolledCustomers}}
-                                   @else
-                                       0
-                                   @endif
-                                    <noscript>12456</noscript></span></h2></center>
+                                    {{ $singleEnrollments + $multipleEnrollments}}
+				    <noscript>12456</noscript></span></h2></center>
                                 </div>
                                 <div class = "col-md-4">
                                     <span class="uk-text-muted uk-text-small">Single</span>
                                     <h2 class="uk-margin-remove"><span class="countUpMe">@if($singleEnrollments)
-                                        {{$enrolledCustomers - $multipleEnrollments}}
+                                        {{$singleEnrollments}}
                                     @else 
                                         0 
                                     @endif
@@ -488,7 +484,7 @@
                     </div>
                 </div>
                 <div>
-                    <div class="md-card">
+                 <!--   <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <span class="uk-text-muted uk-text-small" id = "Titles">Current Enrollment</span>
@@ -503,8 +499,8 @@
                             </div>
        			  </div>                     
                         </div>
-                    </div>
-                </div>
+                    </div> -->
+                </div> 
             </div>
              <div>
       	    <!--  <div class="uk-width-medium">

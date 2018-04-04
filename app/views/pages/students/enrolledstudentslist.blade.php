@@ -107,6 +107,7 @@
 		                                <th>Date Of Birth</th>
 		                                <th>Start Date</th>
 		                                <th>End Date</th>
+						<th>Status</th>
 		                                <!-- <th>Action</th> -->
 		                            </tr>
 		                            </thead>
@@ -119,9 +120,9 @@
 		                                <td><?php echo date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->y.'.'.date_diff(date_create(date('Y-m-d',strtotime($student->student_date_of_birth))), date_create('today'))->m.'years';?> </td>
 		                                <td>{{$student->student_date_of_birth}} </td>
 		                                <td>{{ date('d-M-Y',strtotime($student->enrollment_start_date)); }}</td>
-		                                <td>
-		                                	{{ date('d-M-Y',strtotime($student->enrollment_end_date)); }}
-		                                	<a style="display: none" href="{{url()}}/students/view/{{$student->student_id}}"></a>
+		                                <td>{{ date('d-M-Y',strtotime($student->enrollment_end_date)); }}</td>
+		                                <td>{{ $student->status }} 	
+							<a style="display: none" href="{{url()}}/students/view/{{$student->student_id}}"></a>
 
 		                                </td>
 		                            </tr>

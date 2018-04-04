@@ -32,7 +32,7 @@ class BirthdayParties extends \Eloquent {
 		$birthday->additional_halfhour_price     = $inputs['additionalHalfHourPrice'];
 		$birthday->advance_amount_paid           = $inputs['advanceAmount'];
 		$birthday->remaining_due_amount          = $inputs['remainingAmount'];
-		
+	        $birthday->discount_amount	         = $inputs['discountAmount'];
 		$birthday->grand_total  		 = $inputs['grandTotal'];
 		$birthday->birthday_party_date  	 = date('Y-m-d',strtotime($inputs['birthdayCelebrationDate']));
 		$birthday->birthday_party_time           = date('H:i:s',strtotime($inputs['birthdayTime']));
