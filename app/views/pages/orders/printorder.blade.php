@@ -115,19 +115,19 @@ print_r($orders); */
                                                   switch (strlen($paymentMode[0]['id'])){
                                                     
                                                     case 1:
-                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|00000'.$paymentMode[0]['id'];
+                                                        echo 'TLG|'.$franchisee_name['invoice_code'].'|'.date('Y', $yrdata).'|00000'.$paymentMode[0]['id'];
                                                         break;
                                                     case 2:
-                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|0000'.$paymentMode[0]['id'];
+                                                        echo 'TLG|'.$franchisee_name['invoice_code'].'|'.date('Y', $yrdata).'|0000'.$paymentMode[0]['id'];
                                                         break;
                                                     case 3:
-                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|000'.$paymentMode[0]['id'];
+                                                        echo 'TLG|'.$franchisee_name['invoice_code'].'|'.date('Y', $yrdata).'|000'.$paymentMode[0]['id'];
                                                         break;
                                                     case 4: 
-                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|00'.$paymentMode[0]['id'];
+                                                        echo 'TLG|'.$franchisee_name['invoice_code'].'|'.date('Y', $yrdata).'|00'.$paymentMode[0]['id'];
                                                         break;
                                                     case 5:
-                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|0'.$paymentMode[0]['id'];
+                                                        echo 'TLG|'.$franchisee_name['invoice_code'].'|'.date('Y', $yrdata).'|0'.$paymentMode[0]['id'];
                                                         break;
                                                     default:
                                                         echo $paymentMode[0]['id'];
@@ -293,7 +293,7 @@ print_r($orders); */
                             </td>
                             <td style="text-align:right">
                             	<strong>
-                            		{{number_format((float)( (((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_admin_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * $tax_data[$i]['tax_percentage'] /100), 2, '.', '') }}
+                            		{{number_format((float)( (((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_admin_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * $paymentDueDetails[0]['tax_percentage'] /100), 2, '.', '') }}
                             	</strong>
                             </td>
 						</tr>

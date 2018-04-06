@@ -213,7 +213,7 @@
                             </td>
                             <td style="text-align:right">
                             	<strong>
-                            		{{number_format((float)( (+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']) * $tax_data[$i]['tax_percentage'] /100), 2, '.', '') }}
+                            		{{number_format((float)( (+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']) * $paymentDueDetails[0]['tax_percentage'] /100), 2, '.', '') }}
                             	</strong>
                             </td>
 						</tr>
