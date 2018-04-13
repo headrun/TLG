@@ -1,10 +1,12 @@
 <?php
+
 use Carbon\Carbon;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Crypt;
 include 'mpdf60/mpdf.php';
+
 class StudentsController extends \BaseController {
 
   /**
@@ -628,7 +630,8 @@ class StudentsController extends \BaseController {
                 $order['amount'] = $inputs['SubTotalForOld'];
                 $order['order_status'] = "completed";
                 $order['created_at']=date("Y-m-d H:i:s");
-                    
+                
+    
                 $sendOrderDetailsToInsert = Orders::createOrder($order);
                 
                 // update payments_dues table with payment_no
@@ -842,7 +845,21 @@ public function enrollKid2(){
         $order['payment_dues_id']   = $sendPaymentDetailsToInsert['id'];
         $order['amount'] = $inputs['singlePayAmount'];
         $order['order_status'] = "completed";
-                                      
+   	
+	$fianancialYearDates = Franchisee::getFinancialStartDates();
+	$dataForThisYear = Franchisee::getDataForthisYear($fianancialYearDates);
+	
+	if( count($dataForThisYear) > 0){
+		$invoiceNo =  $dataForThisYear[0]['max_invoice'] + 1;
+	//	$updateInvoice = FinancialYearInvoice::updateInvoiceNumber($invoiceNo);
+		$data = Franchisee::where('id', '=', Session::get(franchiseId))
+         		          ->update(['max_invoice' => $invoiceNo]);
+	}else{
+		$data = Franchisee::updateFinancialYears($fianancialYearDates);
+		//$data = FinancialYearInvoice::insertData($fianancialYearDates);
+		return $data;
+	}
+                
         $sendOrderDetailsToInsert = Orders::createOrder($order);
                     
                     
