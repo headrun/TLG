@@ -714,7 +714,6 @@ public function enrollKid2(){
       $tax=$tax->tax_percentage;
                 //** checking if it is a one batch **//
       if(count($getEstimateDetails) == 1){
-
 	$fianancialYearDates = Franchisee::getFinancialStartDates();
         $dataForThisYear = Franchisee::where('id', '=', Session::get(franchiseId))
                                     ->where('financial_year_start_date', '=', $fianancialYearDates['start_date'])

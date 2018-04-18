@@ -410,6 +410,7 @@ class CustomersController extends \BaseController {
 	public function purchaseMembership(){
 		if(Auth::check()){
 			$inputs=Input::all();
+			DB::beginTransaction();
 			try {
 			$invoiceNo = Franchisee::invoiceForMembership();	
 				// adding to membershiptable

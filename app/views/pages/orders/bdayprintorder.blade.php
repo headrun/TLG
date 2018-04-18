@@ -115,8 +115,6 @@
                                         @else
                                          <?php
                                                   $yrdata= strtotime($order_data->created_at);
-                                         
-                                                  
                                                   switch (strlen($paymentMode[0]['id'])){
                                                     
                                                     case 1:
@@ -138,7 +136,6 @@
                                                         echo $order_data['id'];
                                                         break;
                                                     }
-                                                
                                             ?>
                                         @endif
 				 </h4>
