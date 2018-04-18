@@ -109,6 +109,39 @@
 				<p style="text-align: center;">Thank You and welcome to celebrate B'day party in The Little Gym family</p>
 				<br clear="all"/>
 				<div class="col-md-11" style="margin:0px auto !important; float:none; border-bottom:2px dashed #EEEEEE;">
+				 <h4>Invoice Number :
+					@if(strtotime($order_data->created_at) > '2018-04-16')
+                                         {{$order_data['invoice_format']}}
+                                        @else
+                                         <?php
+                                                  $yrdata= strtotime($order_data->created_at);
+                                         
+                                                  
+                                                  switch (strlen($paymentMode[0]['id'])){
+                                                    
+                                                    case 1:
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|00000'.$order_data['id'];
+                                                        break;
+                                                    case 2:
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|0000'.$order_data['id'];
+                                                        break;
+                                                    case 3:
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|000'.$order_data['id'];
+                                                        break;
+                                                    case 4:
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|00'.$order_data['id'];                                      
+                                                        break;
+                                                    case 5:
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|0'.$order_data['id'];
+                                                        break;
+                                                    default:
+                                                        echo $order_data['id'];
+                                                        break;
+                                                    }
+                                                
+                                            ?>
+                                        @endif
+				 </h4>
 				 <h4>Payment Reciept and Birthday  Details</h4>
 				</div>
 				<br clear="all"/>

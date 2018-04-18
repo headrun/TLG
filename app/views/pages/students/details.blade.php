@@ -3958,7 +3958,7 @@ id="user_profile">
 								    <div class="uk-width-medium-1-5">
                                                                         <div class="parsley-row form-group">
                                                                                 <label for="typeOfClass">Type Of Class</label><br>
-                                                                                        {{Form::select('typeOfClass',array('Camps','Yard'),
+                                                                                        {{Form::select('typeOfClass',array('camps'=> 'camps','yard'=> 'yard'),
                                                                         null,array('id'=>'typeOfClass', 'class' => 'form-control','required'))}}
                                                                         </div>
                                                                     </div>

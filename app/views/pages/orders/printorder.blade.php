@@ -107,8 +107,10 @@ print_r($orders); */
 				<br clear="all"/>
 				<div class="col-md-7" style="margin:0px auto !important; float:left; border-bottom:2px dashed #EEEEEE;">
                                     <h4>Invoice Number :
-
-                                             <?php
+					@if($paymentDueDetails[0]['created_at'] > '2018-04-16')
+					 {{$paymentMode[0]['invoice_format']}}
+					@else
+					 <?php
                                                   $yrdata= strtotime($paymentDueDetails[0]['created_at']);
                                                   
                                                   
@@ -134,7 +136,8 @@ print_r($orders); */
                                                         break;
                                                     }
                                                 
-                                            ?> 
+                                            ?>
+					@endif
                                     </h4>
                                     <h4>Payment Reciept and Enrollment  Details</h4>
 				</div>

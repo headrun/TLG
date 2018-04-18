@@ -331,6 +331,7 @@ class PaymentsController extends \BaseController {
 		$customer_data = $customer_data [0];
 		$birthday_data = $birthday_data [0];
 		$student_data = $student_data [0];
+		$paymentMode = Orders::where('payment_no', '=', $orderid)->get();
                 $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
 		$data = array (
 				'order_data',
@@ -341,6 +342,7 @@ class PaymentsController extends \BaseController {
                                 'tax_data',
                                 'franchisee_name',
                                 'getTermsAndConditions',
+				'paymentMode'
 		);
 		
 		// print_r($data);
@@ -363,7 +365,6 @@ class PaymentsController extends \BaseController {
 			if($order_data->payment_for=='enrollment'){
 				PaymentsController:: printOrder(Crypt::encrypt($order_data->payment_no));	
 			}
-
 			$customer_data = Customers::find($order_data ['customer_id']);
 			$membership_data = CustomerMembership::find($order_data ['membership_id']);
 			$membership_type = MembershipTypes::find($order_data ['membership_type']);

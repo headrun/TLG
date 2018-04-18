@@ -410,9 +410,8 @@ class CustomersController extends \BaseController {
 	public function purchaseMembership(){
 		if(Auth::check()){
 			$inputs=Input::all();
-			DB::beginTransaction();
 			try {
-				
+			$invoiceNo = Franchisee::invoiceForMembership();	
 				// adding to membershiptable
     			$membership_data=CustomerMembership::addMembership($inputs);
     			$inputs['membership_id'] = $membership_data['id'];
@@ -430,6 +429,7 @@ class CustomersController extends \BaseController {
      			$payment_data=PaymentDues::createMembershipPaymentDues($inputs);
     			$inputs['payment_due_id']=$payment_data->id;
     			$inputs['taxamt']=($inputs['membership_amount']*$inputs['tax'])/100;
+			$inputs['invoice_format'] = Orders::invoiceFormat($invoiceNo);
     			$order_data=Orders::CreateMembershipOrder($inputs);
     			
     			DB::commit();
