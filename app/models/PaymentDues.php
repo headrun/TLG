@@ -654,5 +654,32 @@ class PaymentDues extends \Eloquent {
         return count($classes);
 
   }
+   
+  static function insertPaymentsData($customerId,$inputs,$typeOfClass,$totalAmount,$payment_no,$end_date,$userId,$presentDate){
+	$userId =  Session::get('userId');
+         $data = new PaymentDues();
+         $data->franchisee_id = Session::get('franchiseId');
+         $data->customer_id = $customerId[0]->customer_id;
+         $data->student_id = $inputs['studentId'];
+         $data->payment_due_for = $typeOfClass;
+         $data->each_class_amount = $inputs['amountForSummer'];
+         $data->payment_due_amount = $totalAmount;
+         $data->payment_due_amount_after_discount =  $inputs['totalAmountForSummer'];
+         $data->discount_applied = $inputs['discountPercentageForSummer'];
+         $data->tax_percentage = $inputs['taxPercentageForSummer'];
+         $data->payment_type = 'singlepay';
+         $data->payment_status = 'paid';
+         $data->payment_no = $payment_no;
+         $data->selected_sessions = $inputs['NoOfWeeksForSummer'];
+         $data->start_order_date = $inputs['startDateForSummer'];
+         $data->end_order_date = $end_date;
+         $data->created_by = $userId;
+         $data->created_at = $presentDate;
+         $data->updated_at = $presentDate;
+         $data->save();
 
+	 return $data;
+	
+
+  }
 }

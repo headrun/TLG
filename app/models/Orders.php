@@ -22,40 +22,42 @@ class Orders extends \Eloquent {
 		return $this->belongsTo("StudentClasses", "student_classes_id");
 	}
 	
-	static function createOrder($input){
+	static function createOrder($input,$invoiceNo){
 		
 		$order = new Orders();
-        $franchisee_name=Franchisee::find(Session::get('franchiseId'));
+        	$franchisee_name=Franchisee::find(Session::get('franchiseId'));
 		$year = date('Y');
 		$order->customer_id     = $input['customer_id'];
               
 		if(isset($input['student_id']) && array_key_exists('student_id',$input) && $input['student_id']!=''){
 			$order->student_id      = $input['student_id'];
 		}
-    $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
-    if(isset($input['payment_no']) && array_key_exists('payment_no',$input) && $input['payment_no']!=''){
-      $order->payment_no= $input['payment_no'];
-    }
+    		$order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
+		$invoiceFormat = Orders::invoiceFormat($invoiceNo);
+                $order->invoice_format = $invoiceFormat;
+    		if(isset($input['payment_no']) && array_key_exists('payment_no',$input) && $input['payment_no']!=''){
+      			$order->payment_no= $input['payment_no'];
+    		}	
 		
 		$order->payment_for     = $input['payment_for'];
 		
-    if(isset($input['payment_mode']) && array_key_exists('payment_mode',$input) && $input['payment_mode']!='' && $input['payment_mode']=='cheque'){
-      $order->payment_mode    = $input['payment_mode'];
-      $order->bank_name       = $input['bank_name'];
-      $order->cheque_number   = $input['cheque_number'];
-    }else if( isset($input['payment_mode']) && array_key_exists('payment_mode',$input) && $input['payment_mode']!='' && $input['payment_mode']=='card'){
-      $order->payment_mode    = $input['payment_mode'];
-      if(isset($input['payment_mode']) && array_key_exists('payment_mode',$input) && $input['payment_mode']!='' && $input['card_type']){
-        $order->card_type       = $input['card_type'];
-      }
-      if(isset($input['bank_name']) && array_key_exists('bank_name',$input) && $input['bank_name']!=''){
-        $order->bank_name       = $input['bank_name'];
-      }
-      if(isset($input['receipt_number'])){
-      }
-    }else if(isset($input['payment_mode']) && array_key_exists('payment_mode',$input) && $input['payment_mode']!='' && $input['payment_mode']=='cash'){ //for cash
-      $order->payment_mode    = $input['payment_mode'];
-    }
+    		if(isset($input['payment_mode']) && array_key_exists('payment_mode',$input) && $input['payment_mode']!='' && $input['payment_mode']=='cheque'){
+    			$order->payment_mode    = $input['payment_mode'];
+      			$order->bank_name       = $input['bank_name'];
+      			$order->cheque_number   = $input['cheque_number'];
+    		}else if( isset($input['payment_mode']) && array_key_exists('payment_mode',$input) && $input['payment_mode']!='' && $input['payment_mode']=='card'){
+      			$order->payment_mode    = $input['payment_mode'];
+      		if(isset($input['payment_mode']) && array_key_exists('payment_mode',$input) && $input['payment_mode']!='' && $input['card_type']){
+        		$order->card_type       = $input['card_type'];
+      		}
+      		if(isset($input['bank_name']) && array_key_exists('bank_name',$input) && $input['bank_name']!=''){
+        		$order->bank_name       = $input['bank_name'];
+      		}
+      		if(isset($input['receipt_number'])){
+      		}
+    	}else if(isset($input['payment_mode']) && array_key_exists('payment_mode',$input) && $input['payment_mode']!='' && $input['payment_mode']=='cash'){ //for cash
+     		 $order->payment_mode    = $input['payment_mode'];
+    	}
                 
 		if(isset($input['tax_amount']) && array_key_exists('tax_amount',$input) && $input['tax_amount']!=''){
       $order->tax_amount  =$input['tax_amount'];
@@ -83,16 +85,16 @@ class Orders extends \Eloquent {
 		
 	}
 	
-	
-   static function createBOrder($addbirthday,$addPaymentDues,$taxAmtapplied,$inputs){
-   	
+   static function createBOrder($addbirthday,$addPaymentDues,$taxAmtapplied,$inputs,$invoiceNo){
 		$order = new Orders ();
 		$order->customer_id = $addbirthday ['customer_id'];
 		$order->student_id = $addbirthday ['student_id'];
-        $order->franchisee_id=Session::get('franchiseId');
+        	$order->franchisee_id=Session::get('franchiseId');
 		$order->birthday_id = $addbirthday ['id'];
 		$order->payment_for = "birthday";
-        $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
+        	$order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
+		$invoiceFormat = Orders::invoiceFormat($invoiceNo);
+                $order->invoice_format = $invoiceFormat;
                 if(isset($inputs['birthdayPaymentTypeRadio'])){
                     if($inputs['birthdayPaymentTypeRadio']=='cheque'){
                         if(isset($inputs['birthdayBankName'])){
@@ -307,40 +309,29 @@ class Orders extends \Eloquent {
 
     static public function CreateMembershipOrder($inputs) {
         $order = new Orders();
-        //print_r($inputs); die();
         $order->customer_id = $inputs['customer_id'];
         $order->payment_dues_id = $inputs['payment_due_id'];
         $order->franchisee_id=Session::get('franchiseId');
         $order->invoice_id=(Orders::where('franchisee_id','=',Session::get('franchiseId'))->max('invoice_id'))+1;
-        //print_r($order->payment_dues_id); die();
-
+	$order->invoice_format = $inputs['invoice_format'];
         $order->payment_for = 'membership';
         $order->membership_id = $inputs['membership_id'];
-
-        //$order->membership_id = $inputs['membership_type_id'];
         $order->membership_type = $inputs['membership_type_id'];
-
         $order->payment_mode = $inputs['payment_mode'];
-      //  print_r($order->payment_mode); die();       
-        
-         if( $inputs['payment_mode'] == 'cheque'){
-
+        if( $inputs['payment_mode'] == 'cheque'){
             $order->bank_name = $inputs['chequeBankName'];
             $order->cheque_number = $inputs['chequeNumber']; 
          
-         }else if($inputs['payment_mode'] == 'card'){
-            
+        }else if($inputs['payment_mode'] == 'card'){
             $order->bank_name = $inputs['bankName'];
             $order->card_type =$inputs['cardType'];
-         } 
-         
+        } 
         $order->amount = $inputs['payment_due_amount'];
         $order->tax_percentage = $inputs['tax']; 
         $order->tax_amount = $inputs['taxamt'];
         $order->order_status = 'completed';
         $order->created_by = Session::get ( 'userId' );
         $order->created_at = date ( "Y-m-d H:i:s" );
-
         $order -> save();
         return $order;
         
@@ -582,5 +573,25 @@ class Orders extends \Eloquent {
         }else{
             return false;
         }
+    }
+
+    public static function invoiceFormat($invoiceNo){
+	$franchiseCode = Franchisee::where('id', '=', Session::get('franchiseId'))->get();
+	$dates = Franchisee::getFinancialStartDates();
+	$startYr = date('Y',strtotime($dates['start_date']));
+	$endYr = date('y',strtotime($dates['end_date']));
+	$invoiceCode = $franchiseCode[0]['invoice_code'];
+	switch (strlen($invoiceNo)){
+		case 1:
+    			return 'TLG/'.$invoiceCode.'/'.$startYr.'-'.$endYr.'-'.'00'.$invoiceNo;
+    			break;
+		case 2: 
+    			return 'TLG/'.$invoiceCode.'/'.$startYr.'-'.$endYr.'-'.'0'.$invoiceNo;
+    			break;
+		default:
+    			return $invoiceNo;
+    			break;
+	}
+
     }
 }

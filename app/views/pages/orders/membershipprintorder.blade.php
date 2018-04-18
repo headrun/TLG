@@ -104,35 +104,34 @@
 				<br clear="all"/>
 				<div class="col-md-7" style="margin:0px auto !important; float:left; border-bottom:2px dashed #EEEEEE;">
                                     <h4>Invoice Number :
-
-                                             <?php
-                                                  $yrdata= strtotime($paymentDueDetails['created_at']);
-                                                  
-                                                  
-                                                  switch (strlen($order_data['id'])){
-                                                    
+					@if(strtotime($order_data->created_at) > '2018-04-16')
+                                         {{$order_data['invoice_format']}}
+                                        @else
+                                         <?php
+                                                  $yrdata= strtotime($order_data->created_at);
+                                                  switch (strlen($paymentMode[0]['id'])){
                                                     case 1:
-                                                        echo 'TLG|'.$franchisee_data['franchisee_name'].'|'.date('M', $yrdata).'|00000'.$order_data['id'];
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|00000'.$order_data['id'];
                                                         break;
                                                     case 2:
-                                                        echo 'TLG|'.$franchisee_data['franchisee_name'].'|'.date('M', $yrdata).'|0000'.$order_data['id'];
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|0000'.$order_data['id'];
                                                         break;
                                                     case 3:
-                                                        echo 'TLG|'.$franchisee_data['franchisee_name'].'|'.date('M', $yrdata).'|000'.$order_data['id'];
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|000'.$order_data['id'];
                                                         break;
-                                                    case 4: 
-                                                        echo 'TLG|'.$franchisee_data['franchisee_name'].'|'.date('M', $yrdata).'|00'.$order_data['id'];
+                                                    case 4:
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|00'.$order_data['id'];
                                                         break;
                                                     case 5:
-                                                        echo 'TLG|'.$franchisee_data['franchisee_name'].'|'.date('M', $yrdata).'|0'.$order_data['id'];
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|0'.$order_data['id'];
                                                         break;
                                                     default:
                                                         echo $order_data['id'];
                                                         break;
                                                     }
-                                                
-                                            ?> 
-                                    </h4>
+                                            ?>
+                                        @endif
+				    </h4>
                                     <h4>Payment Reciept and Enrollment  Details</h4>
 				</div>
 				<div class = "col-md-4" style = "float: right">

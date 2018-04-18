@@ -44,6 +44,76 @@ class Franchisee extends \Eloquent {
 	public static function getFList(){
 		return Franchisee::select('id','franchisee_name')->get();
 	}
+
+	public static function getFinancialStartDates(){
+             $pst = date('m');
+             $dates = array();
+             if($pst>=4) {
+                $y=date('Y');
+                $dtt=$y."-04-01";
+                $dates['start_date'] = $dtt;
+                $pt = date('Y', strtotime('+1 year'));
+                $ptt=$pt."-03-31";
+                $dates['end_date'] = $ptt;
+             }
+             else {
+                $y=date('Y', strtotime('-1 year'));
+                $dtt=$y."-04-01";
+                $dates['start_date'] = $dtt;
+                $pt =date('Y');
+                $ptt=$pt."-03-31";
+                $dates['end_date'] = $ptt;
+             }
+            return $dates;
+
+        }
+	
+	public static function getDataForthisYear($dates){
+        	$data =  Franchisee::where('id', '=', Session::get(franchiseId))
+                                    ->where('financial_year_start_date', '=', $dates['start_date'])
+                                    ->where('financial_year_end_date', '=', $dates['end_date'])
+                                    ->get();
+		return $data;
+        }
+
+        public static function updateInvoiceNumber($invoiceNo){
+		$data = new Franchisee();
+                $data->exists = true;
+                $data->id = Session::get('franchiseId');
+                $data->max_invoice = $invoiceNo;
+                $data->save();
+
+                return $data;
+        }
+
+        public static function updateFinancialYears($dates){
+		$data = new Franchisee();
+		$data->exists = true;
+		$data->id = Session::get(franchiseId);
+		$data->financial_year_start_date = $dates['start_date'];
+		$data->financial_year_end_date = $dates['end_date'];
+		$data->max_invoice = '1';
+		$data->save();
+
+                return $data;
+        }
+
+	public static function invoiceForMembership(){
+		$fianancialYearDates = Franchisee::getFinancialStartDates();
+                $dataForThisYear = Franchisee::where('id', '=', Session::get('franchiseId'))
+                                    ->where('financial_year_start_date', '=', $fianancialYearDates['start_date'])
+                                    ->where('financial_year_end_date', '=', $fianancialYearDates['end_date'])
+                                    ->get();
+
+        	if( count($dataForThisYear) > 0){
+                	$invoiceNo =  $dataForThisYear[0]['max_invoice'] + 1;
+                	$data = Franchisee::updateInvoiceNumber($invoiceNo);
+        	}else{
+                	$invoiceNo = '1';
+                	$data = Franchisee::updateFinancialYears($fianancialYearDates);
+        	}
+		return $invoiceNo;
+	}
 	
 	
 }

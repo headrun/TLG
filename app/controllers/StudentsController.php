@@ -714,6 +714,19 @@ public function enrollKid2(){
       $tax=$tax->tax_percentage;
                 //** checking if it is a one batch **//
       if(count($getEstimateDetails) == 1){
+	$fianancialYearDates = Franchisee::getFinancialStartDates();
+        $dataForThisYear = Franchisee::where('id', '=', Session::get(franchiseId))
+                                    ->where('financial_year_start_date', '=', $fianancialYearDates['start_date'])
+                                    ->where('financial_year_end_date', '=', $fianancialYearDates['end_date'])
+                                    ->get();
+
+        if( count($dataForThisYear) > 0){
+                $invoiceNo =  $dataForThisYear[0]['max_invoice'] + 1;
+                $data = Franchisee::updateInvoiceNumber($invoiceNo);
+        }else{  
+		$invoiceNo = '1';
+                $data = Franchisee::updateFinancialYears($fianancialYearDates);
+        }
                     
         $batch_data=  BatchSchedule::
                                 where('batch_id','=',$getEstimateDetails[0]['batch_id'])
@@ -805,7 +818,7 @@ public function enrollKid2(){
         $paymentDuesInput['payment_batch_amount'] = $paymentDuesInput['selected_order_sessions']*$paymentDuesInput['each_class_cost'];
         $paymentDuesInput['tax']                                    = $tax;
                 
-        $sendPaymentDetailsToInsert = PaymentDues::createPaymentDues($paymentDuesInput);
+        $sendPaymentDetailsToInsert = PaymentDues::createPaymentDues($paymentDuesInput, $invoiceNo);
                 
                 /* inserting into payment Due table is completed for single pay */
                     /* Working on preparing to payment master table for single pay */
@@ -843,8 +856,8 @@ public function enrollKid2(){
         $order['amount'] = $inputs['singlePayAmount'];
         $order['order_status'] = "completed";
                                       
-        $sendOrderDetailsToInsert = Orders::createOrder($order);
-                    
+        $sendOrderDetailsToInsert = Orders::createOrder($order, $invoiceNo);
+
                     
         $update_payment_due = PaymentDues::find($sendPaymentDetailsToInsert->id);
         $update_payment_due->payment_no=$sendPaymentMasterDetailsToInsert->payment_no;
@@ -901,6 +914,20 @@ public function enrollKid2(){
                               
     //** checking if it is a 2 batch **//
     }elseif (count($getEstimateDetails) == 2) {
+        $fianancialYearDates = Franchisee::getFinancialStartDates();
+        $dataForThisYear = Franchisee::where('id', '=', Session::get(franchiseId))
+                                    ->where('financial_year_start_date', '=', $fianancialYearDates['start_date'])
+                                    ->where('financial_year_end_date', '=', $fianancialYearDates['end_date'])
+                                    ->get();
+
+        if( count($dataForThisYear) > 0){
+                $invoiceNo =  $dataForThisYear[0]['max_invoice'] + 1;
+                $updateInvoice = Franchisee::updateInvoiceNumber($invoiceNo);
+        }else{ 
+		$invoiceNo = '1'; 
+                $data = Franchisee::updateFinancialYears($fianancialYearDates);
+        }      
+
       for($i=0;$i<2;$i++){
         $batch_data[$i]=BatchSchedule::where('batch_id','=',$getEstimateDetails[$i]['batch_id'])
                                        ->where('schedule_date','>=',$getEstimateDetails[$i]['enroll_start_date'])
@@ -1050,7 +1077,7 @@ public function enrollKid2(){
             $order['payment_dues_id']   = $sendPaymentDetailsToInsert['id'];
             $order['amount'] = $inputs['singlePayAmount'];
             $order['order_status'] = "completed";
-            $sendOrderDetailsToInsert = Orders::createOrder($order);
+            $sendOrderDetailsToInsert = Orders::createOrder($order, $invoiceNo);
         }
       }
                             
@@ -1101,6 +1128,19 @@ public function enrollKid2(){
                 
     //** checking if it is a 3 batch **//
     }elseif (count($getEstimateDetails) == 3) {
+        $fianancialYearDates = Franchisee::getFinancialStartDates();
+        $dataForThisYear = Franchisee::where('id', '=', Session::get(franchiseId))
+                                    ->where('financial_year_start_date', '=', $fianancialYearDates['start_date'])
+                                    ->where('financial_year_end_date', '=', $fianancialYearDates['end_date'])
+                                    ->get();
+
+        if( count($dataForThisYear) > 0){
+                $invoiceNo =  $dataForThisYear[0]['max_invoice'] + 1;
+                $updateInvoice = Franchisee::updateInvoiceNumber($invoiceNo);
+        }else{  
+		$invoiceNo = '1';
+                $data = Franchisee::updateFinancialYears($fianancialYearDates);
+        }
                          
       for($i=0;$i<3;$i++){
         $batch_data[$i]=BatchSchedule::
@@ -1257,7 +1297,7 @@ public function enrollKid2(){
           $order['payment_dues_id']   = $sendPaymentDetailsToInsert['id'];
           $order['amount'] = $inputs['singlePayAmount'];
           $order['order_status'] = "completed";
-          $sendOrderDetailsToInsert = Orders::createOrder($order);
+          $sendOrderDetailsToInsert = Orders::createOrder($order, $invoiceNo);
 
         }
                             
@@ -1390,6 +1430,19 @@ public function enrollKid2(){
   public function addbirthdayParty(){
     
     $inputs = Input::all();
+		$fianancialYearDates = Franchisee::getFinancialStartDates();
+        	$dataForThisYear = Franchisee::where('id', '=', Session::get(franchiseId))
+                                    ->where('financial_year_start_date', '=', $fianancialYearDates['start_date'])
+                                    ->where('financial_year_end_date', '=', $fianancialYearDates['end_date'])
+                                    ->get();
+
+        	if( count($dataForThisYear) > 0){
+                	$invoiceNo =  $dataForThisYear[0]['max_invoice'] + 1;
+                	$data = Franchisee::updateInvoiceNumber($invoiceNo);
+        	}else{
+                	$invoiceNo = '1';
+                	$data = Franchisee::updateFinancialYears($fianancialYearDates);
+        	}
                
                 if($inputs['remainingAmount'] >=0){
                 
@@ -1402,7 +1455,7 @@ public function enrollKid2(){
                         $followupMembershipData=  Comments::addFollowupForMembership($customerMembershipData);
                         }
     }
-                $addBirthday =  BirthdayParties::addbirthdayParty($inputs);
+                    $addBirthday =  BirthdayParties::addbirthdayParty($inputs);
                     if(isset($customerMembershipData)){
                     $addBirthday['membership_id']=$customerMembershipData->id;
                     $membership_data=  MembershipTypes::find($customerMembershipData->membership_type_id);
@@ -1418,7 +1471,7 @@ public function enrollKid2(){
                 if($inputs['remainingAmount']!='0'){
                 $addPaymentDues= PaymentDues::createBirthdaypaymentdues($addBirthday);
                 }
-                $addBirthdayOrder = Orders::createBOrder($addBirthday,$firstpayment,$taxAmtapplied,$inputs);
+                $addBirthdayOrder = Orders::createBOrder($addBirthday,$firstpayment,$taxAmtapplied,$inputs,$invoiceNo);
                 
                 }
                 
@@ -2915,57 +2968,48 @@ public function enrollKid2(){
   public function enrollYard(){
 	$inputs = Input::all();
 	$presentDate = Carbon::now();
-	if($inputs['typeOfClass'] == '0'){
-		$typeOfClass = 'camps';
-	} else {
-		$typeOfClass = 'yard';
-	}
+	$typeOfClass = $inputs['typeOfClass'];
 	$no_of_classes = $inputs['NoOfWeeksForSummer'] - 1;
 	$totalAmount = $inputs['amountForSummer'] * $inputs['NoOfWeeksForSummer'];
 	$end_date = date('Y-m-d', strtotime('+'.$no_of_classes.' week', strtotime($inputs['startDateForSummer'])));
 	$discount_amount = ($inputs['discountPercentageForSummer']/100)*$totalAmount;
 	$customerId = Students::where('franchisee_id', '=', Session::get('franchiseId'))
 				->where('id','=',$inputs['studentId'])
-				->selectRaw('customer_id')
+				->select('customer_id')
 				->get();
-
 	 $getPayment_no = PaymentMaster::selectRaw('max(payment_no) as payment_no')	
 						 ->get();
-	 $payment_no = $getPayment_no[0]['payment_no'] + 1;
-	
+	 $payment_no = $getPayment_no[0]->payment_no + 1;
 
-	 $getInvoiceId = Orders::where('franchisee_id', '=', Session::get('franchiseId'))
-				->selectRaw('max(invoice_id) as invoice_id')
-				->get();
-	
-	 $invoice_id = $getInvoiceId[0]['invoice_id'] + 1;
-	
 	 $userId =  Session::get('userId');
 
-	 $insertIntoPaymentDues = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
-						  ->insert(
-							array(['franchisee_id' => Session::get('franchiseId'),
-					                    'customer_id' => $customerId[0]['customer_id'],
-							    'student_id' => $inputs['studentId'],
-							    'payment_due_for' => $typeOfClass,
-							    'each_class_amount' => $inputs['amountForSummer'],
-							    'payment_due_amount' => $totalAmount,
-						            'payment_due_amount_after_discount' => $inputs['totalAmountForSummer'],
-							    'discount_applied' => $inputs['discountPercentageForSummer'],
-							    'discount_amount' => $discount_amount,
-							    'tax_percentage' => $inputs['taxPercentageForSummer'],
-							    'payment_type' => 'singlepay',
-							    'payment_status' => 'paid',
-							    'payment_no' => $payment_no,
-							    'selected_sessions' => $inputs['NoOfWeeksForSummer'],
-							    'selected_order_sessions' => $inputs['NoOfWeeksForSummer'],
-							    'start_order_date' => $inputs['startDateForSummer'],
-							    'end_order_date' => $end_date,
-							    'created_by' => $userId,
-							    'created_at' => $presentDate,
-							    'updated_at' => $presentDate	
-							])			
-						    ); 
+	 $data = new PaymentDues();
+         $data->franchisee_id = Session::get('franchiseId');
+         $data->customer_id = $customerId[0]->customer_id;
+         $data->student_id = $inputs['studentId'];
+         $data->payment_due_for = $inputs['typeOfClass'];
+         $data->each_class_amount = $inputs['amountForSummer'];
+         $data->payment_due_amount = $totalAmount;
+         $data->payment_due_amount_after_discount =  $inputs['totalAmountForSummer'];
+         $data->discount_applied = $inputs['discountPercentageForSummer'];
+         $data->tax_percentage = $inputs['taxPercentageForSummer'];
+         $data->payment_type = 'singlepay';
+         $data->payment_status = 'paid';
+         $data->payment_no = $payment_no;
+         $data->selected_sessions = $inputs['NoOfWeeksForSummer'];
+	 $data->selected_order_sessions = $inputs['NoOfWeeksForSummer'];
+         $data->start_order_date = $inputs['startDateForSummer'];
+         $data->end_order_date = $end_date;
+         $data->created_by = $userId;
+         $data->created_at = $presentDate;
+         $data->updated_at = $presentDate;
+         $data->save();
+
+	$getInvoiceId = Orders::where('franchisee_id', '=', Session::get('franchiseId'))
+                                ->max('invoice_id');
+         $invoice_id = $getInvoiceId[0]->invoice_id + 1;
+	$invoiceNo = Franchisee::invoiceForMembership();
+        $invoiceFormat = Orders::invoiceFormat($invoiceNo);
 	$getPaymentDuesId = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
 				       ->where('student_id','=',$inputs['studentId'])
 				       ->where('payment_due_for','=',$typeOfClass)
@@ -2976,10 +3020,11 @@ public function enrollKid2(){
 						array(
 						      ['franchisee_id' => Session::get('franchiseId'),
 							'invoice_id' => $invoice_id,
-							'customer_id' => $customerId[0]['customer_id'],
+							'invoice_format' => $invoiceFormat,
+							'customer_id' => $customerId[0]->customer_id,
 							'student_id' => $inputs['studentId'],
 							'payment_for' => $typeOfClass,
-							'payment_dues_id' => $getPaymentDuesId[0]['id'],
+							'payment_dues_id' => $data['id'],
 							'payment_mode' => 'cash',
 							'amount' => $inputs['totalAmountForSummer'],
 							'payment_no' => $payment_no,
@@ -2995,15 +3040,14 @@ public function enrollKid2(){
 			     ->where('payment_for','=',$typeOfClass)
 			     ->where('payment_no','=',$payment_no)
 			     ->get();
-//	return $getOrdersId;
 
 	$insertIntoPaymentMaster = PaymentMaster::insert(
 						         array([
-								'customer_id' => $customerId[0]['customer_id'],
+								'customer_id' => $customerId[0]->customer_id,
 								'student_id' => $inputs['studentId'],
 								'payment_no' => $payment_no,
-								'payment_due_id' => $getPaymentDuesId[0]['id'],
-								'order_id' => $getOrdersId[0]['id'],
+								'payment_due_id' => $data['id'],
+								'order_id' => $getOrdersId[0]->id,
 								'created_by' => $userId,
 								'created_at' => $presentDate,
 								'updated_at' => $presentDate
@@ -3011,15 +3055,13 @@ public function enrollKid2(){
 
 				);
 
-	    if($insertIntoPaymentDues){
+	    if($data){
 		return Response::json(array('status'=>'success'));
 
             }else{
                 return Response::json(array('status'=>'failure'));
             } 
-
-	
-	
+		
 	
   }
 
