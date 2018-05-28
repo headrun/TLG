@@ -114,18 +114,25 @@ class Customers extends \Eloquent {
             foreach($customers as $c){
                 $customer_id[]=$c['id'];
             }
+   
+	    if(!empty($customer_id)){
+             $iv = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+                                        ->whereIn('customer_id',$customer_id)
+                                        ->where('lead_status','=','new')
+                                         ->groupBy('customer_id')
+                                         ->get();
 
-            $iv = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
-            				->whereIn('customer_id',$customer_id)
-					->where('lead_status','=','new')
-                                        ->groupBy('customer_id')
-                                        ->get();
-
-	    $iv_ids;
-	    foreach($iv as $iv_id){
-		$iv_ids[] = $iv_id['customer_id'];
-	    }
+             $iv_ids;
+             $iv_ids = '';
+              foreach($iv as $iv_id){
+                $iv_ids[] = $iv_id['customer_id'];
+              }
             
+            } else {
+               $iv_ids = '';
+               $iv = '';
+            }
+	    
 	    if(!empty($iv_ids)){
              $new = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
                            ->whereNotIn('customer_id',$iv_ids)
@@ -134,10 +141,10 @@ class Customers extends \Eloquent {
                            ->where('followup_type','=','INQUIRY')
                            ->groupBy('customer_id')
                            ->get();
+		return count($iv)+count($new);
             } else {
-                $new = 0;
-            }                              
-            return count($iv)+count($new);
+                return 0;
+            }                           
             
 	}
 
@@ -164,13 +171,18 @@ class Customers extends \Eloquent {
 		$customer_id[] = $c['id']; 
 		 
 	    }
-            $lead_types = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+
+	    if(!empty($customer_id)){
+              $lead_types = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
 				    // ->where('lead_status','!=','')
 				     ->whereIn('customer_id',$customer_id)
 				     ->where('lead_status','=','hot')	
                                      ->groupBy('customer_id')
                                      ->get();
-            return count($lead_types);
+              return count($lead_types);
+	   }else{
+              return 0;
+	   }
 	}
        
        /* static function getHotLeadsForProspects(){
@@ -271,13 +283,17 @@ class Customers extends \Eloquent {
             foreach($customers as $c){
                 $customer_id[]=$c['id'];
             }
-             $iv = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+	    if(!empty($customer_id)) {
+              $iv = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
                                         ->whereIn('customer_id',$customer_id)
 					->selectRaw('reminder_date, followup_type, customer_id, lead_status')
 					->orderBy('customer_id','Desc')
 					->groupBy('customer_id')
                                         ->get();	
 
+	    } else {
+              $iv = '';
+            }
             return $iv;
 
         }

@@ -4157,8 +4157,8 @@ $('#memberhsipchequeNumber').keyup(function(){
 				            </div>
 				            <div class="uk-width-medium-1-3">
 				                 <div class="parsley-row" style="margin-top:-30px;">
-				                 	<label for="studentDob">Date of birth</label> <br/>(MM/DD/YYYY)
-				                 	{{Form::text('studentDob', null,array('id'=>'studentDob', 'class' => '','required'))}}
+				                 	<label for="studentDob">Date of birth<span class="req">*</span></label> <br/>(MM/DD/YYYY)
+				                 	{{Form::text('studentDob', null,array('id'=>'studentDob', 'class' => '','required' => ''))}}
 				                 </div>
 				            </div>		
 				            		            				            
@@ -4167,8 +4167,8 @@ $('#memberhsipchequeNumber').keyup(function(){
 				        <div class="uk-grid" data-uk-grid-margin>
 				        	<div class="uk-width-medium-1-3">
 				                 <div class="parsley-row">
-				                 	<label for="studentGender">Gender</label>
-				                 	<select id="studentGender" name="studentGender" class="form-control input-sm md-input" style="padding:0px; font-weight:bold;color: #727272;">
+				                 	<label for="studentGender">Gender<span class="req">*</span></label>
+				                 	<select id="studentGender" name="studentGender" class="form-control input-sm md-input" style="padding:0px; font-weight:bold;color: #727272;" required>
 				                 		<option value=""></option>
 				                 		<option value="male">Male</option>
 				                 		<option value="female">Female</option>				                 	

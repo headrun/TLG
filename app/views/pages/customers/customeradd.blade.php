@@ -468,9 +468,9 @@ $(document).ready(function(){
 			                </div>
 			                <div class="uk-width-medium-1-3">    
 				                  <div class="parsley-row form-group">
-				                 	<label for="source">Source</label>
+				                 	<label for="source">Source<span class="req">*</span></label>
 				                 	
-				                 	{{ Form::select('source', array('' => '', 'word of mouth' => 'Word of Mouth', 'grass roots' => 'Grassroots', 'walkin' => 'Walkin', 'events' => 'Events','social media'=>'Social media','business dev - schools apart'=>'Business dev - schools apart','internal marketing'=>'Internal marketing','external grass root events'=>'External grass root events','business partnerships'=>'Business partnerships','internal events'=>'Internal events','PR'=>'PR','sales and telemarketing'=>'Sales and telemarketing','mass marketing'=>'Mass marketing','service calls'=>'Service calls'), null ,array('id'=>'source', 'class' => 'input-sm md-input',"placeholder"=>"Institution type", "style"=>'padding:0px; font-weight:bold;color: #727272;')) }}
+				                 	{{ Form::select('source', array('' => '', 'word of mouth' => 'Word of Mouth', 'grass roots' => 'Grassroots', 'walkin' => 'Walkin', 'events' => 'Events','social media'=>'Social media','business dev - schools apart'=>'Business dev - schools apart','internal marketing'=>'Internal marketing','external grass root events'=>'External grass root events','business partnerships'=>'Business partnerships','internal events'=>'Internal events','PR'=>'PR','sales and telemarketing'=>'Sales and telemarketing','mass marketing'=>'Mass marketing','service calls'=>'Service calls'), null ,array('id'=>'source', 'class' => 'input-sm md-input','required' => '',"placeholder"=>"Institution type", "style"=>'padding:0px; font-weight:bold;color: #727272;')) }}
 				                 </div>
 				            </div> 
 				            <br clear="all"/>

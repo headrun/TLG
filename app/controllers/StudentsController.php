@@ -715,7 +715,7 @@ public function enrollKid2(){
                 //** checking if it is a one batch **//
       if(count($getEstimateDetails) == 1){
 	$fianancialYearDates = Franchisee::getFinancialStartDates();
-        $dataForThisYear = Franchisee::where('id', '=', Session::get(franchiseId))
+        $dataForThisYear = Franchisee::where('id', '=', Session::get('franchiseId'))
                                     ->where('financial_year_start_date', '=', $fianancialYearDates['start_date'])
                                     ->where('financial_year_end_date', '=', $fianancialYearDates['end_date'])
                                     ->get();
@@ -727,7 +727,7 @@ public function enrollKid2(){
 		$invoiceNo = '1';
                 $data = Franchisee::updateFinancialYears($fianancialYearDates);
         }
-                    
+
         $batch_data=  BatchSchedule::
                                 where('batch_id','=',$getEstimateDetails[0]['batch_id'])
                                 ->where('schedule_date','>=',$getEstimateDetails[0]['enroll_start_date'])
@@ -915,7 +915,7 @@ public function enrollKid2(){
     //** checking if it is a 2 batch **//
     }elseif (count($getEstimateDetails) == 2) {
         $fianancialYearDates = Franchisee::getFinancialStartDates();
-        $dataForThisYear = Franchisee::where('id', '=', Session::get(franchiseId))
+        $dataForThisYear = Franchisee::where('id', '=', Session::get('franchiseId'))
                                     ->where('financial_year_start_date', '=', $fianancialYearDates['start_date'])
                                     ->where('financial_year_end_date', '=', $fianancialYearDates['end_date'])
                                     ->get();
@@ -1129,7 +1129,7 @@ public function enrollKid2(){
     //** checking if it is a 3 batch **//
     }elseif (count($getEstimateDetails) == 3) {
         $fianancialYearDates = Franchisee::getFinancialStartDates();
-        $dataForThisYear = Franchisee::where('id', '=', Session::get(franchiseId))
+        $dataForThisYear = Franchisee::where('id', '=', Session::get('franchiseId'))
                                     ->where('financial_year_start_date', '=', $fianancialYearDates['start_date'])
                                     ->where('financial_year_end_date', '=', $fianancialYearDates['end_date'])
                                     ->get();
@@ -1431,7 +1431,7 @@ public function enrollKid2(){
     
     $inputs = Input::all();
 		$fianancialYearDates = Franchisee::getFinancialStartDates();
-        	$dataForThisYear = Franchisee::where('id', '=', Session::get(franchiseId))
+        	$dataForThisYear = Franchisee::where('id', '=', Session::get('franchiseId'))
                                     ->where('financial_year_start_date', '=', $fianancialYearDates['start_date'])
                                     ->where('financial_year_end_date', '=', $fianancialYearDates['end_date'])
                                     ->get();

@@ -48,12 +48,14 @@ class CustomersController extends \BaseController {
                   //      $openLeads =  Customers::getOpenLeadsForProspects();
 			$follow_ups = Customers::FollowupSForProspects();  
 //			return $follow_ups;
-			foreach($follow_ups as $key=> $value) {
+			if(!empty($follow_ups)){ 
+                          foreach($follow_ups as $key=> $value) {
 			    $followUpsArray[$value['customer_id']] = array('reminder_date'=> $value['reminder_date'],
 									'followup_type'=> $value['followup_type'],
 									'lead_status'=>$value['lead_status']	 
 							             );
-			}
+			  }
+                        } 
 				                
 			foreach($customers as $key=> $value) {
 			    $customers[$key]['reminder_date'] = '';

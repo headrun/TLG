@@ -76,14 +76,14 @@ class Batches extends \Eloquent {
     static function getAllBatchesbySeasonId($franchiseId,$seasonId){
         return Batches::where('franchisee_id', '=', Session::get('franchiseId'))
                                         ->where('season_id','=',$seasonId)
-                                        ->where('end_date','>=', date('Y-m-d'))
+                                        ->where('end_date','>=', '2020-12-31')
                                         ->get();
     }
 
     static function getAllBatchesDatabySeasonId($franchiseId,$seasonId){
         return Batches::where('franchisee_id', '=', Session::get('franchiseId'))
                                         ->where('season_id','=',$seasonId)
-                                        ->where('end_date','>=', date('Y-m-d'))
+                                        ->where('end_date','>=', '2020-12-31')
                                         ->get();
     }
 
@@ -95,7 +95,7 @@ class Batches extends \Eloquent {
 						->where('season_id','=',$seasonId)
                         ->where('class_id', '=', $classId)
 						->where('franchisee_id', '=', Session::get('franchiseId'))
-						->where('end_date','>=',$today)
+						->where('end_date','>=','2020-12-31')
 						->get();
 	}
 	
