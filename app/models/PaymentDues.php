@@ -304,6 +304,11 @@ class PaymentDues extends \Eloquent {
         for($i=0;$i<count($enrollmentReportDetails['data']);$i++){
             $temp=  Customers::find($enrollmentReportDetails['data'][$i]['customer_id']);
             $enrollmentReportDetails['data'][$i]['customer_name']=$temp->customer_name." ".$temp->customer_lastname;
+	    if (isset($temp->source) || !empty($temp->source)){
+              $enrollmentReportDetails['data'][$i]['source'] = $temp->source;
+            } else {
+              $enrollmentReportDetails['data'][$i]['source'] = '';
+            }
             $temp2=  Students::find($enrollmentReportDetails['data'][$i]['student_id']);
             $enrollmentReportDetails['data'][$i]['student_name']=$temp2->student_name;
             $temp3= Batches::find($enrollmentReportDetails['data'][$i]['batch_id']);

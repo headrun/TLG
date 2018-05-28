@@ -173,6 +173,7 @@
                                             '<th>Membership Amount</th>'+
                                             '<th>Enrollment Amount</th>'+
                                             '<th>Transaction Date</th>'+
+					    '<th>Source of Enrollment</th>'+
                                             '</tr></thead>';
                                     
                                     for(var i=0;i<response[0]['data'].length;i++){
@@ -183,7 +184,8 @@
                                           response[0]['data'][i]['selected_sessions']+"</td><td>"+
                                           membership_amt +"</td><td>"+
                                           response[0]['data'][i]['payment_due_amount_after_discount']+"</td><td>"+
-                                          response[0]['data'][i]['created_at']+"</td></tr>";
+					  response[0]['data'][i]['created_at']+"</td><td>"+
+                                          response[0]['data'][i]['source']+"</td></tr>";
                                     }
                                     header_data+="</table></div></div>";
                                     console.log(header_data);
