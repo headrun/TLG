@@ -356,11 +356,13 @@ class DashboardController extends \BaseController {
                         			->whereNotIn('id',$id)
                         			->orderBy('id','Desc')
                         			->get();
-			$customer_id;
-            		foreach($customers as $c){
-                		$customer_id[]=$c['id'];
-            		}
-			
+			$customer_id = '';
+                        if(!empty($customers)){
+                         foreach($customers as $c){
+                                $customer_id[]=$c['id'];
+                         }
+                        }		
+	
 			//*************NewLeads Information************//
 							
 				$newLeadsForcurrentWeek = Comments::getThisWeekNewLeads($customer_id, $presentdate, $endOfWeek);

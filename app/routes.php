@@ -396,8 +396,17 @@ Route::group(array('prefix' => 'quick'), function() {
 		$term         = $inputs['term'];
 		$franchiseeId = Session::get('franchiseId');
 		
-		$result = DB::select('call sp_searchStudentCustomers(?, ?, ?)',array($term, $franchiseeId, '@result'));
-		
+		$customers = Customers::where('franchisee_id', '=', $franchiseeId)
+		                    ->where('customer_name', 'LIKE', '%' . $term . '%')
+		                    ->selectRaw('CONCAT(customer_name,customer_lastname, " (Parent)") as label, CONCAT(id, "####CST") as id')
+		                    ->get()->toArray();
+		$students = Students::where('franchisee_id', '=', $franchiseeId)
+							->where('student_name', 'LIKE', '%' . $term . '%')
+		                    ->selectRaw('CONCAT(student_name, " (Kid)") as label, CONCAT(id, "####STD") as id')
+		                    ->get()->toArray();
+			                   
+		$result = array_merge($customers, $students);
+			
 		if(isset($result)){
 			return Response::json($result);
 		}

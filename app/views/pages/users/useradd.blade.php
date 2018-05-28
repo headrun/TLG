@@ -22,7 +22,8 @@
 
 $(document).ready(function (){
 	$("#email").on('keyup change input',function (){
-		$.ajax({
+	 if ($(this).val() != '') {
+	   $.ajax({
             type: "POST",
             url: "{{URL::to('/quick/checkUserExistance')}}",
             data: {'email':$(this).val()},
@@ -40,7 +41,8 @@ $(document).ready(function (){
     			
     	     	
             }
-        });
+          });
+	 }
 	});
 });	
 $('#customerSubmit').click(function(){

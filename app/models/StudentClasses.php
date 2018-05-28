@@ -110,7 +110,7 @@ class StudentClasses extends \Eloquent {
     
 	static function getMultipleEnrolledList(){
 		$total;
-		$multipleEnrollments;
+		$multipleEnrollments = '';
 		$totalEnrollments = StudentClasses::join('students', 'students.id','=' ,'student_classes.student_id')
                                                         ->where('student_classes.franchisee_id', '=', Session::get('franchiseId'))
                                                         ->where('student_classes.status','!=','introvisit')
