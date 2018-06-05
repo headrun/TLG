@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Crypt;
-include 'mpdf60/mpdf.php';
+//include 'mpdf60/mpdf.php';
 class StudentsController extends \BaseController {
 
   /**
@@ -1636,7 +1636,7 @@ public function enrollKid2(){
   public function addStudentAttendance(){
     
     $inputs = Input::all();
-                //return Response::json(array("status"=>$inputs));
+               // return Response::json(array("status"=>$inputs));
     for($i =0; $i<$inputs['totalStudents'];$i++){
       
       $isAttendanceExists = Attendance::getDaysAttendanceForStudent($inputs['student_'.$i], $inputs['batch_'.$i], $inputs['attendanceDate_'.$i]);
@@ -1694,7 +1694,7 @@ public function enrollKid2(){
                                     $customer_logdata['retention_id']=$rdata->id;
                                     $customer_logdata['commentText']='ABSENT';
                                     $customer_logdata['commentType']='INTERESTED';       
-                                    if($inputs['reminderdate_user_absent_'.$i]!=""){
+                                    if($inputs['attendanceDate_'.$i]!=""){
                                         //create followup
                                   //      $customer_logdata['reminderDate']=$inputs['reminderdate_user_absent_'.$i];
                                     }

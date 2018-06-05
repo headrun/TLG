@@ -712,7 +712,7 @@
                                             <th class="uk-text-nowrap">Date</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+				    <tbody>
                                         <?php foreach($activeRemindersCount as $items){?>
                                         <tr class="uk-table-middle smallText">
                                             <td class="uk-width-3-10 uk-text-nowrap">{{$items['customer_name']}}{{$items['customer_lastname']}}<a href="{{url()}}/customers/view/{{$items['id']}}?tab=ivfollowup"></a></td>
@@ -721,7 +721,7 @@
                                             <td class="uk-width-3-10 uk-text-nowrap">{{date('d M Y', strtotime($items['reminder_date']))}}</td>
                                         </tr>   
                                         <?php }?>                                     
-                                    </tbody>
+                                    </tbody> 
                                 </table>
                                 <?php }?>
                             </div>

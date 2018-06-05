@@ -122,8 +122,7 @@
 		                                <td>{{ date('d-M-Y',strtotime($student->enrollment_start_date)); }}</td>
 		                                <td>{{ date('d-M-Y',strtotime($student->enrollment_end_date)); }}</td>
 		                                <td>{{ $student->status }} 	
-							<a style="display: none" href="{{url()}}/students/view/{{$student->student_id}}"></a>
-
+						   <a style="display" href="{{url()}}/students/view/{{$student->student_id}}"></a>
 		                                </td>
 		                            </tr>
                                             <?php } ?>
