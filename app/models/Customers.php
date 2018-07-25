@@ -471,5 +471,13 @@ class Customers extends \Eloquent {
     return Customers::whereDate('created_at', '=',  date("Y-m-d"))
                       ->where('franchisee_id', '=',  Session::get('franchiseId'))
 						          ->count();
+  }
+  
+  static function getCustomersReport($inputs) {
+    $data['data'] = Customers::where('franchisee_id', '=', Session::get('franchiseId'))
+                      ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                      ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                      ->get();
+    return $data['data'];
   }        
 }

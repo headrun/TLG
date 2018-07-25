@@ -404,6 +404,46 @@ class ClassesController extends \BaseController {
                 }
            }
        }
+
+      public function UpdateLeadStatus(){
+  		if(Auth::check()){
+          	$inputs=Input::all();
+
+			if($inputs['leadStatus'] == 'Yes'){  
+                $leadStatus = 'very_interested';
+			}else if($inputs['leadStatus'] == 'May be'){
+				$leadStatus = 'interested';
+			}else {
+				$leadStatus = 'not_interested';
+			}
+			$updateCommentType = Comments::where('franchisee_id', '=', Session::get('franchiseId'))
+										->where('introvisit_id', '=', $inputs['ivId'])
+										->update(['lead_status' => $leadStatus]);
+          	/* $present_date = Carbon::now();
+     		$update_attendance = DB::table('attendance')->insert(['student_id' => $inputs['studentId'], 'student_classes_id' =>$inputs['classId'], 'status' => 'EA','makeup_class_given' => '1', 'batch_id' => $inputs['batchId'], 'attendance_date' => $inputs['attDate'], 'description_absent' => $inputs['desc'], 'created_at'=>$present_date , 'updated_at'=>$present_date ]);
+     		$insert_into_student_classes = StudentClasses::insert(['student_id' => $inputs['studentId'],
+							'class_id' => $getClassAndSeasonIds[0]['class_id'],
+							'season_id' => $getClassAndSeasonIds[0]['season_id'],
+							'franchisee_id' => Session::get('franchiseId'),
+							'batch_id' => $inputs['updateToBatchId'],
+							'enrollment_start_date'	=> $inputs['date'],
+							'enrollment_end_date' => $inputs['date'],
+							'selected_sessions' => '1',
+							'status' => 'makeup',
+							'created_at' => $present_date,
+							'updated_at' => $present_date,
+							'introvisit_id' => '0'
+									
+						]);*/
+       							
+  //      return $insert_into_student_classes;
+        	if($updateCommentType){
+               return Response::json(array('status'=>'success','data'=>$inputs));
+           }else{
+               return Response::json(array('status'=>'failure'));   
+           }
+      	}
+      }
       
 	
         

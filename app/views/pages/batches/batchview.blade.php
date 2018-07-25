@@ -273,33 +273,32 @@ function getbatchesStudents(batchId, dateStartEvent){
 					if(item.enrollment_end_date == dateStartEvent){
 						bg = 'style="background-color:#BEF781"';
 					}
-				    		
 				    	attendanceString = '<tr '+bg+'>'+
-				    			'<td>'+
-				    				'<input type="hidden" class="attDate" value="'+dateStartEvent+'"  name="attendanceDate_'+i+'"/>'+
-				    				'<input type="hidden" class="batchId" value="'+batchId+'"  name="batch_'+i+'"/>'+
-				    				'<input type="hidden" class="classId" id="student_class_id'+i+'" name="student_class_id'+i+'" value="'+item.student_classes_id+'">'+
-				    				'<input type="hidden" class="studentId" value="'+item.studentId+'"  name="student_'+i+'"/>'+
-				    				'<input type="hidden" class="ivId" value="'+item.introvisit_id+'"  name="introvisit_id'+i+'"/>'+
-				    					item.studentName+
-				    			'</td>'+
-				    			'<td>'+
-				    				item.enrollment_start_date+
-				    			'</td>'+
-				    			'<td>'+
-				    				item.enrollment_end_date+
-				    			'</td>'+
-				    			'<td>'+
-				    				item.remaining_classes+
-				    			'</td>'+
-				    			'<td class="form-group">'+
-				    				'<input id="attendance_for_userP'+i+'" name="attendance_for_user'+i+'" data="eadisable"  data2='+i+' value="P" type="radio" class="radio-custom" required />'+
-				    					'<label for="attendance_for_userP'+i+'" class="radio-custom-label">P</label>'+
-				    				'<input id="attendance_for_userA'+i+'" name="attendance_for_user'+i+'" value="A" data3="Aenable" data="eadisable" data2='+i+' type="radio" class="radio-custom" />'+
-				    					'<label for="attendance_for_userA'+i+'" class="radio-custom-label">A</label>'+
-				    				'<input id="attendance_for_userEA'+i+'" name="attendance_for_user'+i+'" data="eaenable" data2='+i+' value="EA"  type="radio" class="radio-custom" />'+'<label for="attendance_for_userEA'+i+'" class="radio-custom-label">EA</label>'+
-				    			'</td>'+
-				    		'</tr>';
+			    			'<td>'+
+			    				'<input type="hidden" class="attDate" value="'+dateStartEvent+'"  name="attendanceDate_'+i+'"/>'+
+			    				'<input type="hidden" class="batchId" value="'+batchId+'"  name="batch_'+i+'"/>'+
+			    				'<input type="hidden" class="classId" id="student_class_id'+i+'" name="student_class_id'+i+'" value="'+item.student_classes_id+'">'+
+			    				'<input type="hidden" class="studentId" value="'+item.studentId+'"  name="student_'+i+'"/>'+
+			    				'<input type="hidden" class="ivId" value="'+item.introvisit_id+'"  name="introvisit_id'+i+'"/>'+
+			    					item.studentName+
+			    			'</td>'+
+			    			'<td>'+
+			    				item.enrollment_start_date+
+			    			'</td>'+
+			    			'<td>'+
+			    				item.enrollment_end_date+
+			    			'</td>'+
+			    			'<td>'+
+			    				item.remaining_classes+
+			    			'</td>'+
+			    			'<td class="form-group">'+
+			    				'<input id="attendance_for_userP'+i+'" name="attendance_for_user'+i+'" data="eadisable" pdata="leadStatusEnable"  data2='+i+' value="P" type="radio" class="radio-custom" required />'+
+			    					'<label for="attendance_for_userP'+i+'" class="radio-custom-label">P</label>'+
+			    				'<input id="attendance_for_userA'+i+'" name="attendance_for_user'+i+'" value="A" data3="Aenable" pdata="pdisable" data="eadisable" data2='+i+' type="radio" class="radio-custom" />'+
+			    					'<label for="attendance_for_userA'+i+'" class="radio-custom-label">A</label>'+
+			    				'<input id="attendance_for_userEA'+i+'" name="attendance_for_user'+i+'" data="eaenable" data2='+i+' pdata="pdisable" value="EA"  type="radio" class="radio-custom" />'+'<label for="attendance_for_userEA'+i+'" class="radio-custom-label">EA</label>'+
+			    			'</td>'+
+			    		'</tr>';
 				    	$("#attendanceTbody").append(attendanceString);
 				    	
 	                  	if(item.isAttendanceEntered == 'yes'){
@@ -307,30 +306,55 @@ function getbatchesStudents(batchId, dateStartEvent){
 		                  	console.log('attendanceStatus'+item.attendanceStatus);
 	                  		//$("#attendance_for_user"+i).val(item.attendanceStatus);
 		                  	$("input[name=attendance_for_user"+i+"][value='"+item.attendanceStatus+"']").attr('checked','checked');
-	                  	}
-						i++;  
-						
-		            });
-                                $('input[type="radio"][data="eaenable"]').change(function(){
-                                    //console.log(this.id);
-                                    var i=$(this).attr('data2');
-                                    $('#absent'+i).remove();
-                                    $(this).parent().append("<div class='uk-grid'data-uk-grid-margin id='ea"+i+"'>"+
-								"<div class='uk-width-medium-1-3'>"+
-									"<input id='Description_user_"+i+"' required class='form-control input-sm  Description_user' name='description_user_"+i+"' style='' type='text' placeholder='Description' />"+
-							  	"</div>"+
-							  	"<div class='uk-width-medium-1-3'>"+
-									"<input type='text'  name='reminderdate_user_"+i+"' class='userRemDate form-control input-sm' required style='width:100%' placeholder='Select Date for Class' />"+
-							   	"</div>"+
-							  	"<div class='uk-width-medium-1-3'>"+
-									"<select id='batches"+i+"' name='select_batch_"+i+"' class='selectBatch form-control input-sm md-input' placeholder='Select Batch' style='padding:0px; font-weight:bold;color: #727272;'>"+"<option></option>"+"</select>"+
-							   	"</div>"+
-							   	"</div><button type='button' style= margin-left:40px; class=' btn btn-success eaDateSave pull-right'>Save</button></div><div id='makeupmsg' class='parsley-row'>"+
-								"<div>"+
-							   "</div>");
-                                    $('input[name="reminderdate_user_'+i+'"]').datepicker({ dateFormat: 'yy-mm-dd'}).val();
-                                    // $('input[name="reminderdate_user_'+i+'"]').datepicker({ dateFormat: 'yy-mm-dd'}).val();
-			            $(document).on('change', '.userRemDate', function(){
+		                }
+							i++;  	
+			            });
+			
+					/* function leadStatusEnable (d) {
+						alert(d);
+					}  */
+					$('input[type="radio"][pdata="leadStatusEnable"]').change(function(){
+						var i=$(this).attr('data2');
+						var introId = $(this).parent().parent().parent().find('.ivId').val();
+						if (parseInt(introId) !== 0) {
+							$('#absent'+i).remove();
+							$('#ea'+i).remove();
+							$(this).parent().append("<div class='uk-grid'data-uk-grid-margin id='pStatus"+i+"' style='padding-top:10px;'>"+	
+							"<label><input type='radio' id='leadStatus"+i+"' name='leads' value='Yes'> Yes</label>"+
+							"<label><input type='radio' id='leadStatus"+i+"' name='leads' value='No'> No</label>"+
+							"<label><input type='radio' id='leadStatus"+i+"' name='leads' value='May be'> May be</label>"+
+							"<div><button type='button' style= margin-left:40px; class='btn btn-success PIntrovisist pull-right'>Save</button></div>"+
+							"<div id='makeupmsg' class='parsley-row'>"+
+							"</div>"+
+							"</div>");
+						} else {
+							var i=$(this).attr('data2');
+							$('#absent'+i).remove();
+							$('#pStatus'+i).remove();
+						}
+					});
+					
+
+                    $('input[type="radio"][data="eaenable"]').change(function(){
+                        //console.log(this.id);
+                        var i=$(this).attr('data2');
+                        $('#absent'+i).remove();
+                        $(this).parent().append("<div class='uk-grid'data-uk-grid-margin id='ea"+i+"'>"+
+					"<div class='uk-width-medium-1-3'>"+
+						"<input id='Description_user_"+i+"' required class='form-control input-sm  Description_user' name='description_user_"+i+"' style='' type='text' placeholder='Description' />"+
+				  	"</div>"+
+				  	"<div class='uk-width-medium-1-3'>"+
+						"<input type='text'  name='reminderdate_user_"+i+"' class='userRemDate form-control input-sm' required style='width:100%' placeholder='Select Date for Class' />"+
+				   	"</div>"+
+				  	"<div class='uk-width-medium-1-3'>"+
+						"<select id='batches"+i+"' name='select_batch_"+i+"' class='selectBatch form-control input-sm md-input' placeholder='Select Batch' style='padding:0px; font-weight:bold;color: #727272;'>"+"<option></option>"+"</select>"+
+				   	"</div>"+
+				   	"</div><button type='button' style= margin-left:40px; class=' btn btn-success eaDateSave pull-right'>Save</button></div><div id='makeupmsg' class='parsley-row'>"+
+					"<div>"+
+				   "</div>");
+                        $('input[name="reminderdate_user_'+i+'"]').datepicker({ dateFormat: 'yy-mm-dd'}).val();
+                        // $('input[name="reminderdate_user_'+i+'"]').datepicker({ dateFormat: 'yy-mm-dd'}).val();
+			       $(document).on('change', '.userRemDate', function(){
    					var selectedDate = $(this).val();
    					$.ajax({
         				type: "POST",
@@ -356,13 +380,6 @@ function getbatchesStudents(batchId, dateStartEvent){
    					});
 
 				   });
-			          
-			/*	   $('select[data="batch"]').change(function(){
-                             		 var i=$(this).attr('data2');
-					 var batch_id = $('#batches'+i).val();
-					console.log(i);
-					console.log(batch_id);
-				   }); */
 
                                 });
                                 
@@ -370,6 +387,13 @@ function getbatchesStudents(batchId, dateStartEvent){
                                     var i=$(this).attr('data2');
                                     $('#ea'+i).remove();
                                     $('#absent'+i).remove();
+                                    $('.eaDateSave').hide();
+                                });
+
+                                $('input[type="radio"][pdata="pdisable"]').change(function(){
+                                    var i=$(this).attr('data2');
+                                    $('#absent'+i).remove();
+                                    $('#pStatus'+i).remove();
                                 });
                                 
                                 $('input[type="radio"][data3="Aenable"]').change(function(){
@@ -432,6 +456,44 @@ function getbatchesStudents(batchId, dateStartEvent){
    });
 
 }); */
+$(document).on('click', '.PIntrovisist', function () {
+	var studentId = $(this).closest('tr').find('.studentId').val();
+	var ivId = $(this).closest('tr').find('.ivId').val();
+	var batchId = $(this).closest('tr').find('.batchId').val();
+	var classId = $(this).closest('tr').find('.classId').val();
+	var attDate = $(this).closest('tr').find('.attDate').val();
+	var leadStatus = $('input[name=leads]:checked').val();
+	if (leadStatus === '' || leadStatus === undefined) {
+		$("#makeupmsg").html('<p class="uk-alert uk-alert-warning">Please select lead status.</p>');
+	} else {
+		$.ajax({
+		    type: "POST",
+		    url: "{{URL::to('/quick/UpdateLeadStatus')}}",
+		    data:{'studentId': studentId,
+		    	  'ivId': ivId,
+		    	  'batchId': batchId,
+		    	  'classId': classId,
+		    	  'attDate': attDate,
+		    	  'leadStatus': leadStatus },
+		  	success: function(response){
+		  		if (response.status === 'success') {
+		  			$(".PIntrovisist").remove();
+		  			$('#pStatus').remove();
+					$("#makeupmsg").html('<p class="uk-alert uk-alert-success">Lead status saved successfully</p>');
+		  		} else {
+		  			$("#makeupmsg").html('<p class="uk-alert uk-alert-danger">Lead status could not saved.Please try again.</p>');	
+		  		}
+	  			$('#makeupmsg').show('slow');
+	  		    setTimeout(function(){
+	  		        $('#makeupmsg').slideUp();
+	  		        $('#makeupmsg').html('');
+	  		        $('#makeupmsg').show();
+	  		    },3000);
+	  		    $("#PIntrovisist").attr("disabled", false);
+			} 
+		})
+	}
+})
 
 $(document).on('click', '.eaDateSave', function(){
 	// 'i[data="makeupsave"]'
@@ -474,12 +536,12 @@ $(document).on('click', '.eaDateSave', function(){
 					
 				}
 				$('#makeupmsg').show('slow');
-                                        setTimeout(function(){
-                                            $('#makeupmsg').slideUp();
-                                            $('#makeupmsg').html('');
-                                            $('#makeupmsg').show();
-                                        },3000);
-                                        $("#eaDateSave").attr("disabled", false);
+                setTimeout(function(){
+                    $('#makeupmsg').slideUp();
+                    $('#makeupmsg').html('');
+                    $('#makeupmsg').show();
+                },3000);
+                $("#eaDateSave").attr("disabled", false);
 
 			}
 		});
@@ -563,7 +625,7 @@ $('#addAttendanceForm').validator().on('submit', function (e) {
 			<div class="modal-body">
 				<div id="messageAttendanceAddDiv"></div>
 				<div id="formBody">
-					<form id="addAttendanceForm" method="post>
+					<form id="addAttendanceForm" method="post">
 				      		<br  clear="all" />
 				      		<table class="uk-table table-striped" id="customersTable">
 		                            <!-- <caption>Table caption</caption> -->

@@ -650,14 +650,13 @@ class PaymentDues extends \Eloquent {
   }
 
   static function getCurrentMonthRenewalsDue($presentdate, $currentMonth){
-	$classes = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
-			      ->where('end_order_date', '<=', $presentdate)
-                              ->where('end_order_date', '>=', $currentMonth)
-			      ->where('payment_due_for','=', 'enrollment')
-			      ->groupBy('student_id')
-                              ->get();
-        return count($classes);
-
+  	$classes = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+  			      ->where('end_order_date', '<=', $presentdate)
+              ->where('end_order_date', '>=', $currentMonth)
+  			      ->where('payment_due_for','=', 'enrollment')
+  			      ->groupBy('student_id')
+              ->get();
+    return $classes;
   }
    
   static function insertPaymentsData($customerId,$inputs,$typeOfClass,$totalAmount,$payment_no,$end_date,$userId,$presentDate){
@@ -684,7 +683,77 @@ class PaymentDues extends \Eloquent {
          $data->save();
 
 	 return $data;
-	
+  }
 
+  static public function getNoOfNewEnrollments($presentdate, $currentMonthStartDate) {
+     $students = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                            ->where('payment_due_for', '=', 'enrollment')
+                            ->whereDate('created_at', '>=', $currentMonthStartDate)
+                            ->whereDate('created_at', '<=', '2018-07-09')
+                            ->groupBy('student_id')
+                            ->get();
+     $student_id = [];
+     if (isset($students) || !empty($students)) {
+       foreach($students as $student){
+            $student_id[] = $student['student_id'];
+       }
+       $student_data = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                              ->where('payment_due_for', '=', 'enrollment')
+                              ->whereDate('created_at', '<=', '2018-07-09')
+                              // ->whereNotIn('student_id', $student_id)
+                              ->groupBy('student_id')
+                              ->get();
+       $id;
+       foreach($student_data as $student){
+            $id[] = $student['student_id'];
+       }          
+       $result = array_diff($student_id,$id);                
+       return count($result);
+     } else {
+       return 0;
+     }
+  }
+
+  static public function getTotalEnrollments() {
+
+    $students = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                            ->where('payment_due_for', '=', 'enrollment')
+                            ->groupBy('student_id')
+                            ->get();
+    return count($students);
+  }
+
+  static public function getMarketingBudget($presentdate, $currentMonthStartDate) {
+    $currentMonth = date('M',strtotime($presentdate));
+    $currentYear = date('Y',strtotime($presentdate));
+    $getDataForThisYM = MarketingBudget::where('franchisee_id', '=', Session::get('franchiseId'))
+                                       ->where('year', '=', $currentYear)
+                                       ->where('month', '=', $currentMonth)
+                                       ->get();
+    if (isset($getDataForThisYM[0]['budget_amount']) && !empty($getDataForThisYM[0]['budget_amount'])) {
+      return $getDataForThisYM[0]['budget_amount'];
+    } else {
+      return 0;
+    }
+  }
+  static function getNoOfRenwalsDone($presentdate, $currentMonth){
+    $renewals = PaymentDues::getCurrentMonthRenewalsDue($presentdate, $currentMonth);
+    $student_id;
+    if (isset($renewals) && !empty($renewals)) {
+      foreach($renewals as $renew) {
+        $student_id[] = $renew['student_id'];
+      }
+      $classes = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                ->whereDate('created_at', '<=', $presentdate)
+                ->whereDate('created_at', '>=', $currentMonth)
+                ->whereIn('student_id',$student_id)
+                ->where('payment_due_for','=', 'enrollment')
+                ->selectRaw('student_id')
+                ->groupBy('student_id')
+                ->get();
+      return count($classes);
+    } else {
+      return 0;
+    }
   }
 }

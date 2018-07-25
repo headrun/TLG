@@ -153,6 +153,7 @@ class StudentClasses extends \Eloquent {
                 		$total[] = $c['student_id'];
                 		$list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
                 				   ->where('student_id', '=', $c['student_id'])
+                				   ->where('payment_due_for', '=', 'enrollment')
                 				   ->where('end_order_date', '>=', date('Y-m-d'))
                 				   ->count();
 				
@@ -294,7 +295,7 @@ class StudentClasses extends \Eloquent {
         static function getAllClassCountByBatchId($inputs){
             return StudentClasses::where('batch_id', '=', $inputs['batchId'])
                           ->where('student_id', '=', $inputs['studentId'])
-                          ->whereIn('status', array('enrolled','transferred_class'))
+                          ->whereIn('status', array('enrolled','transferred_class','introvisit','makeup'))
                           ->sum('selected_sessions');
             
         }

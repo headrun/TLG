@@ -1724,6 +1724,7 @@ $('#batchName').change(function(){
   if($('#year').val() != '' && $('#batchName').val() != ''){
     var year = $('#year').val();
     var batchId = $('#batchName').val();
+    $('#Transfers').show();
 
     $.ajax({
       type: "POST",
@@ -1769,7 +1770,10 @@ $('#batchName').change(function(){
           $('#EAcount').text(EAcount);
           $('#Rcount').text(response.totalSession - Pcount);
           $('#makeup-session').text(makeup);
-          $('#total-session').text(response.totalSession); 
+          $('#total-session').text(response.totalSession);
+          if (parseInt(response.totalSession) === 1){
+            $('#Transfers').hide();
+          }
         }
         
         
@@ -3375,7 +3379,7 @@ id="user_profile">
                                           
                                           ?>
                                           <tr>
-                                            <td>{{$test[0].' '.$test[1].' '.$test[2]}}&nbsp;</td>
+                                            <td><a style="color:white;" href="{{url()}}/batches/view/{{$latestEnrolledData[$i]['batch_id']}}">{{$test[0].' '.$test[1].' '.$test[2]}}&nbsp;</a></td>
                                             <td>{{$day}}&nbsp;</td>
                                             <td>{{$timeStart[0].':'.$timeStart[1]}}&nbsp;-{{$timeEnd[0].':'.$timeEnd[1]}}&nbsp;</td>
                                             <td>{{$latestEnrolledData[$i]['enrollment_start_date']}}&nbsp;</td>
@@ -3915,8 +3919,7 @@ id="user_profile">
                                                               </div> <br clear="all" />
                                                               @endif
                                                               <h3>Upload Discovery Sheet</h3>
-                                                              <div class="row">
-                                                                <div class="col-sm-6">
+                                                              <div class="row" style="width:50%;">
                                                                   <div class="col-md-6">
                                                                     {{Form::open(array('files'=> true, 'url'=>'students/discovery/picture'))}} 
                                                                     <span class="md-list-heading">{{Form::file('discoveryPicture',array('required', 'class'=>'form-control'))}}</span><br>
@@ -3938,8 +3941,6 @@ id="user_profile">
                                                                     value="Download Discovery Picture" />
                                                                     {{Form::close()}}      
                                                                   </div>
-                                                                  
-                                                                </div>
                                                               </div>
                                                               @if($attachment_location)
                                                               <h3 style="margin-top: 50px;margin-bottom: 10px">Uploaded Discovery Sheets</h3>

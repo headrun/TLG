@@ -218,6 +218,7 @@ class StudentsController extends \BaseController {
                         for($i=0;$i<count($latestEnrolledData);$i++){
                           $latest_batch_data = Batches::find($latestEnrolledData[$i]['batch_id']);
                           $latestEnrolledData[$i]['batch_name'] = $latest_batch_data['batch_name'];
+                          $latestEnrolledData[$i]['batch_id'] = $latest_batch_data['id'];
                           $latestEnrolledData[$i]['preferred_time'] = $latest_batch_data['preferred_time'];
                           $latestEnrolledData[$i]['preferred_end_time'] = $latest_batch_data['preferred_end_time'];
                           $latestEnrolledData[$i]['enrollment_start_date'] = date('d-M-Y',strtotime($latestEnrolledData[$i]['enrollment_start_date']));
@@ -423,9 +424,10 @@ class StudentsController extends \BaseController {
   public function getAttendanceForStudent(){
     $inputs = Input::all();
     $sendDetails = Attendance::getAttendanceForStudent($inputs);
-                $totalsession=  StudentClasses::getAllClassCountByBatchId($inputs);
+    $totalsession =  StudentClasses::getAllClassCountByBatchId($inputs);
+    $getIntrovisit = IntroVisit::getIntrovisitForThisStuId($inputs);
     if($sendDetails){
-      return Response::json(array('status'=> "success", 'data'=> $sendDetails,'totalSession'=>$totalsession));
+      return Response::json(array('status'=> "success", 'data'=> $sendDetails,'totalSession'=>$totalsession, 'introvisit'=>$getIntrovisit));
     }else{
       return Response::json(array('status'=> "failure",));
     }
@@ -1839,13 +1841,13 @@ public function enrollKid2(){
                         $commentsInput['followupType']  = $introvisit['followup_type'];
                         $commentsInput['commentStatus']= $inputs['ivstatus'];
                         $commentsInput['commentType']   = $inputs['iveditAction'];
-			if($inputs['lead_status'] == 'Yes'){  
+			/*  if($inputs['lead_status'] == 'Yes'){  
                         	$commentsInput['LeadStatus'] = 'very_interested';
 			}else if($inputs['lead_status'] == 'May be'){
 				$commentsInput['LeadStatus'] = 'interested';
 			}else {
 				$commentsInput['LeadStatus'] = 'not_interested';
-			}
+			}  */
 		//	return $commentsInput['leadStatus'];  
       $commentsInput['commentText']    = $commentText;
             

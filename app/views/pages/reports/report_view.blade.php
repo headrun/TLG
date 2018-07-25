@@ -374,6 +374,40 @@
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
+                            }else if(response[1]==='Customer_mails'){
+                            var header_data="<div class='md-card-content'>"+
+                                                "<div class='uk-overflow-container'>"+
+                                            "<table id='reportTable' class='uk-table'>"+
+                                            "<thead>"+
+                                            '<tr>'+
+                                            '<th>Customer Name</th>'+
+                                            '<th>Mobile No</th>'+
+                                            '<th>Email Address</th>'+
+                                            '</tr></thead>';
+                                for(var i=0;i<response[0].length;i++){
+                                      header_data+="<tr><td>"+response[0][i]['customer_name']+"</td><td>"+
+                                      response[0][i]['mobile_no']+"</td><td>"+
+                                      response[0][i]['customer_email']+"</td></tr>";
+                                }
+                                header_data+="</table></div></div>";
+                                $('#reportdata').html(header_data);
+                                $("#reportTable").DataTable({
+                                    dom: 'Bfrtip',
+                                        buttons: [
+                                            'excelHtml5',
+                                            'csvHtml5',
+                                            'pdfHtml5'
+                                        ],
+                                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                                            $(nRow).click(function() {
+                                              window.location = $(this).find('a').attr('href');
+                                            });
+
+                                            return nRow;
+                                       },
+                                       "iDisplayLength": 10,
+                                       "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                   });
                             }else if(response[1]==='Calls'){
                                 var header_data="<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
@@ -722,7 +756,8 @@ $(document).on('click', '.salse_alloc_btn', function(){
                                                     <option value="Introvisit">Introvisit</option>
                                                     <option value="Inquiry">Inquiry</option>
                                                     <option value="Calls">Calls Report</option>
-                                                   <!--  <option value="BySchool">By School</option>
+                                                    <option value="Customer_mails">Customer Emails</option>
+                                                    <!-- <option value="BySchool">By School</option>
                                                     <option value="ByLocality">By Locality</option>
                                                     <option value="ByApartment">By Apartmnet</option> -->
                                             </select>
