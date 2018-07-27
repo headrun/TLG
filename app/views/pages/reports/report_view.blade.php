@@ -408,6 +408,108 @@
                                        "iDisplayLength": 10,
                                        "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                    });
+                            }else if(response[1]==='Renewal_due'){
+                            var header_data="<div class='md-card-content'>"+
+                                                "<div class='uk-overflow-container'>"+
+                                            "<table id='reportTable' class='uk-table'>"+
+                                            "<thead>"+
+                                            '<tr>'+
+                                            '<th>Customer Name</th>'+
+                                            '<th>Kid Name</th>'+
+                                            '<th>Last enrollment end date</th>'+
+                                            '</tr></thead>';
+                                for(var i=0;i<response[0]['data'].length;i++){
+                                      header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
+                                      response[0]['data'][i]['student_name']+"</td><td>"+
+                                      response[0]['data'][i]['end_order_date']+"</td></tr>";
+                                }
+                                header_data+="</table></div></div>";
+                                $('#reportdata').html(header_data);
+                                $("#reportTable").DataTable({
+                                    dom: 'Bfrtip',
+                                        buttons: [
+                                            'excelHtml5',
+                                            'csvHtml5',
+                                            'pdfHtml5'
+                                        ],
+                                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                                            $(nRow).click(function() {
+                                              window.location = $(this).find('a').attr('href');
+                                            });
+
+                                            return nRow;
+                                       },
+                                       "iDisplayLength": 10,
+                                       "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                   });
+                            }else if(response[1]==='Renewal_done'){
+                            var header_data="<div class='md-card-content'>"+
+                                                "<div class='uk-overflow-container'>"+
+                                            "<table id='reportTable' class='uk-table'>"+
+                                            "<thead>"+
+                                            '<tr>'+
+                                            '<th>Customer Name</th>'+
+                                            '<th>Kid Name</th>'+
+                                            '<th>Transaction Date</th>'+
+                                            '</tr></thead>';
+                                for(var i=0;i<response[0]['data'].length;i++){
+                                      header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
+                                      response[0]['data'][i]['student_name']+"</td><td>"+
+                                      response[0]['data'][i]['created_at']+"</td></tr>";
+                                }
+                                header_data+="</table></div></div>";
+                                $('#reportdata').html(header_data);
+                                $("#reportTable").DataTable({
+                                    dom: 'Bfrtip',
+                                        buttons: [
+                                            'excelHtml5',
+                                            'csvHtml5',
+                                            'pdfHtml5'
+                                        ],
+                                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                                            $(nRow).click(function() {
+                                              window.location = $(this).find('a').attr('href');
+                                            });
+
+                                            return nRow;
+                                       },
+                                       "iDisplayLength": 10,
+                                       "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                   });
+                            }else if(response[1]==='Renewal_pending'){
+                            var header_data="<div class='md-card-content'>"+
+                                                "<div class='uk-overflow-container'>"+
+                                            "<table id='reportTable' class='uk-table'>"+
+                                            "<thead>"+
+                                            '<tr>'+
+                                            '<th>Customer Name</th>'+
+                                            '<th>Kid Name</th>'+
+                                            '<th>Enrollment end date</th>'+
+                                            '</tr></thead>';
+                                for(var i=0;i<response[0]['data'].length;i++){
+                                      header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
+                                      response[0]['data'][i]['student_name']+"</td><td>"+
+                                      response[0]['data'][i]['end_order_date']+"</td></tr>";
+                                }
+                                header_data+="</table></div></div>";
+                                $('#reportdata').html(header_data);
+                                $("#reportTable").DataTable({
+                                    dom: 'Bfrtip',
+                                        buttons: [
+                                            'excelHtml5',
+                                            'csvHtml5',
+                                            'pdfHtml5'
+                                        ],
+                                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                                            $(nRow).click(function() {
+                                              window.location = $(this).find('a').attr('href');
+                                            });
+
+                                            return nRow;
+                                       },
+                                       "iDisplayLength": 10,
+                                       "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                   });
                             }else if(response[1]==='Calls'){
                                 var header_data="<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
@@ -757,6 +859,9 @@ $(document).on('click', '.salse_alloc_btn', function(){
                                                     <option value="Inquiry">Inquiry</option>
                                                     <option value="Calls">Calls Report</option>
                                                     <option value="Customer_mails">Customer Emails</option>
+                                                    <option value="Renewal_due">Total renewals</option>
+                                                    <option value="Renewal_done">Renewal Done</option>
+                                                    <option value="Renewal_pending">Pending Renewals</option>
                                                     <!-- <option value="BySchool">By School</option>
                                                     <option value="ByLocality">By Locality</option>
                                                     <option value="ByApartment">By Apartmnet</option> -->

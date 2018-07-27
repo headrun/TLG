@@ -334,11 +334,11 @@
         <div class="md-card">
           <div class="md-card-content">
               <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
-             <center><span class="uk-text-muted uk-text-small" id = "Titles"><h4>Inquiry to Intro Experience</h4></span></center>
+             <center><span class="uk-text-muted uk-text-small" id = "Titles"><h4>IV Scheduled</h4></span></center>
                
              <table style="width:100%;text-align: center;">
                 <tr>
-                  <td><h2>{{$inqToIntroExp}} %<h2></td>
+                  <td><h2>{{$IvScheduledInThisMonth}}<h2></td>
                 </tr>
               </table>
            </div>

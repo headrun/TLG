@@ -172,7 +172,10 @@ class ReportsController extends \BaseController {
 
                         $noOfRenewalsDoneInthisMonth = PaymentDues::getNoOfRenwalsDone($presentdate, $currentMonth);
                         
-                        
+                        if ($noOfRenewalsDoneInthisMonth !== 0) {
+                            $noOfRenewalsDoneInthisMonth = count($noOfRenewalsDoneInthisMonth);
+                        }
+
                     //********************Student Retention ******************//
                         $noOfRenewalsPending = $currentMonthRenewalDue - $noOfRenewalsDoneInthisMonth;
 
@@ -305,6 +308,12 @@ class ReportsController extends \BaseController {
                     return Response::json(array(Inquiry::getAllInquiryforReport($inputs),'Inquiry'));
                 }else if($inputs['reportType']=='Customer_mails'){
                     return Response::json(array(Customers::getCustomersReport($inputs),'Customer_mails'));
+                }else if($inputs['reportType']=='Renewal_due'){
+                    return Response::json(array(PaymentDues::getRenewalsDueReport($inputs),'Renewal_due'));
+                }else if($inputs['reportType']=='Renewal_done'){
+                    return Response::json(array(PaymentDues::getRenewalsDoneReport($inputs),'Renewal_done'));
+                }else if($inputs['reportType']=='Renewal_pending'){
+                    return Response::json(array(PaymentDues::getRenewalsPendingReport($inputs),'Renewal_pending'));
                 }else if($inputs['reportType']=='Calls'){
                     return Response::json(array(Comments::getAllFollowupReports($inputs),'Calls'));
                 }else if($inputs['reportType']=='BySchool'){
