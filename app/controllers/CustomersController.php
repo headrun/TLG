@@ -31,6 +31,27 @@ class CustomersController extends \BaseController {
 			return Redirect::action('VaultController@logout');
 		}
 	}
+
+	public function currentCustomersList() {
+		if (Auth::check ()) {
+			
+			$currentPage = "CURRENT_CUSTOMER_LIST";
+			$mainMenu = "CUSTOMERS_MAIN";
+			// if(CustomerMembership::count()){
+			$customers = Customers::getAllCuurentCustomerMembersByFranchiseeId ( Session::get ( 'franchiseId' ) );
+            // }
+			$provinces = Provinces::getProvinces ( "IN" );
+			$viewData = array (
+					'customers',
+					'currentPage',
+					'mainMenu',
+					'provinces' 
+			);
+			return View::make ( 'pages.customers.currentCustomersList', compact ( $viewData ) );
+		} else {
+			return Redirect::action('VaultController@logout');
+		}
+	}
 	
         public function getNonMembersList(){
             	if (Auth::check ()) {

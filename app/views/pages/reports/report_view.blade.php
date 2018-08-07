@@ -118,7 +118,8 @@
                             console.log(response);
                             var data='';
                             if(response[1]==='Birthday'){
-                            var header_data="<div class='md-card-content'>"+
+                            var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Birthday Report</h3>"+
+                                            "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+
@@ -161,7 +162,9 @@
                                        });
                                     
                             }else if(response[1]==='Enrollment'){
-                                var header_data="<div class='md-card-content'>"+
+
+                                var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Enrollment Report</h3>"+
+                                                "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+
@@ -263,7 +266,8 @@
                                        });
                                 
                             }else if(response[1]==='Membership'){
-                                var header_data="<div class='md-card-content'>"+
+                                var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Membership Report</h3>"+
+                                            "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+
@@ -301,7 +305,8 @@
                                        });
                                 
                             }else if(response[1]==='Introvisit'){
-                                var header_data="<div class='md-card-content'>"+
+                                var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Introvisit Report</h3>"+
+                                            "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+
@@ -342,7 +347,8 @@
                                        });
                                 
                             }else if(response[1]==='Inquiry'){
-                            var header_data="<div class='md-card-content'>"+
+                            var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Inquiry Report</h3>"+
+                                            "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+
@@ -375,7 +381,8 @@
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
                             }else if(response[1]==='Customer_mails'){
-                            var header_data="<div class='md-card-content'>"+
+                            var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Customer mails Report</h3>"+
+                                            "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+
@@ -409,7 +416,8 @@
                                        "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                    });
                             }else if(response[1]==='Renewal_due'){
-                            var header_data="<div class='md-card-content'>"+
+                            var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Total Renewal's Report</h3>"+
+                                            "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+
@@ -443,7 +451,8 @@
                                        "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                    });
                             }else if(response[1]==='Renewal_done'){
-                            var header_data="<div class='md-card-content'>"+
+                            var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Renewal's done Report</h3>"+
+                                            "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+
@@ -477,7 +486,8 @@
                                        "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                    });
                             }else if(response[1]==='Renewal_pending'){
-                            var header_data="<div class='md-card-content'>"+
+                            var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Renewal's pending Report</h3>"+
+                                            "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+
@@ -511,7 +521,8 @@
                                        "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                    });
                             }else if(response[1]==='Calls'){
-                                var header_data="<div class='md-card-content'>"+
+                                var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Calls Report</h3>"+
+                                            "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+

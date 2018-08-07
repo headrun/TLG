@@ -31,11 +31,11 @@ class StudentClasses extends \Eloquent {
 	
 	static function getAllEnrolledStudents($franchiseeId){
 		$present_date=Carbon::now();
-        	$students = StudentClasses::join('students', 'students.id','=' ,'student_classes.student_id')
+       	$students = StudentClasses::join('students', 'students.id','=' ,'student_classes.student_id')
                                                         ->where('student_classes.franchisee_id', '=', $franchiseeId)
                                                         ->where('student_classes.status','!=','introvisit')
                                                         ->whereDate('student_classes.enrollment_end_date', '>=',date('Y-m-d'))
-                                                        ->selectRaw('min(student_classes.enrollment_start_date) as enrollment_start_date,max(student_classes.enrollment_end_date) as enrollment_end_date,student_classes.student_id, students.student_name, students.student_gender, students.student_date_of_birth,students.franchisee_id')  
+                                                        ->selectRaw('min(student_classes.enrollment_start_date) as enrollment_start_date,max(student_classes.enrollment_end_date) as enrollment_end_date,student_classes.student_id, students.student_name, students.student_gender, students.student_date_of_birth,students.franchisee_id, students.customer_id')  
                                                         ->groupBy('student_classes.student_id')
                                                        // ->groupBy(DB::Raw("date('student_classes.created_at')"))
                                                         ->get();
