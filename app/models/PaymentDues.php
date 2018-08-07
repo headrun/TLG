@@ -730,10 +730,14 @@ class PaymentDues extends \Eloquent {
                                        ->where('year', '=', $currentYear)
                                        ->where('month', '=', $currentMonth)
                                        ->get();
-    if (isset($getDataForThisYM[0]['budget_amount']) && !empty($getDataForThisYM[0]['budget_amount'])) {
-      return $getDataForThisYM[0]['budget_amount'];
-    } else {
-      return 0;
+    if (count($getDataForThisYM) > 0) {
+    	if (isset($getDataForThisYM[0]['budget_amount']) && !empty($getDataForThisYM[0]['budget_amount'])) {
+      		return $getDataForThisYM[0]['budget_amount'];
+    	} else {
+      		return 0;
+    	}
+    }else {
+         return 0;
     }
   }
   static function getNoOfRenwalsDone($presentdate, $currentMonth){

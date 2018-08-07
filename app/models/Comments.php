@@ -624,23 +624,24 @@ class Comments extends \Eloquent {
                                                     ->whereDate('created_at', '<=', $presentdate)
                                                     ->select('customer_id')
                                                     ->get();
-                   
-            $id;
+          if (!empty($customer_members) && isset($customer_members)) {         
+            $id = [];
             foreach($customer_members as $c){
                 $id[]=$c['customer_id'];
             }
-             
-            $customers = Customers::where('franchisee_id','=',Session::get('franchiseId'))
+            	$customers = Customers::where('franchisee_id','=',Session::get('franchiseId'))
                                     ->whereNotIn('id',$id)
                                     ->orderBy('id','Desc')
                                     ->whereDate('created_at', '>=', $currentMonthStartDate)
                                     ->whereDate('created_at', '<=', $presentdate)
                                     ->get();
 
-            foreach($customers as $c){
-                $commit_id[] = $c['id'];
-            }
-       
-            return count($customers);        
+            	foreach($customers as $c){
+                	$commit_id[] = $c['id'];
+            	}
+		return count($customers);
+            }else {
+		return 0;
+	    }
         }
 }
