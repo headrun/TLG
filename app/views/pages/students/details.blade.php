@@ -1771,7 +1771,7 @@ $('#batchName').change(function(){
           $('#Rcount').text(response.totalSession - Pcount);
           $('#makeup-session').text(makeup);
           $('#total-session').text(response.totalSession);
-          if (parseInt(response.totalSession) === 1){
+          if (makeup > 0) {
             $('#Transfers').hide();
           }
         }

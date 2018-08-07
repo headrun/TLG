@@ -742,10 +742,10 @@ class PaymentDues extends \Eloquent {
   }
   static function getNoOfRenwalsDone($presentdate, $currentMonth){
     $renewals = PaymentDues::getCurrentMonthRenewalsDue($presentdate, $currentMonth);
-    $student_id;
+    $student_id = array();
     if (isset($renewals) && !empty($renewals)) {
       foreach($renewals as $renew) {
-        $student_id[] = $renew['student_id'];
+        array_push($student_id, $renew['student_id']);
       }
       $classes = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
                 ->whereDate('created_at', '<=', $presentdate)
@@ -796,12 +796,12 @@ class PaymentDues extends \Eloquent {
   static function getRenewalsPendingReport($inputs){
     $renewals = PaymentDues::getCurrentMonthRenewalsDue($inputs['reportGenerateEnddate'], $inputs['reportGenerateStartdate']);
     $done = PaymentDues::getNoOfRenwalsDone($inputs['reportGenerateEnddate'], $inputs['reportGenerateStartdate']);
-    $student_id;
-    $renewDone_id;
+    $student_id = array();
+    $renewDone_id = array();
     $enrollmentReportDetails['data'] = array();
     if (isset($renewals) && !empty($renewals)) {
       foreach($done as $renewDone) {
-        $student_id[] = $renewDone['student_id'];
+        array_push($student_id, $renewDone['student_id']);
       }
       foreach($renewals as $renew) {
         if(!in_array($renew['student_id'], $student_id)){

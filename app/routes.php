@@ -76,6 +76,7 @@ Route::group(array('prefix' => 'students'), function() {
 
 Route::group(array('prefix' => 'customers'), function() {
 	Route::any('/memberslist', "CustomersController@index");
+	Route::any('/currentCustomerList', "CustomersController@currentCustomersList");
     Route::any('/prospectslist', "CustomersController@getNonMembersList");
 	Route::any('/add', "CustomersController@add");
 	Route::any('/view/{id}', "CustomersController@details");
