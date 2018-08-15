@@ -426,8 +426,10 @@ class StudentsController extends \BaseController {
     $sendDetails = Attendance::getAttendanceForStudent($inputs);
     $totalsession =  StudentClasses::getAllClassCountByBatchId($inputs);
     $getIntrovisit = IntroVisit::getIntrovisitForThisStuId($inputs);
+    $getMakeUpClasses = StudentClasses::getmakeupClassesForThisStuId($inputs);
+    $transferToOtherCls = StudentClasses::getTransferToOtherCls($inputs);
     if($sendDetails){
-      return Response::json(array('status'=> "success", 'data'=> $sendDetails,'totalSession'=>$totalsession, 'introvisit'=>$getIntrovisit));
+      return Response::json(array('status'=> "success", 'data'=> $sendDetails,'totalSession'=>$totalsession, 'introvisit'=>$getIntrovisit, 'makeupClass' => $getMakeUpClasses, 'transferredToOtherClass' => $transferToOtherCls));
     }else{
       return Response::json(array('status'=> "failure",));
     }

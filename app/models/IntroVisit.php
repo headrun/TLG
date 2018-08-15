@@ -228,7 +228,7 @@ class IntroVisit extends \Eloquent {
     static function getIntrovisitForThisStuId($inputs) {
     	return IntroVisit::where('student_id', '=', $inputs['studentId'])
     					 ->where('batch_id', '=', $inputs['batchId'])
-    					 ->get();
+    					 ->count();
     }	
 	
 }

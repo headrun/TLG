@@ -299,6 +299,21 @@ class StudentClasses extends \Eloquent {
                           ->sum('selected_sessions');
             
         }
+
+        static function getTransferToOtherCls($inputs){
+            return StudentClasses::where('batch_id', '=', $inputs['batchId'])
+                          ->where('student_id', '=', $inputs['studentId'])
+                          ->where('status', '=', 'transferred_to_other_class')
+                          ->count();
+            
+        }
+
+        static function getmakeupClassesForThisStuId($inputs) {
+        	return StudentClasses::where('batch_id', '=', $inputs['batchId'])
+        	              ->where('student_id', '=', $inputs['studentId'])
+        	              ->where('status', '=', 'makeup')
+        	              ->count();
+        }
 	static public function getTodayEnrollment(){
         	$presentDate = Carbon::now();
 		return PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
