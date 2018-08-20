@@ -588,6 +588,9 @@ class Orders extends \Eloquent {
 		case 2: 
     			return 'TLG/'.$invoiceCode.'/'.$startYr.'-'.$endYr.'-'.'0'.$invoiceNo;
     			break;
+        case 3:
+                return 'TLG/'.$invoiceCode.'/'.$startYr.'-'.$endYr.'-'.$invoiceNo;
+                break;
 		default:
     			return $invoiceNo;
     			break;
