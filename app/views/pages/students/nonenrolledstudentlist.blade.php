@@ -115,7 +115,7 @@
                                                     {{$student->student_date_of_birth}}
 		                                </td>
 						<td>{{ $student->end_date }}
-						   <a  style="display: none" href="{{url()}}/students/view/{{$student->id}}">View/Edit</a>
+						   <a  style="display: none" href="{{url()}}/students/view/{{$student->id}}"></a>
 		                                </td>	
 		                                
 		                            </tr>
