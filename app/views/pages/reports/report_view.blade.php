@@ -92,11 +92,11 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*$(nRow).click(function() {
                                                   window.location = $(this).find('a').attr('href');
                                                 });
 
-                                                return nRow;
+                                                return nRow;*/
                                            },
                                            "iDisplayLength": 50,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
@@ -151,11 +151,11 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*$(nRow).click(function() {
                                                     window.location = $(this).find('a').attr('href');
                                                       
                                                 });
-                                                return nRow;
+                                                return nRow;*/
                                            },
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
@@ -201,10 +201,10 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*$(nRow).click(function() {
                                                     window.location = $(this).find('a').attr('href');
                                                 });
-                                                return nRow;
+                                                return nRow;*/
                                            },
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
@@ -255,11 +255,10 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*  $(nRow).click(function() {
                                             window.location = $(this).find('a').attr('href');
                                                 });
-
-                                                return nRow;
+                                                return nRow;  */
                                            },
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
@@ -294,11 +293,11 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*  $(nRow).click(function() {
                                                 window.location = $(this).find('a').attr('href');
 
                                                 });
-                                                return nRow;
+                                                return nRow;  */
                                            },
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
@@ -337,10 +336,10 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*$(nRow).click(function() {
                                                   window.location = $(this).find('a').attr('href');
                                                 });
-                                                return nRow;
+                                                return nRow;*/
                                            },
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
@@ -371,11 +370,11 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*$(nRow).click(function() {
                                                   window.location = $(this).find('a').attr('href');
                                                 });
 
-                                                return nRow;
+                                                return nRow;*/
                                            },
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
@@ -406,11 +405,11 @@
                                             'pdfHtml5'
                                         ],
                                         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                            $(nRow).click(function() {
+                                            /*$(nRow).click(function() {
                                               window.location = $(this).find('a').attr('href');
                                             });
 
-                                            return nRow;
+                                            return nRow;*/
                                        },
                                        "iDisplayLength": 10,
                                        "lengthMenu": [ 10, 50, 100, 150, 200 ]
@@ -441,11 +440,11 @@
                                             'pdfHtml5'
                                         ],
                                         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                            $(nRow).click(function() {
+                                            /*$(nRow).click(function() {
                                               window.location = $(this).find('a').attr('href');
                                             });
 
-                                            return nRow;
+                                            return nRow;*/
                                        },
                                        "iDisplayLength": 10,
                                        "lengthMenu": [ 10, 50, 100, 150, 200 ]
@@ -476,11 +475,11 @@
                                             'pdfHtml5'
                                         ],
                                         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                            $(nRow).click(function() {
+                                            /*$(nRow).click(function() {
                                               window.location = $(this).find('a').attr('href');
                                             });
 
-                                            return nRow;
+                                            return nRow;*/
                                        },
                                        "iDisplayLength": 10,
                                        "lengthMenu": [ 10, 50, 100, 150, 200 ]
@@ -511,11 +510,11 @@
                                             'pdfHtml5'
                                         ],
                                         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                            $(nRow).click(function() {
+                                            /*$(nRow).click(function() {
                                               window.location = $(this).find('a').attr('href');
                                             });
 
-                                            return nRow;
+                                            return nRow;*/
                                        },
                                        "iDisplayLength": 10,
                                        "lengthMenu": [ 10, 50, 100, 150, 200 ]
@@ -554,11 +553,11 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*$(nRow).click(function() {
                                                   window.location = $(this).find('a').attr('href');
                                                 });
 
-                                                return nRow;
+                                                return nRow;*/
                                            },
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]

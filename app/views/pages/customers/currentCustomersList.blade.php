@@ -276,12 +276,8 @@ $("#customerSubmit").click(function (event){
 		                                <td>{{$customer->customer_name.' '}}{{$customer->customer_lastname}}</td>
 		                                <td>{{$customer->customer_email}}</td>
 		                                <td>{{$customer->mobile_no}}
-		                                <!-- </td>
-		                                <td>{{$customer->membership_end_date }} -->
-		                                <a style="display: none;" href="{{url()}}/customers/view/{{$customer->id}}">View</a>
+		                                <a style="display: none;" href="{{url()}}/customers/view/{{$customer->id}}"></a>
 		                                </td>
-		                                <!-- <td><a class="md-btn md-btn-flat md-btn-flat-primary" href="{{url()}}/customers/view/{{$customer->id}}">View</a></td> -->
-		                                
 		                            </tr>
 		                            @endforeach
                                                <?php } ?>
