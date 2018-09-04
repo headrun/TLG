@@ -625,7 +625,7 @@ class Comments extends \Eloquent {
                                                     ->select('customer_id')
                                                     ->get();
                    
-            $id;
+            $id = array();
             foreach($customer_members as $c){
                 $id[]=$c['customer_id'];
             }
