@@ -268,6 +268,8 @@ function addKids(event){
         {
 			if(response.status == "success"){
 				$("#messageStudentAddDiv").html('<p class="uk-alert uk-alert-success">Kid details has been added successfully. Please wait till this page reloads</p>');
+				$('#addKidsModal').modal('hide');
+				$('#addingNewKid').show();
 				$("#formBody").hide();
 
 				setTimeout(function(){
@@ -308,18 +310,16 @@ $("#saveCommentBtn").click(function (){
 	        {
 				if(response.status == "success"){
 					$("#commentMsgDiv").html('<p class="uk-alert uk-alert-success">Comments has been added successfully. Please wait till this page reloads</p>');
+                    $('#addingComments').show();
 					setTimeout(function(){
 					   window.location.reload(1);
 					}, 3000);
-					
 				}else{
 					$("#commentMsgDiv").html('<p class="uk-alert uk-alert-danger">Sorry! Comments could not be added.</p>');
 				}
 	        }
-	    }); 
-		
+	    });
 	}else{
-
 		$("#commentMsgDiv").html('<p class="uk-alert uk-alert-danger">Please fill up the comments field.</p>');
 	}
 })
@@ -372,9 +372,11 @@ $("#saveCustomerBtn").click(function (e){
                             console.log(response);
                             if(response.status=='success'){
                               $('#messageEditCustomerDiv').html('<p class="uk-alert uk-alert-success">Sucessfully saved changes.please wait till the page reloads </p>');
+                              $('#editCustomerModal').modal('hide');
+                              $('#updateCustomerProfile').show();
                               setTimeout(function(){
-					   window.location.reload(1);
-					}, 2000);
+							    window.location.reload(1);
+							  }, 2000);
                             }else{
                                  $('#messageEditCustomerDiv').html('<p class="uk-alert uk-alert-failure">cannot save changes.Try again after some time</p>');
                             }
@@ -1795,6 +1797,7 @@ $('#addIntroVisitSubmit').click(function(){
 	        	if(response.status === "success"){
 	            	
 					$("#Msg").html('<p class="uk-alert uk-alert-success">Introductory visit was added successfully. Please wait till this page reloads</p>');
+					$('#addingIv').show();
 					setTimeout(function(){
 					   var path= window.location.href.split('?')[0];
                                             window.location.href = path+'?tab=ivfollowup';
@@ -2695,6 +2698,30 @@ $('#memberhsipchequeNumber').keyup(function(){
 		<li><a href="{{url()}}/customers/memberslist" style="z-index:8;">Customers</a></li>
 		<li><a href="#" style="z-index:7;">{{$customer->customer_name}}</a></li>
 	</ul>
+</div>
+<div id="addingNewKid" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Kid added successfully.Please wait . . .
+    </p>
+</div>
+<div id="addingComments" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Added comments successfully.Please wait. . .
+    </p>
+</div>
+<div id="updateCustomerProfile" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Updated successfully.Please wait. . .
+    </p>
+</div>
+<div id="addingIv" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Added introductory visit.Please wait . . .
+    </p>
 </div>
 <br clear="all"/>
 

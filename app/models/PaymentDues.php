@@ -715,12 +715,10 @@ class PaymentDues extends \Eloquent {
   }
 
   static public function getTotalEnrollments() {
-
-    $students = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
-                            ->where('payment_due_for', '=', 'enrollment')
-                            ->groupBy('student_id')
-                            ->get();
-    return count($students);
+    $single = StudentClasses::getSingleEnrolledList();
+    $multiple = StudentClasses::getMultipleEnrolledList();
+    $totalCurrentEnrolled = $single + $multiple;
+    return $totalCurrentEnrolled;
   }
 
   static public function getMarketingBudget($presentdate, $currentMonthStartDate) {
@@ -730,8 +728,12 @@ class PaymentDues extends \Eloquent {
                                        ->where('year', '=', $currentYear)
                                        ->where('month', '=', $currentMonth)
                                        ->get();
-    if (isset($getDataForThisYM[0]['budget_amount']) && !empty($getDataForThisYM[0]['budget_amount'])) {
-      return $getDataForThisYM[0]['budget_amount'];
+    if (count($getDataForThisYM) > 0) {
+      if (isset($getDataForThisYM[0]['budget_amount']) && !empty($getDataForThisYM[0]['budget_amount'])) {
+        return $getDataForThisYM[0]['budget_amount'];
+      } else {
+        return 0;
+      }
     } else {
       return 0;
     }

@@ -153,8 +153,9 @@ $.ajax({
           //  console.log(response);          
           if(response.status == "success"){
             $("#messageStudentAddDiv").html('<p class="uk-alert uk-alert-success">Kid details has been updated successfully. Please wait till this page reloads</p>');
+            $("#addKidsModal").modal('hide');
+            $('#updateKidDetails').show();
             $("#KidsformBody").hide();
-
             setTimeout(function(){
              window.location.reload(1);
            }, 5000);
@@ -986,9 +987,11 @@ function fullEnrollmentReset(){
                       if(response.status == "success"){
                         if(response.printUrl == ""){
                           $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-success">Student has been successfully enrolled. Please wait till this page reloads</p>');
+                          $('#enrollmentModal').modal('hide');
+                          $("#enrollLoading").show();
                           setTimeout(function(){
                            window.location.reload(1);
-                         }, 5000);
+                          }, 5000);
                         }else{
 
                           var printvars = '<a target="_blank" href="'+response.printUrl+'" class="btn btn-primary">Print</a>';
@@ -2883,6 +2886,18 @@ $(document).on('click','.summer-cls-btn', function(){
 </script>
 @stop 
 @section('content')
+<div id="updateKidDetails" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Updated successfully.Please wait . . .
+    </p>
+</div>
+<div id="enrollLoading" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Enroled successfully.Please wait . . .
+    </p>
+</div>
 <div id="addAttendance" class="modal fade" role="dialog" style="margin-top: 50px; z-index: 99999;"
 >
 

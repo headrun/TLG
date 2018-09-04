@@ -21,7 +21,6 @@
 <script type="text/javascript">
 
 $(document).ready(function (){
-	$('#divLoading').hide();
 	$("#email").on('keyup change input',function (){
 	 if ($(this).val() != '') {
 	   $.ajax({
@@ -46,9 +45,31 @@ $(document).ready(function (){
 	 }
 	});
 });	
+function validateEmail(email) {
+  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+}
+function validate() {
+  var email = $("#email").val();
+  if (validateEmail(email)) {
+    return 'success';
+  } else {
+  	return 'failed';
+  }
+}
+
 $('#customerSubmit').click(function(){
-	$('#customerSubmit').disabled();
-	$('#divLoading').show();
+	var data = validate();
+	if (data === 'success') {
+		$("#messageForUserDelete").hide();
+      	$('#divLoading').show();
+      	$('#customerSubmit').disabled();
+      	setTimeout(function () {
+            window.reload(1)
+      	},2000)
+	} else {
+		$("#messageForUserDelete").html('<p class="uk-alert uk-alert-danger">Please provide valid email address.</p>');
+	}
 });
 
 </script>
@@ -65,14 +86,15 @@ $('#customerSubmit').click(function(){
 </div>
 <br clear="all"/>
 <div class="">
-	<div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
-	    <p style="position: absolute; color: White; top: 50%; left: 45%;font-size:20px;">
-	    <img src="{{url()}}/assets/img/spinners/spinner.gif">
-	     Loading, please wait...
+	<div id="divLoading" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+	    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+	    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+	     User added successfully.Please wait . . .
 	    </p>
     </div>
 	<div class="row">
 		<h4>New User</h4>
+		<div id="messageForUserDelete"></div>
 		 <div class="md-card">
                 <div class="md-card-content large-padding">
                 
@@ -132,9 +154,9 @@ $('#customerSubmit').click(function(){
 				            </div>    
 				            <div class="uk-width-medium-1-2">    
 				                  <div class="parsley-row form-group">
-				                 	<label for="mobileNo">User Mobile number<span class="req">*</span></label>
+				                 	<label for="mobileNo">User Mobile number</label>
 				                 	
-				                 	{{Form::text('mobileNo', null,array('id'=>'mobileNo', 'required'=>'', "onkeypress"=>"return isNumberKey(event);", 'maxlength'=>'10',  'minlength'=>'10', 'pattern'=>'\d*',   'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
+				                 	{{Form::text('mobileNo', null,array('id'=>'mobileNo', "onkeypress"=>"return isNumberKey(event);", 'maxlength'=>'10',  'minlength'=>'10', 'pattern'=>'\d*',   'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
 				                 </div>
 				            </div>  
 				            <br clear="all"/><br clear="all"/><br clear="all"/>
@@ -143,7 +165,7 @@ $('#customerSubmit').click(function(){
 				         <div class="uk-grid" data-uk-grid-margin>
 				            <div class="uk-width-medium-1-2">    
 				                  <div class="parsley-row form-group">				                 	
-				                 	{{ Form::select('userType', array('' => 'Please select a User type','INSTRUCTOR'=>'Instructor','RECEPTIONIST'=>'Receptionist'), null ,array('id'=>'userType', 'class' => 'input-sm md-input',  'required'=>'', "placeholder"=>"User type", "style"=>'padding:0px; font-weight:bold;color: #727272;')) }}
+				                 	{{ Form::select('userType', array('' => 'Please select a User type','INSTRUCTOR'=>'Instructor','RECEPTIONIST'=>'Receptionist'), null ,array('id'=>'userType', 'class' => 'input-sm md-input', "placeholder"=>"User type", "style"=>'padding:0px; font-weight:bold;color: #727272;')) }}
 				                 </div>
 				            </div>  
 				            <br clear="all"/><br clear="all"/><br clear="all"/>
@@ -154,20 +176,13 @@ $('#customerSubmit').click(function(){
                         <div class="uk-grid">
                             <div class="uk-width-1-1">
                             	
-                                <button type="submit" id="customerSubmit"  onclick="this.disabled=true;this.value='Sending, please wait...';this.form.submit();" onSubmit="window.location.reload();" class="md-btn md-btn-primary">Save User Details</button>
+                                <button type="submit" id="customerSubmit" class="md-btn md-btn-primary">Save User Details</button>
                             </div>
                         </div>
                     {{ Form::close() }}	
                 </div>
             </div>
-            
-            
-            
-		
-		
-		
-		
-		
+       
 	</div><!-- row -->
 </div><!-- Container -->
 
