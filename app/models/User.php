@@ -126,13 +126,27 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     	$newAdminUser->user_type = 'ADMIN';
     	$newAdminUser->franchisee_id = $inputs['FName'];
     	$newAdminUser->mobile_no = $inputs['AdminMobileNo'];
-    	$newAdminUser->alt_mobile_no = $inputs['AdminAltMobileNo'];
-    	$newAdminUser->landline_no = $inputs['AdminLandlineMobileNo'];
     	$newAdminUser->email =$inputs['AdminEmail'];
     	$newAdminUser->password=Hash::make('secret');
     	$newAdminUser->created_by=Session::get('userId');
     	$newAdminUser->created_at=date("Y-m-d H:i:s");
 		$newAdminUser->save();
+		return $newAdminUser;
+    }
+
+    static public function insertNewAdminUser($inputs, $franchiseeId){
+    	$newAdminUser= new User();
+    	$newAdminUser->first_name = $inputs['firstName'];
+    	$newAdminUser->last_name =  $inputs['lastName'];
+    	$newAdminUser->user_type = 'ADMIN';
+    	$newAdminUser->franchisee_id = $franchiseeId;
+    	$newAdminUser->mobile_no = $inputs['franchiseePhno'];
+    	$newAdminUser->email = $inputs['user_mail_id'];
+    	$newAdminUser->password=Hash::make($inputs['password']);
+    	$newAdminUser->created_by=Session::get('userId');
+    	$newAdminUser->created_at=date("Y-m-d H:i:s");
+		$newAdminUser->save();
+
 		return $newAdminUser;
     }
 

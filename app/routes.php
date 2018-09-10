@@ -43,8 +43,9 @@ Route::group(array('prefix' => 'admin'), function() {
 	Route::get('/users', "FranchiseeAdministration@users");
 	Route::get('/users/updatebatches', "FranchiseeAdministration@updatebatches");
 	Route::any('/users/view/{id}', ['uses' =>"FranchiseeAdministration@viewUser"]);
+});
 
-        
+Route::group(array('prefix' => 'super_admin'), function() {
 
 });
 
@@ -143,6 +144,8 @@ Route::group(array('prefix'=>'franchisee'),function(){
 
 	Route::any('/addfranchisee','FranchiseeController@addNewFranchisee');
 	Route::get('/franchiseelist','FranchiseeController@franchiseeList');
+	Route::any('/addCourses', 'CoursesController@viewCoursesAdmin');
+	Route::any('/addCoursesForFranchisee', 'CoursesController@addCoursesForFranchisee');
 });
 
 
@@ -162,6 +165,9 @@ Route::group(array('prefix' => 'quick'), function() {
         Route:: any('addAdminUser','UsersController@addAdminUser');
         Route::any('/salesAllocreport', "ReportsController@salesAllocreport");
         Route::any('UpdateDataBatch', "ReportsController@UpdateDataBatch");
+        Route::any('createdNewFranchisee',"FranchiseeController@createdNewFranchisee");
+        Route::any('getDataForFranchisee', 'FranchiseeController@getDataForFranchisee');
+        Route::any('updateFranchiseeDetails', 'FranchiseeController@updateFranchiseeDetails');
 
 
         /**

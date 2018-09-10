@@ -27,22 +27,23 @@
                         </a>
                         <ul id="FRANCHISEE_MAIN_UL">
                             <li id="NEWFRANCHISEE"><a href="{{url()}}/franchisee/addfranchisee">Add New Franchisee</a></li>
-                            <li id="LISTOFFRANCHISEE"><a href="{{url()}}/franchisee/franchiseelist">Franchisee List</a></li> 
+                            <li id="LISTOFFRANCHISEE"><a href="{{url()}}/franchisee/franchiseelist">Franchisee List</a></li>
+                            <!-- <li id="ADDCOURSE_LI"><a href="{{url()}}/franchisee/addCoursesForFranchisee">Add Courses</a></li> -->
                         </ul>
                     </li>
-
-                 
-                    
-                    <li id="COURSES_MENU_MAIN">
+                    <!-- <li id="COURSES_MENU_MAIN">
                         <a href="#">
                             <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
                             <span class="menu_title">Courses</span>
                         </a>
                         <ul id="COURSES_MENU_MAIN_UL">
-                           <li id="ADDCOURSE_LI"><a href="#">Add New Course</a></li>
+                           <li id="ADDCOURSE_LI"><a href="{{url()}}/franchisee/addCourses">Add New Course</a></li>
                            <li id="COURSELIST_LI"><a href="#">Course List</a></li>
                         </ul>
-                    </li>
+                    </li> -->    
+                 
+                    
+                    <!-- 
                     <li id="CLASSES_MENU_MAIN">
                         <a href="#">
                             <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
@@ -61,13 +62,13 @@
                         <ul id="FREPORT_MAIN_UL">
                            <li id="GENERATEREPORT_LI"><a href="#">Generate Report</a></li>
                         </ul>
-                    </li>
+                    </li> 
                     <li id="LOGOUT" title="Logout">
                         <a href="{{url()}}/vault/logout">
                             <span class="menu_icon"><i class="material-icons">forward</i></span>
                             <span class="menu_title">Logout</span>
                         </a>
-                    </li>
+                    </li> -->
                     
                 <?php }?>
                     

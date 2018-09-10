@@ -2856,10 +2856,9 @@ $(document).on('click','.summer-cls-btn', function(){
 	var discountPercentageForSummer = $('#discountPercentageForSummer').val();
 	var totalAmountForSummer = $('#totalAmountForSummer').val();
 	$.ajax({
-
-            type: "POST",
-            url: "{{URL::to('/quick/enrollYard')}}",
-            data: {'studentId': studentId, 
+    type: "POST",
+    url: "{{URL::to('/quick/enrollYard')}}",
+    data: {'studentId': studentId, 
 		   'startDateForSummer': startDateForSummer, 
 		   'NoOfWeeksForSummer': NoOfWeeksForSummer, 
 		   'amountForSummer': amountForSummer, 
@@ -2868,16 +2867,16 @@ $(document).on('click','.summer-cls-btn', function(){
 		   'totalAmountForSummer':totalAmountForSummer,
 		   'taxPercentageForSummer':taxPercentageForSummer
 		  },
-            dataType: 'json',
-            success: function(response){
-                if(response.status === "success"){
-		    $('#summerMsgDiv').html("<p class='uk-alert uk-alert-success'>Camps / Yard has been taken successfully.Please wait untill the page reloads</p>");
-                    setTimeout(function(){
-             		window.location.reload(1);
-           	    }, 4000);
-                } else {
+    dataType: 'json',
+    success: function(response){
+        if(response.status === "success"){
+        $('#summerMsgDiv').html("<p class='uk-alert uk-alert-success'>Camps / Yard has been taken successfully.Please wait untill the page reloads</p>");
+            setTimeout(function(){
+     		window.location.reload(1);
+   	    }, 4000);
+        } else {
 		    $('#summerMsgDiv').html("<p class='uk-alert uk-alert-warning'>Camps / Yard not yet taken.Please try again.</P>");
-		}
+		    }
             }
         });
 });

@@ -95,6 +95,18 @@ class CoursesController extends \BaseController {
 	
 	}
 
+	public function addCoursesForFranchisee() {
+	    if(Auth::check()){ 
+	        $currentPage  =  "COURSES";
+	        $mainMenu     =  "COURSES_MAIN";
+	        $courseList = CoursesMaster::getCoursesList();
+	        $courses    = Courses::getFranchiseCourses(Session::get('franchiseId'));
+	        return View::make('pages.courses.course-name-list', compact('currentPage','mainMenu','courseList','courses'));
+	   }else{
+	       return Redirect::action('VaultController@logout');
+	   }
+	}
+
         public function courseNameList() {
             if(Auth::check()){ 
                 $currentPage  =  "COURSES";
@@ -128,6 +140,27 @@ class CoursesController extends \BaseController {
             }
                 
             }
+
+    	public function viewCoursesAdmin(){
+                if(Auth::check() && Session::get('userType')=='SUPER_ADMIN'){
+    		$currentPage  =  "COURSES";
+    		$mainMenu     =  "COURSES_MAIN";
+    		$eligibleForAction = array();
+    		$allCourse = CoursesMaster::getAllCourses();
+    		for ($i=0; $i < count($allCourse) ; $i++) { 
+    			$Master_course_id = $allCourse[$i]['id'];
+    			$getCoursesCount = Courses::where('master_course_id', '=', $Master_course_id)->get();
+    			if(count($getCoursesCount) == 0){
+    				array_push($eligibleForAction, $Master_course_id);
+    			}
+    		}
+    		//return $eligibleForAction;
+    		return View::make('pages.courses.courses', compact('currentPage','mainMenu', 'allCourse', 'eligibleForAction'));	
+                }else{
+                    return Redirect::action('VaultController@logout');
+                }
+                    
+                }
 
 
 	public function deleteCoursesMaster(){

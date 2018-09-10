@@ -42,5 +42,5 @@
 
 @stop
 @section('content')
-I am in ADMIN DASHBOARD
+I am in SUPER ADMIN DASHBOARD
 @stop

@@ -43,7 +43,7 @@ class FranchiseeController extends \BaseController {
 			$currentPage  =  "LISTOFFRANCHISEE";
 
 			$franchiseeList = Franchisee::getFranchiseeList();
-
+            
 
       		$viewData = array('currentPage','mainMenu','franchiseeList');
       		return View::make('pages.franchisee.franchiseelist',compact($viewData)); 
@@ -87,8 +87,84 @@ class FranchiseeController extends \BaseController {
 		return Response::json(array('status'=>'failure'));
 	}
 
+    public static function createdNewFranchisee() {
+    	if(Auth::check() && Session::get('userType')==='SUPER_ADMIN'){
+          $inputs=Input::all();
+          $newFranchisee=Franchisee::createdNewFranchisee($inputs);
+          $newFranchiseeBdayPrice = BirthdayBasePrice::createBdayPriceForNew($inputs, $newFranchisee['id']);
+          $newFranchiseeClassBasePrice = ClassBasePrice::insertNewBasePrice($inputs, $newFranchisee['id']);
+          $newFranchiseeInvoiceData = InvoiceData::insertNewInvoiceData($inputs, $newFranchisee['id']);
+          $newFranchiseeAnnaulMembership = MembershipTypes::insertNewAnnaulMembershipFranchisee($inputs, $newFranchisee['id']);
+          $newFranchiseeLifetimeMembership = MembershipTypes::insertNewLifeTimeMembershipFranchisee($inputs, $newFranchisee['id']);
+          $newFranchiseePaymentTax = PaymentTax::insertPaymentTaxForNewFranchisee($inputs, $newFranchisee['id']);
+          $newFranchiseeCgstTaxParticular = TaxParticulars::insertCgstTaxParicularNewFranchisee($inputs, $newFranchisee['id']);
+          $newFranchiseeSgstTaxParticular = TaxParticulars::insertSgstTaxParicularNewFranchisee($inputs, $newFranchisee['id']);
+          $newFranchiseeTermsAndCond = TermsAndConditions::newFranchiseeTermsAndCon($inputs, $newFranchisee['id']);
+          $newFranchiseeAdminUser = User::insertNewAdminUser($inputs, $newFranchisee['id']);
+          if($newFranchiseeAdminUser){			
+          	return Response::json(array('status'=>'success'));
+          }else{
+          	return Response::json(array('status'=>'failure'));
+          }
+    	}
+    }
 
+    public static function updateFranchiseeDetails() {
+		if(Auth::check() && Session::get('userType')==='SUPER_ADMIN'){
+	      $inputs=Input::all();
+          $updateFranchisee = Franchisee::updateExistingFranchisee($inputs);
+          $updateBdayPrice = BirthdayBasePrice::updateBdayPricing($inputs);
+          $updateClassPrice = ClassBasePrice::updateClassBasePrice($inputs);
+          $updateInvoiceData = InvoiceData::updateInvoiceDetails($inputs);
+          $updateFranchiseeAnnaulMembership = MembershipTypes::updateAnnaulMembershipFranchisee($inputs);
+          $updateFranchiseeLifetimeMembership = MembershipTypes::updateLifeTimeMembershipFranchisee($inputs);
+          $updateFranchiseePaymentTax = PaymentTax::updatePaymentTaxForNewFranchisee($inputs);
+          $updateFranchiseeCgstTaxParticular = TaxParticulars::updateCgstTaxParicularNewFranchisee($inputs);
+          $updateFranchiseeSgstTaxParticular = TaxParticulars::updateSgstTaxParicularNewFranchisee($inputs);
+          if($updateFranchiseeSgstTaxParticular){			
+          	return Response::json(array('status'=>'success'));
+          }else{
+          	return Response::json(array('status'=>'failure'));
+          }
+	    }
+    }
 	
+	public static function getDataForFranchisee () {
+	  	if(Auth::check() && Session::get('userType')==='SUPER_ADMIN'){
+	        $inputs=Input::all();
+	        $franchiseDetails = Franchisee::where('id', '=', $inputs['franchisee_id'])->get();
+	        $bdayDetails = BirthdayBasePrice::where('franchisee_id','=',$inputs['franchisee_id'])->get();
+	        $classBasePrice = ClassBasePrice::where('franchise_id','=',$inputs['franchisee_id'])->get();
+            $invoice_data = InvoiceData::where('franchise_id','=',$inputs['franchisee_id'])->get();
+            $annual = MembershipTypes::where('franchisee_id','=',$inputs['franchisee_id'])
+            								   ->where('name','=','Annual')
+                                               ->get();
+            $lifetime = MembershipTypes::where('franchisee_id','=',$inputs['franchisee_id'])
+            								   ->where('name','=','Lifetime')
+                                               ->get();
+
+            $cgst = TaxParticulars::where('franchisee_id','=',$inputs['franchisee_id'])
+            					               ->where('tax_particular', '=', 'CGST')
+            					               ->get();
+            $sgst = TaxParticulars::where('franchisee_id','=',$inputs['franchisee_id'])
+            					               ->where('tax_particular', '=', 'SGST')
+            					               ->get();            					                                              	
+	        if($franchiseDetails){
+	          return Response::json(array('status'=> "success", 'franchisee_data' => $franchiseDetails,
+	          	                          'bday_data'=>$bdayDetails,
+	          							  'class_base_price' => $classBasePrice,
+	          							  'invoice_data' => $invoice_data,
+	          							  'annual' => $annual,
+	          							  'lifetime' => $lifetime,
+	          							  'cgst' => $cgst,
+	          							  'sgst' => $sgst
+	          							  )
+	                                );
+	        }else{
+	          return Response::json(array('status'=> "failure",));
+	        }
+	    }
+	}
 
 	public function index()
 	{

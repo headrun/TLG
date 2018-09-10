@@ -703,7 +703,7 @@ class PaymentDues extends \Eloquent {
                               // ->whereNotIn('student_id', $student_id)
                               ->groupBy('student_id')
                               ->get();
-       $id;
+       $id = array();
        foreach($student_data as $student){
             $id[] = $student['student_id'];
        }          
