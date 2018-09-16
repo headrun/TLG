@@ -31,29 +31,28 @@
                             <!-- <li id="ADDCOURSE_LI"><a href="{{url()}}/franchisee/addCoursesForFranchisee">Add Courses</a></li> -->
                         </ul>
                     </li>
-                    <!-- <li id="COURSES_MENU_MAIN">
+                    <li id="COURSES_MENU_MAIN">
                         <a href="#">
                             <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
                             <span class="menu_title">Courses</span>
                         </a>
                         <ul id="COURSES_MENU_MAIN_UL">
-                           <li id="ADDCOURSE_LI"><a href="{{url()}}/franchisee/addCourses">Add New Course</a></li>
-                           <li id="COURSELIST_LI"><a href="#">Course List</a></li>
+                           <li id="ADDCOURSE_LI"><a href="{{url()}}/courses/addCourses">Add New Course</a></li>
+                           <li id="COURSELIST_LI"><a href="{{url()}}/courses/addCoursesForFranchisee">Course List</a></li>
                         </ul>
-                    </li> -->    
-                 
-                    
-                    <!-- 
+                    </li>   
                     <li id="CLASSES_MENU_MAIN">
                         <a href="#">
                             <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
                             <span class="menu_title">Classes</span>
                         </a>
                         <ul id="CLASSES_MAIN_UL">
-                           <li id="ADDNEWCLASS_LI"><a href="#">Add New Class</a></li>
-                           <li id="CLASSLIST_LI"><a href="#">Class List</a></li>
+                           <li id="ADDNEWCLASS_LI"><a href="{{url()}}/franchisee/addNewClass">Add New Class</a></li>
+                           <li id="CLASSLIST_LI"><a a href="{{url()}}/franchisee/addNewClassFranchisee">Class List</a></li>
                         </ul>
                     </li>
+                    
+                    <!--
                     <li id="FREPORT_MENU_MAIN">
                         <a href="#">
                             <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>

@@ -33,9 +33,9 @@ Route::any('/calendar', 'CalenderController@index');
 Route::group(array('prefix' => 'courses'), function() {
 	Route::any('/add', "CoursesController@addCourses");
     Route::any('/name_list', "CoursesController@courseNameList");
-       
+    Route::any('/addCourses', 'CoursesController@viewCoursesAdmin');
+    Route::any('/addCoursesForFranchisee', 'CoursesController@addCoursesForFranchisee');
 });
-
 
 
 Route::group(array('prefix' => 'admin'), function() {
@@ -144,8 +144,9 @@ Route::group(array('prefix'=>'franchisee'),function(){
 
 	Route::any('/addfranchisee','FranchiseeController@addNewFranchisee');
 	Route::get('/franchiseelist','FranchiseeController@franchiseeList');
-	Route::any('/addCourses', 'CoursesController@viewCoursesAdmin');
-	Route::any('/addCoursesForFranchisee', 'CoursesController@addCoursesForFranchisee');
+	Route::any('/addNewClass', "ClassesController@addNewClass");
+	Route::any('/addNewClassFranchisee', "ClassesController@addNewClassFranchisee");
+	// Route::any('/addCoursesForEachFranchise', 'CoursesController@addCoursesForEachFranchise');
 });
 
 
@@ -168,6 +169,11 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('createdNewFranchisee',"FranchiseeController@createdNewFranchisee");
         Route::any('getDataForFranchisee', 'FranchiseeController@getDataForFranchisee');
         Route::any('updateFranchiseeDetails', 'FranchiseeController@updateFranchiseeDetails');
+        Route::any('getCoursesFranchiseeWise', 'CoursesController@getCoursesFranchiseeWise');
+        Route::any('updateCoursesForFranchisee', 'CoursesController@updateCoursesForFranchisee');
+        Route::any('getAllClassesForFranchiseeWise', 'CoursesController@getAllClassesForFranchiseeWise');
+        Route::any('getBasePricesForFranchisee', 'CoursesController@getBasePricesForFranchisee');
+        Route::any('updateClassesBasePriceForFranchisee', 'CoursesController@updateClassesBasePriceForFranchisee');
 
 
         /**
@@ -206,6 +212,10 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::group(array('prefix'=>'discount'),function(){
         Route::any('/getdiscount','ClassesController@getDiscount');
         });
+        Route::any('/getAllCoursesForFranchisee', 'CoursesController@getAllCoursesForFranchisee');
+        Route::any('/getAllClassesForFranchisee', 'CoursesController@getAllClassesForFranchisee');
+        Route::any('/getBasePriceForAllClasses', 'CoursesController@getBasePriceForAllClasses');
+        Route::any('/addNewClassToFrnachisee', 'CoursesController@addNewClassToFrnachisee');
 
 	/**
 	 * --------------------------------------------------------------------------------------------------------------------------------------
