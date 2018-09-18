@@ -290,9 +290,16 @@ print_r($orders); */
                         @for($i=0;$i<count($tax_data);$i++)
 						<tr>
 							<td style="text-align:right">
-                            	<strong>
-                            		{{$tax_data[$i]['tax_particular'].'('.$tax_data[$i]['tax_percentage'].'%)'}}
-                            	</strong>
+								<strong>
+								@if($tax_data[$i]['tax_percentage'] === 0 && $tax_data[$i]['tax_particular'] === 'VAT')
+	                        	    <input id="diplomatOption" name="diplomatOption" type="checkbox"  checked="checked" class="checkbox-custom" onclick="return false;"/>
+	                        	    <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
+	                        	      class="req"> </span></label> /
+	                        		{{$tax_data[$i]['tax_particular'].'('.$tax_data[$i]['tax_percentage'].'%)'}}
+	                        	@else
+	                        		{{$tax_data[$i]['tax_particular'].'('.$tax_data[$i]['tax_percentage'].'%)'}}
+	                        	@endif
+	                        	</strong>
                             </td>
                             <td style="text-align:right">
                             	<strong>

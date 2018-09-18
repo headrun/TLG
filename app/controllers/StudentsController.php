@@ -692,7 +692,6 @@ class StudentsController extends \BaseController {
                         'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName','getTermsAndConditions',
                         'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode');
                     Mail::send('emails.account.enrollment', $data, function($msg) use ($data){
-          
         $msg->from(Config::get('constants.EMAIL_ID'), Config::get('constants.EMAIL_NAME'));
         $msg->to($data['getCustomerName'][0]['customer_email'], $data['getCustomerName'][0]['customer_name'])->subject('The Little Gym - Kids Enrollment Successful');
       
@@ -714,11 +713,15 @@ public function enrollKid2(){
                                      ->where('franchise_id', '=', Session::get('franchiseId'))
                                      ->get();
                 // getting the tax for particular franchisee
-      $tax=PaymentTax::getTaxPercentageForPayment();
-      $tax=$tax->tax_percentage;
+      if ($inputs['taxAmount'] === '0') {
+        $tax = 0;
+      } else {
+        $tax=PaymentTax::getTaxPercentageForPayment();
+        $tax=$tax->tax_percentage;
+      }
                 //** checking if it is a one batch **//
       if(count($getEstimateDetails) == 1){
-	$fianancialYearDates = Franchisee::getFinancialStartDates();
+	      $fianancialYearDates = Franchisee::getFinancialStartDates();
         $dataForThisYear = Franchisee::where('id', '=', Session::get('franchiseId'))
                                     ->where('financial_year_start_date', '=', $fianancialYearDates['start_date'])
                                     ->where('financial_year_end_date', '=', $fianancialYearDates['end_date'])
@@ -820,7 +823,7 @@ public function enrollKid2(){
         $paymentDuesInput['start_order_date']  = $insertDataToStudentClassTable['enrollment_start_date'];
         $paymentDuesInput['end_order_date']    = $insertDataToStudentClassTable['enrollment_end_date'];
         $paymentDuesInput['payment_batch_amount'] = $paymentDuesInput['selected_order_sessions']*$paymentDuesInput['each_class_cost'];
-        $paymentDuesInput['tax']                                    = $tax;
+        $paymentDuesInput['tax']  = $tax;
                 
         $sendPaymentDetailsToInsert = PaymentDues::createPaymentDues($paymentDuesInput, $invoiceNo);
                 
@@ -1382,7 +1385,16 @@ public function enrollKid2(){
         $paymentDueDetails[0]['membership_type']=$membership_data->description;
       }
         $franchisee_name=Franchisee::find(Session::get('franchiseId'));
-        $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
+
+        if ($paymentDueDetails[0]['tax_percentage'] <= 0) {
+          $tax_data[0]['tax_percentage'] = 0;
+        } else {
+          $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
+        }
+        if (Session::get('franchiseId') === 11) {
+          $tax_data[0]['tax_particular'] = 'VAT';
+        }
+        
         $data = compact('totalSelectedClasses', 'getBatchNname','tax_data','franchisee_name',
                         'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate','franchisee_name',
                         'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName','getTermsAndConditions',
@@ -1435,73 +1447,74 @@ public function enrollKid2(){
     
     $inputs = Input::all();
 		$fianancialYearDates = Franchisee::getFinancialStartDates();
-        	$dataForThisYear = Franchisee::where('id', '=', Session::get('franchiseId'))
-                                    ->where('financial_year_start_date', '=', $fianancialYearDates['start_date'])
-                                    ->where('financial_year_end_date', '=', $fianancialYearDates['end_date'])
-                                    ->get();
+    $dataForThisYear = Franchisee::where('id', '=', Session::get('franchiseId'))
+                                ->where('financial_year_start_date', '=', $fianancialYearDates['start_date'])
+                                ->where('financial_year_end_date', '=', $fianancialYearDates['end_date'])
+                                ->get();
 
-        	if( count($dataForThisYear) > 0){
-                	$invoiceNo =  $dataForThisYear[0]['max_invoice'] + 1;
-                	$data = Franchisee::updateInvoiceNumber($invoiceNo);
-        	}else{
-                	$invoiceNo = '1';
-                	$data = Franchisee::updateFinancialYears($fianancialYearDates);
-        	}
-               
-                if($inputs['remainingAmount'] >=0){
-                
-                    $taxAmtapplied=$inputs['taxAmount'];
-                if($inputs['membershipType'] != "" && $inputs['membershipPriceBday'] !=0 ){
-      $membershipInput['customer_id']        = $inputs['customerId'];
-      $membershipInput['membership_type_id'] = $inputs['membershipType'];
-      $customerMembershipData=CustomerMembership::addMembership($membershipInput);
-                        if($customerMembershipData->membership_type_id==1){
-                        $followupMembershipData=  Comments::addFollowupForMembership($customerMembershipData);
-                        }
+  	if( count($dataForThisYear) > 0){
+          	$invoiceNo =  $dataForThisYear[0]['max_invoice'] + 1;
+          	$data = Franchisee::updateInvoiceNumber($invoiceNo);
+  	}else{
+          	$invoiceNo = '1';
+          	$data = Franchisee::updateFinancialYears($fianancialYearDates);
+  	}
+    if($inputs['taxAmount'] === '0') {
+      $inputs['taxPercentage'] = 0;
     }
-                    $addBirthday =  BirthdayParties::addbirthdayParty($inputs);
-                    if(isset($customerMembershipData)){
-                    $addBirthday['membership_id']=$customerMembershipData->id;
-                    $membership_data=  MembershipTypes::find($customerMembershipData->membership_type_id);
-                    $addBirthday['membership_amount']=$membership_data->fee_amount;
-                    }
-                $addBirthday['taxpercent']=$inputs['taxPercentage'];  
-                if($inputs['remainingAmount']!='0'){
-                    $addBirthday['payment_type']="bipay";
-                }else{
-                    $addBirthday['payment_type']="singlepay";
-                }
-                $firstpayment=PaymentDues::createBirthdaypaymentFirstdues($addBirthday);
-                if($inputs['remainingAmount']!='0'){
-                $addPaymentDues= PaymentDues::createBirthdaypaymentdues($addBirthday);
-                }
-                $addBirthdayOrder = Orders::createBOrder($addBirthday,$firstpayment,$taxAmtapplied,$inputs,$invoiceNo);
-                
-                }
-                
-                //$addPaymentremainder= PaymentReminders::addReminderDates($addBirthday);
-                
-                $input['customerId']=$addBirthday->customer_id;
-                $input['birthday_id']=$addBirthday->id;
-                $input['student_id']=$addBirthday->student_id;
-                $input['commentType']='ACTION_LOG';
-                $student_data=Students::find($addBirthday->student_id);
-                $input['commentText']="Birthday celebration added for kid ".$student_data['student_name'];
-                $input['commentStatus']='ACTIVE/SCHEDULED';
-                 Comments::addComments($input);
-                  
-                $input['followupType']='PAYMENT';
-                $input['commentStatus']='REMINDER_CALL';
-                $input['commentType']='VERYINTERESTED';
-                $input['commentText']="Call for Birthday celebration for kid ".$student_data['student_name'];
-                $celebration_date=Carbon::createFromFormat('d M Y',$inputs['birthdayCelebrationDate']);
-                if($celebration_date->eq(carbon::now())){
-                 Comments::addComments($input);
-                }else{
-                  $celebration_date->subDay();
-                  $input['reminderDate']=  $celebration_date->toDateString();
-                 Comments::addComments($input);
-                }
+
+    if($inputs['remainingAmount'] >=0){
+        $taxAmtapplied=$inputs['taxAmount'];
+        if($inputs['membershipType'] != "" && $inputs['membershipPriceBday'] !=0 ){
+          $membershipInput['customer_id']        = $inputs['customerId'];
+          $membershipInput['membership_type_id'] = $inputs['membershipType'];
+          $customerMembershipData=CustomerMembership::addMembership($membershipInput);
+          if($customerMembershipData->membership_type_id==1){
+            $followupMembershipData=  Comments::addFollowupForMembership($customerMembershipData);
+          }
+        }
+        $addBirthday =  BirthdayParties::addbirthdayParty($inputs);
+        if(isset($customerMembershipData)){
+          $addBirthday['membership_id']=$customerMembershipData->id;
+          $membership_data=  MembershipTypes::find($customerMembershipData->membership_type_id);
+          $addBirthday['membership_amount']=$membership_data->fee_amount;
+        }
+        $addBirthday['taxpercent']=$inputs['taxPercentage'];  
+        if($inputs['remainingAmount']!='0'){
+            $addBirthday['payment_type']="bipay";
+        }else{
+            $addBirthday['payment_type']="singlepay";
+        }
+        $firstpayment=PaymentDues::createBirthdaypaymentFirstdues($addBirthday);
+        if($inputs['remainingAmount']!='0'){
+        $addPaymentDues= PaymentDues::createBirthdaypaymentdues($addBirthday);
+        }
+        $addBirthdayOrder = Orders::createBOrder($addBirthday,$firstpayment,$taxAmtapplied,$inputs,$invoiceNo); 
+    }
+    
+    //$addPaymentremainder= PaymentReminders::addReminderDates($addBirthday);
+    
+    $input['customerId']=$addBirthday->customer_id;
+    $input['birthday_id']=$addBirthday->id;
+    $input['student_id']=$addBirthday->student_id;
+    $input['commentType']='ACTION_LOG';
+    $student_data=Students::find($addBirthday->student_id);
+    $input['commentText']="Birthday celebration added for kid ".$student_data['student_name'];
+    $input['commentStatus']='ACTIVE/SCHEDULED';
+     Comments::addComments($input);
+      
+    $input['followupType']='PAYMENT';
+    $input['commentStatus']='REMINDER_CALL';
+    $input['commentType']='VERYINTERESTED';
+    $input['commentText']="Call for Birthday celebration for kid ".$student_data['student_name'];
+    $celebration_date=Carbon::createFromFormat('d M Y',$inputs['birthdayCelebrationDate']);
+    if($celebration_date->eq(carbon::now())){
+     Comments::addComments($input);
+    }else{
+      $celebration_date->subDay();
+      $input['reminderDate']=  $celebration_date->toDateString();
+     Comments::addComments($input);
+    }
                 
                 if(isset($inputs['invoicePrintOption']) && $inputs['invoicePrintOption'] == 'yes'){
       $printUrl = url().'/orders/Bprint/'.Crypt::encrypt($addBirthdayOrder);
