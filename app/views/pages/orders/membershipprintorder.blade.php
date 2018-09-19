@@ -169,7 +169,15 @@
 								<td>{{$membership_data->membership_start_date}}</td>
 								<td>{{$membership_data->membership_end_date}}</td>
 								<td>{{$membership_type->fee_amount}}</td>
-								<td>{{$order_data->tax_amount}}</td>
+								<td>
+									@if($order_data['tax_percentage'] === 0 && $order_data['tax_particular'] === 'VAT')
+	                        	    <input id="diplomatOption" name="diplomatOption" type="checkbox"  checked="checked" class="checkbox-custom" onclick="return false;"/>
+	                        	    <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
+	                        	      class="req"> </span></label>
+		                        	@else
+		                        		{{$order_data->tax_amount}} 
+		                        	@endif
+								</td>
 								<td>{{$membership_type->fee_amount+$order_data->tax_amount}}</td>
 							</tr>
 						</tbody>
