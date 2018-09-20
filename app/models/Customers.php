@@ -381,7 +381,7 @@ class Customers extends \Eloquent {
         
 	static function getAllCustomerMembersByFranchiseeId($franchiseeId){
     		$presentdate=  Carbon::now();
-		$customer_members=  CustomerMembership::
+		    $customer_members=  CustomerMembership::
                                       where('membership_start_date','<=',$presentdate->toDateString())
                                       ->where('membership_end_date','>=',$presentdate->toDateString())
                                       ->select('customer_id')
@@ -410,6 +410,20 @@ class Customers extends \Eloquent {
 		return $customers;
 		*/
 	}
+
+  static function getAllCuurentCustomerMembersByFranchiseeId($franchiseeId){
+    $presentdate=  Carbon::now();
+    $customer_members = StudentClasses::getAllEnrolledStudents($franchiseeId);   
+    $id;
+    foreach($customer_members as $c){
+        $id[]=$c['customer_id'];
+    }
+    
+    $customers = Customers::where('franchisee_id','=',$franchiseeId)
+                ->whereIn('id',$id)
+                ->get();
+    return $customers;
+  }
         static function getAllCustomerNonMembersByFranchiseeId($franchiseeId){
 		$presentdate=  Carbon::now();
 		$customer_members=  CustomerMembership::where('membership_start_date','<=',$presentdate->toDateString())
@@ -471,5 +485,13 @@ class Customers extends \Eloquent {
     return Customers::whereDate('created_at', '=',  date("Y-m-d"))
                       ->where('franchisee_id', '=',  Session::get('franchiseId'))
 						          ->count();
+  }
+  
+  static function getCustomersReport($inputs) {
+    $data['data'] = Customers::where('franchisee_id', '=', Session::get('franchiseId'))
+                      ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                      ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                      ->get();
+    return $data['data'];
   }        
 }

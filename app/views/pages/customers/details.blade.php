@@ -4869,8 +4869,8 @@ $('#memberhsipchequeNumber').keyup(function(){
 										null,array('id'=>'Reschedule-date','class' =>
 										'uk-form-width-medium'))}}
 								</div>
-			       </div>
-			<div class="uk-width-1-4" id="leadsInfo"></div>
+			       			</div>
+			<!-- <div class="uk-width-1-4" id="leadsInfo"></div>
 				<div>
 								<div class="parsley-row" id="leadStatus"><br><br>											
 									<label for="forLeadsInfo" class="inline-label">For Leads info
@@ -4887,7 +4887,7 @@ $('#memberhsipchequeNumber').keyup(function(){
 
                            
 								</div>
-							</div>
+							</div> -->
                         </div>
                                          
                                   </div>

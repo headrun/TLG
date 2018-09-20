@@ -4,7 +4,7 @@
 	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.print.css" media="all"> -->
 	<link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.common-material.min.css"/>
     <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.material.min.css"/>
-    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel='stylesheet' />
+    <link href='{{url()}}/assets/css/bootstrap.min.css' rel='stylesheet' />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- <link href="https://cdn.datatables.net/buttons/1.2.0/css/buttons.dataTables.min.css" rel="stylesheet"> -->
 @stop
@@ -92,11 +92,11 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*$(nRow).click(function() {
                                                   window.location = $(this).find('a').attr('href');
                                                 });
 
-                                                return nRow;
+                                                return nRow;*/
                                            },
                                            "iDisplayLength": 50,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
@@ -118,7 +118,8 @@
                             console.log(response);
                             var data='';
                             if(response[1]==='Birthday'){
-                            var header_data="<div class='md-card-content'>"+
+                            var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Birthday Report</h3>"+
+                                            "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+
@@ -150,18 +151,20 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*$(nRow).click(function() {
                                                     window.location = $(this).find('a').attr('href');
                                                       
                                                 });
-                                                return nRow;
+                                                return nRow;*/
                                            },
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
                                     
                             }else if(response[1]==='Enrollment'){
-                                var header_data="<div class='md-card-content'>"+
+
+                                var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Enrollment Report</h3>"+
+                                                "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+
@@ -198,10 +201,10 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*$(nRow).click(function() {
                                                     window.location = $(this).find('a').attr('href');
                                                 });
-                                                return nRow;
+                                                return nRow;*/
                                            },
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
@@ -252,18 +255,18 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*  $(nRow).click(function() {
                                             window.location = $(this).find('a').attr('href');
                                                 });
-
-                                                return nRow;
+                                                return nRow;  */
                                            },
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
                                 
                             }else if(response[1]==='Membership'){
-                                var header_data="<div class='md-card-content'>"+
+                                var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Membership Report</h3>"+
+                                            "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+
@@ -290,18 +293,19 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*  $(nRow).click(function() {
                                                 window.location = $(this).find('a').attr('href');
 
                                                 });
-                                                return nRow;
+                                                return nRow;  */
                                            },
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
                                 
                             }else if(response[1]==='Introvisit'){
-                                var header_data="<div class='md-card-content'>"+
+                                var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Introvisit Report</h3>"+
+                                            "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+
@@ -332,17 +336,18 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*$(nRow).click(function() {
                                                   window.location = $(this).find('a').attr('href');
                                                 });
-                                                return nRow;
+                                                return nRow;*/
                                            },
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
                                 
                             }else if(response[1]==='Inquiry'){
-                            var header_data="<div class='md-card-content'>"+
+                            var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Inquiry Report</h3>"+
+                                            "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+
@@ -365,17 +370,158 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*$(nRow).click(function() {
                                                   window.location = $(this).find('a').attr('href');
                                                 });
 
-                                                return nRow;
+                                                return nRow;*/
                                            },
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
+                            }else if(response[1]==='Customer_mails'){
+                            var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Customer mails Report</h3>"+
+                                            "<div class='md-card-content'>"+
+                                                "<div class='uk-overflow-container'>"+
+                                            "<table id='reportTable' class='uk-table'>"+
+                                            "<thead>"+
+                                            '<tr>'+
+                                            '<th>Customer Name</th>'+
+                                            '<th>Mobile No</th>'+
+                                            '<th>Email Address</th>'+
+                                            '</tr></thead>';
+                                for(var i=0;i<response[0].length;i++){
+                                      header_data+="<tr><td>"+response[0][i]['customer_name']+"</td><td>"+
+                                      response[0][i]['mobile_no']+"</td><td>"+
+                                      response[0][i]['customer_email']+"</td></tr>";
+                                }
+                                header_data+="</table></div></div>";
+                                $('#reportdata').html(header_data);
+                                $("#reportTable").DataTable({
+                                    dom: 'Bfrtip',
+                                        buttons: [
+                                            'excelHtml5',
+                                            'csvHtml5',
+                                            'pdfHtml5'
+                                        ],
+                                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                                            /*$(nRow).click(function() {
+                                              window.location = $(this).find('a').attr('href');
+                                            });
+
+                                            return nRow;*/
+                                       },
+                                       "iDisplayLength": 10,
+                                       "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                   });
+                            }else if(response[1]==='Renewal_due'){
+                            var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Total Renewal's Report</h3>"+
+                                            "<div class='md-card-content'>"+
+                                                "<div class='uk-overflow-container'>"+
+                                            "<table id='reportTable' class='uk-table'>"+
+                                            "<thead>"+
+                                            '<tr>'+
+                                            '<th>Customer Name</th>'+
+                                            '<th>Kid Name</th>'+
+                                            '<th>Last enrollment end date</th>'+
+                                            '</tr></thead>';
+                                for(var i=0;i<response[0]['data'].length;i++){
+                                      header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
+                                      response[0]['data'][i]['student_name']+"</td><td>"+
+                                      response[0]['data'][i]['end_order_date']+"</td></tr>";
+                                }
+                                header_data+="</table></div></div>";
+                                $('#reportdata').html(header_data);
+                                $("#reportTable").DataTable({
+                                    dom: 'Bfrtip',
+                                        buttons: [
+                                            'excelHtml5',
+                                            'csvHtml5',
+                                            'pdfHtml5'
+                                        ],
+                                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                                            /*$(nRow).click(function() {
+                                              window.location = $(this).find('a').attr('href');
+                                            });
+
+                                            return nRow;*/
+                                       },
+                                       "iDisplayLength": 10,
+                                       "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                   });
+                            }else if(response[1]==='Renewal_done'){
+                            var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Renewal's done Report</h3>"+
+                                            "<div class='md-card-content'>"+
+                                                "<div class='uk-overflow-container'>"+
+                                            "<table id='reportTable' class='uk-table'>"+
+                                            "<thead>"+
+                                            '<tr>'+
+                                            '<th>Customer Name</th>'+
+                                            '<th>Kid Name</th>'+
+                                            '<th>Transaction Date</th>'+
+                                            '</tr></thead>';
+                                for(var i=0;i<response[0]['data'].length;i++){
+                                      header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
+                                      response[0]['data'][i]['student_name']+"</td><td>"+
+                                      response[0]['data'][i]['created_at']+"</td></tr>";
+                                }
+                                header_data+="</table></div></div>";
+                                $('#reportdata').html(header_data);
+                                $("#reportTable").DataTable({
+                                    dom: 'Bfrtip',
+                                        buttons: [
+                                            'excelHtml5',
+                                            'csvHtml5',
+                                            'pdfHtml5'
+                                        ],
+                                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                                            /*$(nRow).click(function() {
+                                              window.location = $(this).find('a').attr('href');
+                                            });
+
+                                            return nRow;*/
+                                       },
+                                       "iDisplayLength": 10,
+                                       "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                   });
+                            }else if(response[1]==='Renewal_pending'){
+                            var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Renewal's pending Report</h3>"+
+                                            "<div class='md-card-content'>"+
+                                                "<div class='uk-overflow-container'>"+
+                                            "<table id='reportTable' class='uk-table'>"+
+                                            "<thead>"+
+                                            '<tr>'+
+                                            '<th>Customer Name</th>'+
+                                            '<th>Kid Name</th>'+
+                                            '<th>Enrollment end date</th>'+
+                                            '</tr></thead>';
+                                for(var i=0;i<response[0]['data'].length;i++){
+                                      header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
+                                      response[0]['data'][i]['student_name']+"</td><td>"+
+                                      response[0]['data'][i]['end_order_date']+"</td></tr>";
+                                }
+                                header_data+="</table></div></div>";
+                                $('#reportdata').html(header_data);
+                                $("#reportTable").DataTable({
+                                    dom: 'Bfrtip',
+                                        buttons: [
+                                            'excelHtml5',
+                                            'csvHtml5',
+                                            'pdfHtml5'
+                                        ],
+                                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                                            /*$(nRow).click(function() {
+                                              window.location = $(this).find('a').attr('href');
+                                            });
+
+                                            return nRow;*/
+                                       },
+                                       "iDisplayLength": 10,
+                                       "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                   });
                             }else if(response[1]==='Calls'){
-                                var header_data="<div class='md-card-content'>"+
+                                var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Calls Report</h3>"+
+                                            "<div class='md-card-content'>"+
                                                 "<div class='uk-overflow-container'>"+
                                             "<table id='reportTable' class='uk-table'>"+
                                             "<thead>"+
@@ -407,11 +553,11 @@
                                                 'pdfHtml5'
                                             ],
                                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                                                $(nRow).click(function() {
+                                                /*$(nRow).click(function() {
                                                   window.location = $(this).find('a').attr('href');
                                                 });
 
-                                                return nRow;
+                                                return nRow;*/
                                            },
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
@@ -722,7 +868,11 @@ $(document).on('click', '.salse_alloc_btn', function(){
                                                     <option value="Introvisit">Introvisit</option>
                                                     <option value="Inquiry">Inquiry</option>
                                                     <option value="Calls">Calls Report</option>
-                                                   <!--  <option value="BySchool">By School</option>
+                                                    <!-- <option value="Customer_mails">Customer Emails</option>
+                                                    <option value="Renewal_due">Total renewals</option>
+                                                    <option value="Renewal_done">Renewal Done</option>
+                                                    <option value="Renewal_pending">Pending Renewals</option> -->
+                                                    <!-- <option value="BySchool">By School</option>
                                                     <option value="ByLocality">By Locality</option>
                                                     <option value="ByApartment">By Apartmnet</option> -->
                                             </select>

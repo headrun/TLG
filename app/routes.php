@@ -76,6 +76,7 @@ Route::group(array('prefix' => 'students'), function() {
 
 Route::group(array('prefix' => 'customers'), function() {
 	Route::any('/memberslist', "CustomersController@index");
+	Route::any('/currentCustomerList', "CustomersController@currentCustomersList");
     Route::any('/prospectslist', "CustomersController@getNonMembersList");
 	Route::any('/add', "CustomersController@add");
 	Route::any('/view/{id}', "CustomersController@details");
@@ -133,6 +134,7 @@ Route::group(array('prefix'=>'Discounts'),function(){
 
 Route::group(array('prefix'=>'reports'),function(){
         Route::any('/view_reports','ReportsController@view_reports');
+        Route::any('/kbi_reports','ReportsController@kbi_reports');
         Route::any('/deleted_customers','ReportsController@deleted_customers');
 });
 
@@ -354,7 +356,10 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('getTransferkiddata','ClassesController@getTransferkiddatabyBatchId');
         Route::any('BdayPartiesFiltering','DashboardController@BdayPartiesFiltering');
         Route::any('UpdateEaDate','ClassesController@UpdateEaDate');
+        Route::any('UpdateLeadStatus','ClassesController@UpdateLeadStatus');
         Route::any('UpdateBatchSchedule','DashboardController@UpdateBatchSchedule');
+        Route::any('addMarketingBudget', 'ReportsController@addMarketingBudget');
+        Route::any('checkMbExist', 'ReportsController@checkMbExist');
         
 	Route::any('saveSchedule', function(){
 	

@@ -3,9 +3,10 @@
 @section('libraryCSS')
 	<!-- <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.min.css" media="all">
 	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.print.css" media="all"> -->
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.min.css" media="all">
+	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.print.css" media="all">
 	<link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.common-material.min.css"/>
     <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.material.min.css"/>
-    <link href='{{url()}}/assets/css/bootstrap.min.css' rel='stylesheet' />
 @stop
 
 @section('libraryJS')
@@ -20,11 +21,19 @@
 <script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
 <script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
 <script src="//cdn.datatables.net/buttons/1.4.0/js/buttons.html5.min.js"></script>
+<script src="{{url()}}/assets/js/kendoui_custom.min.js"></script>
+<script src="{{url()}}/assets/js/pages/kendoui.min.js"></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
 
-
-<!-- <script type="text/javascript">
-
+<script type="text/javascript">
 	$("#studentsTable").DataTable({
+		dom: 'Bfrtip',
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ],
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
 
             // Bind click event
@@ -140,7 +149,7 @@
                                                     {{$student->student_date_of_birth}}
 		                                </td>
 						<td>{{ $student->end_date }}
-						   <a  style="display: none" href="{{url()}}/students/view/{{$student->id}}">View/Edit</a>
+						   <a  style="display: none" href="{{url()}}/students/view/{{$student->id}}"></a>
 		                                </td>	
 		                                
 		                            </tr>
@@ -159,9 +168,9 @@
 		
 	</div><!-- row -->
 </div><!-- Container -->
- <div class="md-fab-wrapper">
+<!--- <div class="md-fab-wrapper">
 <a class="md-fab md-fab-accent" href="{{url()}}/customers/add" title="Add customers">
 <i class="material-icons">&#xE03B;</i>
 </a>
-</div>
+</div>  --->
 @stop

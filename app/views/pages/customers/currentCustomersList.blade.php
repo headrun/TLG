@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.material.min.css"/> -->
     <link href='https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css' />
     <link href='https://cdn.datatables.net/buttons/1.4.0/css/buttons.dataTables.min.css' />
-    <link href='{{url()}}/assets/css/bootstrap.min.css' rel='stylesheet' />
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel='stylesheet' />
 @stop
 
 @section('libraryJS')
@@ -233,7 +233,7 @@ $("#customerSubmit").click(function (event){
 	<ul class="crumbs">
 		<li class="first"><a href="{{url()}}" style="z-index:9;"><span></span>Home</a></li>
 		<li><a href="{{url()}}/customers/memberslist" style="z-index:8;">Customers</a></li>
-		<li><a href="#" style="z-index:7;">Members List</a></li>
+		<li><a href="#" style="z-index:7;">Current Customers List</a></li>
 	</ul>
 </div>
 <br clear="all"/>
@@ -265,7 +265,7 @@ $("#customerSubmit").click(function (event){
 		                                <th>Customer</th>
 		                                <th>Email</th>
 		                                <th>Mobile No</th>
-		                                <th>Membership End Date</th>
+		                                <!-- <th>Membership End Date</th> -->
 		                                <!-- <th>Action</th> -->
 		                            </tr>
 		                            </thead>
@@ -275,12 +275,9 @@ $("#customerSubmit").click(function (event){
 		                            <tr>
 		                                <td>{{$customer->customer_name.' '}}{{$customer->customer_lastname}}</td>
 		                                <td>{{$customer->customer_email}}</td>
-		                                <td>{{$customer->mobile_no}}</td>
-		                                <td>{{$customer->membership_end_date }}
+		                                <td>{{$customer->mobile_no}}
 		                                <a style="display: none;" href="{{url()}}/customers/view/{{$customer->id}}"></a>
 		                                </td>
-		                                <!-- <td><a class="md-btn md-btn-flat md-btn-flat-primary" href="{{url()}}/customers/view/{{$customer->id}}">View</a></td> -->
-		                                
 		                            </tr>
 		                            @endforeach
                                                <?php } ?>

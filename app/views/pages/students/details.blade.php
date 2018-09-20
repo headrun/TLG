@@ -1759,13 +1759,16 @@ $('#year').change(function(){
   }
 });
 
-
+function navigteToBatches(url) {
+  window.location = url
+}
 
 
 $('#batchName').change(function(){
   if($('#year').val() != '' && $('#batchName').val() != ''){
     var year = $('#year').val();
     var batchId = $('#batchName').val();
+    $('#Transfers').show();
 
     $.ajax({
       type: "POST",
@@ -1773,7 +1776,6 @@ $('#batchName').change(function(){
       data: {'year': year, 'batchId': batchId, 'studentId': studentId},
       dataType: 'json',
       success: function(response){
-        console.log(response);
         if(response.data.length == 0){
           $('#AttendanceDiv').html('<center><h4>No data was found</h4></center>');
           $('#Pcount').text('0');
@@ -1811,10 +1813,34 @@ $('#batchName').change(function(){
           $('#EAcount').text(EAcount);
           $('#Rcount').text(response.totalSession - Pcount);
           $('#makeup-session').text(makeup);
-          $('#total-session').text(response.totalSession); 
+          $('#total-session').text(response.totalSession);
         }
-        
-        
+        if (parseInt(response.introvisit) === 1){
+          $('#Transfers').hide();
+          $('#presentDiv').hide();
+          $('#makeupGiven').hide();
+          $('#AttendanceDivForIntrovisit').html('<center><h4>This is an introvisit class</h4></center>');
+        } else {
+          $('#Transfers').show();
+          $('#presentDiv').show();
+          $('#makeupGiven').show();
+          $('#AttendanceDivForIntrovisit').html('');
+        }
+        if (parseInt(response.makeupClass) === 1) {
+          $('#Transfers').hide();
+        } else {
+          $('#Transfers').show();
+        }
+        if (parseInt(response.makeupClass) === 1) {
+          $('#Transfers').hide();
+        } else {
+          $('#Transfers').show();
+        }
+        if (parseInt(response.transferredToOtherClass) === 1) {
+          $('#Rcount').text('0');
+        } else {
+          $('#total-session').text(response.totalSession);
+        }
       }
     });
   }else{
@@ -3416,7 +3442,7 @@ id="user_profile">
                                                 //return $day;
                                           
                                           ?>
-                                          <tr>
+                                          <tr onclick="navigteToBatches('{{url()}}/batches/view/{{$latestEnrolledData[$i]['batch_id']}}')">
                                             <td>{{$test[0].' '.$test[1].' '.$test[2]}}&nbsp;</td>
                                             <td>{{$day}}&nbsp;</td>
                                             <td>{{$timeStart[0].':'.$timeStart[1]}}&nbsp;-{{$timeEnd[0].':'.$timeEnd[1]}}&nbsp;</td>
@@ -3824,7 +3850,7 @@ id="user_profile">
                                                                     </div>
                                                                     <br clear = "all"/>
                                                                     <br clear = "all"/>
-                                                                    <div class="uk-grid data-uk-grid-margin">
+                                                                    <div class="uk-grid data-uk-grid-margin" id="presentDiv">
                                                                       <div class="uk-width-medium-1-4">
                                                                         <div class="parsley-row">
                                                                           <span class="md-btn md-btn-success" style="border-radius: 15px; font-size:12px;">
@@ -3854,7 +3880,7 @@ id="user_profile">
                                                                      </div>
                                                                    </div>
                                                                  </div>
-                                                                 <div class="uk-grid data-uk-grid-margin">
+                                                                 <div class="uk-grid data-uk-grid-margin" id="makeupGiven">
                                                                   <div class="uk-width-medium-1-4">
                                                                     <div class="parsley-row">
                                                                       <span class="md-btn md-btn-warning" id='makeupsession' style="border-radius: 15px; font-size:12px;">
@@ -3884,6 +3910,9 @@ id="user_profile">
                                                                 <div class="uk-width-medium-1-1"  id = "AttendanceDiv"> 
                                                                   
                                                                 </div>
+                                                              </div>
+                                                              <div class="uk-width-medium-1-1"  id = "AttendanceDivForIntrovisit"> 
+                                                                
                                                               </div>
                                                             </div>
                                                             <div class="md-card" style="margin-top: 100px;">
@@ -3957,8 +3986,7 @@ id="user_profile">
                                                               </div> <br clear="all" />
                                                               @endif
                                                               <h3>Upload Discovery Sheet</h3>
-                                                              <div class="row">
-                                                                <div class="col-sm-6">
+                                                              <div class="row" style="width:50%;">
                                                                   <div class="col-md-6">
                                                                     {{Form::open(array('files'=> true, 'url'=>'students/discovery/picture'))}} 
                                                                     <span class="md-list-heading">{{Form::file('discoveryPicture',array('required', 'class'=>'form-control'))}}</span><br>
@@ -3980,8 +4008,6 @@ id="user_profile">
                                                                     value="Download Discovery Picture" />
                                                                     {{Form::close()}}      
                                                                   </div>
-                                                                  
-                                                                </div>
                                                               </div>
                                                               @if($attachment_location)
                                                               <h3 style="margin-top: 50px;margin-bottom: 10px">Uploaded Discovery Sheets</h3>

@@ -353,9 +353,9 @@ $(document).on('change', 'tbody td .leadTypeDropdown', function() {
   </div>
 </div>
  
-<div class="md-fab-wrapper">
+<!--- <div class="md-fab-wrapper">
 <a class="md-fab md-fab-accent" href="{{url()}}/customers/add" title="Add customers">
 <i class="material-icons">&#xE03B;</i>
 </a>
-</div>
+</div>  ----->
 @stop

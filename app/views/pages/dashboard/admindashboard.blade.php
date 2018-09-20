@@ -1,7 +1,7 @@
 @extends('layout.master')
 
 @section('libraryCSS')
-	<link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel='stylesheet' />
+	<link href='{{url()}}/assets/css/bootstrap.min.css' rel='stylesheet' />
 	<style>
 		.smallText td a, .smallText td {
 			font-size:12px !important;

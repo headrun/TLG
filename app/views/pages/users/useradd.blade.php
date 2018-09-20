@@ -21,6 +21,7 @@
 <script type="text/javascript">
 
 $(document).ready(function (){
+	$('#divLoading').hide();
 	$("#email").on('keyup change input',function (){
 	 if ($(this).val() != '') {
 	   $.ajax({
@@ -47,6 +48,7 @@ $(document).ready(function (){
 });	
 $('#customerSubmit').click(function(){
 	$('#customerSubmit').disabled();
+	// $('#divLoading').show();
 });
 
 </script>
@@ -63,11 +65,13 @@ $('#customerSubmit').click(function(){
 </div>
 <br clear="all"/>
 <div class="">
+	<div id="divLoading" style="margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+	    <p style="position: absolute; color: White; top: 50%; left: 45%;font-size:20px;">
+	    <img src="{{url()}}/assets/img/spinners/spinner.gif">
+	     Loading, please wait...
+	    </p>
+    </div>
 	<div class="row">
-	
-		
-		
-		
 		<h4>New User</h4>
 		 <div class="md-card">
                 <div class="md-card-content large-padding">

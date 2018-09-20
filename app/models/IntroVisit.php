@@ -223,6 +223,12 @@ class IntroVisit extends \Eloquent {
             }
         }
         return $introvisit;
+    }
+
+    static function getIntrovisitForThisStuId($inputs) {
+    	return IntroVisit::where('student_id', '=', $inputs['studentId'])
+    					 ->where('batch_id', '=', $inputs['batchId'])
+    					 ->count();
     }	
 	
 }

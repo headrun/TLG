@@ -523,7 +523,7 @@ class PaymentDues extends \Eloquent {
             $temp3= Batches::find($enrollmentReportDetails['data'][$i]['batch_id']);
             $enrollmentReportDetails['data'][$i]['batch_name']=$temp3->batch_name;
         }
-          return $enrollmentReportDetails;
+        return $enrollmentReportDetails;
   }
 
 
@@ -650,14 +650,13 @@ class PaymentDues extends \Eloquent {
   }
 
   static function getCurrentMonthRenewalsDue($presentdate, $currentMonth){
-	$classes = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
-			      ->where('end_order_date', '<=', $presentdate)
-                              ->where('end_order_date', '>=', $currentMonth)
-			      ->where('payment_due_for','=', 'enrollment')
-			      ->groupBy('student_id')
-                              ->get();
-        return count($classes);
-
+  	$classes = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+  			      ->where('end_order_date', '<=', $presentdate)
+              ->where('end_order_date', '>=', $currentMonth)
+  			      ->where('payment_due_for','=', 'enrollment')
+  			      ->groupBy('student_id')
+              ->get();
+    return $classes;
   }
    
   static function insertPaymentsData($customerId,$inputs,$typeOfClass,$totalAmount,$payment_no,$end_date,$userId,$presentDate){
@@ -684,7 +683,133 @@ class PaymentDues extends \Eloquent {
          $data->save();
 
 	 return $data;
-	
+  }
 
+  static public function getNoOfNewEnrollments($presentdate, $currentMonthStartDate) {
+     $students = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                            ->where('payment_due_for', '=', 'enrollment')
+                            ->whereDate('created_at', '>=', $currentMonthStartDate)
+                            ->whereDate('created_at', '<=', '2018-07-09')
+                            ->groupBy('student_id')
+                            ->get();
+     $student_id = [];
+     if (isset($students) || !empty($students)) {
+       foreach($students as $student){
+            $student_id[] = $student['student_id'];
+       }
+       $student_data = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                              ->where('payment_due_for', '=', 'enrollment')
+                              ->whereDate('created_at', '<=', '2018-07-09')
+                              // ->whereNotIn('student_id', $student_id)
+                              ->groupBy('student_id')
+                              ->get();
+       $id;
+       foreach($student_data as $student){
+            $id[] = $student['student_id'];
+       }          
+       $result = array_diff($student_id,$id);                
+       return count($result);
+     } else {
+       return 0;
+     }
+  }
+
+  static public function getTotalEnrollments() {
+
+    $students = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                            ->where('payment_due_for', '=', 'enrollment')
+                            ->groupBy('student_id')
+                            ->get();
+    return count($students);
+  }
+
+  static public function getMarketingBudget($presentdate, $currentMonthStartDate) {
+    $currentMonth = date('M',strtotime($presentdate));
+    $currentYear = date('Y',strtotime($presentdate));
+    $getDataForThisYM = MarketingBudget::where('franchisee_id', '=', Session::get('franchiseId'))
+                                       ->where('year', '=', $currentYear)
+                                       ->where('month', '=', $currentMonth)
+                                       ->get();
+    if (isset($getDataForThisYM[0]['budget_amount']) && !empty($getDataForThisYM[0]['budget_amount'])) {
+      return $getDataForThisYM[0]['budget_amount'];
+    } else {
+      return 0;
+    }
+  }
+  static function getNoOfRenwalsDone($presentdate, $currentMonth){
+    $renewals = PaymentDues::getCurrentMonthRenewalsDue($presentdate, $currentMonth);
+    $student_id = array();
+    if (isset($renewals) && !empty($renewals)) {
+      foreach($renewals as $renew) {
+        array_push($student_id, $renew['student_id']);
+      }
+      $classes = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                ->whereDate('created_at', '<=', $presentdate)
+                ->whereDate('created_at', '>=', $currentMonth)
+                ->whereIn('student_id',$student_id)
+                ->where('payment_due_for','=', 'enrollment')
+                ->groupBy('student_id')
+                ->get();
+      return $classes;
+    } else {
+      return 0;
+    }
+  }
+
+  static function getRenewalsDueReport($inputs){
+    $enrollmentReportDetails['data'] = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+              ->whereDate('end_order_date', '<=', $inputs['reportGenerateEnddate'])
+              ->whereDate('end_order_date', '>=', $inputs['reportGenerateStartdate'])
+              ->where('payment_due_for','=', 'enrollment')
+              ->groupBy('student_id')
+              ->get();
+
+    for($i=0;$i<count($enrollmentReportDetails['data']);$i++){
+        $temp=  Customers::find($enrollmentReportDetails['data'][$i]['customer_id']);
+        $enrollmentReportDetails['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+        $temp2=  Students::find($enrollmentReportDetails['data'][$i]['student_id']);
+        $enrollmentReportDetails['data'][$i]['student_name']=$temp2->student_name;
+        $temp3= Batches::find($enrollmentReportDetails['data'][$i]['batch_id']);
+        $enrollmentReportDetails['data'][$i]['batch_name']=$temp3->batch_name;
+    }
+    return $enrollmentReportDetails;
+  }
+
+  static function getRenewalsDoneReport ($inputs) {
+    $enrollmentReportDetails['data'] = PaymentDues::getNoOfRenwalsDone($inputs['reportGenerateEnddate'], $inputs['reportGenerateStartdate']);
+    
+    for($i=0;$i<count($enrollmentReportDetails['data']);$i++){
+        $temp=  Customers::find($enrollmentReportDetails['data'][$i]['customer_id']);
+        $enrollmentReportDetails['data'][$i]['customer_name']=$temp->customer_name.$temp->customer_lastname;
+        $temp2=  Students::find($enrollmentReportDetails['data'][$i]['student_id']);
+        $enrollmentReportDetails['data'][$i]['student_name']=$temp2->student_name;
+        $temp3= Batches::find($enrollmentReportDetails['data'][$i]['batch_id']);
+        $enrollmentReportDetails['data'][$i]['batch_name']=$temp3->batch_name;
+    }
+    return $enrollmentReportDetails;
+  }
+
+  static function getRenewalsPendingReport($inputs){
+    $renewals = PaymentDues::getCurrentMonthRenewalsDue($inputs['reportGenerateEnddate'], $inputs['reportGenerateStartdate']);
+    $done = PaymentDues::getNoOfRenwalsDone($inputs['reportGenerateEnddate'], $inputs['reportGenerateStartdate']);
+    $student_id = array();
+    $renewDone_id = array();
+    $enrollmentReportDetails['data'] = array();
+    if (isset($renewals) && !empty($renewals)) {
+      foreach($done as $renewDone) {
+        array_push($student_id, $renewDone['student_id']);
+      }
+      foreach($renewals as $renew) {
+        if(!in_array($renew['student_id'], $student_id)){
+          $finalData = $renew;
+          $temp = Customers::find($finalData['customer_id']);
+          $finalData['customer_name']=$temp->customer_name.$temp->customer_lastname;
+          $temp2 = Students::find($finalData['student_id']);
+          $finalData['student_name']=$temp2->student_name;
+          array_push($enrollmentReportDetails['data'], $finalData);
+        }
+      }
+    }
+    return $enrollmentReportDetails;
   }
 }
