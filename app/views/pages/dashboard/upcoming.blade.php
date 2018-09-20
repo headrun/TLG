@@ -372,7 +372,7 @@
                         </div>
                     </div>
                 </div>
-                                <div>
+                                <!-- <div>
                                     <div class="md-card">
                                         <div class="md-card-content">
                                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
@@ -385,7 +385,7 @@
                                             
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                 <div>
                     <div class="md-card">
                         <div class="md-card-content">

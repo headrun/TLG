@@ -48,7 +48,7 @@ $(document).ready(function (){
 });	
 $('#customerSubmit').click(function(){
 	$('#customerSubmit').disabled();
-	$('#divLoading').show();
+	// $('#divLoading').show();
 });
 
 </script>

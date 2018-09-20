@@ -868,10 +868,10 @@ $(document).on('click', '.salse_alloc_btn', function(){
                                                     <option value="Introvisit">Introvisit</option>
                                                     <option value="Inquiry">Inquiry</option>
                                                     <option value="Calls">Calls Report</option>
-                                                    <option value="Customer_mails">Customer Emails</option>
+                                                    <!-- <option value="Customer_mails">Customer Emails</option>
                                                     <option value="Renewal_due">Total renewals</option>
                                                     <option value="Renewal_done">Renewal Done</option>
-                                                    <option value="Renewal_pending">Pending Renewals</option>
+                                                    <option value="Renewal_pending">Pending Renewals</option> -->
                                                     <!-- <option value="BySchool">By School</option>
                                                     <option value="ByLocality">By Locality</option>
                                                     <option value="ByApartment">By Apartmnet</option> -->
