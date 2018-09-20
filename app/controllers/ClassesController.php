@@ -572,9 +572,9 @@ class ClassesController extends \BaseController {
                                                                      ->where('batch_id','=',$inputs['batch_id'])
                                                                      ->whereIn('status',array('enrolled','transferred_class'))
                                                                      ->get();
-            //$count=0;
+            // $count=0;
             for($i=0;$i<count($student_class_data['student_class_data']);$i++){
-                $count = 0;
+            	$count=0;
                 $student_class_data['student_class_data'][$i]['attendance_count']=Attendance::where('batch_id','=',$inputs['batch_id'])
                                                                ->where('student_id','=',$inputs['student_id'])
                                                                ->whereIn('status',array('P','A','EA'))

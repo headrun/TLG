@@ -4,7 +4,7 @@
 	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.print.css" media="all"> -->
 	<link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.common-material.min.css"/>
     <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.material.min.css"/>
-    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel='stylesheet' />
+    <link href='{{url()}}/assets/css/bootstrap.min.css' rel='stylesheet' />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- <link href="https://cdn.datatables.net/buttons/1.2.0/css/buttons.dataTables.min.css" rel="stylesheet"> -->
 @stop
@@ -868,10 +868,10 @@ $(document).on('click', '.salse_alloc_btn', function(){
                                                     <option value="Introvisit">Introvisit</option>
                                                     <option value="Inquiry">Inquiry</option>
                                                     <option value="Calls">Calls Report</option>
-                                                    <option value="Customer_mails">Customer Emails</option>
+                                                    <!-- <option value="Customer_mails">Customer Emails</option>
                                                     <option value="Renewal_due">Total renewals</option>
                                                     <option value="Renewal_done">Renewal Done</option>
-                                                    <option value="Renewal_pending">Pending Renewals</option>
+                                                    <option value="Renewal_pending">Pending Renewals</option> -->
                                                     <!-- <option value="BySchool">By School</option>
                                                     <option value="ByLocality">By Locality</option>
                                                     <option value="ByApartment">By Apartmnet</option> -->

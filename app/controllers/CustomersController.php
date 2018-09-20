@@ -446,14 +446,26 @@ class CustomersController extends \BaseController {
     			$inputs['membership_amount']=$inputs['amount'];
     			$inputs['payment_due_amount']=$inputs['amount'];
     			$inputs['payment_due_amount_after_discount']=$inputs['amount'];
-     			$tax=PaymentTax::where('franchisee_id','=',Session::get('franchiseId'))
-    						->select('tax_percentage')->get();
-    			$tax=$tax[0];
-    			$inputs['tax']= $tax['tax_percentage'];
-     			$payment_data=PaymentDues::createMembershipPaymentDues($inputs);
+    			if (Session::get('franchiseId') === 11) {
+    				if ($inputs['diplomatCheck'] === 'yes') {
+						$inputs['tax']= 0;
+						$inputs['taxamt'] = 0;
+    				} else {
+			 			$tax=PaymentTax::where('franchisee_id','=',Session::get('franchiseId'))
+									->select('tax_percentage')->get();
+						$tax=$tax[0];
+						$inputs['tax']= $tax['tax_percentage'];	
+    				}
+    			} else {
+		 			$tax=PaymentTax::where('franchisee_id','=',Session::get('franchiseId'))
+								->select('tax_percentage')->get();
+					$tax=$tax[0];
+					$inputs['tax']= $tax['tax_percentage'];
+    			}
+			$payment_data=PaymentDues::createMembershipPaymentDues($inputs);
     			$inputs['payment_due_id']=$payment_data->id;
     			$inputs['taxamt']=($inputs['membership_amount']*$inputs['tax'])/100;
-			$inputs['invoice_format'] = Orders::invoiceFormat($invoiceNo);
+				$inputs['invoice_format'] = Orders::invoiceFormat($invoiceNo);
     			$order_data=Orders::CreateMembershipOrder($inputs);
     			
     			DB::commit();
