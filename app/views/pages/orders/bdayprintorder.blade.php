@@ -105,7 +105,7 @@
 				
 				</div>
 				<br clear="all"/>
-                                <p style="text-align: center;">{{$franchisee_name['franchisee_legal_entity']}}</p>
+                                <p style="text-align: center;padding-top:25px;">{{$franchisee_name['franchisee_legal_entity']}}</p>
 				<p style="text-align: center;">Thank You and welcome to celebrate B'day party in The Little Gym family</p>
 				<br clear="all"/>
 				<div class="col-md-11" style="margin:0px auto !important; float:none; border-bottom:2px dashed #EEEEEE;">
