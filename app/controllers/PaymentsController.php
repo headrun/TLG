@@ -278,7 +278,7 @@ class PaymentsController extends \BaseController {
         } else {
         	$tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
         }
-        if (Session::get('franchiseId') === 11) {
+        if (Session::get('franchiseId') == 11) {
         	$tax_data[0]['tax_particular'] = 'VAT';
         }
                 $data = compact('totalSelectedClasses', 'getBatchNname',
@@ -344,7 +344,7 @@ class PaymentsController extends \BaseController {
         } else {
         	$tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
         }
-        if (Session::get('franchiseId') === 11) {
+        if (Session::get('franchiseId') == 11) {
         	$tax_data[0]['tax_particular'] = 'VAT';
         }
 		$data = array (
@@ -391,7 +391,7 @@ class PaymentsController extends \BaseController {
 			} else {
 				$tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
 			}
-			if (Session::get('franchiseId') === 11) {
+			if (Session::get('franchiseId') == 11) {
 				$order_data['tax_particular'] = 'VAT';
 			}
 			//serializing data and making view
@@ -400,7 +400,7 @@ class PaymentsController extends \BaseController {
 			} else {
 				$tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
 			}
-			if (Session::get('franchiseId') === 11) {
+			if (Session::get('franchiseId') == 11) {
 				$order_data['tax_particular'] = 'VAT';
 			}
 			$data=array('order_data','customer_data','membership_data',

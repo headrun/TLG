@@ -2608,7 +2608,7 @@ $('.membershipPurchase').click(function(){
 		membershipsenddata['bankName'] = $('#membershipcardbankname').val();
 
 	}
-	<?php if (Session::get('franchiseId') === 11) { ?>
+	<?php if (Session::get('franchiseId') == 11) { ?>
 		if ($('#diplomatOptionMember').is(':checked')) {
 			var diplomatCheck = 'yes';
 			membershipsenddata['diplomatCheck'] = diplomatCheck;
@@ -3337,7 +3337,7 @@ $('#memberhsipchequeNumber').keyup(function(){
 																</tr>																
 																<tr style="text-align: right;">
 																	<td colspan="2">
-																		<?php if(Session::get('franchiseId') === 11) {?>
+																		<?php if(Session::get('franchiseId') == 11) {?>
 																		  <input id="diplomatOption" name="diplomatOption" type="checkbox"  value="yes" class="checkbox-custom"  />
 																		  <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
 																		    class="req"> </span></label> /
@@ -3779,7 +3779,7 @@ $('#memberhsipchequeNumber').keyup(function(){
 																		</tr>
 																		<tr> 
 																		 	<td class="uk-text-right">
-																		 		<?php if(Session::get('franchiseId') === 11) {?>
+																		 		<?php if(Session::get('franchiseId') == 11) {?>
 																		 		  <input id="diplomatOptionMember" name="diplomatOptionMember" type="checkbox"  value="yes"  />
 																		 		  <label for="diplomatOptionMember" class="checkbox-custom-label">Diplomat <span
 																		 		    class="req"> </span></label> /
@@ -4644,7 +4644,7 @@ $('#memberhsipchequeNumber').keyup(function(){
                 <tr>
                     <td></td>
                     <td>
-                    	<?php if(Session::get('franchiseId') === 11) {?>
+                    	<?php if(Session::get('franchiseId') == 11) {?>
                     	  <input id="diplomatOptionBday" name="diplomatOptionBday" type="checkbox"  value="yes"  />
                     	  <label for="diplomatOptionBday" class="checkbox-custom-label">Diplomat <span
                     	    class="req"> </span></label> /

@@ -4567,7 +4567,7 @@ style="margin-top: 50px; z-index: 99999;">
                                                                         <tr>
 
                                                                           <td colspan="2" style="text-align: right; font-weight: bold;"> 
-                                                                            <?php if(Session::get('franchiseId') === 11) {?>
+                                                                            <?php if(Session::get('franchiseId') == 11) {?>
                                                                               <input id="diplomatOption" name="diplomatOption" type="checkbox"  value="yes" class="checkbox-custom"  />
                                                                               <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
                                                                                 class="req"> </span></label> /
@@ -4586,7 +4586,7 @@ style="margin-top: 50px; z-index: 99999;">
                                                                             ?> 
                                                                           </td>
                                                                           <td>
-                                                                            <?php if(Session::get('franchiseId') === 11) {?>
+                                                                            <?php if(Session::get('franchiseId') == 11) {?>
                                                                               <label style="font-weight:bold;padding-top:7px;" id="taxAmountlabel"></label>
                                                                             <?php }else{ ?>
                                                                               <label style="font-weight:bold;" id="taxAmountlabel"></label>
