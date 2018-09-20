@@ -70,7 +70,6 @@
 	</style>
 	 
    
-	<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
 	
 </head>
 <body class="sidebar_main_open sidebar_main_swipe">
@@ -234,27 +233,30 @@
     <!-- altair common functions/helpers -->
     
     <script src="{{url()}}/assets/js/altair_admin_common.min.js"></script>
+    <script src="{{url()}}/assets/css/jquery-ui.css"></script>
+    <script type="text/javascript" src="{{url()}}/assets/js/idle-timer.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script>
-	 	$( "#commonSearchTxt" ).autocomplete({
+
+	$(document).ready(function() {
+	    $("#commonSearchTxt").autocomplete({
 	        source: "{{url()}}/quick/customerStudentSearch",
 	        minLength: 3,
 	        select: function( event, ui ) {
-
 	        	$( "#commonSearchTxt" ).val(ui.item.value);
 	        	$( "#idCommonSearchTxt" ).val(ui.item.id);
-            event.preventDefault();
-            if($("#idCommonSearchTxt").val() != ""){
-            $("#profileSearchForm").submit();
-            }
+            		event.preventDefault();
+           	 	if($("#idCommonSearchTxt").val() != ""){
+           		 	$("#profileSearchForm").submit();
+            	 	}
 		        
-	          console.log( ui.item ?
-	            "Selected: " + ui.item.value + " aka " + ui.item.id :
-	            "Nothing selected, input was " + this.value );
+	          	console.log( ui.item ?
+	            	"Selected: " + ui.item.value + " aka " + ui.item.id :
+	            	"Nothing selected, input was " + this.value );
 	        }
 	      });
 
-
+	});
     $("#profileSearchFormSubmitBtn").click(function (event){
       event.preventDefault();      
     });
@@ -294,6 +296,21 @@
             }
         });
     </script>
+
+    <script>
+        $(function() {
+                var session_lifetime = 1400;
+                // Set idle time
+                $( document ).idleTimer( parseInt(session_lifetime)*60*1000 );
+        });
+
+        $(function() {
+                $( document ).on( "idle.idleTimer", function(event, elem, obj){
+                        window.location.href = "{{url()}}/vault/logout";
+                });
+        });
+    </script>
+
     
 <script>
     

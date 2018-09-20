@@ -7,8 +7,8 @@
     <link rel="icon" type="image/png" href="{{url()}}/assets/img/favicon-16x16.png" sizes="16x16">
     <link rel="icon" type="image/png" href="{{url()}}/assets/img/favicon-32x32.png" sizes="32x32">
     <title>TLG - Administration</title> 	
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="{{url()}}/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{{url()}}/assets/css/bootstrap-theme.min.css">
 	<style>
 		.datarow{
 			margin-bottom:10px;
@@ -234,21 +234,20 @@
 						
 					
 					</table>
-                                        <h6>Tax Amount
-                                             <?php 
-                                                                                        if(isset($tax_data)){
-                                                                                            echo "[";
-                                                                                            for($i=0;$i<count($tax_data);$i++){
-                                                                                                echo $tax_data[$i]['tax_particular'].':'.$tax_data[$i]['tax_percentage'].'%';
-                                                                                                if($i != count($tax_data) -1){
-                                                                                                    echo ", &nbsp;";
-                                                                                                }
-                                                                                            }
-                                                                                            echo "]";
-                                                                                        } 
-                                                                                    ?> 
-                                            
-                                            :{{$order_data->tax_amount}}</h6>
+					@if(isset($tax_data))
+                        @for($i=0;$i<count($tax_data);$i++)
+							<h6>
+							@if($tax_data[$i]['tax_percentage'] === 0 && $tax_data[$i]['tax_particular'] === 'VAT')
+                        	    <input id="diplomatOption" name="diplomatOption" type="checkbox"  checked="checked" class="checkbox-custom" onclick="return false;"/>
+                        	    <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
+                        	      class="req"> </span></label> /
+                        		{{$tax_data[$i]['tax_particular'].'('.$tax_data[$i]['tax_percentage'].'%)'}} : {{$order_data->tax_amount}}
+                        	@else
+                        		{{$tax_data[$i]['tax_particular'].'('.$tax_data[$i]['tax_percentage'].'%)'}} : {{$order_data->tax_amount}}
+                        	@endif
+                        	</h6>
+						@endfor
+						@endif
 					<h5>Total  Amount paid with Tax is {{$order_data->amount+$order_data->tax_amount}}</h5>
 					
 					<div class="row datarow">

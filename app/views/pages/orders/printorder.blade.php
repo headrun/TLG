@@ -9,8 +9,8 @@ print_r($orders); */
     <link rel="icon" type="image/png" href="{{url()}}/assets/img/favicon-16x16.png" sizes="16x16">
     <link rel="icon" type="image/png" href="{{url()}}/assets/img/favicon-32x32.png" sizes="32x32">
     <title>TLG - Administration</title> 	
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="{{url()}}/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{{url()}}/assets/css/bootstrap-theme.min.css">
 	<style>
 		.datarow{
 			margin-bottom:10px;
@@ -288,11 +288,18 @@ print_r($orders); */
 
 						@if(isset($tax_data))
                         @for($i=0;$i<count($tax_data);$i++)
-						<tr>
+			     <tr>
 							<td style="text-align:right">
-                            	<strong>
-                            		{{$tax_data[$i]['tax_particular'].'('.$tax_data[$i]['tax_percentage'].'%)'}}
-                            	</strong>
+								<strong>
+								@if($tax_data[$i]['tax_percentage'] === 0 && $tax_data[$i]['tax_particular'] === 'VAT')
+	                        	    <input id="diplomatOption" name="diplomatOption" type="checkbox"  checked="checked" class="checkbox-custom" onclick="return false;"/>
+	                        	    <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
+	                        	      class="req"> </span></label> /
+	                        		{{$tax_data[$i]['tax_particular'].'('.$tax_data[$i]['tax_percentage'].'%)'}}
+	                        	@else
+	                        		{{$tax_data[$i]['tax_particular'].'('.$tax_data[$i]['tax_percentage'].'%)'}}
+	                        	@endif
+	                        	</strong>
                             </td>
                             <td style="text-align:right">
                             	<strong>

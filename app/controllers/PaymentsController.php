@@ -273,8 +273,15 @@ class PaymentsController extends \BaseController {
 		$paymentMode = Orders::where('payment_no', '=', $payment_no)->get();
 		$getTermsAndConditions = TermsAndConditions::where('franchisee_id', '=', Session::get('franchiseId'))->get();
                 $franchisee_name=Franchisee::find(Session::get('franchiseId'));
-		$tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
-                $data = compact('totalSelectedClasses', 'getBatchNname',
+       	         if ($paymentDueDetails[0]['tax_percentage'] <= 0) {
+        	$tax_data[0]['tax_percentage'] = 0;
+        } else {
+        	$tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
+        }
+        if (Session::get('franchiseId') === 11) {
+        	$tax_data[0]['tax_particular'] = 'VAT';
+        }         
+		$data = compact('totalSelectedClasses', 'getBatchNname',
 		 'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate','franchisee_name',
 		  'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName','tax_data',
 		   'paymentDueDetails', 'totalAmountForAllBatch', 'paymentMode', 'getTermsAndConditions', 'invoice_data');
@@ -332,7 +339,14 @@ class PaymentsController extends \BaseController {
 		$birthday_data = $birthday_data [0];
 		$student_data = $student_data [0];
 		$paymentMode = Orders::where('payment_no', '=', $orderid)->get();
-                $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
+		if ($payment_due_data['tax_percentage'] <= 0) {
+        	$tax_data[0]['tax_percentage'] = 0;
+        } else {
+        	$tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
+        }
+        if (Session::get('franchiseId') === 11) {
+        	$tax_data[0]['tax_particular'] = 'VAT';
+        }
 		$data = array (
 				'order_data',
 				'customer_data',
@@ -372,6 +386,14 @@ class PaymentsController extends \BaseController {
 			$franchisee_data=Franchisee::find(Session::get('franchiseId')); 
 			$getTermsAndConditions = TermsAndConditions::where('id', '=', (TermsAndConditions::max('id')))->get();
 			$getTermsAndConditions = $getTermsAndConditions[0];
+			if ($order_data['tax_percentage'] <= 0) {
+				$order_data['tax_percentage'] = 0;
+			} else {
+				$tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
+			}
+			if (Session::get('franchiseId') === 11) {
+				$order_data['tax_particular'] = 'VAT';
+			}
 			//serializing data and making view
 			$data=array('order_data','customer_data','membership_data',
 						'membership_type','paymentDueDetails','franchisee_data',

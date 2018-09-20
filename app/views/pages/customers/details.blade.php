@@ -536,11 +536,15 @@ function calculateBirthdayPartyPrice(){
 
 	$("#taxAmount").empty();
 	$("#totalAmountPayable").empty();
-	var tax = Math.floor(((tax_Percentage/100)*parseInt(advance)))
-	
-	$("#totalAmountPayable").val((parseInt(tax)+parseInt(advance)))
-	$("#taxAmount").val(tax);
-	
+        if($('#diplomatOption').is(':checked')) {
+		var tax = 0;
+		$("#totalAmountPayable").val((parseInt(tax)+parseInt(advance)))
+		$("#taxAmount").val(tax);
+	} else {
+		var tax = Math.floor(((tax_Percentage/100)*parseInt(advance)))
+		$("#totalAmountPayable").val((parseInt(tax)+parseInt(advance)))
+		$("#taxAmount").val(tax);
+	}	
 }
 
 calculateBirthdayPartyPrice();
@@ -574,6 +578,15 @@ $('#advanceAmount').change(function(){
         }
 	calculateBirthdayPartyPrice();
 });
+
+$('#diplomatOption').click(function() {
+      if ($(this).is(':checked')) {
+      	calculateBirthdayPartyPrice();
+      } else {
+      	calculateBirthdayPartyPrice();
+      }
+});
+
 
 $('#discountAmount').change(function () {
 	if(parseInt($('#discountAmount').val())<0){
@@ -874,8 +887,31 @@ function pendingamount(pendingamountId,pendingAmount){
                             $('#amountpending').val(response.birthday_data['remaining_due_amount']);
                             var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
                             $('#advancepaid').val(response.birthday_data['advance_amount_paid']);
-                            $('#taxamount').val(tax);
-                            $('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt(response.birthday_data['remaining_due_amount']));
+			    if ($('#diplomatOptionBday').is(':checked')) {
+                            	var tax = 0;
+                            	var tax_Percentage= 0;
+                            	$('#taxamount').val(tax);
+                            	$('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt(response.birthday_data['remaining_due_amount']));
+                            } else {
+                            	var tax_Percentage= "{{$taxPercentage->tax_percentage}}";
+                            	var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
+                            	$('#taxamount').val(tax);
+                            	$('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt(response.birthday_data['remaining_due_amount']));
+                            }
+
+                            $('#diplomatOptionBday').click(function() {
+                                  if ($(this).is(':checked')) {
+                                  	var tax = 0;
+                                  	var tax_Percentage= 0;
+                                  	$('#taxamount').val(tax);
+                                  	$('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt(response.birthday_data['remaining_due_amount']));
+                                  } else {
+                                  	var tax_Percentage= "{{$taxPercentage->tax_percentage}}";
+                                  	var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
+                                  	$('#taxamount').val(tax);
+                                  	$('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt(response.birthday_data['remaining_due_amount']));
+                                  }
+                            });
                             // $('#birthdayPending_id').val(pendingamountId);
                             // $('#birthdaypending_amt').val(pendingAmount);
                              $('#receiveBirthdayCardDetailsDiv').hide();
@@ -974,7 +1010,16 @@ function pendingamount(pendingamountId,pendingAmount){
              }); 
    $('#pendingamountpayadd').click(function(){
             var paymentType = $("input[type='radio'][name='birthdayPaymentReceiveTypeRadio']:checked").val();
-            var printoption=$('#birthdayReceiveinvoicePrintOption').is(':checked');
+            var printoption=$('#birthdayReceiveinvoicePrintOption').is(':checked');	
+	    if ($('#diplomatOptionBday').is(':checked')) {
+            	var tax = 0;
+            	var tax_Percentage= 0;
+            	var taxamount=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
+            } else {
+            	var tax_Percentage= "{{$taxPercentage->tax_percentage}}";
+            	var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
+            	var taxamount=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
+            }
             if($('#changeorder').is(":checked")==false){
              // create normal order form pending order
             var taxamount=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));   
@@ -2551,6 +2596,16 @@ $('.membershipPurchase').click(function(){
 
 	}
 
+	<?php if (Session::get('franchiseId') === 11) { ?>
+		if ($('#diplomatOptionMember').is(':checked')) {
+			var diplomatCheck = 'yes';
+			membershipsenddata['diplomatCheck'] = diplomatCheck;
+		} else {
+			var diplomatCheck = 'no';
+			membershipsenddata['diplomatCheck'] = diplomatCheck;
+		}
+	<?php } ?>
+
 
 
 		$.ajax({
@@ -2618,6 +2673,47 @@ $('.disablemembershipPurchasebtn').click(function(){
           	}
     }); 
 });
+
+$('#diplomatOptionMember').click(function() {
+	$('.memtax').html(0);
+	$('.memtaxamt').html(0);
+	if ($(this).is(':checked')) {
+		$('.memtaxamt').html(0);
+			$.ajax({
+				type: "POST",
+				url: "{{URL::to('/quick/getmembershiptypedetails')}}",
+		        data: {'mem_type_id': $('#membershipTypeforMembership').val()},
+				dataType: 'json',
+				success: function(response){
+					if(response.status=='success') {
+						console.log(response);
+						$('.memtotal').html(response.mem_data.fee_amount);
+					}
+		      	}
+		    });
+	} else {
+		getMemberFee();
+	}
+});
+
+function getMemberFee () {
+	$.ajax({
+		type: "POST",
+		url: "{{URL::to('/quick/getmembershiptypedetails')}}",
+        data: {'mem_type_id': $('#membershipTypeforMembership').val(),},
+		dataType: 'json',
+		success: function(response){
+			if(response.status=='success') {
+				console.log(response);
+				$('.memtype').html(response.mem_data.name);
+				$('.memcost').html(response.mem_data.fee_amount);
+				$('.memtax').html(response.tax_data.tax_percentage);
+				$('.memtaxamt').html(response.taxcal);
+				$('.memtotal').html(response.totalcost);
+			}
+      	}
+    });
+}
 
 $("input[name='purchasemempaymentTypeRadio']").click(function(){
 	
@@ -3205,8 +3301,14 @@ $('#memberhsipchequeNumber').keyup(function(){
 																	</td>
 																</tr>																
 																<tr style="text-align: right;">
-																	<td colspan="2">Tax
-                                                                                                                                            <?php 
+																	<td colspan="2">
+	        
+        <?php if(Session::get('franchiseId') === 11) {?>
+																		  <input id="diplomatOption" name="diplomatOption" type="checkbox"  value="yes" class="checkbox-custom"  />
+																		  <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
+																		    class="req"> </span></label> /
+																		<?php } ?>                                                                                                                           
+	 <?php 
                                                                                                                                               if(isset($tax_data)){
                                                                                                                                                 echo "[";
                                                                                                                                                 for($i=0;$i<count($tax_data);$i++){
@@ -3640,8 +3742,14 @@ $('#memberhsipchequeNumber').keyup(function(){
 																		 	<td class="uk-text-right">Membership Cost: </td>
 																		 	<td class='memcost uk-text-right'></td>
 																		</tr>
-																		<tr> 
-																		 	<td class="uk-text-right">Tax: <span class="memtax"></span>%</td>
+																		<tr>
+	<td class="uk-text-right">
+																		 		<?php if(Session::get('franchiseId') === 11) {?>
+																		 		  <input id="diplomatOptionMember" name="diplomatOptionMember" type="checkbox"  value="yes"  />
+																		 		  <label for="diplomatOptionMember" class="checkbox-custom-label">Diplomat <span
+																		 		    class="req"> </span></label> /
+																		 		<?php } ?>
+																		 		Tax: <span class="memtax"></span>%</td> 
 																		 	<td class='memtaxamt uk-text-right'></td>
 																		</tr>
 																		<tr>
@@ -4499,7 +4607,13 @@ $('#memberhsipchequeNumber').keyup(function(){
                 </tr>
                 <tr>
                     <td></td>
-                    <td>Tax Amount</td>
+                    <td>
+                    	<?php if(Session::get('franchiseId') === 11) {?>
+                    	  <input id="diplomatOptionBday" name="diplomatOptionBday" type="checkbox"  value="yes"  />
+                    	  <label for="diplomatOptionBday" class="checkbox-custom-label">Diplomat <span
+                    	    class="req"> </span></label> /
+                    	<?php } ?>
+                    	Tax Amount</td>
                     <td><input type="number" id="taxamount" class="taxamount form-control input-sm " name="taxamount" readonly value="0"></td>
                 </tr>
                 <tr>

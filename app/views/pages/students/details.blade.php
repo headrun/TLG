@@ -436,24 +436,63 @@ function fullEnrollmentReset(){
          $("#grandTotal").val((Amount).toFixed(0));
          $('#grandTotallabel').html((Amount).toFixed(0));
        });
-        $('#admin_discount_amount').keyup(function(){
-          if(($('#admin_discount_amount').val() == '')||($('#admin_discount_amount').val()<0)){
-           $('#admin_discount_amount').val('0'); 
+	
+	$('#diplomatOption').click(function() {
+            if ($(this).is(':checked')) {
+              $("#taxAmount").val(0);
+              tax_Percentage = 0;
+              $('#taxAmountlabel').hide();
+              $('#duplicatetaxAmountlabel').show();               
+              var subtotal = $("#subtotal").val();
+              Amount = Math.round((subtotal)*100)/100;
+              $("#grandTotal").val((Amount).toFixed(0));
+              $('#grandTotallabel').html((Amount).toFixed(0)); 
+            } else {
+              tax_Percentage = "<?php echo $taxPercentage->tax_percentage; ?>";
+              $('#taxAmountlabel').show();
+              $('#duplicatetaxAmountlabel').hide();               
+              var subtotal = $("#subtotal").val();
+              subtotal = parseInt(subtotal);
+              var tax = ((subtotal)*tax_Percentage/100);
+              tax=Math.round(tax*100)/100;
+              $("#taxAmount").val((tax).toFixed(2));
+              $('#taxAmountlabel').html((tax).toFixed(2));
+              Amount = Math.round(((subtotal)+tax)*100)/100;
+              $("#grandTotal").val((Amount).toFixed(0));
+              $('#grandTotallabel').html((Amount).toFixed(0));
+            }
+        });
+
+       $('#admin_discount_amount').keyup(function(){
+         if(($('#admin_discount_amount').val() == '')||($('#admin_discount_amount').val()<0)){
+          $('#admin_discount_amount').val('0'); 
          }
-         var adminamt = parseFloat($('#admin_discount_amount').val());
-         var subtotal = Adminamountcal;
-         
-         $("#subtotal").val((subtotal-adminamt).toFixed(2));
-         $('#subtotallabel').html((subtotal-adminamt).toFixed(2));
-         var tax = (((subtotal-adminamt)*tax_Percentage/100).toFixed(2));
-         tax = Math.round(tax*100)/100;
-         
-         $("#taxAmount").val((tax).toFixed(2));
-         $('#taxAmountlabel').html((tax).toFixed(2));
-         Amount = Math.round(((subtotal-adminamt)+tax)*100)/100;
-         $("#grandTotal").val((Amount).toFixed(0));
-         $('#grandTotallabel').html((Amount).toFixed(0));
-       });
+         if($('#diplomatOption').is(':checked')){
+           $("#taxAmount").val(0);
+           tax_Percentage = 0;
+           $('#taxAmountlabel').hide();
+           $('#duplicatetaxAmountlabel').show(); 
+           var subtotal = $("#subtotal").val();
+           Amount = Math.round((subtotal)*100)/100;
+           $("#grandTotal").val((Amount).toFixed(0));
+           $('#grandTotallabel').html((Amount).toFixed(0));
+         } else {
+           tax_Percentage = "<?php echo $taxPercentage->tax_percentage; ?>";
+           $('#taxAmountlabel').show();
+           var adminamt = parseFloat($('#admin_discount_amount').val());
+           var subtotal = Adminamountcal;
+           $("#subtotal").val((subtotal-adminamt).toFixed(2));
+           $('#subtotallabel').html((subtotal-adminamt).toFixed(2));
+           var tax = (((subtotal-adminamt)*tax_Percentage/100).toFixed(2));
+           tax = Math.round(tax*100)/100;
+           
+           $("#taxAmount").val((tax).toFixed(2));
+           $('#taxAmountlabel').html((tax).toFixed(2));
+           Amount = Math.round(((subtotal-adminamt)+tax)*100)/100;
+           $("#grandTotal").val((Amount).toFixed(0));
+           $('#grandTotallabel').html((Amount).toFixed(0));
+         }
+      });
         
       }
 
@@ -975,6 +1014,9 @@ function fullEnrollmentReset(){
                   $('#seasonMsgDiv').hide();
                   $("#KidsformBody").hide();
                   $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-info">Enrolling student.Please wait till process is completed.</p>');
+		  if ($('#diplomatOption').is(':checked')) {
+                    $('#taxAmount').val(0);
+                  }
                   $.ajax({
                     type: "POST",
                     url: "{{URL::to('/quick/enrollkid')}}",
@@ -4482,7 +4524,12 @@ style="margin-top: 50px; z-index: 99999;">
                                                                           </td>
                                                                         </tr>
                                                                         <tr>
-                                                                          <td colspan="2" style="text-align: right; font-weight: bold">Tax {{$taxPercentage->tax_percentage}}% 
+                                                                          <td colspan="2" style="text-align: right; font-weight: bold"> 
+									    <?php if(Session::get('franchiseId') === 11) {?>
+                                                                              <input id="diplomatOption" name="diplomatOption" type="checkbox"  value="yes" class="checkbox-custom"  />
+                                                                              <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
+                                                                                class="req"> </span></label> /
+                                                                            <?php } ?>
                                                                             <?php 
                                                                             if(isset($tax_data)){
                                                                               echo "[";
@@ -4496,10 +4543,18 @@ style="margin-top: 50px; z-index: 99999;">
                                                                             } 
                                                                             ?> 
                                                                           </td>
-                                                                          <td><label style="font-weight:bold" id="taxAmountlabel"></label>
-                                                                            <input style="font-weight: bold" type="hidden"
+									  <td>
+                                                                            <?php if(Session::get('franchiseId') === 11) {?>
+                                                                              <label style="font-weight:bold;padding-top:7px;" id="taxAmountlabel"></label>
+                                                                            <?php }else{ ?>
+                                                                              <label style="font-weight:bold;" id="taxAmountlabel"></label>
+                                                                            <?php } ?>
+                                                                            <label for="duplicatetaxAmountlabel" id="duplicatetaxAmountlabel" style="display:none;padding-top:7px;" class="checkbox-custom-label">0<span
+                                                                                class="req"> </span></label>
+                                                                            <input style="font-weight: bold;" type="hidden"
                                                                             name="taxAmount" id="taxAmount" value="" readonly
-                                                                            class="" /></td>
+                                                                            class="" />
+                                                                          </td>
                                                                           </tr>
                                                                           <tr>
                                                                             <td colspan="2" style="text-align: right; font-weight: bold">Grand

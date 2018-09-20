@@ -710,8 +710,12 @@ public function enrollKid2(){
                                      ->where('franchise_id', '=', Session::get('franchiseId'))
                                      ->get();
                 // getting the tax for particular franchisee
-      $tax=PaymentTax::getTaxPercentageForPayment();
-      $tax=$tax->tax_percentage;
+      if ($inputs['taxAmount'] === '0') {
+        $tax = 0;
+      } else {
+        $tax=PaymentTax::getTaxPercentageForPayment();
+        $tax=$tax->tax_percentage;
+      }
                 //** checking if it is a one batch **//
       if(count($getEstimateDetails) == 1){
 	$fianancialYearDates = Franchisee::getFinancialStartDates();
@@ -1378,7 +1382,14 @@ public function enrollKid2(){
         $paymentDueDetails[0]['membership_type']=$membership_data->description;
       }
         $franchisee_name=Franchisee::find(Session::get('franchiseId'));
-        $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
+	if ($paymentDueDetails[0]['tax_percentage'] <= 0) {
+          $tax_data[0]['tax_percentage'] = 0;
+        } else {
+          $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
+        }
+        if (Session::get('franchiseId') === 11) {
+          $tax_data[0]['tax_particular'] = 'VAT';
+        }
         $data = compact('totalSelectedClasses', 'getBatchNname','tax_data','franchisee_name',
                         'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate','franchisee_name',
                         'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName','getTermsAndConditions',
@@ -1443,7 +1454,10 @@ public function enrollKid2(){
                 	$invoiceNo = '1';
                 	$data = Franchisee::updateFinancialYears($fianancialYearDates);
         	}
-               
+              
+		if($inputs['taxAmount'] === '0') {
+		      $inputs['taxPercentage'] = 0;
+    		} 
                 if($inputs['remainingAmount'] >=0){
                 
                     $taxAmtapplied=$inputs['taxAmount'];

@@ -5,7 +5,7 @@
 	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.print.css" media="all"> -->
 	<link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.common-material.min.css"/>
     <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.material.min.css"/>
-    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel='stylesheet' />
+    <link href='{{url()}}/assets/css/bootstrap.min.css' rel='stylesheet' />
 @stop
 
 @section('libraryJS')
@@ -14,7 +14,15 @@
 <script src="{{url()}}/bower_components/datatables-tabletools/js/dataTables.tableTools.js"></script>
 <script src="{{url()}}/assets/js/custom/datatables_uikit.min.js"></script>
 <script src="{{url()}}/assets/js/pages/plugins_datatables.min.js"></script>
-<script type="text/javascript">
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.4.0/js/dataTables.buttons.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
+<script src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
+<script src="//cdn.datatables.net/buttons/1.4.0/js/buttons.html5.min.js"></script>
+
+
+<!-- <script type="text/javascript">
 
 	$("#studentsTable").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
@@ -40,6 +48,40 @@
 		window.location = $(this).find('a').attr('href');
 	}) */
 		
+
+</script>  -->
+<script type="text/javascript">
+        $("#studentsTable").DataTable({
+                dom: 'Bfrtip',
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5', 
+            'pdfHtml5'
+        ],
+        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+    
+            // Bind click event 
+            $(nRow).click(function() {
+                  //window.open($(this).find('a').attr('href'));
+                                window.location = $(this).find('a').attr('href');
+                  //OR
+
+                // window.open(aData.url);
+
+            });
+
+            return nRow;
+        },
+        "iDisplayLength": 50,
+        "lengthMenu": [ 10, 50, 100, 150, 200 ]
+    });
+
+        /* $("#studentsTable tr").click(function (){
+
+                window.location = $(this).find('a').attr('href');
+        }) */
+                
 
 </script>
 @stop
