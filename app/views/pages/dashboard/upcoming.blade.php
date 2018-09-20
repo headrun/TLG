@@ -1,7 +1,7 @@
 @extends('layout.master')
 
 @section('libraryCSS')
-	<link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel='stylesheet' />
+	<link href='{{url()}}/assets/css/bootstrap.min.css' rel='stylesheet' />
 	<style>
 		.smallText td a, .smallText td {
 			font-size:12px !important;
@@ -372,7 +372,7 @@
                         </div>
                     </div>
                 </div>
-                                <div>
+                                <!-- <div>
                                     <div class="md-card">
                                         <div class="md-card-content">
                                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
@@ -385,7 +385,7 @@
                                             
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                 <div>
                     <div class="md-card">
                         <div class="md-card-content">

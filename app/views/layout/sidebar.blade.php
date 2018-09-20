@@ -88,7 +88,7 @@
                     <ul id="CUSTOMERS_MAIN_UL">
                         <li id="PROSPECTUS_LIST"><a href="{{url()}}/customers/prospectslist">Prospects List</a></li>
                         <li id="MEMBERS_LIST"><a href="{{url()}}/customers/memberslist">Members List</a></li>
-                        <li id="CURRENT_CUSTOMER_LIST"><a href="{{url()}}/customers/currentCustomerList">Current Customers List</a></li>
+                        <!-- <li id="CURRENT_CUSTOMER_LIST"><a href="{{url()}}/customers/currentCustomerList">Current Customers List</a></li> -->
                         <li id="CUSTOMERS_ADD"><a href="{{url()}}/customers/add">Add Customers</a></li>    
                     </ul>
                 </li>
@@ -184,7 +184,7 @@
                         </a>
                         <ul id="REPORTS_MENU_MAIN_UL">
                             <li id="ViewReoprt_LI"><a href="{{url()}}/reports/view_reports">Enrollment</a></li>
-                            <li id="KbiReoprt_LI"><a href="{{url()}}/reports/kbi_reports">KBI</a></li>
+                            <!-- <li id="KbiReoprt_LI"><a href="{{url()}}/reports/kbi_reports">KBI</a></li> -->
                             <li id="ViewDeletedCustomer_LI"><a href="{{url()}}/reports/deleted_customers">Deleted Customers</a></li>
                         
                         </ul>

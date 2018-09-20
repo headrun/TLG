@@ -386,6 +386,14 @@ class PaymentsController extends \BaseController {
 			$franchisee_data=Franchisee::find(Session::get('franchiseId')); 
 			$getTermsAndConditions = TermsAndConditions::where('id', '=', (TermsAndConditions::max('id')))->get();
 			$getTermsAndConditions = $getTermsAndConditions[0];
+			if ($order_data['tax_percentage'] <= 0) {
+				$order_data['tax_percentage'] = 0;
+			} else {
+				$tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
+			}
+			if (Session::get('franchiseId') === 11) {
+				$order_data['tax_particular'] = 'VAT';
+			}
 			//serializing data and making view
 			if ($order_data['tax_percentage'] <= 0) {
 				$order_data['tax_percentage'] = 0;

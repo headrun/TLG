@@ -1393,8 +1393,7 @@ public function enrollKid2(){
         }
         if (Session::get('franchiseId') === 11) {
           $tax_data[0]['tax_particular'] = 'VAT';
-        }
-        
+        } 
         $data = compact('totalSelectedClasses', 'getBatchNname','tax_data','franchisee_name',
                         'getSeasonName', 'selectedSessionsInEachBatch', 'classStartDate','franchisee_name',
                         'classEndDate', 'totalAmountForEachBach', 'getCustomerName', 'getStudentName','getTermsAndConditions',

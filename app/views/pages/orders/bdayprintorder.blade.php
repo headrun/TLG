@@ -7,8 +7,8 @@
     <link rel="icon" type="image/png" href="{{url()}}/assets/img/favicon-16x16.png" sizes="16x16">
     <link rel="icon" type="image/png" href="{{url()}}/assets/img/favicon-32x32.png" sizes="32x32">
     <title>TLG - Administration</title> 	
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="{{url()}}/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{{url()}}/assets/css/bootstrap-theme.min.css">
 	<style>
 		.datarow{
 			margin-bottom:10px;
@@ -105,7 +105,7 @@
 				
 				</div>
 				<br clear="all"/>
-                                <p style="text-align: center;">{{$franchisee_name['franchisee_legal_entity']}}</p>
+                                <p style="text-align: center;padding-top:25px;">{{$franchisee_name['franchisee_legal_entity']}}</p>
 				<p style="text-align: center;">Thank You and welcome to celebrate B'day party in The Little Gym family</p>
 				<br clear="all"/>
 				<div class="col-md-11" style="margin:0px auto !important; float:none; border-bottom:2px dashed #EEEEEE;">

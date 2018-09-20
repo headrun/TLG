@@ -437,7 +437,7 @@ function fullEnrollmentReset(){
          $("#grandTotal").val((Amount).toFixed(0));
          $('#grandTotallabel').html((Amount).toFixed(0));
        });
-
+       
       $('#diplomatOption').click(function() {
             if ($(this).is(':checked')) {
               $("#taxAmount").val(0);
@@ -493,26 +493,7 @@ function fullEnrollmentReset(){
            $("#grandTotal").val((Amount).toFixed(0));
            $('#grandTotallabel').html((Amount).toFixed(0));
          }
-      });  
-
-        $('#admin_discount_amount').keyup(function(){
-          if(($('#admin_discount_amount').val() == '')||($('#admin_discount_amount').val()<0)){
-           $('#admin_discount_amount').val('0'); 
-         }
-         var adminamt = parseFloat($('#admin_discount_amount').val());
-         var subtotal = Adminamountcal;
-         
-         $("#subtotal").val((subtotal-adminamt).toFixed(2));
-         $('#subtotallabel').html((subtotal-adminamt).toFixed(2));
-         var tax = (((subtotal-adminamt)*tax_Percentage/100).toFixed(2));
-         tax = Math.round(tax*100)/100;
-         
-         $("#taxAmount").val((tax).toFixed(2));
-         $('#taxAmountlabel').html((tax).toFixed(2));
-         Amount = Math.round(((subtotal-adminamt)+tax)*100)/100;
-         $("#grandTotal").val((Amount).toFixed(0));
-         $('#grandTotallabel').html((Amount).toFixed(0));
-       });
+      });
         
       }
 
@@ -4584,6 +4565,7 @@ style="margin-top: 50px; z-index: 99999;">
                                                                           </td>
                                                                         </tr>
                                                                         <tr>
+
                                                                           <td colspan="2" style="text-align: right; font-weight: bold;"> 
                                                                             <?php if(Session::get('franchiseId') === 11) {?>
                                                                               <input id="diplomatOption" name="diplomatOption" type="checkbox"  value="yes" class="checkbox-custom"  />

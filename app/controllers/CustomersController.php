@@ -462,8 +462,7 @@ class CustomersController extends \BaseController {
 					$tax=$tax[0];
 					$inputs['tax']= $tax['tax_percentage'];
     			}
-     			
-     			$payment_data=PaymentDues::createMembershipPaymentDues($inputs);
+			$payment_data=PaymentDues::createMembershipPaymentDues($inputs);
     			$inputs['payment_due_id']=$payment_data->id;
     			$inputs['taxamt']=($inputs['membership_amount']*$inputs['tax'])/100;
 				$inputs['invoice_format'] = Orders::invoiceFormat($invoiceNo);

@@ -548,7 +548,6 @@ function calculateBirthdayPartyPrice(){
 		$("#totalAmountPayable").val((parseInt(tax)+parseInt(advance)))
 		$("#taxAmount").val(tax);
 	}
-	
 }
 
 calculateBirthdayPartyPrice();
@@ -582,6 +581,15 @@ $('#advanceAmount').change(function(){
         }
 	calculateBirthdayPartyPrice();
 });
+
+$('#diplomatOption').click(function() {
+      if ($(this).is(':checked')) {
+      	calculateBirthdayPartyPrice();
+      } else {
+      	calculateBirthdayPartyPrice();
+      }
+});
+
 
 $('#discountAmount').change(function () {
 	if(parseInt($('#discountAmount').val())<0){
@@ -890,6 +898,7 @@ function pendingamount(pendingamountId,pendingAmount){
                             $('#amountpending').val(response.birthday_data['remaining_due_amount']);
                             var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
                             $('#advancepaid').val(response.birthday_data['advance_amount_paid']);
+                            
                             if ($('#diplomatOptionBday').is(':checked')) {
                             	var tax = 0;
                             	var tax_Percentage= 0;
@@ -3775,6 +3784,7 @@ $('#memberhsipchequeNumber').keyup(function(){
 																		 		  <label for="diplomatOptionMember" class="checkbox-custom-label">Diplomat <span
 																		 		    class="req"> </span></label> /
 																		 		<?php } ?>
+
 																		 		Tax: <span class="memtax"></span>%</td>
 																		 	<td class='memtaxamt uk-text-right'></td>
 																		</tr>
