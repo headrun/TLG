@@ -234,7 +234,7 @@
 						
 					
 					</table>
-					@if(isset($tax_data))
+						@if(isset($tax_data))
                         @for($i=0;$i<count($tax_data);$i++)
 							<h6>
 							@if($tax_data[$i]['tax_percentage'] === 0 && $tax_data[$i]['tax_particular'] === 'VAT')

@@ -268,6 +268,8 @@ function addKids(event){
         {
 			if(response.status == "success"){
 				$("#messageStudentAddDiv").html('<p class="uk-alert uk-alert-success">Kid details has been added successfully. Please wait till this page reloads</p>');
+				$('#addKidsModal').modal('hide');
+				$('#addingNewKid').show();
 				$("#formBody").hide();
 
 				setTimeout(function(){
@@ -308,18 +310,16 @@ $("#saveCommentBtn").click(function (){
 	        {
 				if(response.status == "success"){
 					$("#commentMsgDiv").html('<p class="uk-alert uk-alert-success">Comments has been added successfully. Please wait till this page reloads</p>');
+                    $('#addingComments').show();
 					setTimeout(function(){
 					   window.location.reload(1);
 					}, 3000);
-					
 				}else{
 					$("#commentMsgDiv").html('<p class="uk-alert uk-alert-danger">Sorry! Comments could not be added.</p>');
 				}
 	        }
-	    }); 
-		
+	    });
 	}else{
-
 		$("#commentMsgDiv").html('<p class="uk-alert uk-alert-danger">Please fill up the comments field.</p>');
 	}
 })
@@ -372,9 +372,11 @@ $("#saveCustomerBtn").click(function (e){
                             console.log(response);
                             if(response.status=='success'){
                               $('#messageEditCustomerDiv').html('<p class="uk-alert uk-alert-success">Sucessfully saved changes.please wait till the page reloads </p>');
+                              $('#editCustomerModal').modal('hide');
+                              $('#updateCustomerProfile').show();
                               setTimeout(function(){
-					   window.location.reload(1);
-					}, 2000);
+							    window.location.reload(1);
+							  }, 2000);
                             }else{
                                  $('#messageEditCustomerDiv').html('<p class="uk-alert uk-alert-failure">cannot save changes.Try again after some time</p>');
                             }
@@ -536,7 +538,8 @@ function calculateBirthdayPartyPrice(){
 
 	$("#taxAmount").empty();
 	$("#totalAmountPayable").empty();
-        if($('#diplomatOption').is(':checked')) {
+
+	if($('#diplomatOption').is(':checked')) {
 		var tax = 0;
 		$("#totalAmountPayable").val((parseInt(tax)+parseInt(advance)))
 		$("#taxAmount").val(tax);
@@ -544,7 +547,7 @@ function calculateBirthdayPartyPrice(){
 		var tax = Math.floor(((tax_Percentage/100)*parseInt(advance)))
 		$("#totalAmountPayable").val((parseInt(tax)+parseInt(advance)))
 		$("#taxAmount").val(tax);
-	}	
+	}
 }
 
 calculateBirthdayPartyPrice();
@@ -644,6 +647,14 @@ $('#additionalHalfHourCount').keyup(function (){
 	$("#additionalHalfHourPrice").val((parseInt($(this).val())*birthday_additional_half_hour_price));
 	calculateBirthdayPartyPrice();
 
+});
+
+$('#diplomatOption').click(function() {
+      if ($(this).is(':checked')) {
+      	calculateBirthdayPartyPrice();
+      } else {
+      	calculateBirthdayPartyPrice();
+      }
 });
 //  additionalHalfHourCount for change action
 $('#additionalHalfHourCount').change(function (){
@@ -887,7 +898,8 @@ function pendingamount(pendingamountId,pendingAmount){
                             $('#amountpending').val(response.birthday_data['remaining_due_amount']);
                             var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
                             $('#advancepaid').val(response.birthday_data['advance_amount_paid']);
-			    if ($('#diplomatOptionBday').is(':checked')) {
+                            
+                            if ($('#diplomatOptionBday').is(':checked')) {
                             	var tax = 0;
                             	var tax_Percentage= 0;
                             	$('#taxamount').val(tax);
@@ -1010,8 +1022,8 @@ function pendingamount(pendingamountId,pendingAmount){
              }); 
    $('#pendingamountpayadd').click(function(){
             var paymentType = $("input[type='radio'][name='birthdayPaymentReceiveTypeRadio']:checked").val();
-            var printoption=$('#birthdayReceiveinvoicePrintOption').is(':checked');	
-	    if ($('#diplomatOptionBday').is(':checked')) {
+            var printoption=$('#birthdayReceiveinvoicePrintOption').is(':checked');
+            if ($('#diplomatOptionBday').is(':checked')) {
             	var tax = 0;
             	var tax_Percentage= 0;
             	var taxamount=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
@@ -1840,6 +1852,7 @@ $('#addIntroVisitSubmit').click(function(){
 	        	if(response.status === "success"){
 	            	
 					$("#Msg").html('<p class="uk-alert uk-alert-success">Introductory visit was added successfully. Please wait till this page reloads</p>');
+					$('#addingIv').show();
 					setTimeout(function(){
 					   var path= window.location.href.split('?')[0];
                                             window.location.href = path+'?tab=ivfollowup';
@@ -2595,7 +2608,6 @@ $('.membershipPurchase').click(function(){
 		membershipsenddata['bankName'] = $('#membershipcardbankname').val();
 
 	}
-
 	<?php if (Session::get('franchiseId') === 11) { ?>
 		if ($('#diplomatOptionMember').is(':checked')) {
 			var diplomatCheck = 'yes';
@@ -2605,7 +2617,6 @@ $('.membershipPurchase').click(function(){
 			membershipsenddata['diplomatCheck'] = diplomatCheck;
 		}
 	<?php } ?>
-
 
 
 		$.ajax({
@@ -2655,7 +2666,7 @@ $('.disablemembershipPurchasebtn').click(function(){
 	$.ajax({
 			type: "POST",
 			url: "{{URL::to('/quick/getmembershiptypedetails')}}",
-            data: {'mem_type_id': $('#membershipTypeforMembership').val(),},
+            data: {'mem_type_id': $('#membershipTypeforMembership').val()},
 			dataType: 'json',
 			success: function(response){
 				if(response.status=='success') {
@@ -2791,6 +2802,30 @@ $('#memberhsipchequeNumber').keyup(function(){
 		<li><a href="{{url()}}/customers/memberslist" style="z-index:8;">Customers</a></li>
 		<li><a href="#" style="z-index:7;">{{$customer->customer_name}}</a></li>
 	</ul>
+</div>
+<div id="addingNewKid" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Kid added successfully.Please wait . . .
+    </p>
+</div>
+<div id="addingComments" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Added comments successfully.Please wait. . .
+    </p>
+</div>
+<div id="updateCustomerProfile" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Updated successfully.Please wait. . .
+    </p>
+</div>
+<div id="addingIv" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Added introductory visit.Please wait . . .
+    </p>
 </div>
 <br clear="all"/>
 
@@ -3302,26 +3337,26 @@ $('#memberhsipchequeNumber').keyup(function(){
 																</tr>																
 																<tr style="text-align: right;">
 																	<td colspan="2">
-	        
-        <?php if(Session::get('franchiseId') === 11) {?>
+																		<?php if(Session::get('franchiseId') === 11) {?>
 																		  <input id="diplomatOption" name="diplomatOption" type="checkbox"  value="yes" class="checkbox-custom"  />
 																		  <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
 																		    class="req"> </span></label> /
-																		<?php } ?>                                                                                                                           
-	 <?php 
-                                                                                                                                              if(isset($tax_data)){
-                                                                                                                                                echo "[";
-                                                                                                                                                for($i=0;$i<count($tax_data);$i++){
-                                                                                                                                                echo $tax_data[$i]['tax_particular'].':'.$tax_data[$i]['tax_percentage'].'%';
-                                                                                                                                                if($i != count($tax_data) -1){
-                                                                                                                                                    echo ", &nbsp;";
-                                                                                                                                                }
-                                                                                                                                                }
-                                                                                                                                                echo "]";
-                                                                                                                                               } 
-                                                                                                                                            ?> 
-                                                                                                                                        
-                                                                                                                                        </td>
+																		<?php } ?>
+																		Tax
+	                                                                        <?php 
+	                                                                          if(isset($tax_data)){
+	                                                                            echo "[";
+	                                                                            for($i=0;$i<count($tax_data);$i++){
+	                                                                            echo $tax_data[$i]['tax_particular'].':'.$tax_data[$i]['tax_percentage'].'%';
+	                                                                            if($i != count($tax_data) -1){
+	                                                                                echo ", &nbsp;";
+	                                                                            }
+	                                                                            }
+	                                                                            echo "]";
+	                                                                           } 
+	                                                                        ?> 
+	                                                                    
+	                                                                    </td>
 																	<td>
 																		{{Form::text('taxAmount', '',array('id'=>'taxAmount', 'required', 'readonly', 'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
                                                                                                                                                 <input type="hidden" name="taxPercentage" id="taxPercentage" value="{{$taxPercentage->tax_percentage}}">
@@ -3742,14 +3777,15 @@ $('#memberhsipchequeNumber').keyup(function(){
 																		 	<td class="uk-text-right">Membership Cost: </td>
 																		 	<td class='memcost uk-text-right'></td>
 																		</tr>
-																		<tr>
-	<td class="uk-text-right">
+																		<tr> 
+																		 	<td class="uk-text-right">
 																		 		<?php if(Session::get('franchiseId') === 11) {?>
 																		 		  <input id="diplomatOptionMember" name="diplomatOptionMember" type="checkbox"  value="yes"  />
 																		 		  <label for="diplomatOptionMember" class="checkbox-custom-label">Diplomat <span
 																		 		    class="req"> </span></label> /
 																		 		<?php } ?>
-																		 		Tax: <span class="memtax"></span>%</td> 
+
+																		 		Tax: <span class="memtax"></span>%</td>
 																		 	<td class='memtaxamt uk-text-right'></td>
 																		</tr>
 																		<tr>

@@ -19,6 +19,76 @@
 <script src="{{url()}}/assets/js/pages/kendoui.min.js"></script>
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
 <script>
+  $(document).on('change', '#franchiseEmailId', function () {
+    var email = $('#franchiseEmailId').val();
+    $('#user_mail_id').val(email);
+  });
+  $(document).on('click','.add-newFranchisee-btn', function(){
+    $('.add-newFranchisee-btn').addClass('disabled');
+    var firstName = $('#firstName').val();
+    var lastName = $('#lastName').val();
+    var franchiseAddress = $('#franchiseAddress').val();
+    var franchiseEmailId = $('#franchiseEmailId').val();
+    var legalEntity = $('#legalEntity').val();
+    var invoiceCode = $('#invoiceCode').val();
+    var franchiseePhno = $('#franchiseePhno').val();
+    var default_birthday_price = $('#default_birthday_price').val();
+    var member_birthday_price = $('#member_birthday_price').val();
+    var default_advance_amount = $('#default_advance_amount').val();
+    var additional_guest = $('#additional_guest').val();
+    var additional_half_hour = $('#additional_half_hour').val();
+    var base_price = $('#base_price').val();
+    var pan_no = $('#pan_no').val();
+    var service_tax_no = $('#service_tax_no').val();
+    var tin_no = $('#tin_no').val();
+    var annaul_membership = $('#annaul_membership').val();
+    var lifetime_membership = $('#lifetime_membership').val();
+    var cgst = $('#cgst').val();
+    var sgst = $('#sgst').val();
+    var user_mail_id = $('#user_mail_id').val();
+    var password = $('#password').val();
+
+      $.ajax({
+        type: "POST",
+        url: "{{URL::to('/quick/createdNewFranchisee')}}",
+        data: {
+           'firstName': firstName, 
+           'lastName': lastName, 
+           'franchiseeAddress': franchiseAddress, 
+           'franchiseeEmail': franchiseEmailId,
+           'franchiseePhno': franchiseePhno,
+           'legalEntity':legalEntity, 
+           'invoiceCode':invoiceCode,
+           'default_birthday_price': default_birthday_price,
+           'member_birthday_price': member_birthday_price,
+           'default_advance_amount': default_advance_amount,
+           'additional_guest': additional_guest,
+           'additional_half_hour': additional_half_hour,
+           'base_price': base_price,
+           'pan_no': pan_no,
+           'service_tax_no': service_tax_no,
+           'tin_no': tin_no,
+           'annaul_membership': annaul_membership,
+           'lifetime_membership': lifetime_membership,
+           'cgst': cgst,
+           'sgst': sgst,
+           'user_mail_id': user_mail_id,
+           'password': password
+          },
+        dataType: 'json',
+        success: function(response){
+          if(response.status === "success"){
+            $('#NewFranchiseeMsgDiv').html("<p class='uk-alert uk-alert-success'>New franchisee has been created successfully.Please wait untill the page reloads</p>");
+                $('#newFranchiseeLoading').show();
+                setTimeout(function(){
+                window.location.reload(1);
+                }, 4000);
+          } else {
+            $('#NewFranchiseeMsgDiv').html("<p class='uk-alert uk-alert-warning'>New franchisee not yet created.Please try again.</P>");
+          }
+        }
+      });
+  });
 	// for adding new franchisee
 	$('.addFranchisee').click(function(){
 		
@@ -38,8 +108,6 @@
                 	setTimeout(function(){
 					   window.location.reload(1);
 					}, 3200);
-
-
                 }else{
                 	$('.addFranchisee').removeClass('disabled');
                 	$('.addFranchiseeMsg').html("<p class='uk-alert uk-alert-success'>Error... Please Try again later.</p>");
@@ -94,354 +162,239 @@
 </div>
 <br clear="all"/>
 <br clear="all"/>
-
-<div class="md-card-content large-padding">
-	<ul class="uk-tab " data-uk-tab={connect:'#tab-content'}>
-    	<li class="uk-active"><a href=""><i class="uk-icon-plus"></i> &nbsp; Franchisee</a></li>
-    	<li><a href=""><i class="uk-icon-user-plus"></i> &nbsp; Admin</a></li>
-    	<li><a href=""><i class="uk-icon-plus-square"></i>&nbsp; Courses</a></li>
-    	<li><a href=""><i class="uk-icon-plus-circle"></i>&nbsp; Base Price</a></li>
-    	<li><a href=""><i class="uk-icon-plus-square-o"></i>&nbsp; Classes</a></li>
-    	<li><a href=""><i class="uk-icon-plus"></i>&nbsp; Tax Details</a></li>
-    </ul>
-	<ul id="tab-content" class="uk-switcher uk-margin">
-        <li class="uk-active" aria-hidden="false">
-        	<!-- Add Franchisee-->
-        	<br clear="all">
-        	<div class="addFranchiseeMsg"></div>
-        	<form class="uk-form addFranchiseeForm" name="addFranchiseeForm" method="post" action="">
-        	<div class="uk-grid" data-uk-grid-margin >
-        		
-   				<div class="uk-width-medium-1-3"> 
-   					<div class="parsley-row form-group">
-   						<label for="franchiseeName">Name<span class="req">*</span></label>
-   						<input type="text" name="franchiseeName" class="form-control input-sm md-input franchiseeName"  id="franchiseeName" style='padding:0px' required>
-   					</div>	
-    			</div>
-    			<div class="uk-width-medium-1-3"> 
-   					<div class="parsley-row form-group">
-   						<label for="franchiseeEmail">e-mail <span class="req">*</span></label>
-   						<input type="text" name="franchiseeEmail" class="form-control input-sm md-input franchiseeEmail"  id="franchiseeEmail" style='padding:0px' required>
-   					</div>	
-    			</div>
-    			<div class="uk-width-medium-1-3"> 
-   					<div class="parsley-row form-group">
-   						<label for="franchiseePhno">Contact No <span class="req">*</span></label>
-   						<input type="text" name="franchiseePhno" class="form-control input-sm md-input franchiseePhno"  id="franchiseePhno" style='padding:0px' required>
-   					</div>	
-    			</div>
-    			<div class="uk-width-medium-1-1"> 
-   					<div class="parsley-row form-group">
-   						<label for="franchiseeAddress">Address <span class="req">*</span></label>
-   						<input type="text" name="franchiseeAddress" class="form-control input-sm md-input franchiseeAddress"  id="franchiseeAddress" style='padding:0px' required>
-   					</div>	
-    			</div>
-    			<div class="uk-width-medium-1-1"> 
-   					<div class="parsley-row form-group">
-   						<button type="button" class="btn btn-sm btn-primary addFranchisee" name="addFranchisee" style="float:left">Add Franchisee</button>
-   					</div>	
-    			</div>
-								
-			</div>
-			</form>
-        </li>
-        <li aria-hidden="true" class="">
-        	<!-- Add Admin User-->
-        	<div class="adminUsermsg"></div>
-        	<br clear="all">
-			<form class="uk-form addadminForm" name="addadminForm" method="post" action="">
-        	<div class="uk-grid" data-uk-grid-margin >
-        		<div class="uk-width-medium-1-3"> 
-        			<div class="parsley-row form-group"></div>
-   				</div>
-   				<div class="uk-width-medium-1-3">
-   					<div class="parsley-row form-group"></div> 
-   				</div>
-   				<div class="uk-width-medium-1-3"> 
-   					<div class="parsley-row form-group">
-   						<label for="FName">Select Franchisee <span class="req">*</span></label>
-   						<select  class="form-group FName  input-sm md-input" id="FName" name="FName" style="padding:0px;width:100%">
-   							@foreach($franchiseelist as $franchisee) 
-   								<option value="{{$franchisee->id}}">{{$franchisee->franchisee_name}}</option>
-   							@endforeach
-   						</select>
-   					</div>
-
-   				</div>
-   				<div class="uk-width-medium-1-3"> 
-   					<div class="parsley-row form-group">
-   						<label for="AdminFirstName">First Name <span class="req">*</span></label>
-   						<input type="text" name="AdminFirstName" class="form-control input-sm md-input AdminFirstName"  id="AdminFirstName" style='padding:0px' required>
-   					</div>	
-    			</div>
-    			<div class="uk-width-medium-1-3"> 
-   					<div class="parsley-row form-group">
-   						<label for="AdminLastName">Last Name <span class="req">*</span></label>
-   						<input type="text" class="form-control input-sm md-input AdminLastName" name="AdminLastName" id="AdminLastName" style='padding:0px' required>
-   					</div>	
-    			</div>
-    			<div class="uk-width-medium-1-3"> 
-   					<div class="parsley-row form-group" >
-   						<label for="AdminEmail">E-mail<span class="req">*</span></label>
-   						<input type="text" name="AdminEmail" class="form-control input-sm md-input AdminEmail"  id="AdminEmail" style='padding:0px' required>
-   					</div>	
-    			</div>
-    			<div class="uk-width-medium-1-3"> 
-   					<div class="parsley-row form-group">
-   						<label for="AdminMobileNo">Mobile No <span class="req">*</span></label>
-   						<input type="text" class="form-control input-sm md-input AdminMobileNo" name="AdminMobileNo"  id="AdminMobileNo" style='padding:0px' required>
-   					</div>	
-    			</div>
-    			<div class="uk-width-medium-1-3"> 
-   					<div class="parsley-row form-group">
-   						<label for="AdminAltMobileNo">Alt Mobile No</label>
-   						<input type="text" class="form-control input-sm md-input AdminAltMobileNo" name="AdminAltMobileNo" id="AdminAltMobileNo" style='padding:0px'>
-   					</div>	
-    			</div>
-    			<div class="uk-width-medium-1-3"> 
-   					<div class="parsley-row form-group">
-   						<label for="AdminLandlineNo">Landline No</label>
-   						<input type="text" class="form-control input-sm md-input AdminLandlineNo"  id="AdminLandlineMobileNo" name="AdminLandlineMobileNo" style='padding:0px'>
-   					</div>	
-    			</div>
-    			<div class="uk-width-medium-1-1"> 
-   					<div class="parsley-row form-group">
-   						<button type="button" class="btn btn-sm btn-primary addAdmin" id="addAdmin" style="float:left">Add Admin</button>
-   					</div>	
-    			</div>
-
-
-    		</div>
-    		</form>
-        </li>
-        <li aria-hidden="true" class="">
-        	<!-- Add Courses-->
-        	<br clear="all" />
-        	<form class="uk-form" method="post" action="">
-        	<div class="uk-grid" data-uk-grid-margin >
-        		<div class="uk-width-medium-1-3"> 
-        			<div class="parsley-row form-group">
-        				<label for="courseFName">Select Franchisee</label>
-   						<select  class="form-group courseFName  input-sm md-input" id="courseFName" style="padding:0px;width:100%">
-   							@foreach($franchiseelist as $franchisee) 
-   								<option value="{{$franchisee->id}}">{{$franchisee->franchisee_name}}</option>
-   							@endforeach
-   						</select>
-        			</div>
-   				</div>
-   				<div class="uk-width-medium-1-3">
-   					<div class="parsley-row form-group"></div> 
-   				</div>
-   				<div class="uk-width-medium-1-3"> 
-   					<div class="parsley-row form-group"></div>
-				</div>
-				@foreach($courseList  as $course)
-				<div class="uk-width-medium-1-3">
-   					<div class="parsley-row form-group">
-   						<input id="{{$course->id}}" name="{{$course->id}}" value="yes" type="checkbox" class="checkbox-custom">
-        			<label for="{{$course->id}}" class="checkbox-custom-label">{{$course->course_name}}</label>
-   					</div> 
-   				</div>
-   				@endforeach
-   				<div class="uk-width-medium-1-1">
-   					<div class="parsley-row form-group">
-   						<button type="submit" class="btn btn-sm btn-primary addCourse" style="float:left">Add Courses</button>
-   						
-   					</div> 
-   				</div>
-
-   			</div>
-   			</form>
-        	
-        </li>
-        <li aria-hidden="true" class="">
-        	<!-- Base price for classes and Birthday -->
-        	<ul class="uk-subnav uk-subnav-pill" data-uk-switcher="{connect:'#baseprice-id'}">
-        		<li class="uk-active" aria-hidden="false"><a href="">Classes</a></li>
-				<li class="" aria-hidden="true"><a href="">Birthday</a></li>
-        	</ul>	
-        	<ul id="baseprice-id" class="uk-switcher uk-margin">
-        		<li class="uk-active" aria-hidden="false">
-        			<!-- Base price for Classes -->
-        			<br clear="all" />
-        			<form class="uk-form" method="post" action="">
-        			<div class="uk-grid" data-uk-grid-margin >
-        				<div class="uk-width-medium-1-3">
-        					<div class="parsley-row form-group">
-        						<label for="courseFName">Select Franchisee</label>
-   								<select  class="form-group courseFName  input-sm md-input" id="courseFName" style="padding:0px;width:100%">
-   								@foreach($franchiseelist as $franchisee) 
-   									<option value="{{$franchisee->id}}">{{$franchisee->franchisee_name}}</option>
-   								@endforeach
-   								</select>
-        					</div>
-        				</div>
-        				<div class="uk-width-medium-1-3">
-        					<div class="parsley-row form-group">
-        						<label for="classBasePrice">Class Base Price</label>
-   								<input type="text" class="form-control input-sm md-input classBasePrice"  id="classBasePrice" required style='padding:0px'>
-        					</div>
-        				</div> 
-        				<div class="uk-width-medium-1-3"></div>
-        				<div class="uk-width-medium-1-1">
-        					<button type="submit" class="btn btn-sm btn-primary classBasepriceSubmit" id="classBasepriceSubmit" style="float:left">Add Base Price</button>
-   						</div>
-   					</div>
-   					</form>
-        		</li>
-        		<li class="" aria-hidden="true">
-        			<!-- Base price for Birthday -->
-        			<br clear="all" />
-        			<form class="uk-form" method="post" action="">
-        			<div class="uk-grid" data-uk-grid-margin >
-        				<div class="uk-width-medium-1-3">
-        					<div class="parsley-row form-group">
-        						<label for="birthdayBasePricefranchisee">Select Franchisee</label>
-   								<select  class="form-group  input-sm md-input birthdayBasePricefranchisee" id="birthdayBasePricefranchisee" style="padding:0px;width:100%">
-   								@foreach($franchiseelist as $franchisee) 
-   									<option value="{{$franchisee->id}}">{{$franchisee->franchisee_name}}</option>
-   								@endforeach
-   								</select>
-        					</div>
-        				</div>
-        				<div class="uk-width-medium-1-3">
-        					<div class="parsley-row form-group">
-        						<label for="birthdayBasePrice">Birthday Base Price</label>
-   								<input type="text" class="form-control input-sm md-input birthdayBasePrice"  id="birthdayBasePrice" required style='padding:0px'>
-        					</div>
-        				</div>
-        				<div class="uk-width-medium-1-3"></div>
-        				<div class="uk-width-medium-1-1">
-        					<button type="submit" class="btn btn-sm btn-primary birthdayBasepriceSubmit" id="birthdayBasepriceSubmit" style="float:left">Add Base Price</button>
-   						</div>
-   					</div>
-   					</form>
-        		</li>
-
-        	</ul>
-        </li>
-        <li aria-hidden="true" class="">
-        	<!-- classes -->
-        	<br clear="all" />
-        		<form class="uk-form" method="post" action="">
-        			<div class="uk-grid" data-uk-grid-margin >
-        				<div class="uk-width-medium-1-3">
-        					<div class="parsley-row form-group">
-        						<label for="addClassFranchisee">Select Franchisee</label>
-   								<select  class="form-group  input-sm md-input addClassFranchisee" id="addClassFranchisee" style="padding:0px;width:100%">
-   								@foreach($franchiseelist as $franchisee) 
-   									<option value="{{$franchisee->id}}">{{$franchisee->franchisee_name}}</option>
-   								@endforeach
-   								</select>
-        					</div>
-        				</div>
-        				<div class="uk-width-medium-1-3">
-        					<div class="parsley-row form-group">
-        					<label for="addClassCourses">Select Course</label>
-        					<select  class="form-group  input-sm md-input addClassCourses" id="addClassCourses" style="padding:0px;width:100%">
-        						@foreach($courseList  as $course)
-        						  <option id="{{$course->id}}">{{$course->course_name}}</option>
-        						@endforeach
-        					</select>
-        					</div>
-        				</div>
-        				<div class="uk-width-medium-1-3">
-        					<div class="parsley-row form-group">
-        					
-        					</div>
-        				</div>
-        				<div class="uk-width-medium-1-1">
-        					<div class="parsley-row form-group">
-        						<button type="submit" class="btn btn-sm btn-primary addClassesSubmit" id="addClassesSubmit" style="float:left">Add Classes</button>	
-        					</div>
-        				</div>
-					</div>
-        		</form>
-        			
-        	
-        </li>
-        <li aria-hidden="true" class="">
-        	<!-- Tax Details -->
-        	<ul class="uk-subnav uk-subnav-pill" data-uk-switcher="{connect:'#tax-id'}">
-        		<li class="uk-active" aria-hidden="false"><a href="">Tax Percentage</a></li>
-				<li class="" aria-hidden="true"><a href="">Tax Particular</a></li>
-        	</ul>	
-        	<ul id="tax-id" class="uk-switcher uk-margin">
-        		<li class="uk-active" aria-hidden="false">
-        			<!--tax percentage -->
-        			<br clear="all" />
-        			<form class="uk-form" method="post" action="">
-        				<div class="uk-grid" data-uk-grid-margin >
-        					<div class="uk-width-medium-1-3">
-        						<div class="parsley-row form-group">
-        							<label for="addtaxpercentageFranchisee">Select Franchisee</label>
-   									<select  class="form-group  input-sm md-input addtaxpercentageFranchisee" id="addtaxpercentageFranchisee" style="padding:0px;width:100%">
-   										@foreach($franchiseelist as $franchisee) 
-   										<option value="{{$franchisee->id}}">{{$franchisee->franchisee_name}}</option>
-   									@endforeach
-   									</select>
-        						</div>
-        					</div>
-        					<div class="uk-width-medium-1-3">
-        						<div class="parsley-row form-group">
-        							<label for="taxpercentage">Tax Percentage</label>
-        							<input type="text" class="form-control input-sm md-input taxpercentage"  id="taxpercentage" required style='padding:0px'>
-        						</div>
-        					</div>
-        					<div class="uk-width-medium-1-3">
-        						<div class="parsley-row form-group">
-        					
-        						</div>
-        					</div>
-        					<div class="uk-width-medium-1-1">
-        						<div class="parsley-row form-group">
-        							<button type="submit" class="btn btn-sm btn-primary addTaxSubmit" id="addTaxSubmit" style="float:left">Add Tax</button>	
-        						</div>
-        					</div>
-						</div>
-        			</form>
-        		</li>
-        		<li class="" aria-hidden="true">
-        			<!-- tax particular -->
-        			<br clear="all" />
-        			<form class="uk-form" method="post" action="">
-        				<div class="uk-grid" data-uk-grid-margin >
-        					<div class="uk-width-medium-1-3">
-        						<div class="parsley-row form-group">
-        							<label for="addtaxparticularFranchisee">Select Franchisee</label>
-   									<select  class="form-group  input-sm md-input addtaxparticularFranchisee" id="addtaxparticularFranchisee" style="padding:0px;width:100%">
-   										@foreach($franchiseelist as $franchisee) 
-   										<option value="{{$franchisee->id}}">{{$franchisee->franchisee_name}}</option>
-   									@endforeach
-   									</select>
-        						</div>
-        					</div>
-        					<div class="uk-width-medium-1-3">
-        						<div class="parsley-row form-group">
-        							<label for="taxParticularName">Particular</label>
-        							<input type="text" class="form-control input-sm md-input taxParticularName"  id="taxParticularName" required style='padding:0px'>
-        						</div>
-        					</div>
-        					<div class="uk-width-medium-1-3">
-        						<div class="parsley-row form-group">
-        							<label for="taxParticularPercentage">Percentage</label>
-        							<input type="text" class="form-control input-sm md-input taxParticularPercentage"  id="taxParticularPercentage" required style='padding:0px'>
-        						</div>
-        					</div>
-        					<div class="uk-width-medium-1-1">
-        						<div class="parsley-row form-group">
-        							<button type="submit" class="btn btn-sm btn-primary addTaxParticularSubmit" id="addTaxParticularSubmit" style="float:left">Add Tax Particular</button>	
-        						</div>
-        					</div>
-						</div>
-        			</form>
-        		</li>
-        	</ul>
-        	
-        </li>
-    </ul>
-
+<div id="newFranchiseeLoading" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:13%;">
+     New Franchisee added successfully.Please wait . . .
+    </p>
 </div>
-
+<div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
+    <div class="uk-width-medium-1-1">
+        <div id="NewFranchiseeMsgDiv"></div>
+        <h3>Add New Franchisee</h3>
+        <div class="md-card">
+            <div class="md-card-content">
+              <div class="row">
+                <div class="col-lg-6">
+                  <h4 style="color:#d3d3de;float:right;">Franchisee Details</h4>
+                </div>
+              </div>
+              <hr>
+              {{ Form::open(array('url' => '/students/enrollYard', "class"=>"uk-form-stacked", 'method' => 'post')) }}
+              <div class="uk-grid" data-uk-grid-margin>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">First Name * :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::text('firstName',null,array('id'=>'firstName','class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Last Name * :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::text('lastName',null,array('id'=>'lastName','class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+              </div>
+              <div class="uk-grid" data-uk-grid-margin>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Franchisee Address :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::text('franchiseAddress',null,array('id'=>'franchiseAddress','class'=>'form-control'))}}
+                  </div>
+                </div>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Official Email Id * :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::text('franchiseEmailId',null,array('id'=>'franchiseEmailId','class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+              </div>
+              <div class="uk-grid" data-uk-grid-margin>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Franchisee Mobile No :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::number('franchiseePhno',null,array('id'=>'franchiseePhno','class'=>'form-control'))}}
+                  </div>
+                </div>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Legal Entity Name :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::text('legalEntity',null,array('id'=>'legalEntity','class'=>'form-control'))}}
+                  </div>
+                </div>
+              </div>
+              <div class="uk-grid" data-uk-grid-margin>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Invoice Code * :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::text('invoiceCode',null,array('id'=>'invoiceCode','class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-lg-6">
+                  <h4 style="color:#d3d3de;float:right;">Birthday Pricing</h4>
+                </div>
+              </div>
+              <hr>
+              <div class="uk-grid" data-uk-grid-margin>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Default Birthday Price * :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::number('default_birthday_price',0,array('id'=>'default_birthday_price','min'=> 0,'class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Member Birthday Price * :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::number('member_birthday_price',0,array('id'=>'member_birthday_price','min'=> 0,'class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+              </div>
+              <div class="uk-grid" data-uk-grid-margin>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Default Advance Amount * :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::number('default_advance_amount',0,array('id'=>'default_advance_amount','min'=> 0,'class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Additional Guest Price * :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::number('additional_guest',0,array('id'=>'additional_guest','min'=> 0,'class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+              </div>
+              <div class="uk-grid" data-uk-grid-margin>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Additional Half An Hour Price * :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::number('additional_half_hour',0,array('id'=>'additional_half_hour','min'=> 0,'class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-lg-6">
+                  <h4 style="color:#d3d3de;float:right;">Classes Base Pricing</h4>
+                </div>
+              </div>
+              <hr>
+              <div class="uk-grid" data-uk-grid-margin>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Classes base price * :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::number('base_price',0,array('id'=>'base_price','min'=> 0,'class'=>'form-control','required'=>''))}}(In Rs./-)
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-lg-6">
+                  <h4 style="color:#d3d3de;float:right;">Membership Pricing</h4>
+                </div>
+              </div>
+              <hr>
+              <div class="uk-grid" data-uk-grid-margin>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Annual Membership * :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::number('annaul_membership',0,array('id'=>'annaul_membership','min'=> 0,'class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Lifetime Membership * :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::number('lifetime_membership',0,array('id'=>'lifetime_membership','min'=> 0,'class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-lg-6">
+                  <h4 style="color:#d3d3de;float:right;">Invoice Data</h4>
+                </div>
+              </div>
+              <hr>
+              <div class="uk-grid" data-uk-grid-margin>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">PAN Number :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::text('pan_no',null,array('id'=>'pan_no','class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Service Tax Number :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::text('service_tax_no',null,array('id'=>'service_tax_no','class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+              </div>
+              <div class="uk-grid" data-uk-grid-margin>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Tin Number :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::text('tin_no',null,array('id'=>'tin_no','class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-lg-6">
+                  <h4 style="color:#d3d3de;float:right;">Payment Tax</h4>
+                </div>
+              </div>
+              <hr>
+              <div class="uk-grid" data-uk-grid-margin>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">CGST (%) * :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::number('cgst',0,array('id'=>'cgst','min'=> 0,'class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">SGST (%) * :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::number('sgst',0,array('id'=>'sgst','min'=> 0,'class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+              </div>
+              <hr><hr>
+              <div class="row">
+                <div class="col-lg-6">
+                  <h4 style="color:#d3d3de;float:right;">Admin Login</h4>
+                </div>
+              </div>
+              <hr>
+              <div class="uk-grid" data-uk-grid-margin>
+                <label class="uk-width-medium-1-3" style="text-align:right;padding-top:7px;">User Mail Id :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::text('user_mail_id',null,array('id'=>'user_mail_id','class'=>'form-control','required'=>'','readonly'))}}
+                  </div>
+                </div>
+              </div>
+              <div class="uk-grid" data-uk-grid-margin>
+                <label class="uk-width-medium-1-3" style="text-align:right;padding-top:7px;">Create Password * :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::text('password',null,array('id'=>'password','class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
+              </div>
+              <div class="uk-grid" data-uk-grid-margin>
+                <label class="uk-width-medium-1-3" style="text-align:right;padding-top:7px;"></label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    <button type="button" class="md-btn md-btn-primary add-newFranchisee-btn" style="border-radius:5px;">Add New Franchisee</button>
+                  </div>
+                </div>
+              </div>
+              {{ Form::close() }}
+            </div>
+        </div>
+    </div>
+</div>
 
 @stop
