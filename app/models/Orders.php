@@ -346,7 +346,7 @@ class Orders extends \Eloquent {
 
             $final_sales_data = array();
 
-            $final_sales_data[] = ['Parent Name', 'Child Name', 'Payment Date', 'Date of Birth','Type(enrollment/Birthday)', 'Name Of Class','Start Date', 'End Date', 'No.Of Classes Selected', '2nd Class', 'Membership', 'Membership Amount', 'Additional Guest Price', 'Additional Halfhour Price','Fees(Enrollement/Birthdayi/Yard/Camps)', 'Tax Amount', 'Discount', 'Discount For Siblings', 'Discount for Multi-class','Special Discount', 'Total', 'Mode Of Payment'];
+            $final_sales_data[] = ['Parent Name', 'Child Name', 'Payment Date', 'Date of Birth','Type(enrollment/Birthday/Membership)', 'Name Of Class','Start Date', 'End Date', 'No.Of Classes Selected', '2nd Class', 'Membership', 'Membership Amount', 'Additional Guest Price', 'Additional Halfhour Price','Fees(Enrollement/Birthdayi/Yard/Camps)', 'Tax Amount', 'Discount', 'Discount For Siblings', 'Discount for Multi-class','Special Discount', 'Total', 'Mode Of Payment'];
             $Sales['data'] = Orders::where('franchisee_id','=',Session::get('franchiseId'))
                         //->where('student_classes_id','<>',0)
                         ->whereDate('created_at','>=',$inputs['reportGenerateStartdate1'])

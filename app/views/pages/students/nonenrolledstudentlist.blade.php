@@ -58,40 +58,6 @@
 	}) */
 		
 
-</script>  -->
-<script type="text/javascript">
-        $("#studentsTable").DataTable({
-                dom: 'Bfrtip',
-        buttons: [
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5', 
-            'pdfHtml5'
-        ],
-        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-    
-            // Bind click event 
-            $(nRow).click(function() {
-                  //window.open($(this).find('a').attr('href'));
-                                window.location = $(this).find('a').attr('href');
-                  //OR
-
-                // window.open(aData.url);
-
-            });
-
-            return nRow;
-        },
-        "iDisplayLength": 50,
-        "lengthMenu": [ 10, 50, 100, 150, 200 ]
-    });
-
-        /* $("#studentsTable tr").click(function (){
-
-                window.location = $(this).find('a').attr('href');
-        }) */
-                
-
 </script>
 @stop
 

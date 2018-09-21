@@ -18,11 +18,40 @@
 <script src="{{url()}}/assets/js/kendoui_custom.min.js"></script>
 <script src="{{url()}}/assets/js/pages/kendoui.min.js"></script>
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
+<script src="{{url()}}/assets/js/jspdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.2/bluebird.core.min.js"></script>
 <script>
+  
+  var form = $('#DivIdToPrint'), 
+  cache_width = form.width(),  
+  a4 = [500.28, 841.89]; // for a4 size paper width and height 
+
   $(document).on('change', '#franchiseEmailId', function () {
     var email = $('#franchiseEmailId').val();
     $('#user_mail_id').val(email);
   });
+
+  function createPDF() {
+      getCanvas().then(function (canvas) {  
+            var img = canvas.toDataURL("image/png"),  
+             doc = new jsPDF({  
+                 unit: 'px',  
+                 format: 'a4'  
+             });  
+            doc.addImage(img, 'JPEG', 20, 20);                                
+            doc.save('newFranchisee.pdf');  
+            form.width(cache_width);  
+        });
+  }
+
+  function getCanvas() {  
+      form.width((a4[0] * 1.33333) - 10).css('max-width', 'none');  
+      return html2canvas(form, {  
+          imageTimeout: 2000,  
+          removeContainer: true  
+      });  
+  } 
+
   $(document).on('click','.add-newFranchisee-btn', function(){
     $('.add-newFranchisee-btn').addClass('disabled');
     var firstName = $('#firstName').val();
@@ -89,6 +118,7 @@
         }
       });
   });
+
 	// for adding new franchisee
 	$('.addFranchisee').click(function(){
 		
@@ -147,7 +177,77 @@
         });
 		console.log($('.addadminForm').serialize());
 	});
+ 
+  $(document).on('click', '#download', function() {
+    createPDF();
+  });
 
+
+</script>
+<script>  
+    /* 
+ * jQuery helper plugin for examples and tests 
+ */  
+    (function ($) {  
+        $.fn.html2canvas = function (options) {  
+            var date = new Date(),  
+            $message = null,  
+            timeoutTimer = false,  
+            timer = date.getTime();  
+            html2canvas.logging = options && options.logging;  
+            html2canvas.Preload(this[0], $.extend({  
+                complete: function (images) {  
+                    var queue = html2canvas.Parse(this[0], images, options),  
+                    $canvas = $(html2canvas.Renderer(queue, options)),  
+                    finishTime = new Date();  
+  
+                    $canvas.css({ position: 'absolute', left: 0, top: 0 }).appendTo(document.body);  
+                    $canvas.siblings().toggle();  
+  
+                    $(window).click(function () {  
+                        if (!$canvas.is(':visible')) {  
+                            $canvas.toggle().siblings().toggle();  
+                            throwMessage("Canvas Render visible");  
+                        } else {  
+                            $canvas.siblings().toggle();  
+                            $canvas.toggle();  
+                            throwMessage("Canvas Render hidden");  
+                        }  
+                    });  
+                    throwMessage('Screenshot created in ' + ((finishTime.getTime() - timer) / 1000) + " seconds<br />", 4000);  
+                }  
+            }, options));  
+  
+            function throwMessage(msg, duration) {  
+                window.clearTimeout(timeoutTimer);  
+                timeoutTimer = window.setTimeout(function () {  
+                    $message.fadeOut(function () {  
+                        $message.remove();  
+                    });  
+                }, duration || 2000);  
+                if ($message)  
+                    $message.remove();  
+                $message = $('<div ></div>').html(msg).css({  
+                    margin: 0,  
+                    padding: 10,  
+                    background: "#000",  
+                    opacity: 0.7,  
+                    position: "fixed",  
+                    top: 10,  
+                    right: 10,  
+                    fontFamily: 'Tahoma',  
+                    color: '#fff',  
+                    fontSize: 12,  
+                    borderRadius: 12,  
+                    width: 'auto',  
+                    height: 'auto',  
+                    textAlign: 'center',  
+                    textDecoration: 'none'  
+                }).hide().fadeIn().appendTo('body');  
+            }  
+        };  
+    })(jQuery);  
+  
 </script>
 
 @stop
@@ -171,12 +271,21 @@
 <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
     <div class="uk-width-medium-1-1">
         <div id="NewFranchiseeMsgDiv"></div>
-        <h3>Add New Franchisee</h3>
-        <div class="md-card">
+        <div class="row">
+          <div class="col-lg-6">
+            <h3>Add New Franchisee</h3>
+          </div>
+          <div class="col-lg-6" align="right" style="padding-right:70px;">
+            <button type="button" class="md-btn md-btn-primary" id="download" style="border-radius:5px;">Print</button>
+          </div>
+        </div>
+        <div class="md-card" id="DivIdToPrint">
             <div class="md-card-content">
               <div class="row">
-                <div class="col-lg-6">
-                  <h4 style="color:#d3d3de;float:right;">Franchisee Details</h4>
+                <div class="col-lg-12">
+                  <center>
+                    <h4 style="color:#d3d3de;">Franchisee Details</h4>
+                  </center>
                 </div>
               </div>
               <hr>
@@ -233,8 +342,10 @@
               </div>
               <hr>
               <div class="row">
-                <div class="col-lg-6">
-                  <h4 style="color:#d3d3de;float:right;">Birthday Pricing</h4>
+                <div class="col-lg-12">
+                  <center>
+                    <h4 style="color:#d3d3de;">Birthday Pricing</h4>
+                  </center>
                 </div>
               </div>
               <hr>
@@ -276,8 +387,10 @@
               </div>
               <hr>
               <div class="row">
-                <div class="col-lg-6">
-                  <h4 style="color:#d3d3de;float:right;">Classes Base Pricing</h4>
+                <div class="col-lg-12">
+                  <center>
+                    <h4 style="color:#d3d3de;">Classes Base Pricing</h4>
+                  </center>
                 </div>
               </div>
               <hr>
@@ -291,8 +404,10 @@
               </div>
               <hr>
               <div class="row">
-                <div class="col-lg-6">
-                  <h4 style="color:#d3d3de;float:right;">Membership Pricing</h4>
+                <div class="col-lg-12">
+                  <center>
+                    <h4 style="color:#d3d3de;">Membership Pricing</h4>
+                  </center>
                 </div>
               </div>
               <hr>
@@ -312,8 +427,10 @@
               </div>
               <hr>
               <div class="row">
-                <div class="col-lg-6">
-                  <h4 style="color:#d3d3de;float:right;">Invoice Data</h4>
+                <div class="col-lg-12">
+                  <center>
+                    <h4 style="color:#d3d3de;">Invoice Data</h4>
+                  </center>
                 </div>
               </div>
               <hr>
@@ -341,8 +458,10 @@
               </div>
               <hr>
               <div class="row">
-                <div class="col-lg-6">
-                  <h4 style="color:#d3d3de;float:right;">Payment Tax</h4>
+                <div class="col-lg-12">
+                  <center>
+                    <h4 style="color:#d3d3de;">Payment Tax</h4>
+                  </center>
                 </div>
               </div>
               <hr>
@@ -362,13 +481,15 @@
               </div>
               <hr><hr>
               <div class="row">
-                <div class="col-lg-6">
-                  <h4 style="color:#d3d3de;float:right;">Admin Login</h4>
+                <div class="col-lg-12">
+                  <center>
+                    <h4 style="color:#d3d3de;">Admin Login</h4>
+                  </center>
                 </div>
               </div>
               <hr>
               <div class="uk-grid" data-uk-grid-margin>
-                <label class="uk-width-medium-1-3" style="text-align:right;padding-top:7px;">User Mail Id :</label>
+                <label class="uk-width-medium-1-2" style="text-align:right;padding-top:7px;">User Mail Id :</label>
                 <div class="uk-width-medium-1-4">
                   <div class="parsley-row form-group">
                     {{Form::text('user_mail_id',null,array('id'=>'user_mail_id','class'=>'form-control','required'=>'','readonly'))}}
@@ -376,21 +497,18 @@
                 </div>
               </div>
               <div class="uk-grid" data-uk-grid-margin>
-                <label class="uk-width-medium-1-3" style="text-align:right;padding-top:7px;">Create Password * :</label>
+                <label class="uk-width-medium-1-2" style="text-align:right;padding-top:7px;">Create Password * :</label>
                 <div class="uk-width-medium-1-4">
                   <div class="parsley-row form-group">
                     {{Form::text('password',null,array('id'=>'password','class'=>'form-control','required'=>''))}}
                   </div>
                 </div>
               </div>
-              <div class="uk-grid" data-uk-grid-margin>
-                <label class="uk-width-medium-1-3" style="text-align:right;padding-top:7px;"></label>
-                <div class="uk-width-medium-1-4">
+                <center style="padding-top:30px;">
                   <div class="parsley-row form-group">
                     <button type="button" class="md-btn md-btn-primary add-newFranchisee-btn" style="border-radius:5px;">Add New Franchisee</button>
                   </div>
-                </div>
-              </div>
+                </center>
               {{ Form::close() }}
             </div>
         </div>
