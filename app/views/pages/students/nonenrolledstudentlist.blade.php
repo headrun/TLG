@@ -51,12 +51,10 @@
         "iDisplayLength": 50,
         "lengthMenu": [ 10, 50, 100, 150, 200 ]
     });
-
 	/* $("#studentsTable tr").click(function (){
 
 		window.location = $(this).find('a').attr('href');
 	}) */
-		
 
 </script>
 @stop

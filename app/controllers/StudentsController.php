@@ -2981,6 +2981,20 @@ public function enrollKid2(){
 
   }
 
+  public static function checkSecondSibling () {
+    $inputs = Input::all();
+    $secondChild = Students::where('id', '=', $inputs['student_id'])->get();
+    $customer = Students::where('customer_id', '=', $secondChild[0]['customer_id'])
+                        ->orderBy('created_at', 'ASC')
+                        ->get();
+    if (count($customer) > 1) {
+      $data = $customer[0]['id'];
+    } else {
+      $data = 0;
+    }
+    return Response::json(array('status'=>'success','data'=>$data));
+  }
+
   public function enrollYard(){
 	$inputs = Input::all();
 	$presentDate = Carbon::now();

@@ -351,18 +351,29 @@ function fullEnrollmentReset(){
       finalAmount;
     }
 
-    
-    <?php if($discount_second_child_elligible){ ?>
+    $.ajax({
+      type: "POST",
+      url: "{{URL::to('/quick/checkSecondSibling')}}",
+      data: {'student_id': studentId},
+      dataType: 'json',
+      success: function(response){
+        if (response.data !== parseInt(studentId)) {
+          <?php if($discount_second_child_elligible){ ?>
+            $('#second_child_discount_to_form').val({{$discount_second_child}});
+            second_child_discount_amt = parseFloat(finalAmount*{{$discount_second_child}}/100);
+            $('#second_child_amount').val('-'+(second_child_discount_amt).toFixed(2));
+            
+            finalAmount = parseFloat(finalAmount-second_child_discount_amt);
+            $('#second_child_discount').html('<p>By Enrolling Sibling You are Saving('+{{$discount_second_child}}+'%:[-'+(second_child_discount_amt).toFixed(2)+'Rs])</p>');
+            $('#second_child_amountlabel').html((Math.round(finalAmount/10)*10).toFixed(2));
+          <?php } ?>
+        } else {
+          $('#second_child_discount').hide();
+          $('#second_child_amountlabel').hide();
+        }
+      }
+    });
 
-      $('#second_child_discount_to_form').val({{$discount_second_child}});
-      second_child_discount_amt = parseFloat(finalAmount*{{$discount_second_child}}/100);
-      $('#second_child_amount').val('-'+(second_child_discount_amt).toFixed(2));
-      
-      finalAmount = parseFloat(finalAmount-second_child_discount_amt);
-      $('#second_child_discount').html('<p>By Enrolling Sibling You are Saving('+{{$discount_second_child}}+'%:[-'+(second_child_discount_amt).toFixed(2)+'Rs])</p>');
-      $('#second_child_amountlabel').html((Math.round(finalAmount/10)*10).toFixed(2));
-      <?php } ?>
-      
       <?php if($discount_second_class_elligible){ ?>
         if(enrollmentStartDate <= '{{ $end }}'){   
           $('#second_class_discount_to_form').val({{$discount_second_class}});
@@ -4565,7 +4576,6 @@ style="margin-top: 50px; z-index: 99999;">
                                                                           </td>
                                                                         </tr>
                                                                         <tr>
-
                                                                           <td colspan="2" style="text-align: right; font-weight: bold;"> 
                                                                             <?php if(Session::get('franchiseId') == 11) {?>
                                                                               <input id="diplomatOption" name="diplomatOption" type="checkbox"  value="yes" class="checkbox-custom"  />
