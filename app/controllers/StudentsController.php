@@ -1391,7 +1391,7 @@ public function enrollKid2(){
         } else {
           $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
         }
-        if (Session::get('franchiseId') === 11) {
+        if (Session::get('franchiseId') == 11) {
           $tax_data[0]['tax_particular'] = 'VAT';
         }
         $data = compact('totalSelectedClasses', 'getBatchNname','tax_data','franchisee_name',
@@ -2981,6 +2981,20 @@ public function enrollKid2(){
 
       return Response::json(array('status'=>'success','data'=>$data));
 
+  }
+
+  public static function checkSecondSibling () {
+    $inputs = Input::all();
+    $secondChild = Students::where('id', '=', $inputs['student_id'])->get();
+    $customer = Students::where('customer_id', '=', $secondChild[0]['customer_id'])
+                        ->orderBy('created_at', 'ASC')
+                        ->get();
+    if (count($customer) > 1) {
+      $data = $customer[0]['id'];
+    } else {
+      $data = 0;
+    }
+    return Response::json(array('status'=>'success','data'=>$data));
   }
 
   public function enrollYard(){

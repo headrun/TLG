@@ -169,7 +169,7 @@ Route::group(array('prefix' => 'quick'), function() {
 * Courses related Ajax calls
 *  --------------------------------------------------------------------------------------------------------------------------------------
 */		
-
+		Route::any('checkSecondSibling', "StudentsController@checkSecondSibling");
         Route::any('deleteCoursesMaster', "CoursesController@deleteCoursesMaster");
         Route::any('updateCoursesMaster', "CoursesController@updateCoursesMaster");	
         Route::any('InsertNewCoursesMaster', "CoursesController@InsertNewCoursesMaster"); 
