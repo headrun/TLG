@@ -153,8 +153,9 @@ $.ajax({
           //  console.log(response);          
           if(response.status == "success"){
             $("#messageStudentAddDiv").html('<p class="uk-alert uk-alert-success">Kid details has been updated successfully. Please wait till this page reloads</p>');
+            $("#addKidsModal").modal('hide');
+            $('#updateKidDetails').show();
             $("#KidsformBody").hide();
-
             setTimeout(function(){
              window.location.reload(1);
            }, 5000);
@@ -447,8 +448,8 @@ function fullEnrollmentReset(){
          $("#grandTotal").val((Amount).toFixed(0));
          $('#grandTotallabel').html((Amount).toFixed(0));
        });
-	
-	$('#diplomatOption').click(function() {
+       
+      $('#diplomatOption').click(function() {
             if ($(this).is(':checked')) {
               $("#taxAmount").val(0);
               tax_Percentage = 0;
@@ -1025,7 +1026,8 @@ function fullEnrollmentReset(){
                   $('#seasonMsgDiv').hide();
                   $("#KidsformBody").hide();
                   $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-info">Enrolling student.Please wait till process is completed.</p>');
-		  if ($('#diplomatOption').is(':checked')) {
+                  
+                  if ($('#diplomatOption').is(':checked')) {
                     $('#taxAmount').val(0);
                   }
                   $.ajax({
@@ -1039,9 +1041,11 @@ function fullEnrollmentReset(){
                       if(response.status == "success"){
                         if(response.printUrl == ""){
                           $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-success">Student has been successfully enrolled. Please wait till this page reloads</p>');
+                          $('#enrollmentModal').modal('hide');
+                          $("#enrollLoading").show();
                           setTimeout(function(){
                            window.location.reload(1);
-                         }, 5000);
+                          }, 5000);
                         }else{
 
                           var printvars = '<a target="_blank" href="'+response.printUrl+'" class="btn btn-primary">Print</a>';
@@ -2906,10 +2910,9 @@ $(document).on('click','.summer-cls-btn', function(){
 	var discountPercentageForSummer = $('#discountPercentageForSummer').val();
 	var totalAmountForSummer = $('#totalAmountForSummer').val();
 	$.ajax({
-
-            type: "POST",
-            url: "{{URL::to('/quick/enrollYard')}}",
-            data: {'studentId': studentId, 
+    type: "POST",
+    url: "{{URL::to('/quick/enrollYard')}}",
+    data: {'studentId': studentId, 
 		   'startDateForSummer': startDateForSummer, 
 		   'NoOfWeeksForSummer': NoOfWeeksForSummer, 
 		   'amountForSummer': amountForSummer, 
@@ -2918,16 +2921,16 @@ $(document).on('click','.summer-cls-btn', function(){
 		   'totalAmountForSummer':totalAmountForSummer,
 		   'taxPercentageForSummer':taxPercentageForSummer
 		  },
-            dataType: 'json',
-            success: function(response){
-                if(response.status === "success"){
-		    $('#summerMsgDiv').html("<p class='uk-alert uk-alert-success'>Camps / Yard has been taken successfully.Please wait untill the page reloads</p>");
-                    setTimeout(function(){
-             		window.location.reload(1);
-           	    }, 4000);
-                } else {
+    dataType: 'json',
+    success: function(response){
+        if(response.status === "success"){
+        $('#summerMsgDiv').html("<p class='uk-alert uk-alert-success'>Camps / Yard has been taken successfully.Please wait untill the page reloads</p>");
+            setTimeout(function(){
+     		window.location.reload(1);
+   	    }, 4000);
+        } else {
 		    $('#summerMsgDiv').html("<p class='uk-alert uk-alert-warning'>Camps / Yard not yet taken.Please try again.</P>");
-		}
+		    }
             }
         });
 });
@@ -2936,6 +2939,18 @@ $(document).on('click','.summer-cls-btn', function(){
 </script>
 @stop 
 @section('content')
+<div id="updateKidDetails" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Updated successfully.Please wait . . .
+    </p>
+</div>
+<div id="enrollLoading" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Enroled successfully.Please wait . . .
+    </p>
+</div>
 <div id="addAttendance" class="modal fade" role="dialog" style="margin-top: 50px; z-index: 99999;"
 >
 
@@ -4561,8 +4576,8 @@ style="margin-top: 50px; z-index: 99999;">
                                                                           </td>
                                                                         </tr>
                                                                         <tr>
-                                                                          <td colspan="2" style="text-align: right; font-weight: bold"> 
-									    <?php if(Session::get('franchiseId') == 11) {?>
+                                                                          <td colspan="2" style="text-align: right; font-weight: bold;"> 
+                                                                            <?php if(Session::get('franchiseId') == 11) {?>
                                                                               <input id="diplomatOption" name="diplomatOption" type="checkbox"  value="yes" class="checkbox-custom"  />
                                                                               <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
                                                                                 class="req"> </span></label> /
@@ -4580,7 +4595,7 @@ style="margin-top: 50px; z-index: 99999;">
                                                                             } 
                                                                             ?> 
                                                                           </td>
-									  <td>
+                                                                          <td>
                                                                             <?php if(Session::get('franchiseId') == 11) {?>
                                                                               <label style="font-weight:bold;padding-top:7px;" id="taxAmountlabel"></label>
                                                                             <?php }else{ ?>

@@ -102,7 +102,7 @@ print_r($orders); */
 					</div>
 				
 				</div>
-                                <p style="text-align: center;">{{$franchisee_name['franchisee_legal_entity']}}</p>
+                                <p style="text-align: center;padding-top:25px;">{{$franchisee_name['franchisee_legal_entity']}}</p>
 				<p style="text-align: center;">Thank You and welcome to The Little Gym family</p>
 				<br clear="all"/>
 				<div class="col-md-7" style="margin:0px auto !important; float:left; border-bottom:2px dashed #EEEEEE;">

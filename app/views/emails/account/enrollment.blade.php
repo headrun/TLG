@@ -233,14 +233,20 @@ $class  = $orderDetailsTomail['class']; */
 								<strong>number_format((float)( (((float)$membershipAmount)+$paymentDueDetails[0]['payment_due_amount']-$paymentDueDetails[0]['discount_amount']-$paymentDueDetails[0]['discount_sibling_amount']-$paymentDueDetails[0]['discount_multipleclasses_amount']) * $paymentDueDetails[0]['tax_percentage']-1/100), 2, '.', '') </strong>
 							</td>
 						</tr>-->
-
 						@if(isset($tax_data))
                         @for($i=0;$i<count($tax_data);$i++)
 						<tr>
 							<td style="text-align:right">
-                            	<strong>
-                            		{{$tax_data[$i]['tax_particular'].'('.$tax_data[$i]['tax_percentage'].'%)'}}
-                            	</strong>
+								<strong>
+								@if($tax_data[$i]['tax_percentage'] === 0 && $tax_data[$i]['tax_particular'] === 'VAT')
+	                        	    <input id="diplomatOption" name="diplomatOption" type="checkbox"  checked="checked" class="checkbox-custom" onclick="return false;"/>
+	                        	    <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
+	                        	      class="req"> </span></label> /
+	                        		{{$tax_data[$i]['tax_particular'].'('.$tax_data[$i]['tax_percentage'].'%)'}}
+	                        	@else
+	                        		{{$tax_data[$i]['tax_particular'].'('.$tax_data[$i]['tax_percentage'].'%)'}}
+	                        	@endif
+	                        	</strong>
                             </td>
                             <td style="text-align:right">
                             	<strong>

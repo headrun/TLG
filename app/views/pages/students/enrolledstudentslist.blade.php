@@ -16,7 +16,6 @@
 <script src="{{url()}}/bower_components/datatables-tabletools/js/dataTables.tableTools.js"></script>
 <script src="{{url()}}/assets/js/custom/datatables_uikit.min.js"></script>
 <script src="{{url()}}/assets/js/pages/plugins_datatables.min.js"></script>
-
 <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.4.0/js/dataTables.buttons.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
@@ -52,6 +51,10 @@
         },
         "iDisplayLength": 50,
         "lengthMenu": [ 10, 50, 100, 150, 200 ]
+    });
+    $('#studentsTable').dataTable({
+        destroy: true,
+        aaData: response.data
     });
 
 	/* $("#studentsTable tr").click(function (){
