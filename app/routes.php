@@ -355,6 +355,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('getMakeupdataByBatchId','ClassesController@getMakeupdatabyBatchId');
         Route::any('getTransferkiddata','ClassesController@getTransferkiddatabyBatchId');
         Route::any('BdayPartiesFiltering','DashboardController@BdayPartiesFiltering');
+        Route::any('BdayDataFiltering','DashboardController@BdayDataFiltering');
         Route::any('UpdateEaDate','ClassesController@UpdateEaDate');
         Route::any('UpdateLeadStatus','ClassesController@UpdateLeadStatus');
         Route::any('UpdateBatchSchedule','DashboardController@UpdateBatchSchedule');

@@ -292,7 +292,11 @@ class DashboardController extends \BaseController {
                         $weeekdate = new carbon();
                         $time = strtotime($presentdate);
                         $end = strtotime('next sunday, 11:59pm', $time);
-                       
+                        $weekEnd = date('Y-m-d', $end);
+                        $weekEndDate = date('d', $end);
+                        $weekEndMonth = date('m', $end);
+                        $weekEndMonth = intval(ltrim($weekEndMonth, '0'));
+                        
                         $birthdayPresentWeek = BirthdayParties::whereDate('birthday_party_date','>=',date('Y-m-d', $time))
                                 ->whereDate('birthday_party_date','<=',date('Y-m-d', $end))
                                 ->where('franchisee_id','=',Session::get('franchiseId'))
@@ -307,6 +311,25 @@ class DashboardController extends \BaseController {
                           $student_data = Students::where('id','=',$birthdayPresentWeek[$i]['student_id'])->distinct()->get();
                           $birthdayPresentWeek[$i]['student_name'] = $student_data[0]['student_name'];
                         }
+
+                        $upcomingBdays = Students::where('franchisee_id','=',Session::get('franchiseId'))
+                                                                    ->whereRaw('DAY(student_date_of_birth) >= DAY(NOW())')
+                                                                    ->whereRaw('MONTH(student_date_of_birth) >= MONTH(NOW())')
+                                                                    ->whereRaw('DAY(student_date_of_birth) <= '+ $weekEndDate +'')
+                                                                    ->whereRaw('MONTH(student_date_of_birth) <= 9')
+                                                                    ->where('student_date_of_birth', '>=', '1990-01-01')
+                                                                    ->orderBy('student_date_of_birth','DESC')
+                                                                    ->get();
+                        
+                        // return $upcomingBdays;
+                        for($i=0;$i<count($upcomingBdays);$i++){
+                          $customer_data = Customers::where('id','=',$upcomingBdays[$i]['customer_id'])->distinct()->get();
+                          $upcomingBdays[$i]['customer_name'] = $customer_data[0]['customer_name'];
+                          $upcomingBdays[$i]['mobile_no'] = $customer_data[0]['mobile_no'];
+                          $upcomingBdays[$i]['franchisee_id'] = $customer_data[0]['franchisee_id'];
+                          $student_data = Students::where('id','=',$upcomingBdays[$i]['id'])->distinct()->get();
+                          $upcomingBdays[$i]['student_name'] = $student_data[0]['student_name'];
+                        }
                         $expiringbatch= Batches::getExpiringBatchData();
           
 
@@ -319,7 +342,7 @@ class DashboardController extends \BaseController {
                                                             'totalbpartyCount','todaysbpartycount',
                                                            'courses','futurefollowups',
 							  'todaysCustomerReg','todaysEnrolledCustomers','enrolledCustomers','totalIntrovisitCount', 'introVisitCount', 'allIntrovisits', 'todaysFollowup', 
-							  'todaysIntrovisit','activeRemindersCount','totalclasses', 'expiringbatch', 'bdayPartyInThisWeek', 'bdayPartyInThisMonth', 'todayEnrolledList', 'thisMonthEnrollment', 'thisWeekEnrollment', 'todayRevenueDetails', 'thisWeekRevenueDetails', 'thisMonthRevenueDetails', 'openLeads', 'hotLeads', 'singleEnrollments', 'multipleEnrollments', 'thisMonthIvScheduled', 'thisMonthAttendedIvs', 'todayScheduledIvs','thisWeekScheduledIvs','todayAttendedIvs','thisWeekAttendedIvs');
+							  'todaysIntrovisit','activeRemindersCount','totalclasses', 'expiringbatch', 'bdayPartyInThisWeek', 'bdayPartyInThisMonth', 'todayEnrolledList', 'thisMonthEnrollment', 'thisWeekEnrollment', 'todayRevenueDetails', 'thisWeekRevenueDetails', 'thisMonthRevenueDetails', 'openLeads', 'hotLeads', 'singleEnrollments', 'multipleEnrollments', 'thisMonthIvScheduled', 'thisMonthAttendedIvs', 'todayScheduledIvs','thisWeekScheduledIvs','todayAttendedIvs','thisWeekAttendedIvs','upcomingBdays');
    
 			return View::make('pages.dashboard.upcoming',compact($viewData));
      
@@ -341,7 +364,6 @@ class DashboardController extends \BaseController {
 
   public function BdayPartiesFiltering(){
       $inputs = Input::all();
-
       if($inputs['value'] == "Week"){
           $presentdate= Carbon::now();
           $weeekdate= new carbon();
@@ -408,6 +430,81 @@ class DashboardController extends \BaseController {
 
       }  
 
+      if($birthdayCelebrationsData){
+        return Response::json(array('status'=> 'success', 'data'=> $birthdayCelebrationsData));
+      }else{
+        return Response::json(array('status'=> 'failure'));
+      }
+  }
+
+  public function BdayDataFiltering () {
+      $inputs = Input::all();
+      $presentdate = Carbon::now();
+      $weeekdate= new carbon();
+      $time = strtotime($presentdate);
+      $end = strtotime('next sunday, 11:59pm', $time);
+
+      if($inputs['value'] == "Week"){
+          $weekEndDate = date('d', $end);
+          $weekEndMonth = date('m', $end);
+          $weekEndMonth = intval(ltrim($weekEndMonth, '0'));
+          $birthdayCelebrationsData = Students::where('franchisee_id','=',Session::get('franchiseId'))
+                                                      ->whereRaw('DAY(student_date_of_birth) >= DAY(NOW())')
+                                                      ->whereRaw('MONTH(student_date_of_birth) >= MONTH(NOW())')
+                                                      ->whereRaw('DAY(student_date_of_birth) <= '+ $weekEndDate +'')
+                                                      ->whereRaw('MONTH(student_date_of_birth) <= 9')
+                                                      ->where('student_date_of_birth', '>=', '1990-01-01')
+                                                      ->orderBy('student_date_of_birth','DESC')
+                                                      ->get();
+
+          $data = DB::select("select * from students where franchisee_id = 10 AND DAY(student_date_of_birth) >= DAY(NOW()) AND MONTH(student_date_of_birth) >= MONTH(NOW())");
+          // return $birthdayCelebrationsData;                        
+                       
+            for($i=0;$i<count($birthdayCelebrationsData);$i++){
+              $customer_data=Customers::where('id','=',$birthdayCelebrationsData[$i]['customer_id'])->distinct()->get();
+              $birthdayCelebrationsData[$i]['customer_name']= $customer_data[0]['customer_name'];
+              $birthdayCelebrationsData[$i]['mobile_no']= $customer_data[0]['mobile_no'];
+              $birthdayCelebrationsData[$i]['franchisee_id']= $customer_data[0]['franchisee_id'];
+              $birthdayCelebrationsData[$i]['student_name']=$birthdayCelebrationsData[$i]['student_name'];;
+            }
+
+
+      }
+      elseif($inputs['value'] == "Month"){
+          $birthdayCelebrationsData  = Students::where('franchisee_id', '=', Session::get('franchiseId'))
+                                                      ->whereRaw('MONTH(student_date_of_birth) = MONTH(NOW())')
+                                                      ->whereDate('student_date_of_birth','>=',date('m-d', strtotime($time)))
+                                                      ->orderBy('student_date_of_birth','DESC')
+                                                      ->get();
+          
+
+          for($i=0;$i<count($birthdayCelebrationsData);$i++){
+              $customer_data=Customers::where('id','=',$birthdayCelebrationsData[$i]['customer_id'])->get();
+              $birthdayCelebrationsData[$i]['customer_name']= $customer_data[0]['customer_name'];
+              $birthdayCelebrationsData[$i]['mobile_no']= $customer_data[0]['mobile_no'];
+              $birthdayCelebrationsData[$i]['franchisee_id']= $customer_data[0]['franchisee_id'];
+              $birthdayCelebrationsData[$i]['student_name']=$birthdayCelebrationsData[$i]['student_name'];
+          }
+      
+      }
+      elseif($inputs['value'] == "Year"){
+            $birthdayCelebrationsData  = Students::where('franchisee_id','=',Session::get('franchiseId'))
+                                                      ->whereRaw('MONTH(student_date_of_birth) >= MONTH(NOW())')
+                                                      ->where('student_date_of_birth', '>=', '1990-01-01')
+                                                      // ->whereDate('student_date_of_birth','>=',date('m-d'))
+                                                      ->orderBy('student_date_of_birth','DESC')
+                                                      ->get();
+
+
+          for($i=0;$i<count($birthdayCelebrationsData);$i++){
+              $customer_data=Customers::where('id','=',$birthdayCelebrationsData[$i]['customer_id'])->get();
+              $birthdayCelebrationsData[$i]['customer_name']= $customer_data[0]['customer_name'];
+              $birthdayCelebrationsData[$i]['mobile_no']= $customer_data[0]['mobile_no'];
+              $birthdayCelebrationsData[$i]['franchisee_id']= $customer_data[0]['franchisee_id'];
+              $birthdayCelebrationsData[$i]['student_name']=$birthdayCelebrationsData[$i]['student_name'];
+          }
+
+      }
       if($birthdayCelebrationsData){
         return Response::json(array('status'=> 'success', 'data'=> $birthdayCelebrationsData));
       }else{
