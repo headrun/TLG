@@ -136,7 +136,7 @@
         "lengthMenu": [ 10, 50, 100, 150, 200 ],
     });
     
-     $("#birthdayCelebrationTable").DataTable({
+     $("#birthdayDataTable").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
 
             // Bind click event
@@ -155,6 +155,26 @@
         "lengthMenu": [ 10, 50, 100, 150, 200 ],
         "order": [[ 3, "desc" ]]
     });
+
+     /*  $("#birthdayDataTable").DataTable({
+        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+
+            // Bind click event
+            $(nRow).click(function() {
+                  //window.open($(this).find('a').attr('href'));
+                window.location = $(this).find('a').attr('href');
+                  //OR
+
+                // window.open(aData.url);
+
+            });
+
+            return nRow;
+        },
+        "iDisplayLength": 10,
+        "lengthMenu": [ 10, 50, 100, 150, 200 ],
+        "order": [[ 3, "desc" ]]
+    });  */
     
     $("#classesExpiringTable").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
@@ -242,6 +262,61 @@
                    });
 
                    $("#birthdayCelebrationTable").html('');
+
+                   $("#birthdayCelebrationTable1").DataTable({
+                            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                                return nRow;
+                            },
+                            "iDisplayLength": 10,
+                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                           // "order": [[ 3, "asc" ]],
+                    });
+                }
+            });
+    });
+
+    $('#BdayDataFilterByDate').change(function(){
+            $.ajax({
+                type: "POST",
+                url: "{{URL::to('/quick/BdayDataFiltering')}}",
+                dataType: 'json',
+                data:{"value": $('#BdayDataFilterByDate').val()},
+                success: function(response)
+                {
+                   var tableHeader = '';
+                   tableHeader = '<table class="uk-table" id="birthdayCelebrationTable1">'+
+                                    '<thead>'+
+                                        '<tr>'+
+                                            '<th class="uk-text-nowrap">Customer</th>'+
+                                            '<th class="uk-text-nowrap">Kid</th>'+
+                                            '<th class="uk-text-nowrap">Mobile No</th>'+                                            
+                                            '<th class="uk-text-nowrap">DOB</th>'+                             
+                                        '</tr>'+
+                                    '</thead>'+
+                                    '<tbody>';
+                   for(i = 0; i < response.data.length; i++){
+                        tableHeader  +=  '<tr onclick = navigateToCustomer("{{url()}}/customers/view/'+response.data[i]['customer_id']+'?tab=birthdayparty")>'+
+                                        '<td>'+response.data[i]['customer_name']+'</td>'+
+                                        '<td>'+response.data[i]['student_name']+'</td>'+
+                                        '<td>'+response.data[i]['mobile_no']+'</td>'+
+                                        '<td>'+response.data[i]['student_date_of_birth']+'</td>'+
+                                    '</tr>';
+                   } 
+
+                   tableHeader += '</tbody></table>';
+
+                   //console.log(tableHeader);
+                   $('#allBdayData').html(tableHeader);
+
+                   $("#birthdayDataTable").DataTable({
+                        "destroy" : true,
+                        "paging":   false,
+                        "ordering": false,
+                        "info":     false,
+                        "searching" : false
+                   });
+
+                   $("#birthdayDataTable").html('');
 
                    $("#birthdayCelebrationTable1").DataTable({
                             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
@@ -632,7 +707,7 @@
                                             <th class="uk-text-nowrap">Date</th>
                                         </tr>
                                     </thead>
-				    <tbody>
+				                <tbody>
                                         <?php foreach($activeRemindersCount as $items){?>
                                         <tr class="uk-table-middle smallText">
                                             <td class="uk-width-3-10 uk-text-nowrap">{{$items['customer_name']}}{{$items['customer_lastname']}}<a href="{{url()}}/customers/view/{{$items['id']}}?tab=ivfollowup"></a></td>
@@ -648,12 +723,43 @@
                         </div>
                     </div>
                 </div>
-                 
+                 <div class="uk-width-medium-1-2">
+                     <div class="md-card">
+                         <div class="md-card-content">
+                             <div class="uk-overflow-container">
+                             <h3>Follow Ups (Future)</h3>
+                               <?php if(isset($futurefollowups)){?>
+                                 <table class="uk-table dashboardTable" id="futurefollowupTable" >
+                                     <thead>
+                                         <tr>
+                                             <th class="uk-text-nowrap">Customer</th>
+                                             <th class="uk-text-nowrap">Followup Type</th>
+                                             <th class="uk-text-nowrap">Mobile No</th>
+                                             <th class="uk-text-nowrap">Date</th>
+                                         </tr>
+                                     </thead>
+                                     <tbody>
+                                       <?php foreach($futurefollowups as $items){?>
+                                         <tr class="uk-table-middle smallText">
+                                           <td class="uk-width-3-10 uk-text-nowrap">{{$items['customer_name']}}{{$items['customer_lastname']}}<a href="{{url()}}/customers/view/{{$items['id']}}?tab=ivfollowup"></a></td>
+                                           <td class="uk-width-3-10 uk-text-nowrap">{{$items['followup_type']}}</td>
+                                           <td class="uk-width-3-10 uk-text-nowrap">{{$items['mobile_no']}}</td>
+                                           <td class="uk-width-3-10 uk-text-nowrap">{{date('d M Y', strtotime($items['reminder_date']))}}</td>
+                                          </tr>   
+                                         <?php }?>                                     
+                                     </tbody>
+                                 </table>
+                                 <?php }?>
+                             </div>
+                         </div>
+                     </div>
+                </div>
+               </div>  
                 
 			
             <!-- info cards -->
             
-            <!-- <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
+            <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
             
                 <div class="uk-width-medium-1-2">
                     <div class="md-card">
@@ -661,10 +767,10 @@
                             <div class="uk-overflow-container">
                                 <div width = "100%">
                                     <div style = "width: 60%; position: absolute">
-                                        <p style  ="font-size: 24px;">Birthdays Celebration </p>        
+                                        <p style  ="font-size: 24px;">List of Birthdays</p>        
                                     </div>
                                     <div style = "width: 40%; margin-left: 60%">
-                                        <select id="BdayPatiesFilterByDate" required="required" class="form-control input-sm md-input" style="padding: 0px;font-weight:bold;color: #727272;">
+                                        <select id="BdayDataFilterByDate" required="required" class="form-control input-sm md-input" style="padding: 0px;font-weight:bold;color: #727272;">
                                             <option value="Week">By Week</option>
                                             <option value="Month">By Month</option>
                                             <option value="Year">By Year</option>
@@ -674,72 +780,37 @@
                                 </div>
                                 <br clear="all"/>
                             	<div id = "allBdayData"></div>
-                                <table class="uk-table" id="birthdayCelebrationTable">
+                                <table class="uk-table" id="birthdayDataTable">
                                     <thead>
                                         <tr>
                                             <th class="uk-text-nowrap">Customer</th>
                                             <th class="uk-text-nowrap">Kid</th>
                                             <th class="uk-text-nowrap">Mobile No</th>                                            
                                             <th class="uk-text-nowrap">DOB</th>
-                                            <th class="uk-text-nowrap">Time</th>
                               
                                         </tr>
                                     </thead>
-                                    <tbody id = "BirthdayTableBody"> -->
-                            <!--            <?php for($i=0;$i<count($birthdayPresentWeek);$i++){
+                                    <tbody id = "BirthdayTableBody">
+                                        <?php for($i=0;$i<count($upcomingBdays);$i++){
 
-                                            if($birthdayPresentWeek[$i]['franchisee_id']==Session::get('franchiseId'))
+                                            if($upcomingBdays[$i]['franchisee_id']==Session::get('franchiseId'))
                                             { ?>
                                         <tr>
-                                            <td>{{$birthdayPresentWeek[$i]['customer_name']}}{{$birthdayPresentWeek[$i]['customer_lastname']}}
-                                            <a href="{{url()}}/customers/view/{{$birthdayPresentWeek[$i]['customer_id']}}?tab=birthdayparty"></a>
+                                            <td>{{$upcomingBdays[$i]['customer_name']}}{{$upcomingBdays[$i]['customer_lastname']}}
+                                            <a href="{{url()}}/customers/view/{{$upcomingBdays[$i]['customer_id']}}?tab=birthdayparty"></a>
                                             </td>
-                                            <td>{{$birthdayPresentWeek[$i]['student_name']}}</td>
-                                            <td>{{$birthdayPresentWeek[$i]['mobile_no']}}</td>
-                                            <td>{{$birthdayPresentWeek[$i]['birthday_party_date']}}</td>
-                                            <td>{{$birthdayPresentWeek[$i]['birthday_party_time']}}</td>
+                                            <td>{{$upcomingBdays[$i]['student_name']}}</td>
+                                            <td>{{$upcomingBdays[$i]['mobile_no']}}</td>
+                                            <td>{{$upcomingBdays[$i]['student_date_of_birth']}}</td>
                                         </tr>
-                                            <?php }} ?> -->
-                                    <!-- </tbody>
+                                            <?php }} ?>
+                                    </tbody>
                                 </table>
                                
                             </div>
                         </div>
                     </div>
-                </div> -->
-                
-                <div class="uk-width-medium-1-2">
-                    <div class="md-card">
-                        <div class="md-card-content">
-                            <div class="uk-overflow-container">
-                            <h3>Follow Ups (Future)</h3>
-                              <?php if(isset($futurefollowups)){?>
-                                <table class="uk-table dashboardTable" id="futurefollowupTable" >
-                                    <thead>
-                                        <tr>
-                                            <th class="uk-text-nowrap">Customer</th>
-                                            <th class="uk-text-nowrap">Followup Type</th>
-                                            <th class="uk-text-nowrap">Mobile No</th>
-                                            <th class="uk-text-nowrap">Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                      <?php foreach($futurefollowups as $items){?>
-                                        <tr class="uk-table-middle smallText">
-                                          <td class="uk-width-3-10 uk-text-nowrap">{{$items['customer_name']}}{{$items['customer_lastname']}}<a href="{{url()}}/customers/view/{{$items['id']}}?tab=ivfollowup"></a></td>
-                                          <td class="uk-width-3-10 uk-text-nowrap">{{$items['followup_type']}}</td>
-                                          <td class="uk-width-3-10 uk-text-nowrap">{{$items['mobile_no']}}</td>
-                                          <td class="uk-width-3-10 uk-text-nowrap">{{date('d M Y', strtotime($items['reminder_date']))}}</td>
-                                         </tr>   
-                                        <?php }?>                                     
-                                    </tbody>
-                                </table>
-                                <?php }?>
-                            </div>
-                        </div>
-                    </div>
-               </div>
-                
+                </div>
               </div>
             
             
