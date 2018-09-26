@@ -166,7 +166,7 @@ $(document).ready(function(){
 		                                	"<a class='btn btn-info btn-xs' href='{{url()}}/batches/attendance/"+response.data[i]['id']+"' title='Summary'><i class='Small material-icons' style='font-size:20px;'>assignment</i></a> " +
 		                                        "<a class='btn btn-primary btn-xs' href='{{url()}}/batches/view/"+ response.data[i]['id'] +"' title='Attendance'><i class='Small material-icons' style='font-size:20px;'>snooze</i></a>"+
 		                                	"<a  id='editBatchbutton' class='btn btn-warning btn-xs' onclick='editbatch("+response.data[i]['id']+','+response.data[i]['location_id']+','+response.data[i]['lead_instructor']+")' title='Edit'> <i class='Small material-icons' style='font-size:20px;'>mode_edit</i></a>"+
-                                                        "<a id='deleteBatchbutton' class='btn btn-danger btn-xs' onclick='deletebatch("+response.data[i]['id']+")'title='Delete'> <i class='Small material-icons' style='font-size:20px;'>delete </i> </a>"+
+                                                       //  "<a id='deleteBatchbutton' class='btn btn-danger btn-xs' onclick='deletebatch("+response.data[i]['id']+")'title='Delete'> <i class='Small material-icons' style='font-size:20px;'>delete </i> </a>"+
                                                 "</td>"+
 		                                
 		                      "</tr>";

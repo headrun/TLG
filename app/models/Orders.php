@@ -346,7 +346,7 @@ class Orders extends \Eloquent {
 
             $final_sales_data = array();
 
-            $final_sales_data[] = ['Parent Name', 'Child Name', 'Payment Date', 'Date of Birth','Type(enrollment/Birthday)', 'Name Of Class','Start Date', 'End Date', 'No.Of Classes Selected', '2nd Class', 'Membership', 'Membership Amount', 'Additional Guest Price', 'Additional Halfhour Price','Fees(Enrollement/Birthdayi/Yard/Camps)', 'Tax Amount', 'Discount', 'Discount For Siblings', 'Discount for Multi-class','Special Discount', 'Total', 'Mode Of Payment'];
+            $final_sales_data[] = ['Parent Name', 'Child Name', 'Payment Date', 'Date of Birth','Type(enrollment/Birthday/Membership)', 'Name Of Class','Start Date', 'End Date', 'No.Of Classes Selected', '2nd Class', 'Membership', 'Membership Amount', 'Additional Guest Price', 'Additional Halfhour Price','Fees(Enrollement/Birthdayi/Yard/Camps)', 'Tax Amount', 'Discount', 'Discount For Siblings', 'Discount for Multi-class','Special Discount', 'Total', 'Mode Of Payment'];
             $Sales['data'] = Orders::where('franchisee_id','=',Session::get('franchiseId'))
                         //->where('student_classes_id','<>',0)
                         ->whereDate('created_at','>=',$inputs['reportGenerateStartdate1'])
@@ -367,6 +367,11 @@ class Orders extends \Eloquent {
                                     ->where('student_id', '=', $Sales['data'][$i]['student_id'])
                                     ->where('customer_id', '=', $Sales['data'][$i]['customer_id'])
                                     ->where('birthday_id','=', $Sales['data'][$i]['birthday_id'])
+                                    ->selectRaw('sum(payments_dues.selected_sessions) as selected_classes,selected_order_sessions, min(start_order_date) as start_date, max(end_order_date) as end_date, class_id, membership_type_id, membership_amount, each_class_amount, tax_percentage, discount_amount, discount_sibling_amount,payment_due_for,payment_due_amount, discount_multipleclasses_amount, discount_admin_amount')
+                                    ->get();
+		$orderData = PaymentDues::where('id','=', $Sales['data'][$i]['payment_dues_id'])
+                                    // ->where('student_id', '=', $Sales['data'][$i]['student_id'])
+                                    // ->where('customer_id', '=', $Sales['data'][$i]['customer_id'])
                                     ->selectRaw('sum(payments_dues.selected_sessions) as selected_classes,selected_order_sessions, min(start_order_date) as start_date, max(end_order_date) as end_date, class_id, membership_type_id, membership_amount, each_class_amount, tax_percentage, discount_amount, discount_sibling_amount,payment_due_for,payment_due_amount, discount_multipleclasses_amount, discount_admin_amount')
                                     ->get();
 
@@ -470,6 +475,39 @@ class Orders extends \Eloquent {
 
 
                     }
+		if($orderData[0]['payment_due_for'] == 'membership'){
+                    $temp=  Customers::find($Sales['data'][$i]['customer_id']);
+                    $cus_name = $temp->customer_name.' '.$temp->customer_lastname;
+                    $each_sales_data[]= $cus_name;
+                    $each_sales_data[] = 'NA';
+                    $temp1 = date_create($Sales['data'][$i]['created_at']);
+                    $each_sales_data[] = date_format($temp1,"m/d/Y");
+                    $each_sales_data[] = 'NA';
+                    $each_sales_data[]= $orderData[0]['payment_due_for'];
+                    $each_sales_data[] = '***NA***';
+                    $each_sales_data[] = 'NA';
+                    $each_sales_data[] = 'NA';
+                    $each_sales_data[] = 'NA';
+                    $each_sales_data[] = 'NA';
+                    $membership_amount = $orderData[0]['membership_amount'];
+                    $mem_name = $membership_amount == "5000" ? "Lifetime Membership" : "Annual Membership";
+                    $each_sales_data[]= $mem_name;
+                    $each_sales_data[]= $membership_amount;
+                    $each_sales_data[] = '0';
+                    $each_sales_data[] = '0';
+                    $each_sales_data[]= $Sales['data'][$i]['amount'];
+                    $tax_amt = (($Sales['data'][$i]['amount'])/100) * $orderData[0]['tax_percentage'];
+                    $each_sales_data[]= number_format($tax_amt, 2, '.', '');
+                    $each_sales_data[] = '0';
+                    $each_sales_data[] = '0';
+                    $each_sales_data[] = '0';
+                    $each_sales_data[] = '0';
+                    $each_sales_data[]= number_format($Sales['data'][$i]['amount'] + $tax_amt , 2, '.', '');;
+                    $each_sales_data[]= $Sales['data'][$i]['payment_mode'];
+                    // $each_sales_data[]= date_format(new Carbon($payment_data[0]['start_date']), 'F d Y');
+                    // $each_sales_data[]= date_format(new Carbon($payment_data[0]['end_date']), 'F d Y');
+                    $final_sales_data[] = $each_sales_data;
+                }
                 if($payment_data[0]['payment_due_for'] == 'enrollment'){
                                 //Collecting customer Data
                     $temp=  Customers::find($Sales['data'][$i]['customer_id']);
