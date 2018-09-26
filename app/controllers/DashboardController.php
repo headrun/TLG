@@ -209,7 +209,7 @@ class DashboardController extends \BaseController {
                         $presentdate=$dat->day;
                         
                         // for rest of the days of month
-                        $birthday_data= Students::whereNotIn('id',$student_id)
+                        /*   $birthday_data= Students::whereNotIn('id',$student_id)
                                                   ->where('student_date_of_birth','<>','')
                                                   ->where( DB::raw('MONTH(student_date_of_birth)'), '=', $month)
                                                   ->where('franchisee_id','=',Session::get('franchiseId'))
@@ -284,7 +284,7 @@ class DashboardController extends \BaseController {
                             $birthday_month_startdays[$i]['mobile_no']=  $customer_data[0]['mobile_no'];   
                             $birthday_month_startdays[$i]['membership']=  CustomerMembership::where('customer_id','=',$birthday_month_startdays[$i]['customer_id'])->count();
                             
-                        }
+                        }  */
                         
                         //for birthday celebration this week
                         
@@ -313,29 +313,58 @@ class DashboardController extends \BaseController {
                         }
 
                         $upcomingBdays = Students::where('franchisee_id','=',Session::get('franchiseId'))
-                                                                    ->whereRaw('DAY(student_date_of_birth) >= DAY(NOW())')
-                                                                    ->whereRaw('MONTH(student_date_of_birth) >= MONTH(NOW())')
-                                                                    ->whereRaw('DAY(student_date_of_birth) <= '+ $weekEndDate +'')
-                                                                    ->whereRaw('MONTH(student_date_of_birth) <= 9')
-                                                                    ->where('student_date_of_birth', '>=', '1990-01-01')
-                                                                    ->orderBy('student_date_of_birth','DESC')
-                                                                    ->get();
+                                                ->whereRaw(DB::raw('DAY(student_date_of_birth) >= DAY(NOW())'))
+                                                ->whereRaw(DB::raw('MONTH(student_date_of_birth) >= MONTH(NOW())'))
+                                                // ->whereRaw('MONTH(student_date_of_birth) >= MONTH(NOW())')
+                                                // ->whereRaw('DAY(student_date_of_birth) <= '+ $weekEndDate +'')
+                                                // ->whereRaw('MONTH(student_date_of_birth) >= 9')
+                                                // ->where('student_date_of_birth', '>', '1990-01-01')
+                                                ->orderBy(DB::raw('MONTH(student_date_of_birth)','ASC'))
+                                                ->orderBy(DB::raw('DAY(student_date_of_birth)','DESC'))
+                                                // ->selectRaw('DATE_FORMAT(student_date_of_birth, "%m-%d") as month, id, customer_id, franchisee_id, student_name, student_date_of_birth')
+                                                // ->orderBy('month', 'DESC')
+                                                ->limit(15)
+                                                ->get();
+                        // return $upcomingBdays;  
                         
-                        // return $upcomingBdays;
-                        for($i=0;$i<count($upcomingBdays);$i++){
+                        foreach ($upcomingBdays as $key => $value) {
+                          $student_end_date = StudentClasses::where('student_id', '=', $value['id'])
+                                                            ->selectRaw('max(enrollment_end_date) as end_date')
+                                                            ->get();
+
+                          if ($student_end_date[0]->end_date >= date('Y-m-d')) {
+                            $value['status'] = 'enrolled';  
+                          } else {
+                            $value['status'] = 'non-enrolled';  
+                          }
+                          $customer_data = Customers::where('id','=',$value['customer_id'])->distinct()->get();
+                          $value['customer_name'] = $customer_data[0]['customer_name'];
+                          $value['mobile_no'] = $customer_data[0]['mobile_no'];
+                          $value['franchisee_id'] = $customer_data[0]['franchisee_id'];
+                          $value['student_name'] = $value['student_name'];
+                        }
+
+                        /* for($i=0;$i<count($upcomingBdays);$i++){
+                          $student_end_date = StudentClasses::where('student_id', '=', $upcomingBdays[$i]['id'])
+                                                            ->selectRaw('max(enrollment_end_date) as end_date')
+                                                            ->get();
+
+                          if ($student_end_date[0]->end_date >= date('Y-m-d')) {
+                            $upcomingBdays[$i]['status'] = 'enrolled';  
+                          } else {
+                            $upcomingBdays[$i]['status'] = 'non-enrolled';  
+                          }
                           $customer_data = Customers::where('id','=',$upcomingBdays[$i]['customer_id'])->distinct()->get();
                           $upcomingBdays[$i]['customer_name'] = $customer_data[0]['customer_name'];
                           $upcomingBdays[$i]['mobile_no'] = $customer_data[0]['mobile_no'];
                           $upcomingBdays[$i]['franchisee_id'] = $customer_data[0]['franchisee_id'];
-                          $student_data = Students::where('id','=',$upcomingBdays[$i]['id'])->distinct()->get();
-                          $upcomingBdays[$i]['student_name'] = $student_data[0]['student_name'];
-                        }
+                          $upcomingBdays[$i]['student_name'] = $upcomingBdays[$i]['student_name'];
+                        } */
                         $expiringbatch= Batches::getExpiringBatchData();
           
 
 
-			$viewData = array('currentPage', 'mainMenu',
-                                                           'birthday_data','birthday_data_month','birthday_month_startdays','birthdayPresentWeek',
+			$viewData = array('currentPage', 'mainMenu','birthday_data','birthday_data_month','birthday_month_startdays','birthdayPresentWeek',
                                                            'todaysMemberReg','membersCount',
                                                            'todaysNonmemberReg','NonmembersCount',
                                                             'customerCount', "reminderCount", 

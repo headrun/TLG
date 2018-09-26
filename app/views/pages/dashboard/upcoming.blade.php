@@ -40,8 +40,6 @@
     <script src="{{url()}}/assets/js/pages/plugins_datatables.min.js"></script>
     <script>
         
-        
-        
     $("#futurefollowupTable").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
 
@@ -137,6 +135,7 @@
     });
     
      $("#birthdayDataTable").DataTable({
+        "ordering": false,
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
 
             // Bind click event
@@ -275,7 +274,7 @@
             });
     });
 
-    $('#BdayDataFilterByDate').change(function(){
+    /*$('#BdayDataFilterByDate').change(function(){
             $.ajax({
                 type: "POST",
                 url: "{{URL::to('/quick/BdayDataFiltering')}}",
@@ -328,7 +327,7 @@
                     });
                 }
             });
-    });
+    });*/
 
     function navigateToCustomer(url){
         window.location = url;
@@ -765,19 +764,7 @@
                     <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-overflow-container">
-                                <div width = "100%">
-                                    <div style = "width: 60%; position: absolute">
-                                        <p style  ="font-size: 24px;">List of Birthdays</p>        
-                                    </div>
-                                    <div style = "width: 40%; margin-left: 60%">
-                                        <select id="BdayDataFilterByDate" required="required" class="form-control input-sm md-input" style="padding: 0px;font-weight:bold;color: #727272;">
-                                            <option value="Week">By Week</option>
-                                            <option value="Month">By Month</option>
-                                            <option value="Year">By Year</option>
-                                        </select>
-
-                                    </div>
-                                </div>
+                                <h3 style  ="font-size: 24px;">Upcoming Birthdays</h3>        
                                 <br clear="all"/>
                             	<div id = "allBdayData"></div>
                                 <table class="uk-table" id="birthdayDataTable">
@@ -787,23 +774,22 @@
                                             <th class="uk-text-nowrap">Kid</th>
                                             <th class="uk-text-nowrap">Mobile No</th>                                            
                                             <th class="uk-text-nowrap">DOB</th>
+                                            <th class="uk-text-nowrap">Status</th>
                               
                                         </tr>
                                     </thead>
                                     <tbody id = "BirthdayTableBody">
-                                        <?php for($i=0;$i<count($upcomingBdays);$i++){
-
-                                            if($upcomingBdays[$i]['franchisee_id']==Session::get('franchiseId'))
-                                            { ?>
+                                        @foreach($upcomingBdays as $value)
                                         <tr>
-                                            <td>{{$upcomingBdays[$i]['customer_name']}}{{$upcomingBdays[$i]['customer_lastname']}}
-                                            <a href="{{url()}}/customers/view/{{$upcomingBdays[$i]['customer_id']}}?tab=birthdayparty"></a>
+                                            <td>{{$value['customer_name']}}{{$value['customer_lastname']}}
+                                            <a href="{{url()}}/customers/view/{{$value['customer_id']}}?tab=birthdayparty"></a>
                                             </td>
-                                            <td>{{$upcomingBdays[$i]['student_name']}}</td>
-                                            <td>{{$upcomingBdays[$i]['mobile_no']}}</td>
-                                            <td>{{$upcomingBdays[$i]['student_date_of_birth']}}</td>
+                                            <td>{{$value['student_name']}}</td>
+                                            <td>{{$value['mobile_no']}}</td>
+                                            <td>{{$value['student_date_of_birth']}}</td>
+                                            <td>{{$value['status']}}</td>
                                         </tr>
-                                            <?php }} ?>
+                                        @endforeach
                                     </tbody>
                                 </table>
                                
