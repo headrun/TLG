@@ -22,14 +22,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.2/bluebird.core.min.js"></script>
 <script>
   
-  var form = $('#DivIdToPrint'), 
-  cache_width = form.width(),  
-  a4 = [500.28, 841.89]; // for a4 size paper width and height 
+   // for a4 size paper width and height 
 
   $(document).on('change', '#franchiseEmailId', function () {
     var email = $('#franchiseEmailId').val();
     $('#user_mail_id').val(email);
   });
+
+  var form = $('#DivIdToPrint'), 
+  cache_width = form.width(),  
+  a4 = [550.28, 841.89];
 
   function createPDF() {
       getCanvas().then(function (canvas) {  
@@ -39,7 +41,7 @@
                  format: 'a4'  
              });  
             doc.addImage(img, 'JPEG', 20, 20);                                
-            doc.save('newFranchisee.pdf');  
+            doc.save('addNewFranchiseeForm.pdf');  
             form.width(cache_width);  
         });
   }
@@ -179,7 +181,12 @@
 	});
  
   $(document).on('click', '#download', function() {
+    $('#download').hide();
     createPDF();
+    $('#deletecustomerclose').click();
+    setTimeout(function () {
+      window.location.reload(1);
+    },2000)
   });
 
 
@@ -276,10 +283,10 @@
             <h3>Add New Franchisee</h3>
           </div>
           <div class="col-lg-6" align="right" style="padding-right:70px;">
-            <button type="button" class="md-btn md-btn-primary" id="download" style="border-radius:5px;">Print</button>
+            <button class="md-btn md-btn-primary" style="border-radius:5px;" type="button" data-uk-modal="{target:'#my-id'}" style=" color:black" >Print</button>
           </div>
         </div>
-        <div class="md-card" id="DivIdToPrint">
+        <div class="md-card">
             <div class="md-card-content">
               <div class="row">
                 <div class="col-lg-12">
@@ -514,5 +521,261 @@
         </div>
     </div>
 </div>
+<div id="my-id" class="uk-modal">
+     <div class="uk-modal-dialog" style="width:70%;">
+         <a class="uk-modal-close uk-close" id="deletecustomerclose"></a>
+         <div class="modaldata">
+          <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
+        <div class="uk-width-medium-1-1">    
+        <div class="md-card" id="DivIdToPrint">
+            <div class="md-card-content">
+              <div style="float:right;">
+                <button type="button" class="md-btn md-btn-primary" id="download" style="border-radius:5px;">Print</button>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <center>
+                    <h4>Add New Franchisee Form</h4>
+                  </center>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-lg-12">
+                  <center>
+                    <p style="color:#d3d3de;">Franchisee Details</p>
+                  </center>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-md-3">
+                  First Name:
+                </div>
+                <div class="col-md-3">
+                  {{Form::text('firstName',null,array('id'=>'firstName','class'=>'form-control','required'=>''))}}
+                </div>
+                <div class="col-md-3">
+                  <center>Last Name:</center>
+                </div>
+                <div class="col-md-3">
+                  {{Form::text('lastName',null,array('id'=>'lastName','class'=>'form-control','required'=>''))}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">
+                  Franchisee Address:
+                </div>
+                <div class="col-md-3">
+                  {{Form::text('franchiseAddress',null,array('id'=>'franchiseAddress','class'=>'form-control'))}}
+                </div>
+                <div class="col-md-3">
+                  Official Email Id :
+                </div>
+                <div class="col-md-3">
+                  {{Form::text('franchiseEmailId',null,array('id'=>'franchiseEmailId','class'=>'form-control','required'=>''))}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">
+                  Mobile No :
+                </div>
+                <div class="col-md-3">
+                  {{Form::number('franchiseePhno',null,array('id'=>'franchiseePhno','class'=>'form-control'))}}
+                </div>
+                <div class="col-md-3">
+                  Legal Entity Name :
+                </div>
+                <div class="col-md-3">
+                  {{Form::text('legalEntity',null,array('id'=>'legalEntity','class'=>'form-control'))}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">
+                  Invoice Code :
+                </div>
+                <div class="col-md-3">
+                  {{Form::text('invoiceCode',null,array('id'=>'invoiceCode','class'=>'form-control','required'=>''))}}
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-lg-12">
+                  <center>
+                    <p style="color:#d3d3de;">Birthday Pricing</p>
+                  </center>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-md-4">
+                  Default Birthday Price :
+                </div>
+                <div class="col-md-2">
+                  {{Form::number('default_birthday_price','',array('id'=>'default_birthday_price','min'=> 0,'class'=>'form-control','required'=>''))}}
+                </div>
+                <div class="col-md-4">
+                  Member Birthday Price :
+                </div>
+                <div class="col-md-2">
+                  {{Form::number('member_birthday_price','',array('id'=>'member_birthday_price','min'=> 0,'class'=>'form-control','required'=>''))}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  Default Advance Amount :
+                </div>
+                <div class="col-md-2">
+                  {{Form::number('default_advance_amount','',array('id'=>'default_advance_amount','min'=> 0,'class'=>'form-control','required'=>''))}}
+                </div>
+                <div class="col-md-4">
+                  Additional Guest Price :
+                </div>
+                <div class="col-md-2">
+                  {{Form::number('additional_guest','',array('id'=>'additional_guest','min'=> 0,'class'=>'form-control','required'=>''))}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  Additional Half An Hour Price :
+                </div>
+                <div class="col-md-2">
+                  {{Form::number('additional_half_hour','',array('id'=>'additional_half_hour','min'=> 0,'class'=>'form-control','required'=>''))}}
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-lg-12">
+                  <center>
+                    <p style="color:#d3d3de;">Classes Base Pricing</p>
+                  </center>
+                </div>
+              </div>
+              <br>
+              <br>
+              <div class="row">
+                <div class="col-md-4">
+                  Classes base price :
+                </div>
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-2">
+                  (In Rs./-)
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-lg-12">
+                  <center>
+                    <p style="color:#d3d3de;">Membership Pricing</p>
+                  </center>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-md-4">
+                  Annual Membership :
+                </div>
+                <div class="col-md-2">
+                  {{Form::number('annaul_membership','',array('id'=>'annaul_membership','min'=> 0,'class'=>'form-control','required'=>''))}}
+                </div>
+                <div class="col-md-4">
+                  Lifetime Membership :
+                </div>
+                <div class="col-md-2">
+                  {{Form::number('lifetime_membership','',array('id'=>'lifetime_membership','min'=> 0,'class'=>'form-control','required'=>''))}}
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-lg-12">
+                  <center>
+                    <p style="color:#d3d3de;">Invoice Data</p>
+                  </center>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-md-4">
+                  PAN Number :
+                </div>
+                <div class="col-md-2">
+                  {{Form::text('pan_no',null,array('id'=>'pan_no','class'=>'form-control','required'=>''))}}
+                </div>
+                <div class="col-md-4">
+                  Service Tax Number :
+                </div>
+                <div class="col-md-2">
+                  {{Form::text('service_tax_no',null,array('id'=>'service_tax_no','class'=>'form-control','required'=>''))}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  Tin Number :
+                </div>
+                <div class="col-md-2">
+                  {{Form::text('tin_no',null,array('id'=>'tin_no','class'=>'form-control','required'=>''))}}
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-lg-12">
+                  <center>
+                    <p style="color:#d3d3de;">Payment Tax</p>
+                  </center>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-md-4">
+                  CGST (%):
+                </div>
+                <div class="col-md-2">
+                  {{Form::number('cgst','',array('id'=>'cgst','min'=> 0,'class'=>'form-control','required'=>''))}}
+                </div>
+                <div class="col-md-4">
+                  SGST (%):
+                </div>
+                <div class="col-md-2">
+                  {{Form::number('sgst','',array('id'=>'sgst','min'=> 0,'class'=>'form-control','required'=>''))}}
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-lg-12">
+                  <center>
+                    <hp style="color:#d3d3de;">Admin Login</hp>
+                  </center>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <center>
+                  <div class="col-md-6">
+                    User Mail Id :
+                  </div>
+                  <div class="col-md-6">
+                    {{Form::text('user_mail_id',null,array('id'=>'user_mail_id','class'=>'form-control','required'=>''))}}
+                  </div>
+                </center>
+              </div>
+              <div class="row">
+                <center>
+                  <div class="col-md-6">
+                    Create Password :
+                  </div>
+                  <div class="col-md-6">
+                    {{Form::text('password',null,array('id'=>'password','class'=>'form-control','required'=>''))}}
+                  </div>
+                </center> 
+              </div>
+              {{ Form::close() }}
+            </div>
+        </div>
+        </div>
+          </div>
+         </div>
+     </div>
+ </div>
 
 @stop
