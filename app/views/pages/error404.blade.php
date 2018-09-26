@@ -12,7 +12,7 @@
 		<img src="{{url()}}/assets/img/logo.png" alt="" />
 	</center>
 	<center>
-		<h2>Dude,we can't find that page!</h2>
+		<h2>Sorry,Something went wrong!</h2>
 		<h4>Try Again Later</h4>
 	</center>
 	<div class="footer">
