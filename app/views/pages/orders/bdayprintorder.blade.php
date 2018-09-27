@@ -105,7 +105,7 @@
 				
 				</div>
 				<br clear="all"/>
-                                <p style="text-align: center;">{{$franchisee_name['franchisee_legal_entity']}}</p>
+                                <p style="text-align: center;padding-top:25px;">{{$franchisee_name['franchisee_legal_entity']}}</p>
 				<p style="text-align: center;">Thank You and welcome to celebrate B'day party in The Little Gym family</p>
 				<br clear="all"/>
 				<div class="col-md-11" style="margin:0px auto !important; float:none; border-bottom:2px dashed #EEEEEE;">
@@ -234,7 +234,7 @@
 						
 					
 					</table>
-					@if(isset($tax_data))
+						@if(isset($tax_data))
                         @for($i=0;$i<count($tax_data);$i++)
 							<h6>
 							@if($tax_data[$i]['tax_percentage'] === 0 && $tax_data[$i]['tax_particular'] === 'VAT')
