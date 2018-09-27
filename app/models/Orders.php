@@ -375,6 +375,11 @@ class Orders extends \Eloquent {
                                     ->where('birthday_id','=', $Sales['data'][$i]['birthday_id'])
                                     ->selectRaw('sum(payments_dues.selected_sessions) as selected_classes,selected_order_sessions, min(start_order_date) as start_date, max(end_order_date) as end_date, class_id, membership_type_id, membership_amount, each_class_amount, tax_percentage, discount_amount, discount_sibling_amount,payment_due_for,payment_due_amount, discount_multipleclasses_amount, discount_admin_amount')
                                     ->get();
+		$orderData = PaymentDues::where('id','=', $Sales['data'][$i]['payment_dues_id'])
+                                    // ->where('student_id', '=', $Sales['data'][$i]['student_id'])
+                                    // ->where('customer_id', '=', $Sales['data'][$i]['customer_id'])
+                                    ->selectRaw('sum(payments_dues.selected_sessions) as selected_classes,selected_order_sessions, min(start_order_date) as start_date, max(end_order_date) as end_date, class_id, membership_type_id, membership_amount, each_class_amount, tax_percentage, discount_amount, discount_sibling_amount,payment_due_for,payment_due_amount, discount_multipleclasses_amount, discount_admin_amount')
+                                    ->get();
 
                 $orderData = PaymentDues::where('id','=', $Sales['data'][$i]['payment_dues_id'])
                                     // ->where('student_id', '=', $Sales['data'][$i]['student_id'])
@@ -516,8 +521,6 @@ class Orders extends \Eloquent {
                     // $each_sales_data[]= date_format(new Carbon($payment_data[0]['end_date']), 'F d Y');
                     $final_sales_data[] = $each_sales_data;
                 }
-
-
                 if($payment_data[0]['payment_due_for'] == 'enrollment'){
                                 //Collecting customer Data
                     $temp=  Customers::find($Sales['data'][$i]['customer_id']);
