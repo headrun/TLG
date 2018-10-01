@@ -135,7 +135,7 @@
 <br clear="all"/>
 <div id="divLoadingAdding" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
   <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
-  <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+  <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:11%;">
    Budget Added succussfully.Please wait . . .
   </p>
 </div>

@@ -186,7 +186,7 @@
     $('#deletecustomerclose').click();
     setTimeout(function () {
       window.location.reload(1);
-    },2000)
+    },3000)
   });
 
 
