@@ -253,7 +253,9 @@ class PaymentsController extends \BaseController {
 		$totalAmountForAllBatch = '';
 		$payment_no = Crypt::decrypt($id);
 		$invoice_data = InvoiceData::where('franchise_id', '=', Session::get('franchiseId'))->get();
-		$paymentDueDetails = PaymentDues::where('payment_no', '=', $payment_no)->get();
+		$paymentDueDetails = PaymentDues::where('payment_no', '=', $payment_no)
+						->where('payment_due_for', '=', 'enrollment')
+						->get();
 		for($i = 0; $i < count($paymentDueDetails); $i++){
 			$totalSelectedClasses = $totalSelectedClasses + $paymentDueDetails[$i]['selected_sessions'];
 			$getBatchNname[]  = Batches::where('id', '=', $paymentDueDetails[$i]['batch_id'])->get();
@@ -296,7 +298,9 @@ class PaymentsController extends \BaseController {
 		if(Auth::check()){
                 $payment_no = Crypt::decrypt($id);
                 $invoice_data = InvoiceData::where('franchise_id', '=', Session::get('franchiseId'))->get();
-                $paymentDueDetails = PaymentDues::where('payment_no', '=', $payment_no)->get();
+                $paymentDueDetails = PaymentDues::where('payment_no', '=', $payment_no)
+						->where('payment_due_for', '!=', 'enrollment')
+						->get();
 		$getCustomerName = Customers::select('customer_name','customer_lastname')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
                 $getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
                 $paymentMode = Orders::where('payment_no', '=', $payment_no)->get();
