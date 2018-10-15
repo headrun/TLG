@@ -325,8 +325,8 @@ class Comments extends \Eloquent {
 
     static function getAllFollowupReports($inputs){
        $comment_data['data'] = Comments::where('franchisee_id','=',Session::get('franchiseId'))
-                                ->where('created_at','>=',$inputs['reportGenerateStartdate'])
-                                ->where('created_at','<=',$inputs['reportGenerateEnddate'])
+                                ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
                                 //->selectRaw('max(reminder_date)')
                                 ->orderBy('reminder_date','DESC')
                                 ->groupBy('student_id')

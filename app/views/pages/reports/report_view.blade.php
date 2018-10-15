@@ -576,6 +576,7 @@
                                             '<th>Schedule Date</th>'+
                                             '<th>Comment</th>'+
                                             '<th>Status</th>'+
+					    '<th>Created At</th>'+
                                             '</tr>'+
                                             '</thead>';
                                 for(var i=0;i<response[0]['data'].length;i++){
@@ -584,7 +585,8 @@
                                           response[0]['data'][i]['followup_type']+"</td><td>"+
                                           response[0]['data'][i]['reminder_date']+"</td><td>"+
                                           response[0]['data'][i]['log_text']+"</td><td>"+
-                                          response[0]['data'][i]['followup_status']+"</td></tr>";
+					  response[0]['data'][i]['followup_status']+"</td><td>"+
+                                          response[0]['data'][i]['created_at']+"</td></tr>";
                                     }
                                     header_data+="</table></div></div>";
                                     console.log(header_data);
