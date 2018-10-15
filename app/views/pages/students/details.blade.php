@@ -370,7 +370,7 @@ function fullEnrollmentReset(){
             $('#second_class_amount').val('-'+(second_class_discount_amt).toFixed(2));
           }else{
             second_class_discount_amt = parseFloat(base_price*{{$discount_second_class}}/100);
-            $('#second_class_amount').val('-'+(base_price).toFixed(2));
+            $('#second_class_amount').val('-'+(second_class_discount_amt).toFixed(2));
           }
           $('#second_class_amountlabel').html('-'+(second_class_discount_amt).toFixed(2));
           finalAmount = parseFloat(finalAmount-second_class_discount_amt);
