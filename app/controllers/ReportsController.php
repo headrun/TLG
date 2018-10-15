@@ -534,7 +534,7 @@ class ReportsController extends \BaseController {
                 $currentPage  =  "ViewDeletedCustomer_LI";
                 $mainMenu     =  "REPORTS_MENU_MAIN";
                 $deletedCustomer_data=DeletedCustomers::where('franchisee_id','=',Session::get('franchiseId'))
-                                                        ->orderBy('id','desc')
+                                                        ->orderBy('created_at','desc')
                                                         ->get();
                 $viewData= compact('currentPage','mainMenu','deletedCustomer_data');
                 return View::make('pages.reports.deletedcustomer_view',$viewData);

@@ -297,7 +297,7 @@ class CustomersController extends \BaseController {
                                                   ->get();
                          for($i=0;$i<count($iv_data);$i++){
                              $comments_data=Comments::where('introvisit_id','=',$iv_data[$i]['id'])
-                                                      ->orderBy('id','DESC')
+                                                      ->orderBy('created_at','DESC')
                                                       ->first();
                              $iv_data[$i]['comment_data']=$comments_data;
                              $student=Students::find($iv_data[$i]['student_id']);
@@ -309,7 +309,7 @@ class CustomersController extends \BaseController {
                                                          ->get();
                          for($i=0;$i<count($birthday_data);$i++){
                          $birthday_comments=Comments::where('birthday_id','=',$birthday_data[$i]['id'])
-                                                      ->orderBy('id','DESC')
+                                                      ->orderBy('created_at','DESC')
                                                       ->first();
                          $birthday_data[$i]['comment_data']=$birthday_comments;
                          $student_data=Students::find($birthday_data[$i]['student_id']);
@@ -323,7 +323,7 @@ class CustomersController extends \BaseController {
                          //Comments::where('customer_id','=',$id)->get();
                          for($i=0;$i<count($complaint_data);$i++){
                              $complaint_data[$i]['comments']=Comments::where('complaint_id','=',$complaint_data[$i]['id'])
-                                       ->orderBy('id','DESC')
+                                       ->orderBy('created_at','DESC')
                                        ->first();
                              $student_data=  Students::find($complaint_data[$i]['student_id']);
                              $complaint_data[$i]['student_name']=$student_data['student_name'];
@@ -333,7 +333,7 @@ class CustomersController extends \BaseController {
                          $retention_data=Retention::getRetentionByCustomerId($id);
                          for($i=0;$i<count($retention_data);$i++){
                                $retention_data[$i]['comments']=  Comments::where('retention_id','=',$retention_data[$i]['id'])
-                                                                 ->orderBy('id','DESC')
+                                                                 ->orderBy('created_at','DESC')
                                                                  ->first();
                                $student_data=  Students::find($retention_data[$i]['student_id']);
                                $retention_data[$i]['student_name']=$student_data['student_name'];
@@ -343,7 +343,7 @@ class CustomersController extends \BaseController {
                          $inuiry_data=Inquiry::getInquiryByCustomerId($id);
                          for($i=0;$i<count($inuiry_data);$i++){
                              $inuiry_data[$i]['comments']=Comments::where('inquiry_id','=',$inuiry_data[$i]['id'])
-                                                          ->orderBy('id','DESC')
+                                                          ->orderBy('created_at','DESC')
                                                           ->first();
                              
                          }

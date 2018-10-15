@@ -29,7 +29,8 @@ class Events extends \Eloquent {
 					            		'cities.name as city',
 					            		'provinces.name as state'
 					            		
-					            )            
+					            ) 
+					            ->orderBy('created_at', 'DESC')          
 								//->groupBy('customers.id')			
 					            ->get();
 		

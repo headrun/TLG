@@ -157,6 +157,7 @@
                                                 });
                                                 return nRow;*/
                                            },
+                                           "ordering": false,
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
@@ -206,6 +207,7 @@
                                                 });
                                                 return nRow;*/
                                            },
+                                           "ordering": false,
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
@@ -299,6 +301,7 @@
                                                 });
                                                 return nRow;  */
                                            },
+                                           "ordering": false,
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
@@ -341,6 +344,7 @@
                                                 });
                                                 return nRow;*/
                                            },
+                                           "ordering": false,
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
@@ -376,6 +380,7 @@
 
                                                 return nRow;*/
                                            },
+                                           "ordering": false,
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });
@@ -559,6 +564,7 @@
 
                                                 return nRow;*/
                                            },
+                                           "ordering": false,
                                            "iDisplayLength": 10,
                                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
                                        });

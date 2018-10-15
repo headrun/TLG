@@ -200,6 +200,7 @@ class IntroVisit extends \Eloquent {
         $introvisit['data']= Introvisit::where('franchisee_id','=',Session::get('franchiseId'))
                            ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
                            ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                           ->orderBy('iv_date', 'DESC')
                            ->get();
         //return $present_date;
         for($i=0;$i<count($introvisit['data']);$i++){

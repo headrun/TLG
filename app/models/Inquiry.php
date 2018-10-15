@@ -56,6 +56,7 @@ class Inquiry extends \Eloquent {
          $inquiry['data']= Inquiry::where('franchisee_id','=',Session::get('franchiseId'))
                                ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
                                ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
+                               ->orderby('created_at', 'DESC')
                                ->get();
           //$finalArray = array();
          for($i=0;$i<count($inquiry['data']);$i++){
