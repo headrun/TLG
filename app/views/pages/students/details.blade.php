@@ -382,7 +382,7 @@ function fullEnrollmentReset(){
             $('#second_class_amount').val('-'+(second_class_discount_amt).toFixed(2));
           }else{
             second_class_discount_amt = parseFloat(base_price*{{$discount_second_class}}/100);
-            $('#second_class_amount').val('-'+(base_price).toFixed(2));
+            $('#second_class_amount').val('-'+(second_class_discount_amt).toFixed(2));
           }
           $('#second_class_amountlabel').html('-'+(second_class_discount_amt).toFixed(2));
           finalAmount = parseFloat(finalAmount-second_class_discount_amt);
@@ -666,6 +666,18 @@ function fullEnrollmentReset(){
        $("#GrandTotalForOld").val(GrandTotalForOld);               
        
      }
+     $('#closeData').click(function () {
+       $("#batchCbx").val("");
+       $("#eligibleClassesCbx").val("");
+       $('#enrollmentStartDate').val('');
+       $('#enrollmentEndDate').val('');
+       $("#paymentOptions").hide();
+       $("#sessionsTable").hide();
+       $("#enrollmentOptions").val("enroll");
+       fullEnrollmentReset();
+       $('#enrollmentModal').modal('hide');
+     });
+
      $("#closeEnrollmentModal").click(function (){
 
       $("#batchCbx").val("");
@@ -4170,7 +4182,7 @@ style="margin-top: 50px; z-index: 99999;">
   <!-- Modal content-->
   <div class="modal-content">
     <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <button type="button" class="close" id="closeData">&times;</button>
       <h4 class="modal-title">Enroll Kids</h4>
     </div>
     <form id="enrollKidForm" method="post"
@@ -4576,7 +4588,6 @@ style="margin-top: 50px; z-index: 99999;">
                                                                           </td>
                                                                         </tr>
                                                                         <tr>
-
                                                                           <td colspan="2" style="text-align: right; font-weight: bold;"> 
                                                                             <?php if(Session::get('franchiseId') == 11) {?>
                                                                               <input id="diplomatOption" name="diplomatOption" type="checkbox"  value="yes" class="checkbox-custom"  />

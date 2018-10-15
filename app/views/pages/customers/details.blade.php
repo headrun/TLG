@@ -118,6 +118,7 @@ $("#followuptable").DataTable({
 
             return nRow;
         },
+        "ordering": false,
         "iDisplayLength": 10,
         "lengthMenu": [ 10, 50, 100, 150, 200 ]
     });
@@ -3337,6 +3338,7 @@ $('#memberhsipchequeNumber').keyup(function(){
 																</tr>																
 																<tr style="text-align: right;">
 																	<td colspan="2">
+
 																		<?php if(Session::get('franchiseId') == 11) {?>
 																		  <input id="diplomatOption" name="diplomatOption" type="checkbox"  value="yes" class="checkbox-custom"  />
 																		  <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span

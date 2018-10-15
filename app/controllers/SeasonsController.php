@@ -63,7 +63,7 @@ class SeasonsController extends \BaseController {
                 
                 //adding the new season to season table
                 $season_id=Seasons::addSeason($adddata);
-                $season_data=Seasons::where('id','=',$season_id)->get();
+                $season_data=Seasons::where('id','=',$season_id)->orderBy('created_at', 'DESC')->get();
                 $season_data=$season_data[0];
                 
                 

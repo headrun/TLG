@@ -381,12 +381,6 @@ class Orders extends \Eloquent {
                                     ->selectRaw('sum(payments_dues.selected_sessions) as selected_classes,selected_order_sessions, min(start_order_date) as start_date, max(end_order_date) as end_date, class_id, membership_type_id, membership_amount, each_class_amount, tax_percentage, discount_amount, discount_sibling_amount,payment_due_for,payment_due_amount, discount_multipleclasses_amount, discount_admin_amount')
                                     ->get();
 
-                $orderData = PaymentDues::where('id','=', $Sales['data'][$i]['payment_dues_id'])
-                                    // ->where('student_id', '=', $Sales['data'][$i]['student_id'])
-                                    // ->where('customer_id', '=', $Sales['data'][$i]['customer_id'])
-                                    ->selectRaw('sum(payments_dues.selected_sessions) as selected_classes,selected_order_sessions, min(start_order_date) as start_date, max(end_order_date) as end_date, class_id, membership_type_id, membership_amount, each_class_amount, tax_percentage, discount_amount, discount_sibling_amount,payment_due_for,payment_due_amount, discount_multipleclasses_amount, discount_admin_amount')
-                                    ->get();
-
                 $each_sales_data = array();
 		if($payment_data[0]['payment_due_for'] === 'camps' || $payment_data[0]['payment_due_for'] === 'yard'){
 		    $temp=  Customers::find($Sales['data'][$i]['customer_id']);
@@ -487,8 +481,7 @@ class Orders extends \Eloquent {
 
 
                     }
-
-                if($orderData[0]['payment_due_for'] == 'membership'){
+		if($orderData[0]['payment_due_for'] == 'membership'){
                     $temp=  Customers::find($Sales['data'][$i]['customer_id']);
                     $cus_name = $temp->customer_name.' '.$temp->customer_lastname;
                     $each_sales_data[]= $cus_name;

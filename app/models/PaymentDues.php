@@ -267,7 +267,7 @@ class PaymentDues extends \Eloquent {
                                                     ->where('birthday_id','<>',0)
                                                     ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
                                                     ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
-                                                    ->orderBy('id','desc')
+                                                    ->orderBy('birthday_party_date','desc')
                                                     ->get();
         for($i=0;$i<count($birthdayReportDetails['data']);$i++){
             $temp=  Customers::find($birthdayReportDetails['data'][$i]['customer_id']);
@@ -299,7 +299,7 @@ class PaymentDues extends \Eloquent {
                                                     ->where('student_class_id','<>',0)
                                                     ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
                                                     ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
-                                                    ->orderBy('id','desc')
+                                                    ->orderBy('created_at','desc')
                                                     ->get();
         for($i=0;$i<count($enrollmentReportDetails['data']);$i++){
             $temp=  Customers::find($enrollmentReportDetails['data'][$i]['customer_id']);
@@ -379,7 +379,7 @@ class PaymentDues extends \Eloquent {
                                         ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
                                         ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
                                         ->where('membership_id','<>',0)
-                                        ->orderBy('id','desc')
+                                        ->orderBy('created_at','desc')
                                         ->get();
       for($i=0;$i<count($membership['data']);$i++){
             $temp=  Customers::find($membership['data'][$i]['customer_id']);
