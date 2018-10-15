@@ -315,7 +315,7 @@ function getbatchesStudents(batchId, dateStartEvent){
 					}  */
 					$('input[type="radio"][pdata="leadStatusEnable"]').change(function(){
 						var i=$(this).attr('data2');
-						var introId = $(this).parent().parent().parent().find('.ivId').val();
+						var introId = $('input.ivId[name=introvisit_id'+i+']').val();
 						if (parseInt(introId) !== 0) {
 							$('#absent'+i).remove();
 							$('#ea'+i).remove();

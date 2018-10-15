@@ -360,6 +360,12 @@ class Orders extends \Eloquent {
                         ->whereDate('created_at','<=',$inputs['reportGenerateEnddate1'])
                         ->orderBy('id')
                         ->get();  
+
+            $customerMembershipData['data'] = CustomerMembership::where('franchisee_id','=',Session::get('franchiseId'))
+                                    ->whereDate('created_at','>=',$inputs['reportGenerateStartdate1'])
+                                    ->whereDate('created_at','<=',$inputs['reportGenerateEnddate1'])
+                                    ->orderBy('id')
+                                    ->get();
  
             for($i=0;$i<count($Sales['data']);$i++){
                 $payment_data = PaymentDues::

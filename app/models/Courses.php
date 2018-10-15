@@ -78,7 +78,19 @@ class Courses extends \Eloquent {
 	
 	
 	}
-	
+	 static function updateCourses($inputs, $coureIds) {
+		$Course = new Courses();
+		$Course->course_name      = $coureIds[0]['course_name'];
+        $Course->slug     		  = $coureIds[0]['slug'];
+		$Course->master_course_id = $coureIds[0]['id'];
+		$Course->franchisee_id    = $inputs['franchiseeId'];
+		$Course->created_by       = Session::get('userId');
+		$Course->created_at       = date("Y-m-d H:i:s");
+		$Course->save();
+		
+		return $Course;
+	 }
+
 	static function checkWhetherCourseAdded($franchiseeID, $masterCourseId){
 		
 		$coursesCount = Courses::where('franchisee_id', '=', $franchiseeID)

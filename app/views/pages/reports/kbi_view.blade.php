@@ -62,14 +62,16 @@
                 if(response.status === "success"){
                   $('#saveUpdatedMarBud').addClass('disabled');
                   $("#MBupdateStatusMsg").html('<p class="uk-alert uk-alert-success">Marketing Budget has been Updated successfully.Please wait untill the page reloads.</p>');
+                  $('#editModal').modal('hide');
+                  $('#divLoadingUpdate').show();
                   setTimeout(function(){
                     window.location.reload(1);
-                  }, 5000);
+                  }, 2000);
                 } else {
                   $("#MBupdateStatusMsg").html('<p class="uk-alert uk-alert-danger">Marketing budget updation is failed.Please try again.</p>');
                   setTimeout(function(){
                     window.location.reload(1);
-                  }, 5000);
+                  }, 2000);
                 }
             }
         });
@@ -98,14 +100,16 @@
                           if(response.status === "success"){
                             $('#saveMarBud').addClass('disabled');
                             $("#MBstatusMsg").html('<p class="uk-alert uk-alert-success">Marketing Budget has been added successfully.Please wait untill the page reloads.</p>');
+                            $('#myModal').modal('hide');
+                            $('#divLoadingAdding').show();
                             setTimeout(function(){
                               window.location.reload(1);
-                            }, 5000);
+                            }, 2000);
                           } else {
                             $("#MBstatusMsg").html('<p class="uk-alert uk-alert-danger" style="padding-right:100px;">You are trying to add marketing budget is failed.Please try again.</p>');
                             setTimeout(function(){
                               window.location.reload(1);
-                            }, 5000);
+                            }, 2000);
                           }
                       }
                   });
@@ -126,10 +130,21 @@
 		<li><a href="#" style="z-index:8;">Reports</a></li>
 		<li><a href="#" style="z-index:7;">KBI</a></li>
 	</ul>
-    
 </div>
 <br clear="all"/>
 <br clear="all"/>
+<div id="divLoadingAdding" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+  <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+  <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:11%;">
+   Budget Added succussfully.Please wait . . .
+  </p>
+</div>
+<div id="divLoadingUpdate" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+  <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+  <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+   Budget updated succussfully.Please wait . . .
+  </p>
+</div>
 <div>
   <div class="uk-width-medium">
       <div class="row">
