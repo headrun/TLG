@@ -77,6 +77,7 @@ class Batches extends \Eloquent {
         return Batches::where('franchisee_id', '=', Session::get('franchiseId'))
                                         ->where('season_id','=',$seasonId)
                                         ->where('end_date','>=', date('Y-m-d'))
+                                        ->orderBy('created_at', 'DESC')
                                         ->get();
     }
 

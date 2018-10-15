@@ -10,7 +10,7 @@ class DiscountsController extends \BaseController {
             $currentPage = "AddDiscounts_LI";
             $mainMenu = "DISCOUNTS_MENU_MAIN";
             $discount_data=  Discounts::where('franchisee_id','=',Session::get('franchiseId'))
-                           ->orderBy('id','=','DESC') 
+                           ->orderBy('number_of_classes','=','DESC') 
                            ->get();
             for($i=0;$i<sizeof($discount_data);$i++){
                 $user_data=User::where('id','=',$discount_data[$i]['created_by'])->get();
@@ -31,7 +31,7 @@ class DiscountsController extends \BaseController {
             $currentPage = "EnableDiscounts_LI";
             $mainMenu = "DISCOUNTS_MENU_MAIN";
             $discount_data=  Discounts::where('franchisee_id','=',Session::get('franchiseId'))
-                           ->orderBy('id','=','DESC') 
+                           ->orderBy('number_of_classes','=','DESC') 
                            ->get();
             $viewdata=array('currentPage','mainMenu', 'discount_data');
             //$viewdata=array('currentPage','mainMenu');

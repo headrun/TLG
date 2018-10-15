@@ -438,7 +438,7 @@ class Customers extends \Eloquent {
                  
                 $customers = Customers::where('franchisee_id','=',$franchiseeId)
                             ->whereNotIn('id',$id)
-                            ->orderBy('id','Desc')
+                            ->orderBy('created_at','Desc')
                             ->get();
  		$comment_id;
 

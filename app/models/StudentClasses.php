@@ -56,6 +56,7 @@ class StudentClasses extends \Eloquent {
 	//		var_dump($student); die();
 			$student_end_date = StudentClasses::where('student_id', '=', $student->id)
                                                           ->selectRaw('max(enrollment_end_date) as end_date')
+                                                          // ->orderBy('enrollment_end_date', 'DESC')
                                                           ->get();
 			$studentDetails[$student->id] = array('end_date' => $student_end_date[0]->end_date);
 		}
