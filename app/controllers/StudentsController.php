@@ -253,23 +253,24 @@ class StudentsController extends \BaseController {
                                                                 ->get();
                           
                           for($j=0;$j<count($payment_made_data[$i]);$j++){
-                              $batch_name = Batches::where('id','=',$payment_made_data[$i][$j]['batch_id'])
+			    if (isset($payment_made_data[$i][$j]['batch_id']) && !empty($payment_made_data[$i][$j]['batch_id'])){
+                                $batch_name = Batches::where('id','=',$payment_made_data[$i][$j]['batch_id'])
                                               ->selectRaw('batch_name,preferred_end_time,preferred_time')
                                               ->get();
-                            if(isset($batch_name) && !empty($batch_name)){  
-                              $batch_user = User::find($payment_made_data[$i][$j]['created_by']);
+                            	if(isset($batch_name) && !empty($batch_name)){  
+                              		$batch_user = User::find($payment_made_data[$i][$j]['created_by']);
 
-                              $payment_made_data[$i][$j]['day'] = date('l', strtotime($payment_made_data[$i][$j]['start_order_date']));
-                              $start_time = explode(':', $batch_name[0]['preferred_time']);
-                              $end_time = explode(':', $batch_name[0]['preferred_end_time']);
+                              		$payment_made_data[$i][$j]['day'] = date('l', strtotime($payment_made_data[$i][$j]['start_order_date']));
+                              		$start_time = explode(':', $batch_name[0]['preferred_time']);
+                              		$end_time = explode(':', $batch_name[0]['preferred_end_time']);
 
-                              $payment_made_data[$i][$j]['time'] = $start_time[0].':'.$start_time[1].'-'.$end_time[0].':'.$end_time[1];
+                              		$payment_made_data[$i][$j]['time'] = $start_time[0].':'.$start_time[1].'-'.$end_time[0].':'.$end_time[1];
                               
-                              $payment_made_data[$i][$j]['receivedname'] = $batch_user->first_name.$batch_user->last_name;
+                              		$payment_made_data[$i][$j]['receivedname'] = $batch_user->first_name.$batch_user->last_name;
                               
-                              $payment_made_data[$i][$j]['class_name'] = $batch_name[0]['batch_name'];
-                            }
-                              
+                              		$payment_made_data[$i][$j]['class_name'] = $batch_name[0]['batch_name'];
+                            	}
+                            }  
                            }
                           $payments_master_details[$i]['encrypted_payment_no'] = url().'/orders/print/'.Crypt::encrypt($payments_master_details[$i]['payment_no']);
                         }
@@ -3037,7 +3038,7 @@ public function enrollKid2(){
 
 	$getInvoiceId = Orders::where('franchisee_id', '=', Session::get('franchiseId'))
                                 ->max('invoice_id');
-         $invoice_id = $getInvoiceId[0]->invoice_id + 1;
+         $invoice_id = $getInvoiceId + 1;
 	$invoiceNo = Franchisee::invoiceForMembership();
         $invoiceFormat = Orders::invoiceFormat($invoiceNo);
 	$getPaymentDuesId = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
