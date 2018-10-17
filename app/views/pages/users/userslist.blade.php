@@ -41,7 +41,7 @@ function deleteUser(user_id) {
         {
           if(response.status == "success"){
           		$("#messageForUserDelete").html('<p class="uk-alert uk-alert-success">User has been deleted successfully. Please wait till this page reloads</p>');	
-	            $('#divLoading').show();
+	            // $('#divLoading').show();
 	            setTimeout(function(){
 	             window.location.reload(1);
 	          }, 3000);    

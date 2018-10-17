@@ -105,7 +105,7 @@
                         $('#msgDiv').html("<h5 class = 'uk-alert uk-alert-danger' style = 'color: #fff; width: 90%; padding: 8px; text-align: center'>Class is already Exist.</h5>");
                     } else {
                         $('#msgDiv').html("<h5 class = 'uk-alert uk-alert-success' style = 'color: #fff; width: 90%; padding: 8px; text-align: center'>Class inserted Successfully.</h5>");   
-                        $('#newClassLoading').show();
+                        // $('#newClassLoading').show();
                         setTimeout(function(){
                           window.location.reload(1);
                         }, 2500);
@@ -223,7 +223,7 @@
                 {
                     if(response.status == "success"){
                         $('#modalMsgDiv').html("<h5 class = 'uk-alert uk-alert-success' style = 'color: #fff; width: 100%; padding: 8px; text-align: center'>Class is updated Successfully. Please wait untill this page reloads.</h5>");
-                        $('#updateClassLoading').show(); 
+                        // $('#updateClassLoading').show(); 
                         setTimeout(function(){
                             window.location.reload(1);
                         }, 2500);

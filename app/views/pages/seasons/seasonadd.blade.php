@@ -181,7 +181,7 @@
                          if(response.status=='success'){
                              console.log('success');
                              $('#sessioninfo').html("<p class=' uk-alert uk-alert-success'> Season added Succesfully for sessions:"+response.sessionafterholidays+".please wait till the page reloads.</p>");
-                             $('#divLoading').show();
+                             // $('#divLoading').show();
                              setTimeout(function(){
 				   window.location.reload(1);
 				}, 3000);

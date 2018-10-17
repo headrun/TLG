@@ -106,7 +106,7 @@
               $('.updateFranchisee').addClass('disabled');  
               $('#NewFranchiseeMsgDiv').html("<p class='uk-alert uk-alert-success'>Franchisee has been updated successfully.Please wait untill the page reloads</p>");
                   $('#modaldata').modal('hide');
-                  $('#newFranchiseeLoading').show();
+                  // $('#newFranchiseeLoading').show();
                   setTimeout(function(){
                   window.location.reload(1);
                   }, 4000);

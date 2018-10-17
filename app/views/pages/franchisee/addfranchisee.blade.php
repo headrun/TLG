@@ -110,7 +110,7 @@
         success: function(response){
           if(response.status === "success"){
             $('#NewFranchiseeMsgDiv').html("<p class='uk-alert uk-alert-success'>New franchisee has been created successfully.Please wait untill the page reloads</p>");
-                $('#newFranchiseeLoading').show();
+                // $('#newFranchiseeLoading').show();
                 setTimeout(function(){
                 window.location.reload(1);
                 }, 4000);

@@ -222,7 +222,7 @@ $(document).on('change', 'tbody td .leadTypeDropdown', function() {
     	dataType:"json", 
 	success: function (response) {
 		if(response.status == "success"){
-			$('#updateLeadType').show();
+			// $('#updateLeadType').show();
 			setTimeout(function(){
                window.location.reload(1);
             }, 3000);

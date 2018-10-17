@@ -269,7 +269,7 @@ function addKids(event){
 			if(response.status == "success"){
 				$("#messageStudentAddDiv").html('<p class="uk-alert uk-alert-success">Kid details has been added successfully. Please wait till this page reloads</p>');
 				$('#addKidsModal').modal('hide');
-				$('#addingNewKid').show();
+				// $('#addingNewKid').show();
 				$("#formBody").hide();
 
 				setTimeout(function(){
@@ -310,7 +310,7 @@ $("#saveCommentBtn").click(function (){
 	        {
 				if(response.status == "success"){
 					$("#commentMsgDiv").html('<p class="uk-alert uk-alert-success">Comments has been added successfully. Please wait till this page reloads</p>');
-                    $('#addingComments').show();
+                    // $('#addingComments').show();
 					setTimeout(function(){
 					   window.location.reload(1);
 					}, 3000);
@@ -373,7 +373,7 @@ $("#saveCustomerBtn").click(function (e){
                             if(response.status=='success'){
                               $('#messageEditCustomerDiv').html('<p class="uk-alert uk-alert-success">Sucessfully saved changes.please wait till the page reloads </p>');
                               $('#editCustomerModal').modal('hide');
-                              $('#updateCustomerProfile').show();
+                              // $('#updateCustomerProfile').show();
                               setTimeout(function(){
 							    window.location.reload(1);
 							  }, 2000);
@@ -1852,7 +1852,7 @@ $('#addIntroVisitSubmit').click(function(){
 	        	if(response.status === "success"){
 	            	
 					$("#Msg").html('<p class="uk-alert uk-alert-success">Introductory visit was added successfully. Please wait till this page reloads</p>');
-					$('#addingIv').show();
+					// $('#addingIv').show();
 					setTimeout(function(){
 					   var path= window.location.href.split('?')[0];
                                             window.location.href = path+'?tab=ivfollowup';

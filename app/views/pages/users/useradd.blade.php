@@ -62,7 +62,7 @@ $('#customerSubmit').click(function(){
 	var data = validate();
 	if (data === 'success') {
 		$("#messageForUserDelete").hide();
-      	$('#divLoading').show();
+      	// $('#divLoading').show();
       	$('#customerSubmit').disabled();
       	setTimeout(function () {
             window.reload(1)

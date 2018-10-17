@@ -154,7 +154,7 @@ $.ajax({
           if(response.status == "success"){
             $("#messageStudentAddDiv").html('<p class="uk-alert uk-alert-success">Kid details has been updated successfully. Please wait till this page reloads</p>');
             $("#addKidsModal").modal('hide');
-            $('#updateKidDetails').show();
+            // $('#updateKidDetails').show();
             $("#KidsformBody").hide();
             setTimeout(function(){
              window.location.reload(1);
@@ -1054,7 +1054,7 @@ function fullEnrollmentReset(){
                         if(response.printUrl == ""){
                           $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-success">Student has been successfully enrolled. Please wait till this page reloads</p>');
                           $('#enrollmentModal').modal('hide');
-                          $("#enrollLoading").show();
+                          // $("#enrollLoading").show();
                           setTimeout(function(){
                            window.location.reload(1);
                           }, 5000);
@@ -1842,7 +1842,7 @@ $('#batchName').change(function(){
           $('#makeup-session').text(makeup);
           $('#total-session').text(response.totalSession);
         }
-        if (parseInt(response.introvisit) === 1){
+        /*if (parseInt(response.introvisit) === 1){
           $('#Transfers').hide();
           $('#presentDiv').hide();
           $('#makeupGiven').hide();
@@ -1867,7 +1867,7 @@ $('#batchName').change(function(){
           $('#Rcount').text('0');
         } else {
           $('#total-session').text(response.totalSession);
-        }
+        }*/
       }
     });
   }else{

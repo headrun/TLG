@@ -98,7 +98,7 @@
         			if (response.status == "success") {
                         console.log(response);
         				$('#msgDiv').html('<h5 class = "uk-alert-success" style = "color: #fff; width: 85%; padding: 8px; text-align: center">Discount added Successfully. Please wait untill this page reload</h5>');			
-        				$('#discountsAdd').show();
+        				// $('#discountsAdd').show();
                         setTimeout(function(){
  							window.location.reload(1);
            				}, 3500);
@@ -129,7 +129,7 @@ function deleteDiscounts(id){
                     $('#deleteDiscounts').modal('hide');
                     $('#successDiv').html('<h5 alert class = "uk-alert-success" style = "color: #fff; width: 100%; padding: 10px; text-align: center">Discount deleted Successfully.</h5>');
                     $('#deleteDiscounts').modal('hide');
-                    $('#discountsDelete').show();
+                    // $('#discountsDelete').show();
                     setTimeout(function(){
                         window.location.reload(1);
                     }, 2000);
@@ -162,7 +162,7 @@ function editDiscounts(Dprcntge,NoClses,id){
                     if(response.status=='success'){
                         $('#successDiv').html('<h5 alert class = "uk-alert-success" style = "color: #fff; width: 100%; padding: 10px; text-align: center">Discount updated Successfully. Please wait untill this page reload</h5>');
                         $('#editDiscounts').modal('hide');
-                        $('#discountsUpdate').show();
+                        // $('#discountsUpdate').show();
                         setTimeout(function(){
                             window.location.reload(1);
                         }, 2000);  
@@ -196,7 +196,7 @@ function editChild_Class_disc(Class, Child){
                     if(response.status=='success'){
                         $('#successDiv1').html('<h5 alert class = "uk-alert-success" style = "color: #fff; width: 100%; padding: 10px; text-align: center">Discounts are updated Successfully. Please wait untill this page reload</h5>');
                         $('#editDiscounts').modal('hide');
-                        $('#discountsUpdate').show();
+                        // $('#discountsUpdate').show();
                         setTimeout(function(){
                             window.location.reload(1);
                         }, 2000);  

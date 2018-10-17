@@ -66,7 +66,7 @@
 	$("#eventTypeEditSubmit").click(function (e){
 		event.preventDefault();
 		$('#editEventTypesModal').modal('hide');
-		$('#editEventTypeLoad').show();
+		// $('#editEventTypeLoad').show();
 		saveEventTypes();
 	})
 

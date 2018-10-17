@@ -30,7 +30,7 @@
         		{
         			if (response.status == "success") {
         				$('#msgDiv').html('<h5 class = "uk-alert-success" style = "color: #fff; width: 90%; padding: 10px; text-align: center"> Changes are saved Successfully. Please wait untill this page reload</h5>');			
-        				$('#enableDisLoad').show();
+        				// $('#enableDisLoad').show();
         				setTimeout(function(){
  							window.location.reload(1);
            				}, 3500);

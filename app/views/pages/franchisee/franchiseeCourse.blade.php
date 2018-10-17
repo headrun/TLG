@@ -35,7 +35,7 @@
         if(response.status === "success"){
           if(response.status === "success"){
             $('#NewFranchiseeMsgDiv').html("<p class='uk-alert uk-alert-success'>New Course has been added successfully.Please wait untill the page reloads</p>");
-                $('#newFranchiseeLoading').show();
+                // $('#newFranchiseeLoading').show();
                 setTimeout(function(){
                 window.location.reload(1);
                 }, 4000);

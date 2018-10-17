@@ -553,7 +553,7 @@ $('#seasonLocation').change(function(){
 });
 
 $('#addbatch').click(function(){
-	$('#addingNewBatch').show();
+	// $('#addingNewBatch').show();
 	$('#addbatch').addClass('disabled');
 });
 //
@@ -615,7 +615,7 @@ $('#savebatchedit').click(function(){
                     if(response.status=='success'){
                         $('#batchEditMsg').html("<p class='uk-alert uk-alert-success'>updated successfully. please wait till page reloads.</p>");
                         $('#editBatchmodal').modal('hide');
-                        $('#updateEdit').show();
+                        // $('#updateEdit').show();
                         setTimeout(function(){
 						   window.location.reload(1);
 						}, 2000);
@@ -643,7 +643,7 @@ $('#batch_delete').click(function(){
                             //console.log(response);
                      if(response.status=='success'){
                      $('#deletebatch').modal('hide');	
-                     $('#deleteEdit').show();   
+                     // $('#deleteEdit').show();   
                         setTimeout(function(){
 						   window.location.reload(1);
 						}, 2000);

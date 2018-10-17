@@ -40,7 +40,7 @@ $('#savebatcheslimitedit').click(function(){
                             if(response.status=='success'){
                                 $('#batchEditMsg').html("<p class='uk-alert uk-alert-success'>updated successfully. please wait till page reloads.</p>");
                                 $('#editBatchesLimitmodal').modal('hide');
-                                $('#editBatchLimit').show();
+                                // $('#editBatchLimit').show();
                                 setTimeout(function(){
                 				   window.location.reload(1);
                 				}, 3000);
@@ -66,7 +66,7 @@ $('#batcheslimit_delete').click(function(){
                             //console.log(response);
                  if(response.status=='success'){  
                    $('#deletebatcheslimit').modal('hide');
-                   $('#deleteBatchLimit').show();
+                   // $('#deleteBatchLimit').show();
 	               setTimeout(function(){
                        window.location.reload(1);
                     }, 3000);
