@@ -314,7 +314,7 @@ class ReportsController extends \BaseController {
                     return Response::json(array(PaymentDues::getRenewalsDoneReport($inputs),'Renewal_done'));
                 }else if($inputs['reportType']=='Renewal_pending'){
                     return Response::json(array(PaymentDues::getRenewalsPendingReport($inputs),'Renewal_pending'));
-                }else if($inputs['reportType']=='Calls'){
+		            }else if($inputs['reportType']=='Calls'){
                     return Response::json(array(Comments::getAllFollowupReportsForCalls($inputs),'Calls'));
                 }else if($inputs['reportType']=='Calls_Made'){
                     return Response::json(array(Comments::getAllFollowupReports($inputs),'Calls_Made'));

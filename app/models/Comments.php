@@ -323,10 +323,10 @@ class Comments extends \Eloquent {
                              ->get();
         }
 
-    static function getAllFollowupReports($inputs){
+	static function getAllFollowupReports($inputs){
        $comment_data['data'] = Comments::where('franchisee_id','=',Session::get('franchiseId'))
-                                ->where('created_at','>=',$inputs['reportGenerateStartdate'])
-                                ->where('created_at','<=',$inputs['reportGenerateEnddate'])
+                                ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
+                                ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
                                 //->selectRaw('max(reminder_date)')
                                 ->orderBy('reminder_date','DESC')
                                 ->groupBy('student_id')
@@ -357,9 +357,7 @@ class Comments extends \Eloquent {
           $comment_data['data'][$i]['student_name'] = $temp2['student_name'];
         }
        return $comment_data;   
-    }   
-
-
+    }
 	
 	static function getThisWeekNewLeads($customer_id, $presentdate, $endOfWeek) {
 		$end = date('Y-m-d', $endOfWeek);
