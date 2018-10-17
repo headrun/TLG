@@ -446,7 +446,7 @@ class CustomersController extends \BaseController {
     			$inputs['membership_amount']=$inputs['amount'];
     			$inputs['payment_due_amount']=$inputs['amount'];
     			$inputs['payment_due_amount_after_discount']=$inputs['amount'];
-     			if (Session::get('franchiseId') === 11) {
+    			if (Session::get('franchiseId') === 11) {
     				if ($inputs['diplomatCheck'] === 'yes') {
 						$inputs['tax']= 0;
 						$inputs['taxamt'] = 0;
@@ -465,7 +465,7 @@ class CustomersController extends \BaseController {
 			$payment_data=PaymentDues::createMembershipPaymentDues($inputs);
     			$inputs['payment_due_id']=$payment_data->id;
     			$inputs['taxamt']=($inputs['membership_amount']*$inputs['tax'])/100;
-			$inputs['invoice_format'] = Orders::invoiceFormat($invoiceNo);
+				$inputs['invoice_format'] = Orders::invoiceFormat($invoiceNo);
     			$order_data=Orders::CreateMembershipOrder($inputs);
     			
     			DB::commit();

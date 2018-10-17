@@ -151,7 +151,7 @@
                         
                         <li data-uk-dropdown="{mode:'click'}">
                             <a href="#" class="user_action_image" style="margin-top: -20px;">
-                             <label style="padding: 5px;">{{ Session::get('firstName') }}{{ Session::get('lastName') }}</label>
+                             <label style="padding: 5px;">{{ Session::get('firstName') }} {{ Session::get('lastName') }}</label>
                                 <img class="md-user-image" src="{{url()}}/assets/img/avatars/avatar_11_tn.png" alt="" title={{ Session::get('firstName') }}{{ Session::get('lastName') }}  /> 
                             
                             </a>

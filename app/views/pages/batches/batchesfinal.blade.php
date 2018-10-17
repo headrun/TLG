@@ -553,6 +553,7 @@ $('#seasonLocation').change(function(){
 });
 
 $('#addbatch').click(function(){
+	$('#addingNewBatch').show();
 	$('#addbatch').addClass('disabled');
 });
 //
@@ -611,13 +612,15 @@ $('#savebatchedit').click(function(){
                                 'batchStartTime':$('#changeBatchStartTime').val(),'batchEndTime':$('#changeBatchEndTime').val()},
 			dataType: 'json',
 			success: function(response){
-                            if(response.status=='success'){
-                                $('#batchEditMsg').html("<p class='uk-alert uk-alert-success'>updated successfully. please wait till page reloads.</p>");
-                                setTimeout(function(){
-				   window.location.reload(1);
-				}, 2000);
-                            }
-                        }
+                    if(response.status=='success'){
+                        $('#batchEditMsg').html("<p class='uk-alert uk-alert-success'>updated successfully. please wait till page reloads.</p>");
+                        $('#editBatchmodal').modal('hide');
+                        $('#updateEdit').show();
+                        setTimeout(function(){
+						   window.location.reload(1);
+						}, 2000);
+                    }
+                }
           });  
 });
 
@@ -638,11 +641,15 @@ $('#batch_delete').click(function(){
 			dataType: 'json',
 			success: function(response){
                             //console.log(response);
-                                 if(response.status=='success'){   
-				   window.location.reload(1);
-                                 }
-                        }
-             });  
+                     if(response.status=='success'){
+                     $('#deletebatch').modal('hide');	
+                     $('#deleteEdit').show();   
+                        setTimeout(function(){
+						   window.location.reload(1);
+						}, 2000);
+                     }
+            }
+         });  
 });
 
 </script>		                           	                            									
@@ -664,7 +671,24 @@ $('#batch_delete').click(function(){
        
 </div>
 <br clear="all"/>
-
+<div id="deleteEdit" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Deleted successfully.Please wait . . .
+    </p>
+</div>
+<div id="updateEdit" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Updated successfully.Please wait . . .
+    </p>
+</div>
+<div id="addingNewBatch" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Batch added successfully.Please wait . . .
+    </p>
+</div>
 <?php 
 
 
@@ -895,7 +919,7 @@ $('#batch_delete').click(function(){
       <div class="modal-content">
         <div class="modal-header" id="editBatchheader">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">EditBatch</h4>
+          <h4 class="modal-title">Edit Batch</h4>
         </div>
         <div class="modal-body" id="editBatchbody">
             <div class="batchEditMsg" id="batchEditMsg"></div>

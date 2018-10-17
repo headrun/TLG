@@ -34,6 +34,12 @@
 		<li><a href="#" style="z-index:7;">{{$User->first_name}} {{$User->last_name}}</a></li>
 	</ul>
 </div>
+<div id="divLoading" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     User updated successfully.Please wait . . .
+    </p>
+</div>
 <br clear="all"/>
 <div class="">
 	<div class="row">
@@ -101,9 +107,8 @@
 				            </div>    
 				            <div class="uk-width-medium-1-2">    
 				                  <div class="parsley-row form-group">
-				                 	<label for="customerMobile">User Mobile number<span class="req">*</span></label>
-				                 	
-				                 	{{Form::text('mobileNo', $User->mobile_no,array('id'=>'mobileNo', 'required'=>'', "onkeypress"=>"return isNumberKey(event);", 'maxlength'=>'10',  'minlength'=>'10', 'pattern'=>'\d*',   'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
+				                 	<label for="customerMobile">User Mobile number</label>
+				                 	{{Form::text('mobileNo', $User->mobile_no,array('id'=>'mobileNo', "onkeypress"=>"return isNumberKey(event);", 'maxlength'=>'10',  'minlength'=>'10', 'pattern'=>'\d*',   'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
 				                 </div>
 				            </div>  
 				            <br clear="all"/><br clear="all"/><br clear="all"/>

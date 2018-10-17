@@ -312,6 +312,7 @@ class DashboardController extends \BaseController {
                           $birthdayPresentWeek[$i]['student_name'] = $student_data[0]['student_name'];
                         }
 
+
                         $upcoming15Days = Carbon::now()->addDays(14);
                         $upcoming15DaysMonth = date('m', strtotime($upcoming15Days));
                         $upcoming15DaysDay = date('d', strtotime($upcoming15Days));
@@ -323,7 +324,7 @@ class DashboardController extends \BaseController {
                                                 ->orderBy(DB::raw('MONTH(student_date_of_birth)','ASC'))
                                                 ->orderBy(DB::raw('DAY(student_date_of_birth)','DESC'))
                                                 ->get();
-                                                
+              
                         foreach ($upcomingBdays as $key => $value) {
                           $student_end_date = StudentClasses::where('student_id', '=', $value['id'])
                                                             ->selectRaw('max(enrollment_end_date) as end_date')

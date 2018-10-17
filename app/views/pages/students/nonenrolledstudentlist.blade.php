@@ -26,20 +26,20 @@
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
 
 <script type="text/javascript">
-        $("#studentsTable").DataTable({
-                dom: 'Bfrtip',
+	$("#studentsTable").DataTable({
+		dom: 'Bfrtip',
         buttons: [
             'copyHtml5',
             'excelHtml5',
-            'csvHtml5', 
+            'csvHtml5',
             'pdfHtml5'
         ],
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-    
-            // Bind click event 
+
+            // Bind click event
             $(nRow).click(function() {
                   //window.open($(this).find('a').attr('href'));
-                                window.location = $(this).find('a').attr('href');
+				window.location = $(this).find('a').attr('href');
                   //OR
 
                 // window.open(aData.url);
@@ -51,12 +51,10 @@
         "iDisplayLength": 50,
         "lengthMenu": [ 10, 50, 100, 150, 200 ]
     });
+	/* $("#studentsTable tr").click(function (){
 
-        /* $("#studentsTable tr").click(function (){
-
-                window.location = $(this).find('a').attr('href');
-        }) */
-                
+		window.location = $(this).find('a').attr('href');
+	}) */
 
 </script>
 @stop
