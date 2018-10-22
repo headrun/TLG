@@ -316,30 +316,26 @@ class DashboardController extends \BaseController {
                         $upcoming15Days = Carbon::now()->addDays(14);
                         $upcoming15DaysMonth = date('m', strtotime($upcoming15Days));
                         $upcoming15DaysDay = date('d', strtotime($upcoming15Days));
-                        $upcomingBdays = Students::where('franchisee_id','=',Session::get('franchiseId'))
-                                                ->whereRaw(DB::raw('DAY(student_date_of_birth) >= DAY(NOW())'))
-                                                ->whereRaw(DB::raw('MONTH(student_date_of_birth) >= MONTH(NOW())'))
-                                                ->whereRaw(DB::raw('MONTH(student_date_of_birth) <= '.$upcoming15DaysMonth.''))
-                                                ->whereRaw(DB::raw('DAY(student_date_of_birth) <= '.$upcoming15DaysDay.''))
-                                                ->orderBy(DB::raw('MONTH(student_date_of_birth)','ASC'))
-                                                ->orderBy(DB::raw('DAY(student_date_of_birth)','DESC'))
-                                                ->get();
-              
+                        $upcomingBdays = DB::select(DB::raw("select * from `students` 
+                                        where  DATE_FORMAT(student_date_of_birth, '%m-%d') <= DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 15 DAY), '%m-%d') 
+                                        and DATE_FORMAT(student_date_of_birth, '%m-%d') >=  DATE_FORMAT(CURDATE(), '%m-%d') and franchisee_id = ".Session::get('franchiseId')."
+                                        order by DATE_FORMAT(student_date_of_birth, '%m-%d') asc"));
+                        // return $upcomingBdays;                                                
+                        // $upcomingBdays = json_decode(json_encode($upcomingBdays), true);  
                         foreach ($upcomingBdays as $key => $value) {
-                          $student_end_date = StudentClasses::where('student_id', '=', $value['id'])
+                          $student_end_date = StudentClasses::where('student_id', '=', $value->id)
                                                             ->selectRaw('max(enrollment_end_date) as end_date')
                                                             ->get();
 
                           if ($student_end_date[0]->end_date >= date('Y-m-d')) {
-                            $value['status'] = 'enrolled';  
+                            $value->status = 'enrolled';  
                           } else {
-                            $value['status'] = 'non-enrolled';  
+                            $value->status = 'non-enrolled';  
                           }
-                          $customer_data = Customers::where('id','=',$value['customer_id'])->distinct()->get();
-                          $value['customer_name'] = $customer_data[0]['customer_name'];
-                          $value['mobile_no'] = $customer_data[0]['mobile_no'];
-                          $value['franchisee_id'] = $customer_data[0]['franchisee_id'];
-                          $value['student_name'] = $value['student_name'];
+                          $customer_data = Customers::where('id','=',$value->customer_id)->distinct()->get();
+                          $value->customer_name = $customer_data[0]['customer_name'];
+                          $value->mobile_no = $customer_data[0]['mobile_no'];
+                          $value->franchisee_id = $customer_data[0]['franchisee_id'];
                         }
                         $expiringbatch= Batches::getExpiringBatchData();
           
