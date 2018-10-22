@@ -781,13 +781,13 @@
                                     <tbody id = "BirthdayTableBody">
                                         @foreach($upcomingBdays as $value)
                                         <tr>
-                                            <td>{{$value['customer_name']}}{{$value['customer_lastname']}}
-                                            <a href="{{url()}}/customers/view/{{$value['customer_id']}}?tab=birthdayparty"></a>
+                                            <td>{{$value->customer_name}}
+                                            <a href="{{url()}}/customers/view/{{$value->customer_id}}?tab=birthdayparty"></a>
                                             </td>
-                                            <td>{{$value['student_name']}}</td>
-                                            <td>{{$value['mobile_no']}}</td>
-                                            <td>{{$value['student_date_of_birth']}}</td>
-                                            <td>{{$value['status']}}</td>
+                                            <td>{{$value->student_name}}</td>
+                                            <td>{{$value->mobile_no}}</td>
+                                            <td>{{$value->student_date_of_birth}}</td>
+                                            <td>{{$value->status}}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>

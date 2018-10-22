@@ -135,6 +135,8 @@ Route::group(array('prefix'=>'Discounts'),function(){
 
 Route::group(array('prefix'=>'reports'),function(){
         Route::any('/view_reports','ReportsController@view_reports');
+        Route::any('/mismatch_enrollments','ReportsController@mismatch_enrollments');
+        Route::any('/kids_deleted_batch','ReportsController@kids_deleted_batch');
         Route::any('/kbi_reports','ReportsController@kbi_reports');
         Route::any('/deleted_customers','ReportsController@deleted_customers');
 });
@@ -320,6 +322,9 @@ Route::group(array('prefix' => 'quick'), function() {
 	 */
         Route::any('generatereport', "ReportsController@generatereport");
         Route::any('activityReport',"ReportsController@activityReport");
+        Route::any('getMisMatchReports',"ReportsController@getMisMatchReports");
+        Route::any('getDeletedBatchIdReports',"ReportsController@getDeletedBatchIdReports");
+        Route::any('updateEnrollmentEndDate',"ReportsController@updateEnrollmentEndDate");
         Route::any('UpdateDataBatch',"ReportsController@UpdateDataBatch");
         Route::any('getAttendanceDetails',"StudentsController@getAttendanceDetails");
         

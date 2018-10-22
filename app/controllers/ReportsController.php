@@ -19,6 +19,38 @@ class ReportsController extends \BaseController {
             }
         }
 
+        public static function mismatch_enrollments(){
+            if(Auth::check()){
+                if(Session::get('userType') == 'ADMIN'){
+                    $currentPage  =  "mismatch_enrollments";
+                    $mainMenu     =  "REPORTS_MENU_MAIN";
+                    $presentdate  =  date("Y-m-d");
+                    $viewData= compact('currentPage','mainMenu','presentdate');
+                    return View::make('pages.reports.mismatch_enrollments',$viewData);
+                }else{
+                    return Redirect::action('DashboardController@index');
+                }    
+            }else{
+                return Redirect::action('VaultController@logout');
+            }
+        }
+
+        public static function kids_deleted_batch(){
+            if(Auth::check()){
+                if(Session::get('userType') == 'ADMIN'){
+                    $currentPage  =  "kids_deleted_batch";
+                    $mainMenu     =  "REPORTS_MENU_MAIN";
+                    $presentdate  =  date("Y-m-d");
+                    $viewData= compact('currentPage','mainMenu','presentdate');
+                    return View::make('pages.reports.kids_deleted_batch',$viewData);
+                }else{
+                    return Redirect::action('DashboardController@index');
+                }    
+            }else{
+                return Redirect::action('VaultController@logout');
+            }
+        }
+
         public static function kbi_reports(){
             if(Auth::check()){
                 if(Session::get('userType') == 'ADMIN'){
@@ -545,6 +577,58 @@ class ReportsController extends \BaseController {
             }
         }
 
+        public static function getMisMatchReports () {
+            if((Auth::check()) && (Session::get('userType'))=='ADMIN'){
+                $data = DB::select(DB::raw("SELECT student_id,enrollment_start_date, enrollment_end_date,selected_sessions, 
+                    ROUND((DATEDIFF(enrollment_end_date,enrollment_start_date))/7) as count from student_classes 
+                    where ROUND((DATEDIFF(enrollment_end_date,enrollment_start_date))/7) != (selected_sessions-1) and franchisee_id = ".Session::get('franchiseId')."
+                    and enrollment_end_date >= '2018-10-18'"));
+                if ($data) {
+                    return Response::json(array('status'=>'success', 'data' => $data));
+                } else {
+                    return Response::json(array('status'=>'failed'));
+                }
+            }
+        }
+
+        public static function getDeletedBatchIdReports () {
+            if((Auth::check()) && (Session::get('userType'))=='ADMIN'){
+                $data = DB::select(DB::raw("SELECT s.student_name, sc.student_id, sc.batch_id, sc.class_id, c.class_name FROM student_classes sc, students s, classes c WHERE sc.batch_id NOT IN (SELECT id FROM batches) and sc.franchisee_id = ".Session::get('franchiseId')." and sc.student_id = s.id and c.id = sc.class_id ORDER BY sc.batch_id"));
+                //return $data;
+                if ($data) {
+                    return Response::json(array('status'=>'success', 'data' => $data));
+                } else {
+                    return Response::json(array('status'=>'failed'));
+                }
+            }
+        }
+
+        public static function updateEnrollmentEndDate () {
+            if((Auth::check()) && (Session::get('userType'))=='ADMIN'){
+                $data = DB::select(DB::raw("SELECT id,student_id,enrollment_start_date, enrollment_end_date,selected_sessions, 
+                   ROUND((DATEDIFF(enrollment_end_date,enrollment_start_date))/7) as count from student_classes 
+                   where ROUND((DATEDIFF(enrollment_end_date,enrollment_start_date))/7) != (selected_sessions-1) and franchisee_id = ".Session::get('franchiseId')."
+                   and enrollment_end_date >= '2018-10-18'"));
+
+                foreach ($data as $key => $value) {
+                   $date = $value->enrollment_start_date;
+                   $add_days = 7*($value->selected_sessions - 1);
+                   $date = date('Y-m-d',strtotime($date.'+'.$add_days.'days'));
+                   $update = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+                                         ->where('id', '=', $value->id)
+                                         ->update(['enrollment_end_date' => $date]);
+                   $update_paymentDues = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                                         ->where('student_class_id', '=', $value->id)
+                                         ->update(['end_order_date' => $date]);                                         
+                }
+
+                if ($update_paymentDues) {
+                   return Response::json(array('status'=>'success', 'data' => $data));
+                } else {
+                   return Response::json(array('status'=>'failed'));
+                }
+            }    
+        }
 	/**
 	 * Display a listing of the resource.
 	 * GET /reports
