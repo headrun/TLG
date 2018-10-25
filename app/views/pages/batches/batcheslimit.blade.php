@@ -28,6 +28,7 @@ function editbatcheslimit(batchLimitId, batchlimitrecep, batchlimitadmin){
 
 $('#savebatcheslimitedit').click(function(){
 //    alert($('#editBatchesLimit_id').val());
+    $('#editBatchLimit').show();
     $.ajax({
 			type: "POST",
 			url: "{{URL::to('/quick/editBatchLimitByBatchId')}}",
@@ -38,12 +39,14 @@ $('#savebatcheslimitedit').click(function(){
 			dataType: 'json',
 			success: function(response){
                             if(response.status=='success'){
-                                $('#batchEditMsg').html("<p class='uk-alert uk-alert-success'>updated successfully. please wait till page reloads.</p>");
                                 $('#editBatchesLimitmodal').modal('hide');
-                                $('#editBatchLimit').show();
+                                setTimeout(function(){
+                                   $('#editBatchLimit').hide();
+                                }, 2000);
+                                $('#batchEditMsg').html("<p class='uk-alert uk-alert-success'>updated successfully. please wait till page reloads.</p>");
                                 setTimeout(function(){
                 				   window.location.reload(1);
-                				}, 3000);
+                				}, 4000);
                             }
                         }
           });  
@@ -56,20 +59,22 @@ function deletebatcheslimit(batchLimitId){
 }
 
 $('#batcheslimit_delete').click(function(){
-//        alert($('#deleteBatchesLimit_id').val());
+    $('#deleteBatchLimit').show();
     $.ajax({
 			type: "POST",
 			url: "{{URL::to('/quick/deleteBatchLimitById')}}",
                         data: {'batchlimit_id':$('#deleteBatchesLimit_id').val()},
 			dataType: 'json',
 			success: function(response){
-                            //console.log(response);
                  if(response.status=='success'){  
                    $('#deletebatcheslimit').modal('hide');
-                   $('#deleteBatchLimit').show();
+                   setTimeout(function(){
+                       $('#deleteBatchLimit').hide();
+                    }, 2000);
+                   $('#batchEditMsg').html("<p class='uk-alert uk-alert-danger'>deleted successfully. please wait till page reloads.</p>");
 	               setTimeout(function(){
                        window.location.reload(1);
-                    }, 3000);
+                    }, 4000);
                 }
             }
         });  
@@ -86,16 +91,14 @@ $('#batcheslimit_delete').click(function(){
         <li><a href="#" style="z-index:7;">Add/view BatchesLimit</a></li>
     </ul>
 </div>
-<div id="editBatchLimit" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
-    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:20px;">
-    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:25%;">
-     Updating batch limit  . . .
+<div id="editBatchLimit" style="z-index:9999;display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 28%; left: 35%;font-size:18px;">
+        <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:60%;">
     </p>
 </div>
 <div id="deleteBatchLimit" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
-    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:20px;">
-    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:25%;">
-     Deleting batch limit  . . .
+    <p style="position: absolute; color: White; top: 28%; left: 35%;font-size:18px;">
+        <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:60%;">
     </p>
 </div>
 <br clear="all"/>
@@ -143,6 +146,7 @@ $('#batcheslimit_delete').click(function(){
                 </div>
             </div>
         </div>
+        <div class="batchEditMsg" id="batchEditMsg"></div>
         <div class="md-card">
             <div class="md-card-content large-padding">
                 <h3 class="heading_b uk-margin-bottom">Batches Limit</h3>

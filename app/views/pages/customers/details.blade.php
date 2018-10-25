@@ -248,6 +248,7 @@ function addKids(event){
             dob=$('#studentDob').val();
             alert(dob);
         }*/
+    $('#addingNewKid').show();
 	var postData = {'studentName'     : $('#studentName').val(),
 			  		'studentGender'   : $('#studentGender').val(),
 			  		'studentDob'      : $('#studentDob').val(),
@@ -268,17 +269,20 @@ function addKids(event){
         success: function (response)
         {
 			if(response.status == "success"){
-				$("#messageStudentAddDiv").html('<p class="uk-alert uk-alert-success">Kid details has been added successfully. Please wait till this page reloads</p>');
 				$('#addKidsModal').modal('hide');
-				$('#addingNewKid').show();
+				setTimeout(function(){
+				   $('#addingNewKid').hide();
+				}, 2000);
+				$("#messageStudentAddDiv").html('<p class="uk-alert uk-alert-success">Kid details has been added successfully. Please wait till this page reloads</p>');
 				$("#formBody").hide();
-
 				setTimeout(function(){
 				   window.location.reload(1);
 				}, 5000);
 				
 			}else{
-
+				setTimeout(function(){
+				   $('#addingNewKid').hide();
+				}, 2000);
 				$("#messageStudentAddDiv").html('<p class="uk-alert uk-alert-danger">Sorry! Kid details could not be added.</p>');
 				$("#formBody").hide();
 
@@ -288,7 +292,8 @@ function addKids(event){
     }); 	  
 }
 
-$("#saveCommentBtn").click(function (){       
+$("#saveCommentBtn").click(function (){ 
+	$('#addingComments').show();      
 	if($("#customerCommentTxtarea").val() != ""){
                 if($("#reminderTxtBox").val()==''){
 		var postData = {"customerId":customerId,
@@ -310,12 +315,17 @@ $("#saveCommentBtn").click(function (){
 	        success: function (response)
 	        {
 				if(response.status == "success"){
+					setTimeout(function(){
+					   $('#addingComments').hide();;  
+					}, 3000);
 					$("#commentMsgDiv").html('<p class="uk-alert uk-alert-success">Comments has been added successfully. Please wait till this page reloads</p>');
-                    $('#addingComments').show();
 					setTimeout(function(){
 					   window.location.reload(1);
 					}, 3000);
 				}else{
+					setTimeout(function(){
+					   $('#addingComments').hide();;  
+					}, 3000);
 					$("#commentMsgDiv").html('<p class="uk-alert uk-alert-danger">Sorry! Comments could not be added.</p>');
 				}
 	        }
@@ -363,7 +373,7 @@ $('#editCustomerForm').validator().on('submit', function (e) {
 $("#saveCustomerBtn").click(function (e){
 	e.preventDefault();
         console.log('prevented');
-	
+	$('#updateCustomerProfile').show();
     $.ajax({
 			type: "POST",
 			url: "{{URL::to('/quick/editCustomer')}}",
@@ -372,13 +382,18 @@ $("#saveCustomerBtn").click(function (e){
 			success: function(response){
                             console.log(response);
                             if(response.status=='success'){
-                              $('#messageEditCustomerDiv').html('<p class="uk-alert uk-alert-success">Sucessfully saved changes.please wait till the page reloads </p>');
                               $('#editCustomerModal').modal('hide');
-                              $('#updateCustomerProfile').show();
+                              setTimeout(function(){
+							    $('#updateCustomerProfile').hide();
+							  }, 2000);
+                              $('#messageEditCustomerDiv').html('<p class="uk-alert uk-alert-success">Sucessfully saved changes.please wait till the page reloads </p>');
                               setTimeout(function(){
 							    window.location.reload(1);
 							  }, 2000);
                             }else{
+                            	setTimeout(function(){
+							    $('#updateCustomerProfile').hide();
+							  }, 2000);
                                  $('#messageEditCustomerDiv').html('<p class="uk-alert uk-alert-failure">cannot save changes.Try again after some time</p>');
                             }
                         }
@@ -1837,7 +1852,7 @@ $('#addIntroVisitSubmit').click(function(){
     }else{
         $('#addIntroVisitSubmit').addClass('disabled');
         //console.log('now register');
-        
+         $('#addingIv').show();
          $.ajax({
 	        type: "POST",
 	        url: "{{URL::to('/quick/addIntroVisit')}}",
@@ -1849,25 +1864,29 @@ $('#addIntroVisitSubmit').click(function(){
 	        dataType:"json",
 	        success: function (response)
 	        {
-                        console.log(response);
 	        	if(response.status === "success"){
-	            	
+	            	setTimeout(function(){
+	            	   $('#addingIv').hide();
+	            	}, 3000); 
 					$("#Msg").html('<p class="uk-alert uk-alert-success">Introductory visit was added successfully. Please wait till this page reloads</p>');
-					$('#addingIv').show();
 					setTimeout(function(){
 					   var path= window.location.href.split('?')[0];
-                                            window.location.href = path+'?tab=ivfollowup';
-                                            window.location.reload(1);
+                        window.location.href = path+'?tab=ivfollowup';
+                        window.location.reload(1);
 					}, 5000);
 	        	}else if(response.status === "exists"){
-                            $("#Msg").html('<p class="uk-alert uk-alert-danger">Class Already exists for the same date</p>');
-                            setTimeout(function(){
-                                $("#Msg").html('');
-                            },2000);
-                        }else{
-	            	
-					
-	        		$("#Msg").html('<p class="uk-alert uk-alert-danger">Sorry! Introductory visit could not be enrolled.</p>');
+	    		    setTimeout(function(){
+	    		       $('#addingIv').hide();
+	    		    }, 3000); 
+                    $("#Msg").html('<p class="uk-alert uk-alert-danger">Class Already exists for the same date</p>');
+                    setTimeout(function(){
+                        $("#Msg").html('');
+                    },2000);
+                }else{
+		        	setTimeout(function(){
+		        	   $('#addingIv').hide();
+		        	}, 3000); 
+	    			$("#Msg").html('<p class="uk-alert uk-alert-danger">Sorry! Introductory visit could not be enrolled.</p>');
 	        	}     	   
 	        }
 	    });
@@ -2805,27 +2824,23 @@ $('#memberhsipchequeNumber').keyup(function(){
 	</ul>
 </div>
 <div id="addingNewKid" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
-    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
-    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
-     Kid added successfully.Please wait . . .
+    <p style="position: absolute; color: White; top: 28%; left: 35%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:60%;">
     </p>
 </div>
 <div id="addingComments" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
-    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
-    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
-     Added comments successfully.Please wait. . .
+    <p style="position: absolute; color: White; top: 28%; left: 35%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:60%;">
     </p>
 </div>
 <div id="updateCustomerProfile" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
-    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
-    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
-     Updated successfully.Please wait. . .
+    <p style="position: absolute; color: White; top: 28%; left: 35%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:60%;">
     </p>
 </div>
 <div id="addingIv" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
-    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
-    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
-     Added introductory visit.Please wait . . .
+    <p style="position: absolute; color: White; top: 28%; left: 35%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:60%;">
     </p>
 </div>
 <br clear="all"/>

@@ -31,6 +31,7 @@ $("#customersTable tr").click(function (){
 <script type="text/javascript">
 
 function deleteUser(user_id) {
+	$('#divLoading').show();
     $.ajax({
         type: "POST",
         url: "{{URL::to('/quick/deleteUserFromUsers')}}",
@@ -40,12 +41,17 @@ function deleteUser(user_id) {
         success: function(response)
         {
           if(response.status == "success"){
-          		$("#messageForUserDelete").html('<p class="uk-alert uk-alert-success">User has been deleted successfully. Please wait till this page reloads</p>');	
-	            $('#divLoading').show();
+          		setTimeout(function () {
+          			$('#divLoading').hide();
+          		}, 3000);
+          		$("#messageForUserDelete").html('<p class="uk-alert uk-alert-success">User has been deleted successfully. Please wait till this page reloads</p>');
 	            setTimeout(function(){
 	             window.location.reload(1);
-	          }, 3000);    
+	          }, 3000);  
           }else{
+          	    setTimeout(function () {
+          	    	$('#divLoading').hide();
+          	    }, 3000)
    				$("#messageForUserDelete").html('<p class="uk-alert uk-alert-success">User could not be deleted. Please try again later</p>');	
           }
         }
@@ -84,9 +90,8 @@ $(document).on('click', '#updateBatchId', function(){
 <br clear="all"/>
 <div class="">
 	<div id="divLoading" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
-	    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
-	    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
-	     User deleted successfully.Please wait . . .
+	    <p style="position: absolute; color: White; top: 28%; left: 35%;font-size:18px;">
+	    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:60%;">
 	    </p>
     </div>
 	<div class="row">

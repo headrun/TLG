@@ -603,7 +603,7 @@ function editbatch(batchId,locationId,instructorId){
 }
 
 $('#savebatchedit').click(function(){
-    
+    $('#updateEdit').show();
     $.ajax({
 			type: "POST",
 			url: "{{URL::to('/quick/editbatchByBatchId')}}",
@@ -613,9 +613,12 @@ $('#savebatchedit').click(function(){
 			dataType: 'json',
 			success: function(response){
                     if(response.status=='success'){
+                    	$('#editBatchmodal').modal('hide');
+                    	setTimeout(function(){
+						   $('#updateEdit').hide();
+						}, 2000);
+						$('#editBatchmodal').show('hide');
                         $('#batchEditMsg').html("<p class='uk-alert uk-alert-success'>updated successfully. please wait till page reloads.</p>");
-                        $('#editBatchmodal').modal('hide');
-                        $('#updateEdit').show();
                         setTimeout(function(){
 						   window.location.reload(1);
 						}, 2000);
@@ -672,21 +675,18 @@ $('#batch_delete').click(function(){
 </div>
 <br clear="all"/>
 <div id="deleteEdit" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
-    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
-    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
-     Deleted successfully.Please wait . . .
+    <p style="position: absolute; color: White; top: 28%; left: 35%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:60%;">
     </p>
 </div>
 <div id="updateEdit" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
-    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
-    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
-     Updated successfully.Please wait . . .
+    <p style="position: absolute; color: White; top: 28%; left: 35%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:60%;">
     </p>
 </div>
 <div id="addingNewBatch" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
-    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
-    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
-     Batch added successfully.Please wait . . .
+    <p style="position: absolute; color: White; top: 28%; left: 35%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:60%;">
     </p>
 </div>
 <?php 

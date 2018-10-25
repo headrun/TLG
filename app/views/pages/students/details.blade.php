@@ -1032,6 +1032,7 @@ function fullEnrollmentReset(){
                 }
 
                 function enrollnow(){
+                  $("#enrollLoading").show();
                   event.preventDefault();
                   $("#enrollNow").hide();
                   $('#MsgDiv').hide();
@@ -1052,20 +1053,27 @@ function fullEnrollmentReset(){
                       console.log(response);
                       if(response.status == "success"){
                         if(response.printUrl == ""){
-                          $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-success">Student has been successfully enrolled. Please wait till this page reloads</p>');
                           $('#enrollmentModal').modal('hide');
-                          $("#enrollLoading").show();
+                          setTimeout(function(){
+                           $("#enrollLoading").hide();
+                          }, 5000);
+                          $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-success">Student has been successfully enrolled. Please wait till this page reloads</p>');
                           setTimeout(function(){
                            window.location.reload(1);
                           }, 5000);
                         }else{
-
+                          setTimeout(function(){
+                           $("#enrollLoading").hide();
+                          }, 2000);
                           var printvars = '<a target="_blank" href="'+response.printUrl+'" class="btn btn-primary">Print</a>';
                           $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-success">Student has been successfully enrolled. Please click the print button below.</p>'+printvars);
 
                           $("#closeEnrollmentModal").data("closemode",'print');
                         }
                       }else{ 
+                        setTimeout(function(){
+                         $("#enrollLoading").hide();
+                        }, 2000);
                         //$("#messageStudentEnrollmentDiv").hide();
                         $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-danger">Sorry! Student could not be enrolled.</p>');
                       }        
@@ -2921,6 +2929,7 @@ $(document).on('click','.summer-cls-btn', function(){
 	var taxPercentageForSummer = $('#taxPercentageForSummer').val();
 	var discountPercentageForSummer = $('#discountPercentageForSummer').val();
 	var totalAmountForSummer = $('#totalAmountForSummer').val();
+  $('#updateKidDetails').show();
 	$.ajax({
     type: "POST",
     url: "{{URL::to('/quick/enrollYard')}}",
@@ -2936,11 +2945,17 @@ $(document).on('click','.summer-cls-btn', function(){
     dataType: 'json',
     success: function(response){
         if(response.status === "success"){
+        setTimeout(function(){
+           $('#updateKidDetails').hide();
+        }, 4000);
         $('#summerMsgDiv').html("<p class='uk-alert uk-alert-success'>Camps / Yard has been taken successfully.Please wait untill the page reloads</p>");
-            setTimeout(function(){
-     		window.location.reload(1);
+        setTimeout(function(){
+     		   window.location.reload(1);
    	    }, 4000);
         } else {
+          setTimeout(function(){
+             $('#updateKidDetails').hide();
+          }, 4000);
 		    $('#summerMsgDiv').html("<p class='uk-alert uk-alert-warning'>Camps / Yard not yet taken.Please try again.</P>");
 		    }
             }
@@ -2952,15 +2967,13 @@ $(document).on('click','.summer-cls-btn', function(){
 @stop 
 @section('content')
 <div id="updateKidDetails" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
-    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
-    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
-     Updated successfully.Please wait . . .
+    <p style="position: absolute; color: White; top: 28%; left: 35%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:60%;">
     </p>
 </div>
 <div id="enrollLoading" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
-    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
-    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
-     Enroled successfully.Please wait . . .
+    <p style="position: absolute; color: White; top: 28%; left: 35%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:60%;">
     </p>
 </div>
 <div id="addAttendance" class="modal fade" role="dialog" style="margin-top: 50px; z-index: 99999;"

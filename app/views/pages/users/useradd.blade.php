@@ -64,9 +64,9 @@ $('#customerSubmit').click(function(){
 		$("#messageForUserDelete").hide();
       	$('#divLoading').show();
       	$('#customerSubmit').disabled();
-      	setTimeout(function () {
+      	/*setTimeout(function () {
             window.reload(1)
-      	},2000)
+      	},2000)*/
 	} else {
 		$("#messageForUserDelete").html('<p class="uk-alert uk-alert-danger">Please provide valid email address.</p>');
 	}
@@ -87,9 +87,8 @@ $('#customerSubmit').click(function(){
 <br clear="all"/>
 <div class="">
 	<div id="divLoading" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
-	    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
-	    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
-	     User added successfully.Please wait . . .
+	    <p style="position: absolute; color: White; top: 28%; left: 35%;font-size:18px;">
+	    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:60%;">
 	    </p>
     </div>
 	<div class="row">
@@ -156,7 +155,7 @@ $('#customerSubmit').click(function(){
 				                  <div class="parsley-row form-group">
 				                 	<label for="mobileNo">User Mobile number</label>
 				                 	
-				                 	{{Form::text('mobileNo', null,array('id'=>'mobileNo', "onkeypress"=>"return isNumberKey(event);", 'maxlength'=>'10',  'minlength'=>'10', 'pattern'=>'\d*',   'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
+				                 	{{Form::text('mobileNo', null,array('id'=>'mobileNo', "onkeypress"=>"return isNumberKey(event);", 'maxlength'=>'10',  'minlength'=>'10', 'pattern'=>'\d*',   'class' => 'form-control input-sm md-input','style'=>'padding:0px', 'required'=>''))}}
 				                 </div>
 				            </div>  
 				            <br clear="all"/><br clear="all"/><br clear="all"/>
