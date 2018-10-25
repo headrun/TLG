@@ -27,7 +27,7 @@
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
 <script type="text/javascript">
 
-$(document).ready(function(){
+/*  $(document).ready(function(){
     $.ajax({
         type: "POST",
         url: "{{URL::to('/quick/getMisMatchReports')}}",
@@ -58,6 +58,95 @@ $(document).ready(function(){
             console.log(header_data);
             $('#reportdata').html(header_data);
             $('#reportTable').DataTable();
+          } else {
+            $('.runScript').addClass('disabled');
+          }
+        }
+    });
+});  */
+
+$(document).ready(function(){
+    $.ajax({
+        type: "POST",
+        url: "{{URL::to('/quick/getMisMatchReports')}}",
+        data: {},
+        dataType: 'json',
+        success: function(response){
+          if (response.status == 'success') {
+            var data = '';
+            var data_loop = response.data;
+            var finalData = [];
+            var dataForStudent = [];
+            for (var key in data_loop) {
+               var arr = data_loop[key];
+               var dataForStudent = [];
+               for( var i = 0; i < arr.length; i++ ) {
+                   var obj = arr[ i ];
+                   dataForStudent['id' + '_' + i] = obj.id;
+                   dataForStudent['customer_name' + '_' + i] = obj.customer_name;
+                   dataForStudent['customer_email' + '_' + i] = obj.customer_email;
+                   dataForStudent['mobile_no' + '_' + i] = obj.mobile_no;
+                   dataForStudent['student_name' + '_' + i] = obj.student_name;
+                   dataForStudent['age' + '_' + i] = obj.age;
+                   dataForStudent['class_name' + '_' + i] = obj.class_name;
+                   dataForStudent['start_date' + '_' + i] = obj.enrollment_start_date;
+                   dataForStudent['end_date' + '_' + i] = obj.enrollment_end_date;
+                   dataForStudent['course_name' + '_' + i] = obj.course_name;
+                   dataForStudent['selected_sessions' + '_' + i] = obj.selected_sessions;
+               }
+               finalData[key] = dataForStudent;
+            }
+            var header_data="<div class='md-card-content'>"+
+                                "<div class='uk-overflow-container'>"+
+                            "<table id='reportTable' class='uk-table'>"+
+                            "<thead>"+
+                            '<tr>'+
+                            '<th>Customer Name</th>'+
+                            '<th>Customer Email</th>'+
+                            '<th>Mobile no</th>'+
+                            '<th>Student Name</th>'+
+                            '<th>Age</th>'+
+                            '<th>current start date</th>'+
+                            '<th>current end date</th>'+
+                            '<th>selected sessions</th>'+
+                            '<th>current class name</th>'+
+                            '<th>course name</th>'+
+                            '<th>start date 4</th>'+
+                            '<th>start date 3</th>'+
+                            '<th>start date 2</th>'+
+                            '<th>start date 1</th>'+
+                            '</tr></thead>';
+            for (var key in finalData) {
+              header_data+="<tr><td>"+finalData[key]['customer_name_0']+"</td><td>"+
+                        finalData[key]['customer_email_0']+"</td><td>"+
+                        finalData[key]['mobile_no_0']+"</td><td>"+
+                        finalData[key]['student_name_0']+"</td><td>"+
+                        finalData[key]['age_0']+"</td><td>"+
+                        finalData[key]['start_date_0']+"</td><td>"+
+                        finalData[key]['end_date_0']+"</td><td>"+
+                        finalData[key]['selected_sessions_0']+"</td><td>"+
+                        finalData[key]['class_name_0']+"</td><td>"+
+                        finalData[key]['course_name_0']+"</td><td>"+
+                        finalData[key]['start_date_1']+"</td><td>"+
+                        finalData[key]['start_date_2']+"</td><td>"+
+                        finalData[key]['start_date_3']+"</td><td>"+
+                        finalData[key]['start_date_4']+"</td></tr>";
+            }
+            header_data+="</table></div></div>";
+            console.log(header_data);
+            $('#reportdata').html(header_data);
+            $("#reportTable").DataTable({
+                dom: 'Bfrtip',
+                    buttons: [
+                        'excelHtml5',
+                        'csvHtml5',
+                        'pdfHtml5'
+                    ],
+                    "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                   },
+                   "iDisplayLength": 50,
+                   "lengthMenu": [ 10, 50, 100, 150, 200 ]
+               });
           } else {
             $('.runScript').addClass('disabled');
           }

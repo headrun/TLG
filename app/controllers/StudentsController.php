@@ -211,6 +211,7 @@ class StudentsController extends \BaseController {
                         }
                     // Getting latest batches for showing in header of student tab
                         $latestEnrolledData = StudentClasses::where('student_id','=',$id)
+                                                            ->where('enrollment_end_date', '>=', date('Y-m-d'))
                                                             ->orderBy('created_at','desc')
                                                             ->limit(2)
                                                             ->get();
