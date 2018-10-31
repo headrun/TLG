@@ -551,7 +551,6 @@
                                     console.log(header_data);
                                     $('#reportdata').html(header_data);
                                     $("#reportTable").DataTable({
-                                        "ordering": false,
                                         dom: 'Bfrtip',
                                             buttons: [
                                                 'excelHtml5',

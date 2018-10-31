@@ -267,7 +267,7 @@ class PaymentDues extends \Eloquent {
                                                     ->where('birthday_id','<>',0)
                                                     ->whereDate('created_at','>=',$inputs['reportGenerateStartdate'])
                                                     ->whereDate('created_at','<=',$inputs['reportGenerateEnddate'])
-                                                    ->orderBy('birthday_party_date','desc')
+                                                 //   ->orderBy('birthday_party_date','desc')
                                                     ->get();
         for($i=0;$i<count($birthdayReportDetails['data']);$i++){
             $temp=  Customers::find($birthdayReportDetails['data'][$i]['customer_id']);
@@ -312,7 +312,7 @@ class PaymentDues extends \Eloquent {
             $temp2=  Students::find($enrollmentReportDetails['data'][$i]['student_id']);
             $enrollmentReportDetails['data'][$i]['student_name']=$temp2->student_name;
             $temp3= Batches::find($enrollmentReportDetails['data'][$i]['batch_id']);
-            $enrollmentReportDetails['data'][$i]['batch_name']=$temp3->batch_name;
+            $enrollmentReportDetails['data'][$i]['batch_name']=$temp3['batch_name'];
         }
         $enrollmentReportDetails['totalAmount']=PaymentDues::where('payment_due_for','=','enrollment')
                                                     ->where('franchisee_id','=',Session::get('franchiseId'))
@@ -772,7 +772,7 @@ class PaymentDues extends \Eloquent {
         $temp2=  Students::find($enrollmentReportDetails['data'][$i]['student_id']);
         $enrollmentReportDetails['data'][$i]['student_name']=$temp2->student_name;
         $temp3= Batches::find($enrollmentReportDetails['data'][$i]['batch_id']);
-        $enrollmentReportDetails['data'][$i]['batch_name']=$temp3->batch_name;
+        $enrollmentReportDetails['data'][$i]['batch_name']=$temp3['batch_name'];
     }
     return $enrollmentReportDetails;
   }
@@ -786,7 +786,7 @@ class PaymentDues extends \Eloquent {
         $temp2=  Students::find($enrollmentReportDetails['data'][$i]['student_id']);
         $enrollmentReportDetails['data'][$i]['student_name']=$temp2->student_name;
         $temp3= Batches::find($enrollmentReportDetails['data'][$i]['batch_id']);
-        $enrollmentReportDetails['data'][$i]['batch_name']=$temp3->batch_name;
+        $enrollmentReportDetails['data'][$i]['batch_name']=$temp3['batch_name'];
     }
     return $enrollmentReportDetails;
   }

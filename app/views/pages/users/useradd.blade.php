@@ -58,17 +58,27 @@ function validate() {
   }
 }
 
+function validateForm() {
+  var email = $("#email").val();
+  if ($('#firstName').val() !== '' && $('#lastName').val() !== '' && $('#mobileNo').val() !== '') {
+    return 'success';
+  } else {
+  	return 'failed';
+  }
+}
+
 $('#customerSubmit').click(function(){
 	var data = validate();
-	if (data === 'success') {
+	var formVal = validateForm();
+	if (data === 'success' && formVal === 'success') {
 		$("#messageForUserDelete").hide();
       	$('#divLoading').show();
       	$('#customerSubmit').disabled();
-      	/*setTimeout(function () {
+      	setTimeout(function () {
             window.reload(1)
-      	},2000)*/
+      	},2000)
 	} else {
-		$("#messageForUserDelete").html('<p class="uk-alert uk-alert-danger">Please provide valid email address.</p>');
+		$("#messageForUserDelete").html('<p class="uk-alert uk-alert-danger">Please provide valid details.</p>');
 	}
 });
 
