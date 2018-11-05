@@ -357,8 +357,9 @@ function fullEnrollmentReset(){
       data: {'student_id': studentId},
       dataType: 'json',
       success: function(response){
-        if (response.data !== parseInt(studentId)) {
+        if (parseInt(response.data) !== parseInt(studentId)) {
           <?php if($discount_second_child_elligible){ ?>
+	    $('#second_child_hide').show();
             $('#second_child_discount_to_form').val({{$discount_second_child}});
             second_child_discount_amt = parseFloat(finalAmount*{{$discount_second_child}}/100);
             $('#second_child_amount').val('-'+(second_child_discount_amt).toFixed(2));
@@ -368,12 +369,15 @@ function fullEnrollmentReset(){
             $('#second_child_amountlabel').html((Math.round(finalAmount/10)*10).toFixed(2));
           <?php } ?>
         } else {
+	  $('#second_child_hide').hide();
           $('#second_child_discount').hide();
           $('#second_child_amountlabel').hide();
         }
+	calculateAfterCheckSibling();
       }
     });
 
+    function calculateAfterCheckSibling () {
       <?php if($discount_second_class_elligible){ ?>
         if(enrollmentStartDate <= '{{ $end }}'){   
           $('#second_class_discount_to_form').val({{$discount_second_class}});
@@ -505,8 +509,10 @@ function fullEnrollmentReset(){
            $('#grandTotallabel').html((Amount).toFixed(0));
          }
       });
-        
+       
       }
+
+     }
 
       $("input[name='paymentTypeRadio']").change(function (){
         $("#enrollNow").show();
@@ -4516,7 +4522,7 @@ style="margin-top: 50px; z-index: 99999;">
                 </td>
               </tr>
               <?php if($discount_second_child_elligible){ ?>
-              <tr>
+              <tr id="second_child_hide">
                 <td colspan="2" style="text-align: right; font-weight: bold"><div id="second_child_discount"><p>Sibling Consideration:0%</p></div></td>
                 <td><label style="font-weight: bold" id="second_child_amountlabel" name="second_child_amountlabel">-0</label>
                   <input style="font-weight: bold" type="hidden"
