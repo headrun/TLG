@@ -422,6 +422,38 @@ class StudentsController extends \BaseController {
     }
   }
   
+  public function deleteBatchesEnrollForId () {
+      if((Auth::check()) && (Session::get('userType')=='ADMIN') ){
+        $inputs=Input::all();
+        $payment_no = PaymentDues::where('id', '=', $inputs['payments_dues_id'])
+                                  ->where('franchisee_id', '=', Session::get('franchiseId'))
+                                  ->get();
+        $orderDelete = Orders::where('student_id', '=', $inputs['studentId'])
+                             ->where('franchisee_id', '=', Session::get('franchiseId'))
+                             ->where('payment_no', '=', $payment_no[0]['payment_no'])
+                             ->delete();
+        $paymentMasterDelete = PaymentMaster::where('student_id', '=', $inputs['studentId'])
+                             ->where('payment_no', '=', $payment_no[0]['payment_no'])
+                             ->delete();
+        $paymentFollowupsDelete = PaymentFollowups::where('student_id', '=', $inputs['studentId'])
+                             ->where('payment_no', '=', $payment_no[0]['payment_no'])
+                             ->delete();
+        $studentClassesDelete = StudentClasses::where('id', '=', $payment_no[0]['student_class_id'])
+                             ->where('student_id', '=', $inputs['studentId'])
+                             ->delete();
+        $paymentsDelete = PaymentDues::where('id', '=', $inputs['payments_dues_id'])
+                                  ->where('franchisee_id', '=', Session::get('franchiseId'))
+                                  ->delete();                           
+
+        if ($paymentsDelete) {
+          return Response::json(array('status'=>'success', 'data' => $inputs));
+        } else {
+          return Response::json(array('status'=>'failure'));
+        }
+      } else {
+        return Response::json(array('status'=>'failure'));
+      }
+    }
 
   public function getAttendanceForStudent(){
     $inputs = Input::all();
