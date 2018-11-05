@@ -284,6 +284,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('deleteenrollmentdata',"StudentsController@deleteenrollmentdata");
         Route::any('deleteUserFromUsers',"FranchiseeAdministration@deleteUserFromUsers");
         Route::any('deleteBatchesEnrollForId', "StudentsController@deleteBatchesEnrollForId");
+        Route::any('deleteAllBatchesEnrollForId', "StudentsController@deleteAllBatchesEnrollForId");
 	/**
 	 *  --------------------------------------------------------------------------------------------------------------------------------------
 	 * Estimate related Ajax calls

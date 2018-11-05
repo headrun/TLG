@@ -1986,11 +1986,11 @@ $('#enrollmentEndDateForOld').change(function(){
 //  }
 });
 
-function deleteBatchesDataForId(payments_dues_id) {
+function deleteBatchesDataForId(student_class_id) {
   $.ajax({
     type: "POST",
     url: "{{URL::to('/quick/deleteBatchesEnrollForId')}}",
-    data: {'studentId': studentId, 'payments_dues_id': payments_dues_id},
+    data: {'studentId': studentId, 'student_class_id': student_class_id},
     dataType: 'json',
     success: function(response){
       if (response.status == 'success') {
@@ -2891,6 +2891,26 @@ $('.deleteBatchdata').click(function () {
   $('#BatchDeleteId').modal('show');
   $('#my-id').modal('hide');
 });
+
+function deleteAllBatches() {
+  $.ajax({
+    type: "POST",
+    url: "{{URL::to('/quick/deleteAllBatchesEnrollForId')}}",
+    data: {'studentId': studentId},
+    dataType: 'json',
+    success: function(response){
+      if (response.status == 'success') {
+        $('#succussMsg').html("<p class='uk-alert uk-alert-success'>All batches has been deleted successfully.</p>")
+        setTimeout(function () {
+          window.location.reload(1);
+        },3000)
+      } else {
+        $('#succussMsg').html("<p class='uk-alert uk-alert-warning'>Something went wrong.Please try again later</p>")
+      }
+    }
+  });
+
+}
 
 $('.deleteenrollmentdata').click(function(){
   $('.deletemsg').html("<p class='uk-alert uk-alert-warning'>Please wait... Enrollment Data Deleting...</p>");
@@ -4221,49 +4241,60 @@ id="user_profile">
             <div class="uk-width-medium-1-1">
               <div class="md-card uk-margin-medium-bottom">
                <div class="md-card-content">
-                 <div class="uk-overflow-container">
-                  <table class="uk-table table-striped" id="paymentsMadeTable" >
-                    <thead>
-                      <tr>
-                        <th class="uk-text-nowrap">Enrolled class</th>
-                        <th class="uk-text-nowrap">Day</th>
-                        <th class="uk-text-nowrap">Time</th>
-                        <th class="uk-text-nowrap">class start date</th>
-                        <th class="uk-text-nowrap">class end date</th>
-                        <th class="uk-text-nowrap">sessions</th>
-                        <th class="uk-text-nowrap">option</th>
-                        
-                      </tr>
-                    </thead>
-                    <tbody>
-                      
-                      <?php if(isset($payment_made_data[0])){ 
-                        for($j=0;$j<count($payment_made_data);$j++){
-                          for($i=0;$i<sizeof($payment_made_data[$j]);$i++){ 
-                           if($payment_made_data[$j][$i]['class_name'] != ''){ 
-                            ?>
-                            <tr>
-                              <td>{{$payment_made_data[$j][$i]['class_name']}}</td>
-                              <td>{{ $payment_made_data[$j][$i]['day'] }}</td>
-                              <td>{{$payment_made_data[$j][$i]['time']}}</td>
-                              <td>
-                              {{date('d-M-Y',strtotime($payment_made_data[$j][$i]['start_order_date']))}}</td>
-                              <td>{{date('d-M-Y',strtotime($payment_made_data[$j][$i]['end_order_date']))}}</td>
-                              <td>{{$payment_made_data[$j][$i]['selected_order_sessions']}}</td>
-                              <td><button style="text-align:justify" class="btn btn-primary btn-xs" onclick="deleteBatchesDataForId('{{ $payment_made_data[$j][$i]['id']}}')">Delete</button></td>
-                            </tr>
-                          <?php } } } }?>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+                <div class="uk-overflow-container">
+                 <table class="uk-table table-striped" id="paymentsMadeTable" >
+                   <thead>
+                     <tr>
+                       <th class="uk-text-nowrap">Enrolled class</th>
+                       <th class="uk-text-nowrap">Day</th>
+                       <th class="uk-text-nowrap">Time</th>
+                       <th class="uk-text-nowrap">class start date</th>
+                       <th class="uk-text-nowrap">class end date</th>
+                       <th class="uk-text-nowrap">sessions</th>
+                       <th class="uk-text-nowrap">option</th>  
+                     </tr>
+                   </thead>
+                   <tbody> 
+                     <?php if(isset($batchDetails) && !empty($batchDetails)){?>
+                     @foreach($batchDetails as $value)
+                     <tr>
+                       <td>{{ $value['batch_name'] }}</td>
+                       <td>{{ $value['Day'] }}</td>
+                       <td>{{ $value['time'] }}</td>
+                       <td>{{ $value['enrollment_start_date'] }}</td>
+                       <td>{{ $value['enrollment_end_date'] }}</td>
+                       <td >{{ $value['selected_sessions'] }}&nbsp;<span id="stageChange" class="new badge" style="background-color: #7CB342;">{{ $value['stage'] }}</span></td>
+                       
+                       <td><button style="text-align:justify" class="btn btn-primary btn-xs" onclick="deleteBatchesDataForId('{{ $value['id']}}')">Delete</button></td>
+                     </tr>
+                     @endforeach
+                     <?php  }else{ ?>
+                     <tr>
+                       <td>
+                         ------------- No batches found --------------
+                       </td>
+                     </tr>
+                     <?php } ?>
+                   </tbody>
+                  </table>
+                 </div>
+                 <?php if(isset($batchDetails) && count($batchDetails) > 0){ ?>
+                 <div align="center" style="padding-top: 20px;">
+                   <button style="text-align:justify; font-size: 17px;" class="btn btn-primary btn-xs" onclick="deleteAllBatches()"> Delete all</button>
+                 </div>
+                 <?php } else { ?>
+                 <div align="center" style="padding-top: 20px;">
+                   <p>No Records Found.</p>
+                 </div>
+                 <?php } ?>
+               </div>
               </div>
+            </div>
+          </div>
             </ul>
           </div>
        </div>
     </div>
-    
-  </div>
 </div>
 <div id="enrollmentModal" class="modal fade" role="dialog"
 style="margin-top: 50px; z-index: 99999;">
