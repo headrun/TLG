@@ -218,6 +218,9 @@
 							<td >Amount Pending <?php if(isset($payment_due_data->membership_id)){?>
                                                                                     (includes {{$payment_due_data->description}} cost of RS {{$payment_due_data->membership_amount}}):  
                                                                             <?php } ?>
+									    <?php if($payment_due_data->discount_amount > 0){?>
+										    (includes discount of RS {{$payment_due_data->discount_amount}}):
+									    <?php } ?>
                                                         </td>
                                                         <td style="text-align:right">{{$birthday_data->remaining_due_amount}}  </td>
 							

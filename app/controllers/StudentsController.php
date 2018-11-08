@@ -336,7 +336,7 @@ class StudentsController extends \BaseController {
                                               ->get();
                               $bacth_name = explode('-', $batch[0 ]['batch_name']); 
                               $batchDetails[$i]['batch_name'] = $bacth_name[0].' '.$bacth_name[1].' '.$bacth_name[2];
-                              $batchDetails[$i]['Day'] = date('l', strtotime($batch[0]['start_date']));
+                              $batchDetails[$i]['Day'] = date('l', strtotime($batch_id[$i]['enrollment_start_date']));
                               $timeStart = explode(':',$batch[0]['preferred_time']);
                               $timeEnd = explode(':',$batch[0]['preferred_end_time']);
                               $batchDetails[$i]['time'] = $timeStart[0].':'.$timeStart[1].'-'.$timeEnd[0].':'.$timeEnd[1]; 
