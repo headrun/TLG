@@ -246,7 +246,7 @@
                         	      class="req"> </span></label> /
                         		{{$tax_data[$i]['tax_particular'].'('.$tax_data[$i]['tax_percentage'].'%)'}} : {{$order_data->tax_amount}}
                         	@else
-                        		{{$tax_data[$i]['tax_particular'].'('.$tax_data[$i]['tax_percentage'].'%)'}} : {{$order_data->tax_amount}}
+                        		{{$tax_data[$i]['tax_particular'].'('.$tax_data[$i]['tax_percentage'].'%)'}} : {{($order_data->tax_amount)/2}}
                         	@endif
                         	</h6>
 						@endfor
