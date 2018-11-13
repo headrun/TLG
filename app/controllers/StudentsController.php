@@ -267,7 +267,7 @@ class StudentsController extends \BaseController {
 
                               		$payment_made_data[$i][$j]['time'] = $start_time[0].':'.$start_time[1].'-'.$end_time[0].':'.$end_time[1];
                               
-                              		$payment_made_data[$i][$j]['receivedname'] = $batch_user->first_name.$batch_user->last_name;
+                              		$payment_made_data[$i][$j]['receivedname'] = $batch_user['first_name'].$batch_user['last_name'];
                               
                               		$payment_made_data[$i][$j]['class_name'] = $batch_name[0]['batch_name'];
                             	}
