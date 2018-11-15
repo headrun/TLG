@@ -42,6 +42,7 @@
                 $('#pan_no').val(response.invoice_data[0]['pan_no']);
                 $('#service_tax_no').val(response.invoice_data[0]['service_tax_no']);
                 $('#tin_no').val(response.invoice_data[0]['tin_no']);
+                $('#gst_no').val(response.invoice_data[0]['gst_no']);
                 $('#annaul_membership').val(response.annual[0]['fee_amount']);
                 $('#lifetime_membership').val(response.lifetime[0]['fee_amount']);
                 $('#cgst').val(response.cgst[0]['tax_percentage']);
@@ -70,6 +71,7 @@
         var pan_no = $('#pan_no').val();
         var service_tax_no = $('#service_tax_no').val();
         var tin_no = $('#tin_no').val();
+        var gst_no = $('#gst_no').val();
         var annaul_membership = $('#annaul_membership').val();
         var lifetime_membership = $('#lifetime_membership').val();
         var cgst = $('#cgst').val();
@@ -95,6 +97,7 @@
              'pan_no': pan_no,
              'service_tax_no': service_tax_no,
              'tin_no': tin_no,
+             'gst_no': gst_no,
              'annaul_membership': annaul_membership,
              'lifetime_membership': lifetime_membership,
              'cgst': cgst,
@@ -355,6 +358,12 @@
                                 <div class="uk-width-medium-1-4">
                                   <div class="parsley-row form-group">
                                     {{Form::text('tin_no',null,array('id'=>'tin_no','class'=>'form-control','required'=>''))}}
+                                  </div>
+                                </div>
+                                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">GST Number :</label>
+                                <div class="uk-width-medium-1-4">
+                                  <div class="parsley-row form-group">
+                                    {{Form::text('gst_no',null,array('id'=>'gst_no','class'=>'form-control','required'=>''))}}
                                   </div>
                                 </div>
                               </div>

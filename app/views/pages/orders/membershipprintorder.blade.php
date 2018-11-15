@@ -210,6 +210,16 @@
 					  </div>
 					</div>
 					@endif
+
+					@if(isset($invoice_data[0]['gst_no']) && !empty($invoice_data[0]['gst_no']))
+					<div class="row datarow">
+					  <div class="col-md-3 title">GST No</div>
+					  <div class="col-md-4">
+					  	<span>{{$invoice_data[0]['gst_no']}}</span><br>
+					  </div>
+					</div>
+				    @endif
+
 					<br clear="all"/>
 					
 					<p>Welcome. Thanks for Joining The Little Gym.  Regards, Team TLG</p>

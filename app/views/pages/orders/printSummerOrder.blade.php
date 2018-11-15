@@ -280,7 +280,14 @@
 							</tr>
 							<tr>
 								<td><strong>TAN NO :</strong></td>
-								<td colspan="3">{{$invoice_data[0]['tan_no']}}</td>
+								<td>{{$invoice_data[0]['tan_no']}}</td>
+								@if(isset($invoice_data[0]['gst_no']) && !empty($invoice_data[0]['gst_no'])){
+
+										<td><strong>GST No :</strong></td>
+										<td>{{$invoice_data[0]['gst_no']}}</td>
+
+							         }
+							    @endif
 							</tr>
 						</table>
 					@else

@@ -56,6 +56,7 @@
 
   $(document).on('click','.add-newFranchisee-btn', function(){
     $('.add-newFranchisee-btn').addClass('disabled');
+    // alert('ok')
     var firstName = $('#firstName').val();
     var lastName = $('#lastName').val();
     var franchiseAddress = $('#franchiseAddress').val();
@@ -72,6 +73,7 @@
     var pan_no = $('#pan_no').val();
     var service_tax_no = $('#service_tax_no').val();
     var tin_no = $('#tin_no').val();
+    var gst_no = $('#gst_no').val();
     var annaul_membership = $('#annaul_membership').val();
     var lifetime_membership = $('#lifetime_membership').val();
     var cgst = $('#cgst').val();
@@ -99,6 +101,7 @@
            'pan_no': pan_no,
            'service_tax_no': service_tax_no,
            'tin_no': tin_no,
+           'gst_no':gst_no,
            'annaul_membership': annaul_membership,
            'lifetime_membership': lifetime_membership,
            'cgst': cgst,
@@ -116,6 +119,7 @@
                 }, 4000);
           } else {
             $('#NewFranchiseeMsgDiv').html("<p class='uk-alert uk-alert-warning'>New franchisee not yet created.Please try again.</P>");
+            $('.add-newFranchisee-btn').removeClass('disabled');
           }
         }
       });
@@ -462,6 +466,12 @@
                     {{Form::text('tin_no',null,array('id'=>'tin_no','class'=>'form-control','required'=>''))}}
                   </div>
                 </div>
+                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">GST Number :</label>
+                <div class="uk-width-medium-1-4">
+                  <div class="parsley-row form-group">
+                    {{Form::text('gst_no',null,array('id'=>'gst_no','class'=>'form-control','required'=>''))}}
+                  </div>
+                </div>
               </div>
               <hr>
               <div class="row">
@@ -715,6 +725,12 @@
                 </div>
                 <div class="col-md-2">
                   {{Form::text('tin_no',null,array('id'=>'tin_no','class'=>'form-control','required'=>''))}}
+                </div>
+                <div class="col-md-4">
+                  GST Number :
+                </div>
+                <div class="col-md-2">
+                  {{Form::text('gst_no',null,array('id'=>'gst_no','class'=>'form-control','required'=>''))}}
                 </div>
               </div>
               <br>
