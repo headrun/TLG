@@ -506,11 +506,23 @@ $(document).on('click', '.eaDateSave', function(){
 	var classId = $(this).closest('tr').find('.classId').val();
 	var attDate = $(this).closest('tr').find('.attDate').val();
 	var updateToBatchId = $(this).closest('tr').find('.selectBatch').val();
-	console.log(updateToBatchId)
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth()+1; //January is 0!
+	var yyyy = today.getFullYear();
+	if(dd<10) {
+	    dd = '0'+dd
+	} 
+	if(mm<10) {
+	    mm = '0'+mm
+	} 
+	today = yyyy + '-' + mm + '-' + dd ;
 	// var alert = $(this).closest('td').prev('td').find('.attDate').val();
 
+   if(desc != '' && date != '' && updateToBatchId != '') {
 
-	if(typeof date !=  'undefined' && date != ''){
+     
+   	if(typeof date !=  'undefined' && date != '' && date > today){
 		$.ajax({
 		    type: "POST",
 		    url: "{{URL::to('/quick/UpdateEaDate')}}",
@@ -528,9 +540,14 @@ $(document).on('click', '.eaDateSave', function(){
 			  		 $(".eaDateSave").remove();
 			  		 $(".Description_user").remove();
 			  		 $("input.userRemDate").remove();
+			  		 $(".selectBatch").remove();
 			  		 $('#makeupmsg').html("<p class='uk-alert uk-alert-success'>Excused Absent date has been noted successfully.</p>");
 					 
-				}else{
+				}
+				else if (response.status == "exists"){
+					$("#makeupmsg").html('<p class="uk-alert uk-alert-warning">Already class exists.</p>');
+				}
+				else{
 					$("#makeupmsg").hide();
 					$("#makeupmsg").html('<p class="uk-alert uk-alert-warning">Already this kid enrolled in the same batch.</p>');
 					
@@ -546,6 +563,35 @@ $(document).on('click', '.eaDateSave', function(){
 			}
 		});
 	}
+
+	
+	else {
+			  		 // $(".eaDateSave").remove();
+		$("#makeupmsg").html('<p class="uk-alert uk-alert-warning">Please select future date.</p>');
+	}
+	$('#makeupmsg').show('slow');
+                setTimeout(function(){
+                    $('#makeupmsg').slideUp();
+                    $('#makeupmsg').html('');
+                    $('#makeupmsg').show();
+                },3000);
+                $("#eaDateSave").attr("disabled", false);
+
+   }
+   else {
+   	$("#makeupmsg").html('<p class="uk-alert uk-alert-warning">Please select all the fields.</p>');
+	}
+	$('#makeupmsg').show('slow');
+                setTimeout(function(){
+                    $('#makeupmsg').slideUp();
+                    $('#makeupmsg').html('');
+                    $('#makeupmsg').show();
+                },3000);
+                $("#eaDateSave").attr("disabled", false);
+  
+
+
+
 });
 
 

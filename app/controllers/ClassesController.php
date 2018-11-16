@@ -415,7 +415,17 @@ class ClassesController extends \BaseController {
        		if(Auth::check()){
                	$inputs=Input::all();
 //		return $inputs;
-		$getClassAndSeasonIds = Batches::where('franchisee_id','=',Session::get('franchiseId'))
+           
+           $eaVal = StudentClasses::where('franchisee_id','=',Session::get('franchiseId'))
+                ->where('student_id','=',$inputs['studentId']) 
+                ->where('batch_id','=',$inputs['updateToBatchId'])
+                ->where('enrollment_end_date','>',$inputs['date'])
+                ->count();
+                // return $eaVal;
+             
+          if($eaVal == 0){
+
+          	$getClassAndSeasonIds = Batches::where('franchisee_id','=',Session::get('franchiseId'))
 						->where('id','=',$inputs['updateToBatchId'])
 						->get();
                	$present_date = Carbon::now();
@@ -441,6 +451,11 @@ class ClassesController extends \BaseController {
                 }else{
                     return Response::json(array('status'=>'failure'));   
                 }
+          }
+          else{
+          	return Response::json(array('status'=>'exists'));
+          }
+		
            }
        }
 
