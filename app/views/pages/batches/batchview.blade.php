@@ -347,7 +347,7 @@ function getbatchesStudents(batchId, dateStartEvent){
 						"<input type='text'  name='reminderdate_user_"+i+"' class='userRemDate form-control input-sm' required style='width:100%' placeholder='Select Date for Class' />"+
 				   	"</div>"+
 				  	"<div class='uk-width-medium-1-3'>"+
-						"<select id='batches"+i+"' name='select_batch_"+i+"' class='selectBatch form-control input-sm md-input' placeholder='Select Batch' style='padding:0px; font-weight:bold;color: #727272;'>"+"<option></option>"+"</select>"+
+						"<select id='batches"+i+"' name='select_batch_"+i+"' class='selectBatch form-control' placeholder='Select Batch' style='padding:0px; font-weight:bold;color: #727272;'>"+"<option></option>"+"</select>"+
 				   	"</div>"+
 				   	"</div><button type='button' style= margin-left:40px; class=' btn btn-success eaDateSave pull-right'>Save</button></div><div id='makeupmsg' class='parsley-row'>"+
 					"<div>"+
@@ -547,6 +547,15 @@ $(document).on('click', '.eaDateSave', function(){
 				else if (response.status == "exists"){
 					$("#makeupmsg").html('<p class="uk-alert uk-alert-warning">Already class exists.</p>');
 				}
+				else if (response.status == "check"){
+					$("#makeupmsg").html('<p class="uk-alert uk-alert-warning">Already EA was given for this date.</p>');
+					$('#makeupmsg').hide();
+			  		 $(".eaDateSave").remove();
+			  		 $(".Description_user").remove();
+			  		 $("input.userRemDate").remove();
+			  		 $(".selectBatch").remove();
+				}
+
 				else{
 					$("#makeupmsg").hide();
 					$("#makeupmsg").html('<p class="uk-alert uk-alert-warning">Already this kid enrolled in the same batch.</p>');

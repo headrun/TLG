@@ -414,9 +414,17 @@ class ClassesController extends \BaseController {
        public function UpdateEaDate(){
        		if(Auth::check()){
                	$inputs=Input::all();
-//		return $inputs;
-           
-           $eaVal = StudentClasses::where('franchisee_id','=',Session::get('franchiseId'))
+		// return $inputs;
+
+           $check = Attendance::where('student_id','=',$inputs['studentId'])
+                 ->where('batch_id','=',$inputs['batchId'])
+                 ->where('status','=','EA')
+                 ->where('attendance_date','=',$inputs['attDate'])
+                 ->count();
+            
+            if($check == 0) {
+  
+               $eaVal = StudentClasses::where('franchisee_id','=',Session::get('franchiseId'))
                 ->where('student_id','=',$inputs['studentId']) 
                 ->where('batch_id','=',$inputs['updateToBatchId'])
                 ->where('enrollment_end_date','>',$inputs['date'])
@@ -455,6 +463,12 @@ class ClassesController extends \BaseController {
           else{
           	return Response::json(array('status'=>'exists'));
           }
+            }
+            else{
+            	return Response::json(array('status'=>'check'));
+            }
+           
+           
 		
            }
        }
