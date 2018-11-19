@@ -3041,7 +3041,7 @@ $('#memberhsipchequeNumber').keyup(function(){
                                                     <div class="md-list-content">
                                                         <span class="md-list-heading">
                                                         
-                                                        {{ucfirst($customer->source)}} - 
+                                                        {{ucfirst($customer->source)}} 
                                                         <?php if($customer->source == "events"){
                                                         		if(isset($customer->Events)){
                                                         	?>
