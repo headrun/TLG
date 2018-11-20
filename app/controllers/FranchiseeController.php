@@ -55,6 +55,27 @@ class FranchiseeController extends \BaseController {
 		}	
 	}
 
+		public static function terms_conditions() {
+			if(Auth::check() && Session::get('userType')==='SUPER_ADMIN'){
+
+				
+				$mainMenu     =  "FRANCHISEE_MAIN";
+
+				$currentPage  =  "TERMSANDCONDTIONS";
+
+				$franchiseeList = Franchisee::getFranchiseeList();
+	            
+
+	      		$viewData = array('currentPage','mainMenu','franchiseeList');
+	      		return View::make('pages.franchisee.termsAndConditions',compact($viewData)); 
+	      
+			}else{
+
+				return Redirect::action('VaultController@logout');
+
+			}	
+		}
+
 	public static function updateFranchisee(){
 		if(Auth::check() && Session::get('userType')==='SUPER_ADMIN'){
 
@@ -164,6 +185,30 @@ class FranchiseeController extends \BaseController {
 	          return Response::json(array('status'=> "failure",));
 	        }
 	    }
+	}
+
+	public static function getTermsAndCondForFranchisee () {
+	  	if(Auth::check() && Session::get('userType')==='SUPER_ADMIN'){
+	        $inputs=Input::all();          					
+	        $franchiseDetails = TermsAndConditions::where('franchisee_id', '=', $inputs['franchisee_id'])->get();
+	        if($franchiseDetails){
+	          return Response::json(array('status'=> "success", 'franchisee_data' => $franchiseDetails));
+	        }else{
+	          return Response::json(array('status'=> "failure"));
+	        }
+	    }
+	}
+
+	public static function updateTermsAndCondtions () {
+		if(Auth::check() && Session::get('userType')==='SUPER_ADMIN'){
+			$inputs = Input::all();          					
+			$updateConditions = TermsAndConditions::updateTermsAndCondtions($inputs);
+			if ($updateConditions) {
+				return Response::json(array('status' => "success"));
+			} else {
+				return Response::json(array('status' => "failure"));
+			}
+		}
 	}
 
 	public function index()
