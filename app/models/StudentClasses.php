@@ -81,7 +81,7 @@ class StudentClasses extends \Eloquent {
 		$multipleEnrollments = '';
 		    $totalEnrollments = PaymentDues::join('students', 'students.id','=' ,'payments_dues.student_id')
                   ->where('payments_dues.franchisee_id', '=', Session::get('franchiseId'))
-                  ->where('payments_dues.end_order_date', '>=','2018-11-21')
+                  ->where('payments_dues.end_order_date', '>=',date('Y-m-d'))
                   ->where('payments_dues.payment_due_for', '=', 'enrollment')
                   ->groupBy('payments_dues.student_id')
                   ->get();
@@ -92,7 +92,7 @@ class StudentClasses extends \Eloquent {
                 		$list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
                 				   ->where('student_id', '=', $c['student_id'])
 						               ->where('payment_due_for', '=', 'enrollment')
-                				   ->where('end_order_date', '>=', '2018-11-21' )
+                				   ->where('end_order_date', '>=', date('Y-m-d') )
                 				   ->count();
                 	if($list > 1){
                 		$multipleEnrollments[] = $list;
@@ -109,7 +109,7 @@ class StudentClasses extends \Eloquent {
 		$singleEnrollments = [];
     $totalEnrollments = PaymentDues::join('students', 'students.id','=' ,'payments_dues.student_id')
               ->where('payments_dues.franchisee_id', '=', Session::get('franchiseId'))
-              ->where('payments_dues.end_order_date', '>=','2018-11-21')
+              ->where('payments_dues.end_order_date', '>=',date('Y-m-d'))
               ->where('payments_dues.payment_due_for', '=', 'enrollment')
               ->groupBy('payments_dues.student_id')
               ->get();
@@ -119,7 +119,7 @@ class StudentClasses extends \Eloquent {
                       $list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
                              ->where('student_id', '=', $c['student_id'])
                              ->where('payment_due_for', '=', 'enrollment')
-                             ->where('end_order_date', '>=', '2018-11-21' )
+                             ->where('end_order_date', '>=', date('Y-m-d') )
                              ->count();
                     if($list <= 1){
                       $singleEnrollments[] = $list;
@@ -134,7 +134,7 @@ class StudentClasses extends \Eloquent {
   static function getTotalEnrolls () {
     $totalEnrollments = PaymentDues::join('students', 'students.id','=' ,'payments_dues.student_id')
               ->where('payments_dues.franchisee_id', '=', Session::get('franchiseId'))
-              ->where('payments_dues.end_order_date', '>=','2018-11-21')
+              ->where('payments_dues.end_order_date', '>=',date('Y-m-d'))
               ->where('payments_dues.payment_due_for', '=', 'enrollment')
               ->get();
     return $totalEnrollments;
