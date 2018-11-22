@@ -19,6 +19,22 @@ class ReportsController extends \BaseController {
             }
         }
 
+        public static function daily_reports(){
+            if(Auth::check()){
+                if(Session::get('userType') == 'ADMIN'){
+                    $currentPage  =  "DailyReoprt_LI";
+                    $mainMenu     =  "REPORTS_MENU_MAIN";
+                    $presentdate  =  date("Y-m-d");
+                    $viewData= compact('currentPage','mainMenu','presentdate');
+                    return View::make('pages.reports.daily_reports',$viewData);
+                }else{
+                    return Redirect::action('DashboardController@index');
+                }    
+            }else{
+                return Redirect::action('VaultController@logout');
+            }
+        }
+
         public static function mismatch_enrollments(){
             if(Auth::check()){
                 if(Session::get('userType') == 'ADMIN'){
@@ -358,6 +374,19 @@ class ReportsController extends \BaseController {
                     return Response::json(array(PaymentDues::getByApartmentEnrollmentReport($inputs),'ByApartment'));
                 }
                 return Response::json(array($inputs));
+            }
+        }
+
+        public static function generateDailyReport () {
+            if(Auth::check()) {
+                $inputs = Input::all();
+                if($inputs['reportType']=='dailyPhoneCalls'){
+                    return Response::json(array(
+                        StudentClasses::getAllmissedClasses($inputs),
+                        StudentClasses::getAllTmrwClassesIntr($inputs),
+                        BirthdayParties::todayBdaysForDailyRepo($inputs),
+                        'dailyPhoneCalls'));
+                }
             }
         }
         public static function UpdateDataBatch(){

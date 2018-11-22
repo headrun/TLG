@@ -97,5 +97,22 @@ class BirthdayParties extends \Eloquent {
         }
     }
 
+    static function todayBdaysForDailyRepo ($inputs) {
+    	$data = Students::where('franchisee_id', '=', Session::get('franchiseId'))
+    					->whereRaw('MONTH(student_date_of_birth) = MONTH(NOW())')
+    					->whereRaw('DAY(student_date_of_birth) = DAY(NOW())')
+    					->get();
+    	for ($i=0; $i < count($data); $i++) { 
+    	    $customers = Customers::where('franchisee_id', '=', Session::get('franchiseId'))
+    	                          ->where('id', '=', $data[$i]['customer_id'])
+    	                          ->get();
+    	    $data[$i]['customer_name'] = $customers[0]['customer_name'] . $customers[0]['customer_lastname'];
+    	    $data[$i]['mobile_no'] = $customers[0]['mobile_no'];
+    	    $data[$i]['email'] = $customers[0]['customer_email'];
+    	    $data[$i]['age'] = date_diff(date_create(date('Y-m-d',strtotime($data[$i]['student_date_of_birth']))), date_create('today'))->y.'.'.date_diff(date_create(date('Y-m-d',strtotime($data[$i]['student_date_of_birth']))), date_create('today'))->m.'years';
+    	}
+    	return $data;
+    }
+
     
 }
