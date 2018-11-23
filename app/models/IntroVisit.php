@@ -229,6 +229,71 @@ class IntroVisit extends \Eloquent {
     	return IntroVisit::where('student_id', '=', $inputs['studentId'])
     					 ->where('batch_id', '=', $inputs['batchId'])
     					 ->count();
-    }	
+    }
+
+
+    static public function before2days_introvisitnotset ($inputs) {
+       $daybeforeyesterDay = date('Y-m-d', strtotime('-2 day', strtotime($inputs['start_date'])));
+	    $intro = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+	                     ->where('enrollment_start_date', '=', $daybeforeyesterDay)
+	                     ->where('status', '=', 'introvisit')
+	                     ->get();
+
+	    $iv_ids = array();
+	    foreach ($intro as $key => $value) {
+	      $iv_ids[] = $value['id'];        
+	    }  
+	    $data = Attendance::whereIn('student_classes_id', $iv_ids)
+	                      ->where('status', '=', 'P')
+	                      ->where('attendance_date', '=', $daybeforeyesterDay)
+	                      ->get(); 
+	    $enrollment_array = array();
+	    foreach ($data as $key => $value) {
+	    	$notenrolled_data = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+	    	                                ->where('student_id', '=', $value['student_id'])
+	    	                                ->where('end_order_date', '>=', $daybeforeyesterDay)
+	    	                                ->where('payment_due_for', '=', 'enrollment')
+	    	                                ->get();
+	    	if (count($notenrolled_data) == 0) {
+	    		$student_classes = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+	    						 ->where('student_id', '=', $value['student_id'])
+	    		                 ->where('enrollment_start_date', '=', $daybeforeyesterDay)
+	    		                 ->where('status', '=', 'introvisit')
+	    		                 ->get();
+	    		if (count($student_classes) > 0) {	    			
+		    		$batch = Batches::where('franchisee_id', '=', Session::get('franchiseId'))
+		    		                ->where('id', '=', $student_classes[0]['batch_id'])
+		    		                ->get();
+		    		$enrollment_array[$key]['batch_name'] = $batch[0]['batch_name'];
+		    		$student = Students::where('franchisee_id', '=', Session::get('franchiseId'))
+		    		                 ->where('id', '=', $student_classes[0]['student_id'])
+		    		                 ->get();
+		    		
+		    		if (count($student) > 0) {
+		    			$enrollment_array[$key]['student_name'] = $student[0]['student_name'];
+		    			if ($batch[0]['lead_instructor'] !== '' && isset($batch[0]['lead_instructor'])) {
+		    			  $user = User::where('franchisee_id', '=', Session::get('franchiseId'))
+		    			               ->where('id', '=', $batch[0]['lead_instructor'])
+		    			               ->get();
+		    			  $enrollment_array[$key]['instructor_name'] = $user[0]['first_name'] . $user[0]['last_name'];
+		    			} else {
+		    			  $enrollment_array[$key]['instructor_name'] = '';
+		    			}
+
+		    			$customers = Customers::where('franchisee_id', '=', Session::get('franchiseId'))
+		    			                      ->where('id', '=', $student[0]['customer_id'])
+		    			                      ->get();
+		    			$enrollment_array[$key]['customer_name'] = $customers[0]['customer_name'] . $customers[0]['customer_lastname'];
+		    			$enrollment_array[$key]['mobile_no'] = $customers[0]['mobile_no'];
+		    			$enrollment_array[$key]['email'] = $customers[0]['customer_email'];
+		    			$enrollment_array[$key]['date'] = $daybeforeyesterDay;
+		    		}
+	    		}
+	    	}
+	    }
+	    return $enrollment_array;
+
+  }
+	
 	
 }
