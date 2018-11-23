@@ -90,7 +90,7 @@ $(document).on('click', '.daily_reportsBtn', function(){
             data: {'start_date': start_date, 'reportType': reportType},
             dataType: 'json',
             success: function(response){
-              if (response[3] == 'dailyPhoneCalls') {
+              if (response[5] == 'dailyPhoneCalls') {
                 data = '';
                 data = '<div style="float:right;">'+
                         '<button type="button" class="md-btn md-btn-primary" id="download"style="border-radius:5px;">Print</button>'+
@@ -132,15 +132,30 @@ $(document).on('click', '.daily_reportsBtn', function(){
                 data += "</table></div>";
                 /*data += '<hr>';
                 data += '<center><h3>Inquired Online But Didnt Schedule Anything</h3></center>';*/
-                data += '<hr>';
-                data += '<center><h4>Inquired But Didnt Schedule Anything</h4></center>';
-                data += '<hr>';
+                data += '<center><h4>Inquired Last Days But Didnt Schedule Anything</h4></center>';
+                if (response[4].length > 0) {
+                  data += "<div class='uk-overflow-container'>"+
+                            "<table class='uk-table'>"+
+                              "<thead>"+
+                                '<tr>'+
+                                  '<th>Parent Name</th>'+
+                                  '<th>Phone Number</th>'+
+                                  '<th>Email</th>'+
+                                '</tr>'+
+                              '</thead>';
+                  for(var i=0;i<response[4].length;i++){
+                    data+="<tr><td>"+response[4][i]['customer_name']+"</td><td>"+
+                          response[4][i]['mobile_no']+"</td><td>"+
+                          response[4][i]['email']+"</td></tr>";
+                  }
+                } else {
+                  data += "<center><p>******* No records founds *******</p></center>"
+                }
+                data += "</table></div>";
                 data += '<center><h4>Attended An Intro 2 Days Ago But Havent Enrolled</h4></center>';
                 data += '<hr>';
                 data += '<center><h4>People Who No-Showed To An Intro</h4></center>';
-                data += '<hr>';
-                data += '<center><h4>People Who Have An Intro Tomorrow</h4></center>';
-                if (response[1].length > 0) {
+                if (response[3].length > 0) {
                   data += "<div class='uk-overflow-container'>"+
                             "<table class='uk-table'>"+
                               "<thead>"+
@@ -153,13 +168,13 @@ $(document).on('click', '.daily_reportsBtn', function(){
                                   '<th>Email</th>'+
                                 '</tr>'+
                               '</thead>';
-                  for(var i=0;i<response[1].length;i++){
-                    data+="<tr><td>"+response[1][i]['batch_name']+"</td><td>"+
-                          response[1][i]['student_name']+"</td><td>"+
-                          response[1][i]['instructor_name']+"</td><td>"+
-                          response[1][i]['customer_name']+"</td><td>"+
-                          response[1][i]['mobile_no']+"</td><td>"+
-                          response[1][i]['email']+"</td></tr>";
+                  for(var i=0;i<response[3].length;i++){
+                    data+="<tr><td>"+response[3][i]['batch_name']+"</td><td>"+
+                          response[3][i]['student_name']+"</td><td>"+
+                          response[3][i]['instructor_name']+"</td><td>"+
+                          response[3][i]['customer_name']+"</td><td>"+
+                          response[3][i]['mobile_no']+"</td><td>"+
+                          response[3][i]['email']+"</td></tr>";
                   }
                 } else {
                   data += "<center><p>******* No records founds *******</p></center>"
@@ -199,11 +214,11 @@ $(document).on('click', '.daily_reportsBtn', function(){
                             "<table class='uk-table'>"+
                               "<thead>"+
                                 '<tr>'+
-                                  '<th>Class Description</th>'+
+                                  '<th>Customer Name</th>'+
                                   '<th>Student Name</th>'+
-                                  '<th>Instructor Name</th>'+
-                                  '<th>Parent Name</th>'+
-                                  '<th>Phone Number</th>'+
+                                  '<th>Age</th>'+
+                                  '<th>Mobile No</th>'+
+                                  '<th>Date of Birth</th>'+
                                   '<th>Email</th>'+
                                 '</tr>'+
                               '</thead>';

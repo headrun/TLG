@@ -354,6 +354,7 @@ class StudentClasses extends \Eloquent {
     for ($i=0; $i < count($dataAtte); $i++) { 
       $student_classes = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
                                        ->where('id', '=', $dataAtte[$i]['student_classes_id'])
+                                       ->where('status', '=', 'enrolled')
                                        ->get();
       if (count($student_classes) > 0) {
         $att_id[] = $dataAtte[$i]['id'];
@@ -404,6 +405,51 @@ class StudentClasses extends \Eloquent {
     for ($i=0; $i < count($data); $i++) { 
       $student_classes = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
                                        ->where('id', '=', $data[$i]['id'])
+                                       ->get();
+      if (count($student_classes) > 0) {
+        $batch = Batches::where('franchisee_id', '=', Session::get('franchiseId'))
+                        ->where('id', '=', $student_classes[0]['batch_id'])
+                        ->get();
+        $data[$i]['batch_name'] = $batch[0]['batch_name'];
+        $student = Students::where('franchisee_id', '=', Session::get('franchiseId'))
+                         ->where('id', '=', $data[$i]['student_id'])
+                         ->get();
+        $data[$i]['student_name'] = $student[0]['student_name'];
+        if ($batch[0]['lead_instructor'] !== '' && isset($batch[0]['lead_instructor'])) {
+          $user = User::where('franchisee_id', '=', Session::get('franchiseId'))
+                       ->where('id', '=', $batch[0]['lead_instructor'])
+                       ->get();
+          $data[$i]['instructor_name'] = $user[0]['first_name'] . $user[0]['last_name'];
+        } else {
+          $data[$i]['instructor_name'] = '';
+        }
+        $customers = Customers::where('franchisee_id', '=', Session::get('franchiseId'))
+                              ->where('id', '=', $student[0]['customer_id'])
+                              ->get();
+        $data[$i]['customer_name'] = $customers[0]['customer_name'] . $customers[0]['customer_lastname'];
+        $data[$i]['mobile_no'] = $customers[0]['mobile_no'];
+        $data[$i]['email'] = $customers[0]['customer_email'];
+      }
+    }
+    return $data;
+  }
+
+  static public function getAllMissedIntro ($inputs) {
+    $yesterDay = date('Y-m-d', strtotime('-1 day', strtotime($inputs['start_date'])));
+    $intro = IntroVisit::where('franchisee_id', '=', Session::get('franchiseId'))
+                       ->where('iv_date', '=', $inputs['start_date'])
+                       ->get();
+    $iv_ids = array();
+    foreach ($intro as $key => $value) {
+      $iv_ids[] = $value['id'];        
+    }      
+    $data = Attendance::whereIn('introvisit_id', $iv_ids)
+                      ->where('status', '=', 'A')
+                      ->where('attendance_date', '=', $inputs['start_date'])
+                      ->get();
+    for ($i=0; $i < count($data); $i++) { 
+      $student_classes = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+                                       ->where('id', '=', $data[$i]['student_classes_id'])
                                        ->get();
       if (count($student_classes) > 0) {
         $batch = Batches::where('franchisee_id', '=', Session::get('franchiseId'))
