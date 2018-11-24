@@ -391,7 +391,13 @@ class CustomersController extends \BaseController {
                         $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
                         $birthday_base_price = BirthdayBasePrice::getBirthdaybasePrice();
                         $membership_data=CustomerMembership::getCustomerMembershipDetails($customer->id);
-                        
+                        $membership_ids = array();
+                        foreach ($membership_data as $key => $value) {
+                        	$membership_ids[] = $value['id'];
+                        }
+                        $membership_dates = CustomerMembership::where('customer_id','=',$id)
+                        					->whereNotIn('id', $membership_ids)
+                                                  		->get(); 
                         
 
                         
@@ -422,6 +428,7 @@ class CustomersController extends \BaseController {
                                         'membership_followup_data',
                                         'taxPercentage',
                                         'tax_data',
+					'membership_dates'
 			);
 			return View::make ( 'pages.customers.details', compact ( $viewData ) );
 		}else{

@@ -3762,8 +3762,29 @@ $('#memberhsipchequeNumber').keyup(function(){
                                                       
                                                   </div>
                                                 </div>
-                                             </div>   
-
+                                             </div>
+					    <div class="uk-width-medium-1-1">
+      						<ul class="md-list" >
+					      	@foreach($membership_dates as $membership)
+      						<li>
+      						<div class="md-list-content">
+      							<div class="uk-margin-small-top">
+                    						<span class="uk-margin-right">
+        							<i class="material-icons"></i> 
+        								<span class="uk-text-muted uk-text-small">                                    									Start Date: {{$membership->membership_start_date}}
+        								&nbsp; &nbsp;
+        								End Date: {{$membership->membership_end_date}}  
+        								&nbsp; &nbsp;
+        								<span class="new badge" style="background-color: #7CB342">Purchased through enrollment / Birthday</span> 
+        								</span>
+    								</span>
+    							</div>
+      						</div>
+      						</li>
+      						@endforeach	
+      						</ul>
+      
+  					     </div>	   
                                              <div id="purchasemem" class="uk-modal">
                                     			<div class="uk-modal-dialog modal-md">
                                         			<a class="uk-modal-close uk-close memmodalclose"></a>
