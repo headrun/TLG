@@ -387,6 +387,7 @@ class ReportsController extends \BaseController {
                         BirthdayParties::todayBdaysForDailyRepo($inputs),
                         StudentClasses::getAllMissedIntro($inputs),
                         Inquiry::lastTwoInqNotShed($inputs),
+                        IntroVisit::before2days_introvisitnotset($inputs),
                         'dailyPhoneCalls'));
                 }
             }

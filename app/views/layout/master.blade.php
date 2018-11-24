@@ -43,7 +43,7 @@
 	<link rel="stylesheet" href="{{url()}}/assets/css/bootstrap-theme.min.css">
 	
 	
-	<link rel="stylesheet" href="{{url()}}/assets/css/jquery-ui.css">
+	<link rel="stylesheet" href="{{url()}}/assets/css/jquery-ui.min.css">
 	
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">	
 	@yield('libraryCSS')
@@ -317,7 +317,7 @@
     <!-- altair common functions/helpers -->
     
     <script src="{{url()}}/assets/js/altair_admin_common.min.js"></script>
-    <script src="{{url()}}/assets/css/jquery-ui.css"></script>
+    <link rel="stylesheet" type="text/css" src="{{url()}}/assets/css/jquery-ui.min.css"/>
     <script type="text/javascript" src="{{url()}}/assets/js/idle-timer.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script type="text/javascript" src="{{url()}}/assets/js/idle-timer.js"></script>

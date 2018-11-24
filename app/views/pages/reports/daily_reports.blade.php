@@ -26,7 +26,9 @@
 <script src="{{url()}}/assets/js/pages/kendoui.min.js"></script>
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
 <script src="{{url()}}/assets/js/jspdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.2/bluebird.core.min.js"></script>
+<script src="https://cdn.jsdelivr.net/bluebird/latest/bluebird.js"></script>
+
+
 <style type="text/css">
   .daily_rpo_img {
     margin:0px auto;
@@ -37,7 +39,37 @@
   }
 </style>
 <script type="text/javascript">
+
+  $(function(){
+  var form = $('#pdfData'), 
+    cache_width = form.width(),  
+    a4 = [550.28, 841.89];
+    function createPDF() {
+        getCanvas().then(function (canvas) {  
+              var img = canvas.toDataURL("image/png"),  
+               doc = new jsPDF({  
+                   unit: 'px',  
+                   format: 'a4'  
+               });  
+               var options = {
+                    pagesplit: true
+               };
+              doc.addImage(img, 'JPEG', 20, 20);                                
+              doc.save('DailyPhoneCallsReports.pdf');  
+              form.width(cache_width);  
+          });
+    }
+
+    function getCanvas() {  
+        form.width((a4[0] * 1.33333) - 10).css('max-width', 'none');  
+        return html2canvas(form, {  
+            imageTimeout: 2000,  
+            removeContainer: true  
+        });
+    }
+
   $(document).ready(function() {
+
     $('#reportGenerateStartdate, #reportGenerateStartdate1').kendoDatePicker( {format: "yyyy-MM-dd"});
     $('#reportGenerateenddate, #reportGenerateenddate1').kendoDatePicker({format: "yyyy-MM-dd"});
     $('#reportGenerateStartdate, #reportGenerateStartdate1').val('{{$presentdate}}');
@@ -47,38 +79,7 @@
     $('#reportStartDate').val('{{$presentdate}}');
     $('#reportEndDate').val('{{$presentdate}}');
     $('#reportType').val('dailyPhoneCalls');
-  });
-
-  var form = $('#DivIdToPrint'), 
-  cache_width = form.width(),  
-  a4 = [550.28, 841.89];
-
-  function createPDF() {
-      getCanvas().then(function (canvas) {  
-            var img = canvas.toDataURL("image/png"),  
-             doc = new jsPDF({  
-                 unit: 'px',  
-                 format: 'a4'  
-             });  
-            doc.addImage(img, 'JPEG', 20, 20);                                
-            doc.save('DailyPhoneCallsReports.pdf');  
-            form.width(cache_width);  
-        });
-  }
-
-  function getCanvas() {  
-      form.width((a4[0] * 1.33333) - 10).css('max-width', 'none');  
-      return html2canvas(form, {  
-          imageTimeout: 2000,  
-          removeContainer: true  
-      });  
-  }
-  $(document).on('click', '#download', function() {
-    createPDF();
-    setTimeout(function () {
-      window.location.reload(1);
-    },2000)
-  });
+  });  
 
 $(document).on('click', '.daily_reportsBtn', function(){
     var start_date = $('#reportGenerateStartdate1').val();
@@ -90,16 +91,17 @@ $(document).on('click', '.daily_reportsBtn', function(){
             data: {'start_date': start_date, 'reportType': reportType},
             dataType: 'json',
             success: function(response){
-              if (response[5] == 'dailyPhoneCalls') {
+              if (response[6] == 'dailyPhoneCalls') {
                 data = '';
-                data = '<div style="float:right;">'+
+                dataPrint = '<div style="float:right;">'+
                         '<button type="button" class="md-btn md-btn-primary" id="download"style="border-radius:5px;">Print</button>'+
                         '</div>';
-                data += '<div class="row" style="margin-top:10px;margin-left:0px;margin-right:0px;">'+
-                         '<div class="col-lg-4 col-md-4">'+
+                $('#print').html(dataPrint);
+                data = '<div class="row" style="margin-top:10px;margin-left:0px;margin-right:0px;">'+
+                         /*'<div class="col-lg-4 col-md-4">'+
                            '<center><div class="daily_rpo_img"></div></center>'+
-                         '</div>'+
-                         '<div class="col-lg-4 col-md-4">'+
+                         '</div>'+*/
+                         '<div class="col-lg-12 col-md-12">'+
                            '<center><h2>Daily Phone Calls</h2><div>'+start_date+'</div></center>'+
                          '</div>'+
                        '</div>';
@@ -109,14 +111,14 @@ $(document).on('click', '.daily_reportsBtn', function(){
                   data += "<div class='uk-overflow-container'>"+
                             "<table class='uk-table'>"+
                               "<thead>"+
-                                '<tr>'+
+                                '<center><tr>'+
                                   '<th>Class Description</th>'+
                                   '<th>Student Name</th>'+
                                   '<th>Instructor Name</th>'+
                                   '<th>Parent Name</th>'+
                                   '<th>Phone Number</th>'+
                                   '<th>Email</th>'+
-                                '</tr>'+
+                                '</tr></center>'+
                               '</thead>';
                   for(var i=0;i<response[0].length;i++){
                     data+="<tr><td>"+response[0][i]['batch_name']+"</td><td>"+
@@ -137,12 +139,12 @@ $(document).on('click', '.daily_reportsBtn', function(){
                   data += "<div class='uk-overflow-container'>"+
                             "<table class='uk-table'>"+
                               "<thead>"+
-                                '<tr>'+
+                                '<center><tr>'+
                                   '<th>Parent Name</th>'+
                                   '<th>Phone Number</th>'+
                                   '<th>Email</th>'+
                                 '</tr>'+
-                              '</thead>';
+                              '</thead></center>';
                   for(var i=0;i<response[4].length;i++){
                     data+="<tr><td>"+response[4][i]['customer_name']+"</td><td>"+
                           response[4][i]['mobile_no']+"</td><td>"+
@@ -153,26 +155,54 @@ $(document).on('click', '.daily_reportsBtn', function(){
                 }
                 data += "</table></div>";
                 data += '<center><h4>Attended An Intro 2 Days Ago But Havent Enrolled</h4></center>';
-                data += '<hr>';
+                if (response[5].length > 0) {
+                  data += "<div class='uk-overflow-container'>"+
+                            "<table class='uk-table'>"+
+                              "<thead>"+
+                                '<center><tr>'+
+                                  '<th>Class Description</th>'+
+                                  '<th>Student Name</th>'+
+                                  '<th>Instructor Name</th>'+
+                                  '<th>Parent Name</th>'+
+                                  '<th>Date</th>'+
+                                  '<th>Phone Number</th>'+
+                                  '<th>Email</th>'+
+                                '</tr></center>'+
+                              '</thead>';
+                  for(var i=0;i<response[5].length;i++){
+                    data+="<tr><td>"+response[5][i]['batch_name']+"</td><td>"+
+                          response[5][i]['student_name']+"</td><td>"+
+                          response[5][i]['instructor_name']+"</td><td>"+
+                          response[5][i]['customer_name']+"</td><td>"+
+                          response[5][i]['date']+"</td><td>"+
+                          response[5][i]['mobile_no']+"</td><td>"+
+                          response[5][i]['email']+"</td></tr>";
+                  }
+                } else {
+                  data += "<center><p>******* No records founds *******</p></center>"
+                }
+                data += "</table></div>";
                 data += '<center><h4>People Who No-Showed To An Intro</h4></center>';
                 if (response[3].length > 0) {
                   data += "<div class='uk-overflow-container'>"+
                             "<table class='uk-table'>"+
                               "<thead>"+
-                                '<tr>'+
+                                '<center><tr>'+
                                   '<th>Class Description</th>'+
                                   '<th>Student Name</th>'+
                                   '<th>Instructor Name</th>'+
                                   '<th>Parent Name</th>'+
+                                  '<th>Date</th>'+
                                   '<th>Phone Number</th>'+
                                   '<th>Email</th>'+
-                                '</tr>'+
+                                '</tr></center>'+
                               '</thead>';
                   for(var i=0;i<response[3].length;i++){
                     data+="<tr><td>"+response[3][i]['batch_name']+"</td><td>"+
                           response[3][i]['student_name']+"</td><td>"+
                           response[3][i]['instructor_name']+"</td><td>"+
                           response[3][i]['customer_name']+"</td><td>"+
+                          response[3][i]['attendance_date']+"</td><td>"+
                           response[3][i]['mobile_no']+"</td><td>"+
                           response[3][i]['email']+"</td></tr>";
                   }
@@ -185,14 +215,14 @@ $(document).on('click', '.daily_reportsBtn', function(){
                   data += "<div class='uk-overflow-container'>"+
                             "<table class='uk-table'>"+
                               "<thead>"+
-                                '<tr>'+
+                                '<center><tr>'+
                                   '<th>Class Description</th>'+
                                   '<th>Student Name</th>'+
                                   '<th>Instructor Name</th>'+
                                   '<th>Parent Name</th>'+
                                   '<th>Phone Number</th>'+
                                   '<th>Email</th>'+
-                                '</tr>'+
+                                '</tr></center>'+
                               '</thead>';
                   for(var i=0;i<response[1].length;i++){
                     data+="<tr><td>"+response[1][i]['batch_name']+"</td><td>"+
@@ -213,14 +243,14 @@ $(document).on('click', '.daily_reportsBtn', function(){
                   data += "<div class='uk-overflow-container'>"+
                             "<table class='uk-table'>"+
                               "<thead>"+
-                                '<tr>'+
+                                '<center><tr>'+
                                   '<th>Customer Name</th>'+
                                   '<th>Student Name</th>'+
                                   '<th>Age</th>'+
                                   '<th>Mobile No</th>'+
                                   '<th>Date of Birth</th>'+
                                   '<th>Email</th>'+
-                                '</tr>'+
+                                '</tr></center>'+
                               '</thead>';
                   for(var i=0;i<response[2].length;i++){
                     data+="<tr><td>"+response[2][i]['customer_name']+"</td><td>"+
@@ -243,7 +273,83 @@ $(document).on('click', '.daily_reportsBtn', function(){
     }
 });
 
+  $(document).on('click', '#download', function() {    
+      var divToPrint = document.getElementById('pdfData');
+      var popupWin = window.open('', '', 'width=300,height=300');
+      popupWin.document.open();
+      popupWin.document.write('<html><body onload="window.print()">' + divToPrint.innerHTML + '</html>');
+      popupWin.document.close();
+   });
+
+});
+
 </script>
+<script> 
+    /* 
+ * jQuery helper plugin for examples and tests 
+ */  
+    (function ($) {  
+        $.fn.html2canvas = function (options) {  
+            var date = new Date(),  
+            $message = null,  
+            timeoutTimer = false,  
+            timer = date.getTime();  
+            html2canvas.logging = options && options.logging;  
+            html2canvas.Preload(this[0], $.extend({  
+                complete: function (images) {  
+                    var queue = html2canvas.Parse(this[0], images, options),  
+                    $canvas = $(html2canvas.Renderer(queue, options)),  
+                    finishTime = new Date();  
+  
+                    $canvas.css({ position: 'absolute', left: 0, top: 0 }).appendTo(document.body);  
+                    $canvas.siblings().toggle();  
+  
+                    $(window).click(function () {  
+                        if (!$canvas.is(':visible')) {  
+                            $canvas.toggle().siblings().toggle();  
+                            throwMessage("Canvas Render visible");  
+                        } else {  
+                            $canvas.siblings().toggle();  
+                            $canvas.toggle();  
+                            throwMessage("Canvas Render hidden");  
+                        }  
+                    });  
+                    throwMessage('Screenshot created in ' + ((finishTime.getTime() - timer) / 1000) + " seconds<br />", 4000);  
+                }  
+            }, options));  
+  
+            function throwMessage(msg, duration) {  
+                window.clearTimeout(timeoutTimer);  
+                timeoutTimer = window.setTimeout(function () {  
+                    $message.fadeOut(function () {  
+                        $message.remove();  
+                    });  
+                }, duration || 2000);  
+                if ($message)  
+                    $message.remove();  
+                $message = $('<div ></div>').html(msg).css({  
+                    margin: 0,  
+                    padding: 10,  
+                    background: "#000",  
+                    opacity: 0.7,  
+                    position: "fixed",  
+                    top: 10,  
+                    right: 10,  
+                    fontFamily: 'Tahoma',  
+                    color: '#fff',  
+                    fontSize: 12,  
+                    borderRadius: 12,  
+                    width: 'auto',  
+                    height: 'auto',  
+                    textAlign: 'center',  
+                    textDecoration: 'none'  
+                }).hide().fadeIn().appendTo('body');  
+            }  
+        };  
+    })(jQuery);  
+  
+</script>
+
 @stop
 
 @section('content')
@@ -298,7 +404,8 @@ $(document).on('click', '.daily_reportsBtn', function(){
           <div class="md-card uk-margin-medium-bottom" id="reportdata">
               <div class="md-card-content" >
                   <div class="uk-overflow-container">
-                      <div id="pdfData">              
+                      <div id="print"></div>
+                      <div id="pdfData" style="background-color: #fff;font-size: 15px;">              
                       </div>
                   </div>
               </div>
