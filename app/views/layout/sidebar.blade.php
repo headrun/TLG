@@ -184,7 +184,7 @@
                         </a>
                         <ul id="REPORTS_MENU_MAIN_UL">
                             <li id="ViewReoprt_LI"><a href="{{url()}}/reports/view_reports">Enrollment</a></li>
-                            <li id="DailyReoprt_LI"><a href="{{url()}}/reports/daily_reports">Daily Reports</a></li>
+                            <li id="DailyReoprt_LI"><a href="{{url()}}/reports/daily_reports/0">Daily Reports</a></li>
                             <!-- <li id="KbiReoprt_LI"><a href="{{url()}}/reports/kbi_reports">KBI</a></li> -->
                             <li id="ViewDeletedCustomer_LI"><a href="{{url()}}/reports/deleted_customers">Deleted Customers</a></li>
                         

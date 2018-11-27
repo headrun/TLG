@@ -81,203 +81,214 @@
     $('#reportType').val('dailyPhoneCalls');
   });  
 
+
 $(document).on('click', '.daily_reportsBtn', function(){
-    var start_date = $('#reportGenerateStartdate1').val();
-    var reportType = $('#reportType').val();
-    if (typeof start_date !== 'undefined' && start_date !== '' && reportType !== '') {
-        $.ajax({
-            type: "POST",
-            url: "{{URL::to('/quick/generateDailyReport')}}",
-            data: {'start_date': start_date, 'reportType': reportType},
-            dataType: 'json',
-            success: function(response){
-              if (response[6] == 'dailyPhoneCalls') {
-                data = '';
-                dataPrint = '<div style="float:right;">'+
-                        '<button type="button" class="md-btn md-btn-primary" id="download"style="border-radius:5px;">Print</button>'+
-                        '</div>';
-                $('#print').html(dataPrint);
-                data = '<div class="row" style="margin-top:10px;margin-left:0px;margin-right:0px;">'+
-                         /*'<div class="col-lg-4 col-md-4">'+
-                           '<center><div class="daily_rpo_img"></div></center>'+
-                         '</div>'+*/
-                         '<div class="col-lg-12 col-md-12">'+
-                           '<center><h2>Daily Phone Calls</h2><div>'+start_date+'</div></center>'+
-                         '</div>'+
-                       '</div>';
-                data += '<hr>';
-                data += '<center><h4>Missed Yesterdays Class</h4></center>';
-                if (response[0].length > 0) {
-                  data += "<div class='uk-overflow-container'>"+
-                            "<table class='uk-table'>"+
-                              "<thead>"+
-                                '<center><tr>'+
-                                  '<th>Class Description</th>'+
-                                  '<th>Student Name</th>'+
-                                  '<th>Instructor Name</th>'+
-                                  '<th>Parent Name</th>'+
-                                  '<th>Phone Number</th>'+
-                                  '<th>Email</th>'+
-                                '</tr></center>'+
-                              '</thead>';
-                  for(var i=0;i<response[0].length;i++){
-                    data+="<tr><td>"+response[0][i]['batch_name']+"</td><td>"+
-                          response[0][i]['student_name']+"</td><td>"+
-                          response[0][i]['instructor_name']+"</td><td>"+
-                          response[0][i]['customer_name']+"</td><td>"+
-                          response[0][i]['mobile_no']+"</td><td>"+
-                          response[0][i]['email']+"</td></tr>";
-                  }
-                } else {
-                  data += "<center><p>******* No records founds *******</p></center>"
-                }
-                data += "</table></div>";
-                data += '<hr>';
-                /*data += '<hr>';
-                data += '<center><h3>Inquired Online But Didnt Schedule Anything</h3></center>';*/
-                data += '<center><h4>Inquired Last Days But Didnt Schedule Anything</h4></center>';
-                if (response[4].length > 0) {
-                  data += "<div class='uk-overflow-container'>"+
-                            "<table class='uk-table'>"+
-                              "<thead>"+
-                                '<center><tr>'+
-                                  '<th>Parent Name</th>'+
-                                  '<th>Phone Number</th>'+
-                                  '<th>Email</th>'+
-                                '</tr>'+
-                              '</thead></center>';
-                  for(var i=0;i<response[4].length;i++){
-                    data+="<tr><td>"+response[4][i]['customer_name']+"</td><td>"+
-                          response[4][i]['mobile_no']+"</td><td>"+
-                          response[4][i]['email']+"</td></tr>";
-                  }
-                } else {
-                  data += "<center><p>******* No records founds *******</p></center>"
-                }
-                data += "</table></div>";
-                data += '<hr>';
-                data += '<center><h4>Attended An Intro 2 Days Ago But Havent Enrolled</h4></center>';
-                if (response[5].length > 0) {
-                  data += "<div class='uk-overflow-container'>"+
-                            "<table class='uk-table'>"+
-                              "<thead>"+
-                                '<center><tr>'+
-                                  '<th>Class Description</th>'+
-                                  '<th>Student Name</th>'+
-                                  '<th>Instructor Name</th>'+
-                                  '<th>Parent Name</th>'+
-                                  '<th>Date</th>'+
-                                  '<th>Phone Number</th>'+
-                                  '<th>Email</th>'+
-                                '</tr></center>'+
-                              '</thead>';
-                  for(var i=0;i<response[5].length;i++){
-                    data+="<tr><td>"+response[5][i]['batch_name']+"</td><td>"+
-                          response[5][i]['student_name']+"</td><td>"+
-                          response[5][i]['instructor_name']+"</td><td>"+
-                          response[5][i]['customer_name']+"</td><td>"+
-                          response[5][i]['date']+"</td><td>"+
-                          response[5][i]['mobile_no']+"</td><td>"+
-                          response[5][i]['email']+"</td></tr>";
-                  }
-                } else {
-                  data += "<center><p>******* No records founds *******</p></center>"
-                }
-                data += "</table></div>";
-                data += '<hr>';
-                data += '<center><h4>People Who No-Showed To An Intro</h4></center>';
-                if (response[3].length > 0) {
-                  data += "<div class='uk-overflow-container'>"+
-                            "<table class='uk-table'>"+
-                              "<thead>"+
-                                '<center><tr>'+
-                                  '<th>Class Description</th>'+
-                                  '<th>Student Name</th>'+
-                                  '<th>Instructor Name</th>'+
-                                  '<th>Parent Name</th>'+
-                                  '<th>Date</th>'+
-                                  '<th>Phone Number</th>'+
-                                  '<th>Email</th>'+
-                                '</tr></center>'+
-                              '</thead>';
-                  for(var i=0;i<response[3].length;i++){
-                    data+="<tr><td>"+response[3][i]['batch_name']+"</td><td>"+
-                          response[3][i]['student_name']+"</td><td>"+
-                          response[3][i]['instructor_name']+"</td><td>"+
-                          response[3][i]['customer_name']+"</td><td>"+
-                          response[3][i]['attendance_date']+"</td><td>"+
-                          response[3][i]['mobile_no']+"</td><td>"+
-                          response[3][i]['email']+"</td></tr>";
-                  }
-                } else {
-                  data += "<center><p>******* No records founds *******</p></center>"
-                }
-                data += "</table></div>";
-                data += '<hr>';
-                data += '<center><h4>People Who Have An Intro Tomorrow</h4></center>';
-                if (response[1].length > 0) {
-                  data += "<div class='uk-overflow-container'>"+
-                            "<table class='uk-table'>"+
-                              "<thead>"+
-                                '<center><tr>'+
-                                  '<th>Class Description</th>'+
-                                  '<th>Student Name</th>'+
-                                  '<th>Instructor Name</th>'+
-                                  '<th>Parent Name</th>'+
-                                  '<th>Phone Number</th>'+
-                                  '<th>Email</th>'+
-                                '</tr></center>'+
-                              '</thead>';
-                  for(var i=0;i<response[1].length;i++){
-                    data+="<tr><td>"+response[1][i]['batch_name']+"</td><td>"+
-                          response[1][i]['student_name']+"</td><td>"+
-                          response[1][i]['instructor_name']+"</td><td>"+
-                          response[1][i]['customer_name']+"</td><td>"+
-                          response[1][i]['mobile_no']+"</td><td>"+
-                          response[1][i]['email']+"</td></tr>";
-                  }
-                } else {
-                  data += "<center><p>******* No records founds *******</p></center>"
-                }
-                data += "</table></div>";
-                data += '<hr>';
-                /*data += '<center><h3>Other Calls</h3></center>';
-                data += '<hr>';*/
-                data += '<center><h4>Upcoming Birthdays</h4></center>';
-                if (response[2].length > 0) {
-                  data += "<div class='uk-overflow-container'>"+
-                            "<table class='uk-table'>"+
-                              "<thead>"+
-                                '<center><tr>'+
-                                  '<th>Customer Name</th>'+
-                                  '<th>Student Name</th>'+
-                                  '<th>Age</th>'+
-                                  '<th>Mobile No</th>'+
-                                  '<th>Date of Birth</th>'+
-                                  '<th>Email</th>'+
-                                '</tr></center>'+
-                              '</thead>';
-                  for(var i=0;i<response[2].length;i++){
-                    data+="<tr><td>"+response[2][i]['customer_name']+"</td><td>"+
-                          response[2][i]['student_name']+"</td><td>"+
-                          response[2][i]['age']+"</td><td>"+
-                          response[2][i]['mobile_no']+"</td><td>"+
-                          response[2][i]['student_date_of_birth']+"</td><td>"+
-                          response[2][i]['email']+"</td></tr>";
-                  }
-                } else {
-                  data += "<center><p>******* No records founds *******</p></center>"
-                }
-                data += "</table></div>";
-                data += '<hr>';
-                $('#pdfData').html(data);
-              }
-            }
-        });
-    } else {
-      alert('ok');
-    }
+    dailyReports();
 });
+
+$(document).ready(function () {
+  <?php if($dataDisplay == 1) { ?>
+    dailyReports();
+  <?php } ?>
+})
+
+function dailyReports () {
+  var start_date = $('#reportGenerateStartdate1').val();
+  var reportType = $('#reportType').val();
+  if (typeof start_date !== 'undefined' && start_date !== '' && reportType !== '') {
+      $.ajax({
+          type: "POST",
+          url: "{{URL::to('/quick/generateDailyReport')}}",
+          data: {'start_date': start_date, 'reportType': reportType},
+          dataType: 'json',
+          success: function(response){
+            if (response[6] == 'dailyPhoneCalls') {
+              data = '';
+              dataPrint = '<div style="float:right;">'+
+                      '<button type="button" class="md-btn md-btn-primary" id="download"style="border-radius:5px;">Print</button>'+
+                      '</div>';
+              $('#print').html(dataPrint);
+              data = '<div class="row" style="margin-top:10px;margin-left:0px;margin-right:0px;">'+
+                       /*'<div class="col-lg-4 col-md-4">'+
+                         '<center><div class="daily_rpo_img"></div></center>'+
+                       '</div>'+*/
+                       '<div class="col-lg-12 col-md-12">'+
+                         '<center><h2>Daily Phone Calls</h2><div>'+start_date+'</div></center>'+
+                       '</div>'+
+                     '</div>';
+              data += '<hr>';
+              data += '<center><h4>Missed Yesterdays Class</h4></center>';
+              if (response[0].length > 0) {
+                data += "<div class='uk-overflow-container'>"+
+                          "<table class='uk-table'>"+
+                            "<thead>"+
+                              '<center><tr>'+
+                                '<th>Class Description</th>'+
+                                '<th>Student Name</th>'+
+                                '<th>Instructor Name</th>'+
+                                '<th>Parent Name</th>'+
+                                '<th>Phone Number</th>'+
+                                '<th>Email</th>'+
+                              '</tr></center>'+
+                            '</thead>';
+                for(var i=0;i<response[0].length;i++){
+                  data+="<tr><td>"+response[0][i]['batch_name']+"</td><td>"+
+                        response[0][i]['student_name']+"</td><td>"+
+                        response[0][i]['instructor_name']+"</td><td>"+
+                        response[0][i]['customer_name']+"</td><td>"+
+                        response[0][i]['mobile_no']+"</td><td>"+
+                        response[0][i]['email']+"</td></tr>";
+                }
+              } else {
+                data += "<center><p>******* No records founds *******</p></center>"
+              }
+              data += "</table></div>";
+              data += '<hr>';
+              /*data += '<hr>';
+              data += '<center><h3>Inquired Online But Didnt Schedule Anything</h3></center>';*/
+              data += '<center><h4>Inquired 2 Last Days But Didnt Schedule Anything</h4></center>';
+              if (response[4].length > 0) {
+                data += "<div class='uk-overflow-container'>"+
+                          "<table class='uk-table'>"+
+                            "<thead>"+
+                              '<center><tr>'+
+                                '<th>Parent Name</th>'+
+                                '<th>Phone Number</th>'+
+                                '<th>Email</th>'+
+                              '</tr>'+
+                            '</thead></center>';
+                for(var i=0;i<response[4].length;i++){
+                  data+="<tr><td>"+response[4][i]['customer_name']+"</td><td>"+
+                        response[4][i]['mobile_no']+"</td><td>"+
+                        response[4][i]['email']+"</td></tr>";
+                }
+              } else {
+                data += "<center><p>******* No records founds *******</p></center>"
+              }
+              data += "</table></div>";
+              data += '<hr>';
+              data += '<center><h4>Attended An Intro 2 Days Ago But Havent Enrolled</h4></center>';
+              if (response[5].length > 0) {
+                data += "<div class='uk-overflow-container'>"+
+                          "<table class='uk-table'>"+
+                            "<thead>"+
+                              '<center><tr>'+
+                                '<th>Class Description</th>'+
+                                '<th>Student Name</th>'+
+                                '<th>Instructor Name</th>'+
+                                '<th>Parent Name</th>'+
+                                '<th>Date</th>'+
+                                '<th>Phone Number</th>'+
+                                '<th>Email</th>'+
+                              '</tr></center>'+
+                            '</thead>';
+                for(var i=0;i<response[5].length;i++){
+                  data+="<tr><td>"+response[5][i]['batch_name']+"</td><td>"+
+                        response[5][i]['student_name']+"</td><td>"+
+                        response[5][i]['instructor_name']+"</td><td>"+
+                        response[5][i]['customer_name']+"</td><td>"+
+                        response[5][i]['date']+"</td><td>"+
+                        response[5][i]['mobile_no']+"</td><td>"+
+                        response[5][i]['email']+"</td></tr>";
+                }
+              } else {
+                data += "<center><p>******* No records founds *******</p></center>"
+              }
+              data += "</table></div>";
+              data += '<hr>';
+              data += '<center><h4>People Who No-Showed To An Intro</h4></center>';
+              if (response[3].length > 0) {
+                data += "<div class='uk-overflow-container'>"+
+                          "<table class='uk-table'>"+
+                            "<thead>"+
+                              '<center><tr>'+
+                                '<th>Class Description</th>'+
+                                '<th>Student Name</th>'+
+                                '<th>Instructor Name</th>'+
+                                '<th>Parent Name</th>'+
+                                '<th>Date</th>'+
+                                '<th>Phone Number</th>'+
+                                '<th>Email</th>'+
+                              '</tr></center>'+
+                            '</thead>';
+                for(var i=0;i<response[3].length;i++){
+                  data+="<tr><td>"+response[3][i]['batch_name']+"</td><td>"+
+                        response[3][i]['student_name']+"</td><td>"+
+                        response[3][i]['instructor_name']+"</td><td>"+
+                        response[3][i]['customer_name']+"</td><td>"+
+                        response[3][i]['attendance_date']+"</td><td>"+
+                        response[3][i]['mobile_no']+"</td><td>"+
+                        response[3][i]['email']+"</td></tr>";
+                }
+              } else {
+                data += "<center><p>******* No records founds *******</p></center>"
+              }
+              data += "</table></div>";
+              data += '<hr>';
+              data += '<center><h4>People Who Have An Intro Tomorrow</h4></center>';
+              if (response[1].length > 0) {
+                data += "<div class='uk-overflow-container'>"+
+                          "<table class='uk-table'>"+
+                            "<thead>"+
+                              '<center><tr>'+
+                                '<th>Class Description</th>'+
+                                '<th>Student Name</th>'+
+                                '<th>Instructor Name</th>'+
+                                '<th>Parent Name</th>'+
+                                '<th>Phone Number</th>'+
+                                '<th>Email</th>'+
+                              '</tr></center>'+
+                            '</thead>';
+                for(var i=0;i<response[1].length;i++){
+                  data+="<tr><td>"+response[1][i]['batch_name']+"</td><td>"+
+                        response[1][i]['student_name']+"</td><td>"+
+                        response[1][i]['instructor_name']+"</td><td>"+
+                        response[1][i]['customer_name']+"</td><td>"+
+                        response[1][i]['mobile_no']+"</td><td>"+
+                        response[1][i]['email']+"</td></tr>";
+                }
+              } else {
+                data += "<center><p>******* No records founds *******</p></center>"
+              }
+              data += "</table></div>";
+              data += '<hr>';
+              /*data += '<center><h3>Other Calls</h3></center>';
+              data += '<hr>';*/
+              data += '<center><h4>Upcoming Birthdays</h4></center>';
+              if (response[2].length > 0) {
+                data += "<div class='uk-overflow-container'>"+
+                          "<table class='uk-table'>"+
+                            "<thead>"+
+                              '<center><tr>'+
+                                '<th>Customer Name</th>'+
+                                '<th>Student Name</th>'+
+                                '<th>Age</th>'+
+                                '<th>Mobile No</th>'+
+                                '<th>Date of Birth</th>'+
+                                '<th>Email</th>'+
+                              '</tr></center>'+
+                            '</thead>';
+                for(var i=0;i<response[2].length;i++){
+                  data+="<tr><td>"+response[2][i]['customer_name']+"</td><td>"+
+                        response[2][i]['student_name']+"</td><td>"+
+                        response[2][i]['age']+"</td><td>"+
+                        response[2][i]['mobile_no']+"</td><td>"+
+                        response[2][i]['student_date_of_birth']+"</td><td>"+
+                        response[2][i]['email']+"</td></tr>";
+                }
+              } else {
+                data += "<center><p>******* No records founds *******</p></center>"
+              }
+              data += "</table></div>";
+              data += '<hr>';
+              $('#pdfData').html(data);
+            }
+          }
+      });
+  } else {
+    alert('Please select required fields');
+  }
+}
 
   $(document).on('click', '#download', function() {    
       var divToPrint = document.getElementById('pdfData');

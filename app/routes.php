@@ -135,7 +135,7 @@ Route::group(array('prefix'=>'Discounts'),function(){
 
 Route::group(array('prefix'=>'reports'),function(){
         Route::any('/view_reports','ReportsController@view_reports');
-        Route::any('/daily_reports','ReportsController@daily_reports');
+        Route::any('/daily_reports/{id}','ReportsController@daily_reports');
         Route::any('/mismatch_enrollments','ReportsController@mismatch_enrollments');
         Route::any('/kids_deleted_batch','ReportsController@kids_deleted_batch');
         Route::any('/kbi_reports','ReportsController@kbi_reports');

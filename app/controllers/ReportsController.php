@@ -19,13 +19,14 @@ class ReportsController extends \BaseController {
             }
         }
 
-        public static function daily_reports(){
+        public static function daily_reports($id){
             if(Auth::check()){
                 if(Session::get('userType') == 'ADMIN'){
                     $currentPage  =  "DailyReoprt_LI";
                     $mainMenu     =  "REPORTS_MENU_MAIN";
                     $presentdate  =  date("Y-m-d");
-                    $viewData= compact('currentPage','mainMenu','presentdate');
+                    $dataDisplay = $id;
+                    $viewData= compact('currentPage','mainMenu','presentdate','dataDisplay');
                     return View::make('pages.reports.daily_reports',$viewData);
                 }else{
                     return Redirect::action('DashboardController@index');
