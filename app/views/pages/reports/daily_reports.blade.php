@@ -132,6 +132,7 @@ $(document).on('click', '.daily_reportsBtn', function(){
                   data += "<center><p>******* No records founds *******</p></center>"
                 }
                 data += "</table></div>";
+                data += '<hr>';
                 /*data += '<hr>';
                 data += '<center><h3>Inquired Online But Didnt Schedule Anything</h3></center>';*/
                 data += '<center><h4>Inquired Last Days But Didnt Schedule Anything</h4></center>';
@@ -154,6 +155,7 @@ $(document).on('click', '.daily_reportsBtn', function(){
                   data += "<center><p>******* No records founds *******</p></center>"
                 }
                 data += "</table></div>";
+                data += '<hr>';
                 data += '<center><h4>Attended An Intro 2 Days Ago But Havent Enrolled</h4></center>';
                 if (response[5].length > 0) {
                   data += "<div class='uk-overflow-container'>"+
@@ -182,6 +184,7 @@ $(document).on('click', '.daily_reportsBtn', function(){
                   data += "<center><p>******* No records founds *******</p></center>"
                 }
                 data += "</table></div>";
+                data += '<hr>';
                 data += '<center><h4>People Who No-Showed To An Intro</h4></center>';
                 if (response[3].length > 0) {
                   data += "<div class='uk-overflow-container'>"+
@@ -210,6 +213,7 @@ $(document).on('click', '.daily_reportsBtn', function(){
                   data += "<center><p>******* No records founds *******</p></center>"
                 }
                 data += "</table></div>";
+                data += '<hr>';
                 data += '<center><h4>People Who Have An Intro Tomorrow</h4></center>';
                 if (response[1].length > 0) {
                   data += "<div class='uk-overflow-container'>"+
@@ -236,6 +240,7 @@ $(document).on('click', '.daily_reportsBtn', function(){
                   data += "<center><p>******* No records founds *******</p></center>"
                 }
                 data += "</table></div>";
+                data += '<hr>';
                 /*data += '<center><h3>Other Calls</h3></center>';
                 data += '<hr>';*/
                 data += '<center><h4>Upcoming Birthdays</h4></center>';
@@ -264,6 +269,7 @@ $(document).on('click', '.daily_reportsBtn', function(){
                   data += "<center><p>******* No records founds *******</p></center>"
                 }
                 data += "</table></div>";
+                data += '<hr>';
                 $('#pdfData').html(data);
               }
             }
