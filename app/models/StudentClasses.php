@@ -25,84 +25,52 @@ class StudentClasses extends \Eloquent {
 		return $this->hasMany('Orders','student_classes_id');
 	}
 	
-        public function batches(){
-            return $this->hasOne('Batches','batch_id');
-        }
+  public function batches(){
+      return $this->hasOne('Batches','batch_id');
+  }
 	
 	static function getAllEnrolledStudents($franchiseeId){
 		$present_date=Carbon::now();
-       	$students = StudentClasses::join('students', 'students.id','=' ,'student_classes.student_id')
-                                                        ->where('student_classes.franchisee_id', '=', $franchiseeId)
-                                                        ->where('student_classes.status','!=','introvisit')
-                                                        ->whereDate('student_classes.enrollment_end_date', '>=',date('Y-m-d'))
-                                                        ->selectRaw('min(student_classes.enrollment_start_date) as enrollment_start_date,max(student_classes.enrollment_end_date) as enrollment_end_date,student_classes.student_id, students.student_name, students.student_gender, students.student_date_of_birth,students.franchisee_id, students.customer_id')  
-                                                        ->groupBy('student_classes.student_id')
-                                                       // ->groupBy(DB::Raw("date('student_classes.created_at')"))
-                                                        ->get();
+    $students = PaymentDues::join('students', 'students.id','=' ,'payments_dues.student_id')
+            ->where('payments_dues.franchisee_id', '=', Session::get('franchiseId'))
+            ->where('payments_dues.end_order_date', '>=',date('Y-m-d'))
+            ->where('payments_dues.payment_due_for', '=', 'enrollment')
+            ->selectRaw('min(payments_dues.start_order_date) as start_order_date,max(payments_dues.end_order_date) as enrollment_end_date,payments_dues.student_id, students.student_name, students.student_gender, students.student_date_of_birth,students.franchisee_id')
+            ->groupBy('payments_dues.student_id')
+            ->get();
         return $students;
 	}
 
-
-        static function getAllNonEnrolledStudents($franchiseeId){
-		
-                $present_date=Carbon::now();
-                $studentDeatils = array();
-                $students=DB::select(DB::raw(
-                        "SELECT * from students where id NOT IN (SELECT distinct(student_classes.student_id)
-                         FROM student_classes where  enrollment_end_date >= '".$present_date->toDateString()."' AND student_classes.status 
-                         IN ('enrolled', 'transferred_to_other_class', 'transferred_class')) and students.franchisee_id= '".$franchiseeId."'")
-                                   );
+  static function getAllNonEnrolledStudents($franchiseeId){
+    $present_date=Carbon::now();
+    $studentDeatils = array();
+    $students=DB::select(DB::raw(
+            "SELECT * from students where id NOT IN (SELECT distinct(student_classes.student_id)
+             FROM student_classes where  enrollment_end_date >= '".$present_date->toDateString()."' AND student_classes.status 
+             IN ('enrolled', 'transferred_to_other_class', 'transferred_class')) and students.franchisee_id= '".$franchiseeId."'")
+                       );
 		foreach($students as $key => $student){
-	//		var_dump($student); die();
 			$student_end_date = StudentClasses::where('student_id', '=', $student->id)
-                                                          ->selectRaw('max(enrollment_end_date) as end_date')
-                                                          ->get();
+                                        ->selectRaw('max(enrollment_end_date) as end_date')
+                                        ->get();
 			$studentDetails[$student->id] = array('end_date' => $student_end_date[0]->end_date);
 		}
 	
 		foreach($students as $key => $value){
 			$students[$key]->end_date = '';
 			if(array_key_exists($value->id, $studentDetails)) {
-                           $students[$key]->end_date = $studentDetails[$value->id]['end_date'];
-                        }
-		} 
-                /*
-                $students=StudentClasses::with(array('Students'=>function($q){
-                    $q->where('franchisee_id','=', Session::get('franchiseId'))
-                       ->get();
-                       
-                }))//->whereDate('enrollment_start_date','<=',$present_date->toDateString())
-                   ->whereDate('enrollment_end_date','>=', $present_date->toDateString())
-                   ->distinct('student_id')
-                   ->groupBy('student_id')
-                   ->select('student_id')
-                   ->get();
-                
-                
-                for($i=0;$i<count($students);$i++){
-                    $student_id[]=$students[$i]->student_id;
-                }
-                
-                if(isset($student_id)){
-                $nonEnrolledStudents=  Students::where('franchisee_id','=', Session::get('franchiseId'))
-                                                 ->whereNotIn('id',$student_id)
-                                                 ->get();
-                }else{                               
-                $nonEnrolledStudents[0]='';                      
-                }
-                */
-                return $students;
+         $students[$key]->end_date = $studentDetails[$value->id]['end_date'];
+      }
+		}  
+    return $students;
 	}
         
-        
-        static function getEnrolledStudentBatch($studentId){
-                
+  static function getEnrolledStudentBatch($studentId){          
 		$present_date=Carbon::now();
-                $students=StudentClasses:://->whereDate('enrollment_start_date','<=',$present_date->toDateString())
-                          whereDate('enrollment_end_date','>=', $present_date->toDateString())
-                   ->where('student_id','=',$studentId)     
-                   ->orderBy('id','DESC')
-                   ->get();
+    $students=StudentClasses::whereDate('enrollment_end_date','>=', $present_date->toDateString())
+       ->where('student_id','=',$studentId)     
+       ->orderBy('id','DESC')
+       ->get();
                                       
 		return $students;
 	}
@@ -111,23 +79,22 @@ class StudentClasses extends \Eloquent {
 	static function getMultipleEnrolledList(){
 		$total;
 		$multipleEnrollments = '';
-		$totalEnrollments = StudentClasses::join('students', 'students.id','=' ,'student_classes.student_id')
-                                                        ->where('student_classes.franchisee_id', '=', Session::get('franchiseId'))
-                                                        ->where('student_classes.status','!=','introvisit')
-                                                        ->where('student_classes.enrollment_end_date', '>=',date('Y-m-d'))
-                                                        ->selectRaw('min(student_classes.enrollment_start_date) as enrollment_start_date,max(student_classes.enrollment_end_date) as enrollment_end_date,student_classes.student_id, students.student_name, students.student_gender, students.student_date_of_birth,students.franchisee_id')            
-                                                        ->groupBy('student_classes.student_id')
-                                                        ->get();
+		    $totalEnrollments = PaymentDues::join('students', 'students.id','=' ,'payments_dues.student_id')
+                  ->where('payments_dues.franchisee_id', '=', Session::get('franchiseId'))
+                  ->where('payments_dues.end_order_date', '>=',date('Y-m-d'))
+                  ->where('payments_dues.payment_due_for', '=', 'enrollment')
+                  ->groupBy('payments_dues.student_id')
+                  ->get();
 
 		if(count($totalEnrollments) > 0){
 			foreach($totalEnrollments as $c){
                 		$total[] = $c['student_id'];
                 		$list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
                 				   ->where('student_id', '=', $c['student_id'])
-						   ->where('payment_due_for', '=', 'enrollment')
+						               ->where('payment_due_for', '=', 'enrollment')
                 				   ->where('end_order_date', '>=', date('Y-m-d') )
                 				   ->count();
-                	if($list >1){
+                	if($list > 1){
                 		$multipleEnrollments[] = $list;
                 	}   	
 		     }		
@@ -140,39 +107,38 @@ class StudentClasses extends \Eloquent {
 	static function getSingleEnrolledList(){
 		$total;
 		$singleEnrollments = [];
-		$No = [];
-		$totalEnrollments = StudentClasses::join('students', 'students.id','=' ,'student_classes.student_id')
-                                                        ->where('student_classes.franchisee_id', '=', Session::get('franchiseId'))
-                                                        ->where('student_classes.status','!=','introvisit')
-                                                        ->where('student_classes.enrollment_end_date', '>=',date('Y-m-d'))
-                                                        ->selectRaw('min(student_classes.enrollment_start_date) as enrollment_start_date,max(student_classes.enrollment_end_date) as enrollment_end_date,student_classes.student_id, students.student_name, students.student_gender, students.student_date_of_birth,students.franchisee_id')
-                                                        ->groupBy('student_classes.student_id')
-                                                        ->get();
-		if(count($totalEnrollments) > 0){
-			foreach($totalEnrollments as $c){
-                		$total[] = $c['student_id'];
-                		$list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
-                				   ->where('student_id', '=', $c['student_id'])
-                				   ->where('payment_due_for', '=', 'enrollment')
-                				   ->where('end_order_date', '>=', date('Y-m-d'))
-                				   ->count();
-				
-                		if($list == 1){
-                			$singleEnrollments[] = $list;
-                		}else if($list == 0){
-					$No[] = $list;
-				}   		
-        		}
-			$single = count($singleEnrollments);
-			$no = count($No);
-			$totalSingle = $single + $no;
-			return $totalSingle;
-		}else{
-			return 0;
-		}
+    $totalEnrollments = PaymentDues::join('students', 'students.id','=' ,'payments_dues.student_id')
+              ->where('payments_dues.franchisee_id', '=', Session::get('franchiseId'))
+              ->where('payments_dues.end_order_date', '>=',date('Y-m-d'))
+              ->where('payments_dues.payment_due_for', '=', 'enrollment')
+              ->groupBy('payments_dues.student_id')
+              ->get();
+      if(count($totalEnrollments) > 0){
+        foreach($totalEnrollments as $c){
+                      $total[] = $c['student_id'];
+                      $list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                             ->where('student_id', '=', $c['student_id'])
+                             ->where('payment_due_for', '=', 'enrollment')
+                             ->where('end_order_date', '>=', date('Y-m-d') )
+                             ->count();
+                    if($list <= 1){
+                      $singleEnrollments[] = $list;
+                    }     
+           }    
+           return count($singleEnrollments);  
+            }else{
+        return 0;
+      }
 	}
 	
-        
+  static function getTotalEnrolls () {
+    $totalEnrollments = PaymentDues::join('students', 'students.id','=' ,'payments_dues.student_id')
+              ->where('payments_dues.franchisee_id', '=', Session::get('franchiseId'))
+              ->where('payments_dues.end_order_date', '>=',date('Y-m-d'))
+              ->where('payments_dues.payment_due_for', '=', 'enrollment')
+              ->get();
+    return $totalEnrollments;
+  }    
         
 	static function addStudentClass($input){
 		$StudentClasses = new StudentClasses();

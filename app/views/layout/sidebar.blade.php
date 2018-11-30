@@ -28,6 +28,7 @@
                         <ul id="FRANCHISEE_MAIN_UL">
                             <li id="NEWFRANCHISEE"><a href="{{url()}}/franchisee/addfranchisee">Add New Franchisee</a></li>
                             <li id="LISTOFFRANCHISEE"><a href="{{url()}}/franchisee/franchiseelist">Franchisee List</a></li>
+                            <li id="TERMSANDCONDTIONS"><a href="{{url()}}/franchisee/terms_conditions">Terms & Condtions</a></li>
                             <!-- <li id="ADDCOURSE_LI"><a href="{{url()}}/franchisee/addCoursesForFranchisee">Add Courses</a></li> -->
                         </ul>
                     </li>

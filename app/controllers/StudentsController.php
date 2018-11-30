@@ -49,39 +49,39 @@ class StudentsController extends \BaseController {
   }
         
   public function enrolledstudents(){
-            if(Auth::check()){
-                $currentPage  =  "ENROLLEDSTUDENTS";
-                $mainMenu     =  "STUDENTS_MAIN";
-                $students = StudentClasses::getAllEnrolledStudents(Session::get('franchiseId'));
-		$status_array = array();
-		foreach($students as $key=> $value) {
-			$list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
-                                                   ->where('student_id', '=', $value['student_id'])
-                                                   ->where('end_order_date', '>=', date('Y-m-d'))
-						   ->where('payment_due_for', '=', 'enrollment')
-                                                   ->count();
-                        if($list > 1){
-                                $status = 'Multiple';
-                        }else{  
-                                $status = 'Single';
-                        }
-                       $status_array[$value['student_id']] = array('status'=> $status
-                                                                     );
-                }
-		foreach($students as $key=> $value) {
-                            $students[$key]['status'] = '';
-                            if(array_key_exists($value['student_id'], $status_array)) {
-                                $students[$key]['status'] = $status_array[$value['student_id']]['status'];
-                            }
-                        }
-		
-                $dataToView = array('students','currentPage', 'mainMenu');
-                return View::make('pages.students.enrolledstudentslist', compact($dataToView));
-            }else{
-      return Redirect::action('VaultController@logout');
-            }
-    
+    if(Auth::check()){
+        $currentPage  =  "ENROLLEDSTUDENTS";
+        $mainMenu     =  "STUDENTS_MAIN";
+        $students = StudentClasses::getAllEnrolledStudents(Session::get('franchiseId'));
+        $status_array = array();
+    		foreach($students as $key=> $value) {
+    			$list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                             ->where('student_id', '=', $value['student_id'])
+                             ->where('end_order_date', '>=', date('Y-m-d'))
+                              ->where('payment_due_for', '=', 'enrollment')
+                             ->count();
+          if($list > 1){
+                  $status = 'Multiple';
+          }else{  
+                  $status = 'Single';
+          }
+          $status_array[$value['student_id']] = array('status'=> $status
+                                                                         );
         }
+		    foreach($students as $key=> $value) {
+            $students[$key]['status'] = '';
+            if(array_key_exists($value['student_id'], $status_array)) {
+                $students[$key]['status'] = $status_array[$value['student_id']]['status'];
+            }
+        }
+		
+        $dataToView = array('students','currentPage', 'mainMenu');
+        return View::make('pages.students.enrolledstudentslist', compact($dataToView));
+      }else{
+        return Redirect::action('VaultController@logout');
+      }
+    
+  }
   public function addstudent(){
             if(Auth::check()){
     $inputs = Input::all();

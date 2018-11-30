@@ -147,6 +147,7 @@ Route::group(array('prefix'=>'franchisee'),function(){
 
 	Route::any('/addfranchisee','FranchiseeController@addNewFranchisee');
 	Route::get('/franchiseelist','FranchiseeController@franchiseeList');
+    Route::get('/terms_conditions','FranchiseeController@terms_conditions');
 	Route::any('/addNewClass', "ClassesController@addNewClass");
 	Route::any('/addNewClassFranchisee', "ClassesController@addNewClassFranchisee");
 	// Route::any('/addCoursesForEachFranchise', 'CoursesController@addCoursesForEachFranchise');
@@ -171,6 +172,8 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('UpdateDataBatch', "ReportsController@UpdateDataBatch");
         Route::any('createdNewFranchisee',"FranchiseeController@createdNewFranchisee");
         Route::any('getDataForFranchisee', 'FranchiseeController@getDataForFranchisee');
+        Route::any('getTermsAndCondForFranchisee', 'FranchiseeController@getTermsAndCondForFranchisee');
+        Route::any('updateTermsAndCondtions', 'FranchiseeController@updateTermsAndCondtions');
         Route::any('updateFranchiseeDetails', 'FranchiseeController@updateFranchiseeDetails');
         Route::any('getCoursesFranchiseeWise', 'CoursesController@getCoursesFranchiseeWise');
         Route::any('updateCoursesForFranchisee', 'CoursesController@updateCoursesForFranchisee');
