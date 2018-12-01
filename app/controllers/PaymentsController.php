@@ -301,8 +301,8 @@ class PaymentsController extends \BaseController {
                 $paymentDueDetails = PaymentDues::where('payment_no', '=', $payment_no)
 						->where('payment_due_for', '!=', 'enrollment')
 						->get();
-				$paymentDueDetails[0]['discount_amount'] = (($paymentDueDetails[0]['discount_applied']/100)*$paymentDueDetails[0]['payment_due_amount']);
-				$getCustomerName = Customers::select('customer_name','customer_lastname')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
+		$paymentDueDetails[0]['discount_amount'] = (($paymentDueDetails[0]['discount_applied']/100)*$paymentDueDetails[0]['payment_due_amount']);
+		$getCustomerName = Customers::select('customer_name','customer_lastname')->where('id', '=', $paymentDueDetails[0]['customer_id'])->get();
                 $getStudentName = Students::select('student_name')->where('id', '=', $paymentDueDetails[0]['student_id'])->get();
                 $paymentMode = Orders::where('payment_no', '=', $payment_no)->get();
                 $getTermsAndConditions = TermsAndConditions::where('franchisee_id', '=', Session::get('franchiseId'))->get();
