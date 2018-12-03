@@ -501,7 +501,7 @@ class StudentsController extends \BaseController {
     $destinationPath = 'assets/discovery_images/';
     $filename = $file->getClientOriginalName();   
     $fileExtension = '.'.$file->getClientOriginalExtension();
-    $filename = 'discovery_'.$studentId.''.$fileExtension;
+    $filename = 'discovery_'.$studentId.'.jpg';
     $discovery_image = Input::file('discoveryPicture')->move($destinationPath, $filename);
 
     Session::flash('imageUploadMessage', "Discovery Sheet is uploaded successfully." );    
@@ -514,16 +514,19 @@ class StudentsController extends \BaseController {
     $name = "discovery_".$studentId."_medium.jpg";
     $attachment_location = '';  
     $file = glob("assets/discovery_images/discovery_".$studentId."*.{jpg,gif,png,csv,pdf,tif,xls,odt}", GLOB_BRACE);
-    if(isset($file) && !empty($file)){
+      if(isset($file) && !empty($file)){
       $file_extention = explode(".", $file[0]);
       $attachment_location = "assets/discovery_images/discovery_".$studentId.".".$file_extention[1];
     }
     
     if (file_exists($attachment_location)) {
-        $pdf = new MPDF();
+      define('DIRECTORY', '/home/bala/discoverysheet');
+       $content = file_get_contents('assets/discovery_images/discovery_'.$studentId.'.jpg','D');
+      file_put_contents(  DIRECTORY . '/images/discovery_'.$studentId.'.jpg', $content);
+        /*$pdf = new MPDF();
         $pdf->AddPage();
         $pdf->Image($attachment_location,15,20,300,240);
-        $pdf->Output('discovery_'.$studentId.'.pdf','D');
+        $pdf->Output('discovery_'.$studentId.'.pdf','D');*/
     }else{
       Session::flash('imageDownloadError', "Respective file is not found.Please upload it." );
       return Redirect::to("/students/view/".$studentId);
