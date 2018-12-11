@@ -287,6 +287,52 @@ class BatchesController extends \BaseController {
                 return Response::json(array('status','failure'));
             }
         }
+
+
+    public function getEABatchesForSelectedStudent() {
+    	$inputs=  Input::all();
+    	$selectedKidBatches = StudentClasses::where('franchisee_id','=',Session::get('franchiseId'))
+    	                                      ->where('student_id','=',$inputs['student_id'] )
+    	                                      ->get();
+        for($i=0;$i<count($selectedKidBatches);$i++){
+               $name = Batches::where('id','=',$selectedKidBatches[$i]['batch_id'])
+                                                               ->select('batch_name')
+                                                               ->get();
+                $selectedKidBatches[$i]['batch_name'] = $name[0]['batch_name'];
+               }
+    	if($selectedKidBatches){
+            	return Response::json(array('status'=>'success','data'=>$selectedKidBatches));
+            }else{
+                return Response::json(array('status','failure'));
+            }	
+    } 
+
+    public function getAbsentDatesForSelectedStudent(){
+    	$inputs=  Input::all();
+    	$absentBatchDates = Attendance::where('student_id','=',$inputs['student_id'])
+    	                               ->where('batch_id','=',$inputs['selected_batch_id'])
+    	                               ->where('status','=','A')
+    	                               ->select('attendance_date')
+    	                               ->get();
+    	if($absentBatchDates){
+    		return Response::json(array('status'=>'success','data'=>$absentBatchDates));
+    	}else{
+                return Response::json(array('status','failure'));
+            }
+    }
+
+    public function changeKidAttendancefromAtoEA() {
+    	$inputs=  Input::all();
+    	$changeKidAttendance = Attendance::where('student_id','=',$inputs['student_id'])
+    	                                  ->where('batch_id','=',$inputs['batchId'])
+    	                                  ->where('attendance_date','=',$inputs['absentDate'])
+    	                                  ->update(['status' => 'EA','makeup_class_given' => 1]);
+    	 $updateToBatch = Batches::where('franchisee_id','=',Session::get('franchiseId'))
+    	                          ->where('id','=',$inputs['updatedBatchId'])
+    	                          ->get();
+    	$addingCustomeKid = StudentClasses::addNewRecordOfCustomKid($inputs,$updateToBatch);
+
+    }
 	
 	public function getBatchesSchedules(){
 		

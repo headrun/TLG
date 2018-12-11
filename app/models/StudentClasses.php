@@ -43,15 +43,39 @@ class StudentClasses extends \Eloquent {
 	}
 
 
-        static function getAllNonEnrolledStudents($franchiseeId){
+  static function addNewRecordOfCustomKid($inputs,$updateToBatch){
+    $StudentClasses = new StudentClasses();
+    $StudentClasses->student_id        = $inputs['student_id'];
+    $StudentClasses->franchisee_id     = Session::get('franchiseId');
+    $StudentClasses->season_id         = $updateToBatch[0]['season_id'];
+    $StudentClasses->class_id          = $updateToBatch[0]['class_id']; 
+    $StudentClasses->batch_id          = $inputs['updatedBatchId'];
+    $StudentClasses->introvisit_id     = 0;
+    $StudentClasses->attendance_id     = 0;
+    $StudentClasses->transferred_student_class_id = NULL;
+    $StudentClasses->enrollment_start_date = $inputs['absentDate'];
+    $StudentClasses->enrollment_end_date   = $inputs['absentDate'];
+    $StudentClasses->expected_enrollment_end_date = NULL;
+    $StudentClasses->selected_sessions = 1;
+    $StudentClasses->status = 'makeup';
+    $StudentClasses->created_by = Session::get('userId');
+    $StudentClasses->created_at = date("Y-m-d H:i:s");
+    $StudentClasses->save();
+
+    return $StudentClasses;
+
+  }
+
+
+  static function getAllNonEnrolledStudents($franchiseeId){
 		
-                $present_date=Carbon::now();
-                $studentDeatils = array();
-                $students=DB::select(DB::raw(
-                        "SELECT * from students where id NOT IN (SELECT distinct(student_classes.student_id)
-                         FROM student_classes where  enrollment_end_date >= '".$present_date->toDateString()."' AND student_classes.status 
-                         IN ('enrolled', 'transferred_to_other_class', 'transferred_class')) and students.franchisee_id= '".$franchiseeId."'")
-                                   );
+        $present_date=Carbon::now();
+        $studentDeatils = array();
+        $students=DB::select(DB::raw(
+                "SELECT * from students where id NOT IN (SELECT distinct(student_classes.student_id)
+                 FROM student_classes where  enrollment_end_date >= '".$present_date->toDateString()."' AND student_classes.status 
+                 IN ('enrolled', 'transferred_to_other_class', 'transferred_class')) and students.franchisee_id= '".$franchiseeId."'")
+                           );
 		foreach($students as $key => $student){
 	//		var_dump($student); die();
 			$student_end_date = StudentClasses::where('student_id', '=', $student->id)
@@ -177,7 +201,7 @@ class StudentClasses extends \Eloquent {
 	static function addStudentClass($input){
 		$StudentClasses = new StudentClasses();
 		$StudentClasses->student_id    = $input['studentId'];
-    		$StudentClasses->season_id     = $input['seasonId'];
+    $StudentClasses->season_id     = $input['seasonId'];
 		$StudentClasses->class_id      = $input['classId'];		
 		$StudentClasses->enrollment_start_date  = $input['enrollment_start_date'];
 		$StudentClasses->enrollment_end_date  = $input['enrollment_end_date'];		
@@ -198,7 +222,7 @@ class StudentClasses extends \Eloquent {
         $StudentClasses->status="enrolled";
       }
 		$StudentClasses->batch_id      = $input['batchId'];
-                $StudentClasses->franchisee_id = Session::get('franchiseId');
+    $StudentClasses->franchisee_id = Session::get('franchiseId');
 		$StudentClasses->created_by    = Session::get('userId');
 		$StudentClasses->created_at    = date("Y-m-d H:i:s");
 		$StudentClasses->save();

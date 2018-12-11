@@ -36,12 +36,29 @@
 		background: #E4E4E4;
     	color: #C3C3C3;
 	}
+	#StudentSearch::selection {
+      #StudentSearch::placeholder{
+        color:white;  
+      }
+      
+    }
+    .ui-autocomplete
+    {
+        position:absolute;
+        cursor:default;
+        z-index:1001 !important
+    }
+
 	</style>
 	<link href='{{url()}}/assets//xcalender/fullcalendar.css' rel='stylesheet' />
 	<link href='{{url()}}/assets//xcalender/fullcalendar.print.css' rel='stylesheet' media='print' />
 @stop
 
 @section('libraryJS')
+
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="{{url()}}/assets/js/altair_admin_common.min.js"></script>
+
 
 <script src="{{url()}}/assets/js/pages/validator.js"></script>
 <script src='{{url()}}/assets/fullcalender/lib/moment.min.js'></script>
@@ -59,7 +76,98 @@
 <script src="{{url()}}/assets/js/kendoui_custom.min.js"></script>
 <script src="{{url()}}/assets/js/pages/kendoui.min.js"></script>
 
+<script>
+$(document).on('focus', '#StudentSearch', function () { 
+		$('#StudentSearch').autocomplete({
+	    source: "{{url()}}/quick/studentSearchOnly",
+	    minLength: 3,
+	    select: function( event, ui ) {
+	    	alert('ok');
+	    	$( "#StudentSearch" ).val(ui.item.value);
+	    	$( "#idStudentSearch" ).val(ui.item.id);
+	    		event.preventDefault();
+	    		if($("#idStudentSearch").val() != ""){
+           		 	$("#profileSearchForm").submit();	
+            	 	}
+	      	console.log( ui.item ?
+	        	"Selected: " + ui.item.value + " aka " + ui.item.id :
+	        	"Nothing selected, input was " + this.value );
+	    }
+	});
+	$("#StudentSearch").change(function(){
+	   var student_id = 8719;
+	   $.ajax({
+	   	url: "{{ URL::to('/quick/getEABatchesForSelectedStudent')}}",
+	   	data: {'student_id': student_id},
+	   	success:function (response) {
+	   		if(response.status == "success"){
+   				var count = '' 
+                count = '<option value=""></option>';
+                for(var i=0; i < response.data.length; i++) {
+                	count += '<option value='+response.data[i].batch_id+'>'+response.data[i].batch_name+'</option>';
+                }
+                $("#batchDropdown").html(count);
+          }else{
+            $("#batchDropdown").html("<p>No Batches found</p>");
+          }
+	   	}
+	   })
+	});
+	$("#batchDropdown").change(function(){
+		  var selected_batch_id = $(this).val();
+		  var student_id = 8719;
+		  $.ajax({
+		   	url: "{{ URL::to('/quick/getAbsentDatesForSelectedStudent')}}",
+		   	data: {'student_id': student_id,
+		           'selected_batch_id': selected_batch_id
+		          },
+		   	success:function (response) {
+		   		if(response.status == "success"){
+	   				var count = '' 
+	                count = '<option value=""></option>';
+	                for(var i=0; i < response.data.length; i++) {
+	                	count += '<option value='+response.data[i].attendance_date+'>'+response.data[i].attendance_date+'</option>';
+	                }
+	                $("#AbsentdatesDropdown").html(count);
+	          }else{
+	            $("#AbsentdatesDropdown").html("<p>No Batches found</p>");
+	          }
+		   	}
+	   })
+	});
+	});
+	$("#profileSearchFormSubmitBtn").click(function (event){
+      event.preventDefault();      
+    });
+	    
+     $("#changeKidAtoEA").click(function(){
+          changeKidAttendance();
+     })
+     function changeKidAttendance(){
+     	var student_id = 8719	;
+         var changeData = {"batchId":$("#batchDropdown").val(), "absentDate":$("#AbsentdatesDropdown").val(), 'student_id':student_id,"updatedBatchId": $('.batchId').val()};
+		    $.ajax({
+		      type: "POST",
+		      url: "{{URL::to('/quick/changeKidAttendancefromAtoEA')}}",
+		      data: changeData,
+		      dataType:"json",
+		      success: function (response)
+		      {
+		              
+		          
+		        }
+		      });
+     }
 
+     $("#attendance_for_userPA").click(function(){
+		customAttendancePv();
+	})
+
+	function customAttendancePv() {
+    	alert('customAttendanceKID');
+	}
+    
+</script>
 <script type="text/javascript">
 
 $(document).ready(function() {
@@ -256,8 +364,6 @@ function getbatchesStudents(batchId, dateStartEvent){
 		  success: function(response, textStatus, jqXHR)
 		  {
 			  if (response.status == "success"){	
-				   // console.log(response.result);	
-
 					var i = 0;
 					var attendanceString = "";
 					$("#attendanceTbody").empty();
@@ -310,6 +416,28 @@ function getbatchesStudents(batchId, dateStartEvent){
 							i++;  	
 			            });
 			
+
+			$('input[type="radio"][pdata="leadStatusEnable"]').change(function(){
+						var i=$(this).attr('data2');
+						var introId = $(this).parent().parent().parent().find('.ivId').val();
+						if (parseInt(introId) !== 0) {
+							$('#absent'+i).remove();
+							$('#ea'+i).remove();
+							$(this).parent().append("<div class='uk-grid'data-uk-grid-margin id='pStatus"+i+"' style='padding-top:10px;'>"+	
+							"<label><input type='radio' id='leadStatus"+i+"' name='leads' value='Yes'> Yes</label>"+
+							"<label><input type='radio' id='leadStatus"+i+"' name='leads' value='No'> No</label>"+
+							"<label><input type='radio' id='leadStatus"+i+"' name='leads' value='May be'> May be</label>"+
+							"<div><button type='button' style= margin-left:40px; class='btn btn-success PIntrovisist pull-right'>Save</button></div>"+
+							"<div id='makeupmsg' class='parsley-row'>"+
+							"</div>"+
+							"</div>");
+						} else {
+							var i=$(this).attr('data2');
+							$('#absent'+i).remove();
+							$('#pStatus'+i).remove();
+						}
+					});
+
 					/* function leadStatusEnable (d) {
 						alert(d);
 					}  */
@@ -420,10 +548,9 @@ function getbatchesStudents(batchId, dateStartEvent){
 		  error: function (jqXHR, textStatus, errorThrown)
 		  { }
 	});
-
-	console.log(isExists);
 	return isExists;
 }
+
 /* $(document).on('change', '.userRemDate', function(){
    var selectedDate = $(this).val();
    $.ajax({
@@ -625,6 +752,34 @@ $('#addAttendanceForm').validator().on('submit', function (e) {
 			<div class="modal-body">
 				<div id="messageAttendanceAddDiv"></div>
 				<div id="formBody">
+					<p>Add Kid</p>
+			<div class = "row">
+				
+		            <form class="uk-form" id="profileSearchForm">
+		              <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="display: block; padding-top:10px;">
+		                 <input type="text" id="StudentSearch" name="term" class="" placeholder="Search" />
+		                 <input type="hidden"  id="idStudentSearch" name="idStudentSearch" class="" />
+		                <button  style="display: none;" id="profileSearchFormSubmitBtn" class="buttonSearch uk-button-link" type="submit">
+		                	<i class="md-icon material-icons" style="color: #FFF;">&#xE8B6;</i>
+		                </button>
+		              </div>
+		            </form>
+		              <div class = "col-lg-3 col-md-3 col-sm-3 col-xs-3 uk-form" style="display: block; padding-top:10px;">
+		        	    <select id = "batchDropdown" style="padding: 0px; font-weight: bold; color: #727272;">
+		        	    	<option value=""></option>
+		        	    </select>
+
+		              </div>
+		              <div class = "col-lg-3 col-md-3 col-sm-3 col-xs-3 uk-form" style="display: block; padding-top:10px;">
+		        	      <select id = "AbsentdatesDropdown" style="padding: 0px; font-weight: bold; color: #727272;">
+		        	    	<option value=""></option>
+		        	    </select>
+		              </div>
+		              <div class = "col-lg-3 col-md-3 col-sm-3 col-xs-3" style="display: block; padding-top:10px;">
+		         	     <button id = "changeKidAtoEA" class="md-btn md-btn-primary">Add</button>
+		              </div>
+		        
+		    </div>
 					<form id="addAttendanceForm" method="post">
 				      		<br  clear="all" />
 				      		<table class="uk-table table-striped" id="customersTable">

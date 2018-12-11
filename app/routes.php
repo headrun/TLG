@@ -176,6 +176,9 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('getAllClassesForFranchiseeWise', 'CoursesController@getAllClassesForFranchiseeWise');
         Route::any('getBasePricesForFranchisee', 'CoursesController@getBasePricesForFranchisee');
         Route::any('updateClassesBasePriceForFranchisee', 'CoursesController@updateClassesBasePriceForFranchisee');
+        Route::any('getEABatchesForSelectedStudent',"BatchesController@getEABatchesForSelectedStudent");
+        Route::any('getAbsentDatesForSelectedStudent',"BatchesController@getAbsentDatesForSelectedStudent");
+        Route::any('changeKidAttendancefromAtoEA',"BatchesController@changeKidAttendancefromAtoEA");
 
 
         /**
@@ -440,7 +443,25 @@ Route::group(array('prefix' => 'quick'), function() {
 		return Response::json(array("status"=>"clear"));
 	
 	});
-	
+
+
+	Route::any('studentSearchOnly', function(){
+    
+        $inputs       = Input::all();
+        $term         = $inputs['term'];
+        $franchiseeId = Session::get('franchiseId');
+        
+        $result = Students::where('franchisee_id', '=', $franchiseeId)
+                            ->where('student_name', 'LIKE', '%' . $term . '%')
+                            ->selectRaw('CONCAT(student_name, " (Kid)") as label, CONCAT(id, "####STD") as id')
+                            ->get()->toArray();
+        if(isset($result)){
+            return Response::json($result);
+        }
+        return Response::json(array("status"=>"clear"));
+    
+    });
+
 	
 	
 	Route::any('getWeekendsForBday', function(){
