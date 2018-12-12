@@ -1635,6 +1635,19 @@ public function enrollKid2(){
         $end = $end->subDays(7);
         $attendanceArray[$i]['end'] = $end->toDateString();
 
+        $notSureMakeup = StudentClasses::where('not_sure_makeup','=', 1)  
+                                        ->where('batch_id','=',$inputs['batchId'])
+                                        ->where('uninform_makeup_attendance','=',$inputs['selectedDate'])
+                                        ->select('student_id','enrollment_start_date')
+                                        ->get();
+        for($i=0;$i<count($notSureMakeup);$i++){
+          if ($notSureMakeup[$i]['student_id'] > 0) {
+            $name = Students::where('id','=',$notSureMakeup[$i]['student_id'])
+                            ->select('student_name')
+                            ->get();
+             $notSureMakeup[$i]['student_name'] = $name[0]['student_name'];
+          }
+        }
         if($studentAttendanceRecord){
           $attendanceArray[$i]['isAttendanceEntered'] = 'yes';
           $attendanceArray[$i]['attendanceStatus'] = $studentAttendanceRecord->status;
@@ -1643,10 +1656,9 @@ public function enrollKid2(){
         }
         $i++;
       }
-      return Response::json(array("status"=>"success", 'result'=>$attendanceArray));
+      return Response::json(array("status"=>"success", 'result'=>$attendanceArray, 'uninform'=>$notSureMakeup));
     }
     return Response::json(array("status"=>"failed"));
-    
   }
   
   

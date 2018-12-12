@@ -60,6 +60,8 @@ class StudentClasses extends \Eloquent {
     $StudentClasses->status = 'makeup';
     $StudentClasses->created_by = Session::get('userId');
     $StudentClasses->created_at = date("Y-m-d H:i:s");
+    $StudentClasses->not_sure_makeup = 1;
+    $StudentClasses->uninform_makeup_attendance = $inputs['updatedDate'];
     $StudentClasses->save();
 
     return $StudentClasses;

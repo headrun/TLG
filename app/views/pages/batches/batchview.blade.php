@@ -41,12 +41,7 @@
         color:white;  
       }
       
-    }
-    .ui-autocomplete
-    {
-        position:absolute;
-        cursor:default;
-        z-index:1001 !important
+    
     }
 
 	</style>
@@ -77,36 +72,34 @@
 <script src="{{url()}}/assets/js/pages/kendoui.min.js"></script>
 
 <script>
-$(document).on('focus', '#StudentSearch', function () { 
-		$('#StudentSearch').autocomplete({
-	    source: "{{url()}}/quick/studentSearchOnly",
-	    minLength: 3,
-	    select: function( event, ui ) {
-	    	alert('ok');
-	    	$( "#StudentSearch" ).val(ui.item.value);
-	    	$( "#idStudentSearch" ).val(ui.item.id);
-	    		event.preventDefault();
-	    		if($("#idStudentSearch").val() != ""){
-           		 	$("#profileSearchForm").submit();	
-            	 	}
-	      	console.log( ui.item ?
-	        	"Selected: " + ui.item.value + " aka " + ui.item.id :
-	        	"Nothing selected, input was " + this.value );
-	    }
-	});
+$(document).on('focus', '#StudentSearch', function () {
+    $("#StudentSearch").autocomplete({
+        source: "{{url()}}/quick/studentSearchOnly",
+        minLength: 2,
+        autoFocus: true,
+        select: function( event, ui ) {
+        	$( "#StudentSearch" ).val(ui.item.value);
+        	$( "#idStudentSearch" ).val(ui.item.id);
+        		event.preventDefault();	        
+          	console.log( ui.item ?
+            	"Selected: " + ui.item.value + " aka " + ui.item.id :
+            	"Nothing selected, input was " + this.value );
+        }
+      });
+    $( "StudentSearch" ).autocomplete( "option", "appendTo", ".eventInsForm" );
 	$("#StudentSearch").change(function(){
-	   var student_id = 8719;
+	   var student_id = $('#idStudentSearch').val();
 	   $.ajax({
 	   	url: "{{ URL::to('/quick/getEABatchesForSelectedStudent')}}",
 	   	data: {'student_id': student_id},
 	   	success:function (response) {
 	   		if(response.status == "success"){
-   				var count = '' 
-                count = '<option value=""></option>';
+   				var data = '' 
+                data = '<option value=""></option>';
                 for(var i=0; i < response.data.length; i++) {
-                	count += '<option value='+response.data[i].batch_id+'>'+response.data[i].batch_name+'</option>';
+                	data += '<option value='+response.data[i].batch_id+'>'+response.data[i].batch_name+'</option>';
                 }
-                $("#batchDropdown").html(count);
+                $("#batchDropdown").html(data);
           }else{
             $("#batchDropdown").html("<p>No Batches found</p>");
           }
@@ -115,7 +108,7 @@ $(document).on('focus', '#StudentSearch', function () {
 	});
 	$("#batchDropdown").change(function(){
 		  var selected_batch_id = $(this).val();
-		  var student_id = 8719;
+		  var student_id = $('#idStudentSearch').val();
 		  $.ajax({
 		   	url: "{{ URL::to('/quick/getAbsentDatesForSelectedStudent')}}",
 		   	data: {'student_id': student_id,
@@ -139,13 +132,17 @@ $(document).on('focus', '#StudentSearch', function () {
 	$("#profileSearchFormSubmitBtn").click(function (event){
       event.preventDefault();      
     });
-	    
+
      $("#changeKidAtoEA").click(function(){
+     	if ($('#idStudentSearch').val() !== '' && $('#batchDropdown').val() !== '' && $('#batchDropdown').val() !== '') {
           changeKidAttendance();
-     })
+     	} else {
+     		$("#messageAttendanceAddDiv").html('<p class="uk-alert uk-alert-warning">Please fill all required fileds.</p>');
+     	}
+     });
      function changeKidAttendance(){
-     	var student_id = 8719	;
-         var changeData = {"batchId":$("#batchDropdown").val(), "absentDate":$("#AbsentdatesDropdown").val(), 'student_id':student_id,"updatedBatchId": $('.batchId').val()};
+     	var student_id = $('#idStudentSearch').val();
+         var changeData = {"batchId":$("#batchDropdown").val(), "absentDate":$("#AbsentdatesDropdown").val(), 'student_id':student_id,"updatedBatchId": $('.batchId').val(),"updatedDate": $('.attDate').val()};
 		    $.ajax({
 		      type: "POST",
 		      url: "{{URL::to('/quick/changeKidAttendancefromAtoEA')}}",
@@ -153,10 +150,16 @@ $(document).on('focus', '#StudentSearch', function () {
 		      dataType:"json",
 		      success: function (response)
 		      {
-		              
-		          
-		        }
-		      });
+		        if (response.status == 'success') {
+		        	$("#messageAttendanceAddDiv").html('<p class="uk-alert uk-alert-success">Make up class given successfully.Please wait untill the page reloads.</p>');
+		       		 setTimeout(function(){
+		       		  window.location.reload(1);
+		       		}, 3000);
+		        } else {
+		        	$("#messageAttendanceAddDiv").html('<p class="uk-alert uk-alert-danger">Something went wrong.Please try again later.</p>');
+		        }    
+		      }
+		    });
      }
 
      $("#attendance_for_userPA").click(function(){
@@ -350,7 +353,6 @@ $(document).ready(function() {
 
 var ajaxUrl = "{{url()}}/quick/";
 function getbatchesStudents(batchId, dateStartEvent){
-
 	//console.log(ajaxUrl);
 	var isExists = "no";
 	$("#addAttendanceTitle").html("");
@@ -367,8 +369,8 @@ function getbatchesStudents(batchId, dateStartEvent){
 					var i = 0;
 					var attendanceString = "";
 					$("#attendanceTbody").empty();
-					
-					
+					var uninformedMakeUp = "";
+					$("#uninformedAttendanceTbody").empty();
 				    $.each(response.result, function (index, item) {
 					//attendanceString = '<tr><td><input type="hidden" value="'+dateStartEvent+'"  name="attendanceDate_'+i+'"/><input type="hidden" value="'+batchId+'"  name="batch_'+i+'"/><input type="hidden" value="'+item.studentId+'"  name="student_'+i+'"/>'+item.studentName+'</td><td class="form-group"><input id="attendance_for_userP'+i+'" name="attendance_for_user'+i+'" value="P" type="radio" class="radio-custom" required /><label for="attendance_for_userP'+i+'" class="radio-custom-label">P</label><input id="attendance_for_userA'+i+'" name="attendance_for_user'+i+'" value="A"  type="radio" class="radio-custom" /><label for="attendance_for_userA'+i+'" class="radio-custom-label">A</label><input id="attendance_for_userEA'+i+'" name="attendance_for_user'+i+'" value="EA"  type="radio" class="radio-custom" /><label for="attendance_for_userEA'+i+'" class="radio-custom-label">EA</label></td><td></td></tr>';
 
@@ -406,7 +408,7 @@ function getbatchesStudents(batchId, dateStartEvent){
 			    			'</td>'+
 			    		'</tr>';
 				    	$("#attendanceTbody").append(attendanceString);
-				    	
+
 	                  	if(item.isAttendanceEntered == 'yes'){
 		                  	console.log('attendanceentered'+item.isAttendanceEntered);
 		                  	console.log('attendanceStatus'+item.attendanceStatus);
@@ -415,7 +417,17 @@ function getbatchesStudents(batchId, dateStartEvent){
 		                }
 							i++;  	
 			            });
-			
+				    $.each(response.uninform, function (index, item) {
+                        uninformedMakeUp = '<tr>'+ 
+                                                '<td>'+ 
+                                                   '<input type="hidden" value="'+item.student_id+i+'"/>'+ item.student_name+
+			    			                    '</td>'+
+                                                '<td>'+ 
+                                                   '<input type="hidden" value="'+item.enrollment_start_date+i+'"/>'+ item.enrollment_start_date+
+			    			                    '</td>'+
+			    			                '</tr>';
+                        $("#uninformedAttendanceTbody").append(uninformedMakeUp);
+			        });
 
 			$('input[type="radio"][pdata="leadStatusEnable"]').change(function(){
 						var i=$(this).attr('data2');
@@ -633,7 +645,6 @@ $(document).on('click', '.eaDateSave', function(){
 	var classId = $(this).closest('tr').find('.classId').val();
 	var attDate = $(this).closest('tr').find('.attDate').val();
 	var updateToBatchId = $(this).closest('tr').find('.selectBatch').val();
-	console.log(updateToBatchId)
 	// var alert = $(this).closest('td').prev('td').find('.attDate').val();
 
 
@@ -765,13 +776,15 @@ $('#addAttendanceForm').validator().on('submit', function (e) {
 		              </div>
 		            </form>
 		              <div class = "col-lg-3 col-md-3 col-sm-3 col-xs-3 uk-form" style="display: block; padding-top:10px;">
-		        	    <select id = "batchDropdown" style="padding: 0px; font-weight: bold; color: #727272;">
+		              	<label>Kid's Batches<span class="req">*</span></label>
+		        	    <select id = "batchDropdown" style="padding: 0px; font-weight: bold; color: #727272;" class ="input-sm md-input" required>
 		        	    	<option value=""></option>
 		        	    </select>
 
 		              </div>
-		              <div class = "col-lg-3 col-md-3 col-sm-3 col-xs-3 uk-form" style="display: block; padding-top:10px;">
-		        	      <select id = "AbsentdatesDropdown" style="padding: 0px; font-weight: bold; color: #727272;">
+		              <div class = "col-lg-3 col-md-3 col-sm-3 col-xs-3 uk-form" style="display: block; padding-top:10px;">    
+		              	  <label>Absent Dates<span class="req">*</span></label>
+		        	      <select id = "AbsentdatesDropdown" style="padding: 0px; font-weight: bold; color: #727272;" class ="input-sm md-input" required>
 		        	    	<option value=""></option>
 		        	    </select>
 		              </div>
@@ -796,6 +809,20 @@ $('#addAttendanceForm').validator().on('submit', function (e) {
 		                            </tr>
 		                            </thead>
 		                            <tbody id="attendanceTbody"></tbody>
+		                    </table>
+		                    <br  clear="all" />
+		                    <p>Uninformed Mack Ups</p>
+		                    <table class="uk-table table-striped" id="uninformedMakeups">
+		                            <!-- <caption>Table caption</caption> -->
+		                            <thead>
+		                            <tr>
+		                                <th>Name</th>
+		                                <th>Make-Up for Date</th>
+		                                
+		                                <!-- <th>Action</th> -->
+		                            </tr>
+		                            </thead>
+		                            <tbody id="uninformedAttendanceTbody"></tbody>
 		                    </table>
 					
 				</div>

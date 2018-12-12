@@ -326,11 +326,16 @@ class BatchesController extends \BaseController {
     	$changeKidAttendance = Attendance::where('student_id','=',$inputs['student_id'])
     	                                  ->where('batch_id','=',$inputs['batchId'])
     	                                  ->where('attendance_date','=',$inputs['absentDate'])
-    	                                  ->update(['status' => 'EA','makeup_class_given' => 1]);
+    	                                  ->update(['status' => 'EA','not_sure_makeup' => 1]);
     	 $updateToBatch = Batches::where('franchisee_id','=',Session::get('franchiseId'))
     	                          ->where('id','=',$inputs['updatedBatchId'])
     	                          ->get();
     	$addingCustomeKid = StudentClasses::addNewRecordOfCustomKid($inputs,$updateToBatch);
+    	if($addingCustomeKid){
+    		return Response::json(array('status'=>'success'));
+    	}else{
+            return Response::json(array('status','failure'));
+        }
 
     }
 	

@@ -453,7 +453,7 @@ Route::group(array('prefix' => 'quick'), function() {
         
         $result = Students::where('franchisee_id', '=', $franchiseeId)
                             ->where('student_name', 'LIKE', '%' . $term . '%')
-                            ->selectRaw('CONCAT(student_name, " (Kid)") as label, CONCAT(id, "####STD") as id')
+                            ->selectRaw('student_name as label,id')
                             ->get()->toArray();
         if(isset($result)){
             return Response::json($result);
