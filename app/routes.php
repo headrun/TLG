@@ -135,6 +135,7 @@ Route::group(array('prefix'=>'Discounts'),function(){
 
 Route::group(array('prefix'=>'reports'),function(){
         Route::any('/view_reports','ReportsController@view_reports');
+        Route::any('/daily_reports/{id}','ReportsController@daily_reports');
         Route::any('/mismatch_enrollments','ReportsController@mismatch_enrollments');
         Route::any('/kids_deleted_batch','ReportsController@kids_deleted_batch');
         Route::any('/kbi_reports','ReportsController@kbi_reports');
@@ -146,6 +147,7 @@ Route::group(array('prefix'=>'franchisee'),function(){
 
 	Route::any('/addfranchisee','FranchiseeController@addNewFranchisee');
 	Route::get('/franchiseelist','FranchiseeController@franchiseeList');
+    Route::get('/terms_conditions','FranchiseeController@terms_conditions');
 	Route::any('/addNewClass', "ClassesController@addNewClass");
 	Route::any('/addNewClassFranchisee', "ClassesController@addNewClassFranchisee");
 	// Route::any('/addCoursesForEachFranchise', 'CoursesController@addCoursesForEachFranchise');
@@ -170,6 +172,8 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('UpdateDataBatch', "ReportsController@UpdateDataBatch");
         Route::any('createdNewFranchisee',"FranchiseeController@createdNewFranchisee");
         Route::any('getDataForFranchisee', 'FranchiseeController@getDataForFranchisee');
+        Route::any('getTermsAndCondForFranchisee', 'FranchiseeController@getTermsAndCondForFranchisee');
+        Route::any('updateTermsAndCondtions', 'FranchiseeController@updateTermsAndCondtions');
         Route::any('updateFranchiseeDetails', 'FranchiseeController@updateFranchiseeDetails');
         Route::any('getCoursesFranchiseeWise', 'CoursesController@getCoursesFranchiseeWise');
         Route::any('updateCoursesForFranchisee', 'CoursesController@updateCoursesForFranchisee');
@@ -322,6 +326,7 @@ Route::group(array('prefix' => 'quick'), function() {
 	 */
         Route::any('generatereport', "ReportsController@generatereport");
         Route::any('activityReport',"ReportsController@activityReport");
+        Route::any('generateDailyReport', "ReportsController@generateDailyReport");
         Route::any('getMisMatchReports',"ReportsController@getMisMatchReports");
         Route::any('getDeletedBatchIdReports',"ReportsController@getDeletedBatchIdReports");
         Route::any('updateEnrollmentEndDate',"ReportsController@updateEnrollmentEndDate");

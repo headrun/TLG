@@ -28,6 +28,7 @@
                         <ul id="FRANCHISEE_MAIN_UL">
                             <li id="NEWFRANCHISEE"><a href="{{url()}}/franchisee/addfranchisee">Add New Franchisee</a></li>
                             <li id="LISTOFFRANCHISEE"><a href="{{url()}}/franchisee/franchiseelist">Franchisee List</a></li>
+                            <li id="TERMSANDCONDTIONS"><a href="{{url()}}/franchisee/terms_conditions">Terms & Condtions</a></li>
                             <!-- <li id="ADDCOURSE_LI"><a href="{{url()}}/franchisee/addCoursesForFranchisee">Add Courses</a></li> -->
                         </ul>
                     </li>
@@ -184,6 +185,7 @@
                         </a>
                         <ul id="REPORTS_MENU_MAIN_UL">
                             <li id="ViewReoprt_LI"><a href="{{url()}}/reports/view_reports">Enrollment</a></li>
+                            <li id="DailyReoprt_LI"><a href="{{url()}}/reports/daily_reports/0">Daily Reports</a></li>
                             <!-- <li id="KbiReoprt_LI"><a href="{{url()}}/reports/kbi_reports">KBI</a></li> -->
                             <li id="ViewDeletedCustomer_LI"><a href="{{url()}}/reports/deleted_customers">Deleted Customers</a></li>
                         
