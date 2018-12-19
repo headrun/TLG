@@ -242,8 +242,7 @@ class StudentsController extends \BaseController {
 			 
 			
                     //getting the data from payment_master
-                        $payments_master_details = PaymentMaster::where('student_id','=',$id)
-                                                                  ->where('order_id','<>','0')
+                        $payments_master_details = PaymentDues::where('student_id','=',$id)
                                                                   ->distinct('payment_no')
                                                                   ->select('payment_no')
                                                                   ->get();
