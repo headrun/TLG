@@ -148,6 +148,7 @@
 					        </div>
                     	</li> -->
                         <!-- <li><a href="#" id="main_search_btn" class="user_action_icon"><i class="material-icons md-24 md-light">&#xE8B6;</i></a></li> -->
+                        <?php if(Session::get('userType')=='ADMIN'){ ?>
                         <li id = "DailyReoprt_LI">
                             <a href = "{{url()}}/reports/daily_reports/1" >
                               <div style="color: #fff; margin-top: -10px; cursor: pointer;">
@@ -157,6 +158,7 @@
                               </div>
                             </a>
                         </li>
+                        <?php }?>
 
                         <li data-uk-dropdown="{mode:'click'}">
                             <a href="#" class="user_action_image" style="margin-top: -20px;">
