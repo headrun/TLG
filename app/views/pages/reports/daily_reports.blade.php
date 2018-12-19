@@ -158,9 +158,12 @@ function dailyReports () {
                               '</tr>'+
                             '</thead></center>';
                 for(var i=0;i<response[4].length;i++){
-                  data+="<tr><td>"+response[4][i]['customer_name']+"</td><td>"+
+                  if(response[4][i]['customer_name'] === '' || response[4][i]['customer_name'] === undefined){
+                  } else {
+                    data+="<tr><td>"+response[4][i]['customer_name']+"</td><td>"+
                         response[4][i]['mobile_no']+"</td><td>"+
                         response[4][i]['email']+"</td></tr>";
+                  }  
                 }
               } else {
                 data += "<center><p>******* No records founds *******</p></center>"
