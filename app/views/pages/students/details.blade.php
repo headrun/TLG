@@ -2284,167 +2284,167 @@ $('#excusedabsent').click(function(){
        }
        
        
-                            //console.log(data);
-                            $('#eaabsentbody').html(data);
-                            if(response.data.length > 0){
-                              $('#ea').modal('show');
+          //console.log(data);
+          $('#eaabsentbody').html(data);
+          if(response.data.length > 0){
+            $('#ea').modal('show');
+          }else{
+            $('#errorMsgDiv').hide();
+            $('#errorMsgDiv').html("<p class='uk-alert uk-alert-danger'>No Excused Absent or All Excused Absent makeup are given for this Batch</p>");
+            $('#errorMsgDiv').show('slow');
+            setTimeout(function(){
+              $('#errorMsgDiv').slideUp();
+              $('#errorMsgDiv').html('');
+              $('#errorMsgDiv').show();
+            },4000);
+          }
+          $('select[data="season"]').change(function(){
+             //resetting 
+             var i=$(this).attr('data2');
+             $('#classes'+i).val('');
+             $('#batches'+i).html('');
+             $('#batches'+i).val('');
+             $('#date'+i).html('');
+             $('#date'+i).val('');
+           });
+          $('select[data="classes"]').change(function(){
+            var i=$(this).attr('data2');
+            
+             // call ajax and get batches data
+             if($('#season'+i).val()!='' && $('#classes'+i).val()!=''){
+                 //console.log('correct');
+                 
+                 $.ajax({
+                   type: "POST",
+                   url: "{{URL::to('/quick/getBatchesForOldCustomer')}}",
+                   data: {'seasonId': $('#season'+i).val(), 'classId': $('#classes'+i).val()},
+                   dataType: 'json',
+                   success: function(response){
+                         //console.log(response.batch_data);
+                         string = '<option value=""></options>';
+                         if(response.batch_data.length == 0){
+                          $('#OldCustomerMsgDiv').html('<h5 class="uk-alert uk-alert-warning" data-uk-alert>No Batches Found</h5>')
+                          setTimeout(function(){
+                            $('#OldCustomerMsgDiv').html('');
+                          }, 3500)
+                        }else{
+                          for(var x=0;x<response.batch_data.length;x++){
+                            if(typeof(response.batch_data[i]['Leadinstructor'])!=='undefined'){
+                              string += '<option value="'+response.batch_data[x]['id']+'">'+response.batch_data[x]['batch_name']+' '+response.batch_data[x]['day']+' '+response.batch_data[x]['preferred_time']+' '+response.batch_data[x]['preferred_end_time'] +' ('+response.batch_data[x]['Leadinstructor'] +')</option>';
                             }else{
-                              $('#errorMsgDiv').hide();
-                              $('#errorMsgDiv').html("<p class='uk-alert uk-alert-danger'>No Excused Absent or All Excused Absent makeup are given for this Batch</p>");
-                              $('#errorMsgDiv').show('slow');
-                              setTimeout(function(){
-                                $('#errorMsgDiv').slideUp();
-                                $('#errorMsgDiv').html('');
-                                $('#errorMsgDiv').show();
-                              },4000);
+                              string += '<option value="'+response.batch_data[x]['id']+'">'+response.batch_data[x]['batch_name']+' '+response.batch_data[x]['day']+' '+response.batch_data[x]['preferred_time']+' '+response.batch_data[x]['preferred_end_time']+'</option>';
                             }
-                            $('select[data="season"]').change(function(){
-                               //resetting 
-                               var i=$(this).attr('data2');
-                               $('#classes'+i).val('');
-                               $('#batches'+i).html('');
-                               $('#batches'+i).val('');
-                               $('#date'+i).html('');
-                               $('#date'+i).val('');
-                             });
-                            $('select[data="classes"]').change(function(){
-                              var i=$(this).attr('data2');
-                              
-                               // call ajax and get batches data
-                               if($('#season'+i).val()!='' && $('#classes'+i).val()!=''){
-                                   //console.log('correct');
-                                   
-                                   $.ajax({
-                                     type: "POST",
-                                     url: "{{URL::to('/quick/getBatchesForOldCustomer')}}",
-                                     data: {'seasonId': $('#season'+i).val(), 'classId': $('#classes'+i).val()},
-                                     dataType: 'json',
-                                     success: function(response){
-                                           //console.log(response.batch_data);
-                                           string = '<option value=""></options>';
-                                           if(response.batch_data.length == 0){
-                                            $('#OldCustomerMsgDiv').html('<h5 class="uk-alert uk-alert-warning" data-uk-alert>No Batches Found</h5>')
-                                            setTimeout(function(){
-                                              $('#OldCustomerMsgDiv').html('');
-                                            }, 3500)
-                                          }else{
-                                            for(var x=0;x<response.batch_data.length;x++){
-                                              if(typeof(response.batch_data[i]['Leadinstructor'])!=='undefined'){
-                                                string += '<option value="'+response.batch_data[x]['id']+'">'+response.batch_data[x]['batch_name']+' '+response.batch_data[x]['day']+' '+response.batch_data[x]['preferred_time']+' '+response.batch_data[x]['preferred_end_time'] +' ('+response.batch_data[x]['Leadinstructor'] +')</option>';
-                                              }else{
-                                                string += '<option value="'+response.batch_data[x]['id']+'">'+response.batch_data[x]['batch_name']+' '+response.batch_data[x]['day']+' '+response.batch_data[x]['preferred_time']+' '+response.batch_data[x]['preferred_end_time']+'</option>';
-                                              }
-                                            }
-                                          }
-                                            //console.log(string);
-                                            
-                                            $('#batches'+i).html(string);
-                                            $('#date'+i).html('');
-                                            $('#date'+i).val('');
-                                          }
-                                        });
-                                 }else{
-                                  $('#batches'+i).html('');
-                                  $('#batches'+i).val('');
-                                  $('#date'+i).html('');
-                                  $('#date'+i).val('');
-                                   //display error
-                                 }
-                               });
-                            
-                            //checking for batches to get dates
-                            $('select[data="batch"]').change(function(){
-                              var i=$(this).attr('data2');
-                              if($('#season'+i).val()!='' && $('#classes'+i).val()!='' && $('#batches'+i).val()!=''){
-                                $.ajax({
-                                  type: "POST",
-                                  url: "{{URL::to('/quick/getBatchDatesByBatchId')}}",
-                                  data: {'batch_id':$('#batches'+i).val()},
-                                  dataType: 'json',
-                                  success: function(response){
-                                    if(response.status=='success'){
-                                      console.log(response.dates);
-                                      var data='';
-                                      for(var x=0;x<response.dates.length;x++){
-                                        data+="<option value='"+response.dates[x]['schedule_date']+"'>"+response.dates[x]['schedule_date']+"</option>";
-                                      }
-                                           // console.log(data);
-                                           $('#date'+i).html(data);
-                                           $('#date'+i).val('');
-                                         }else{
-                                           
-                                         }
-                                       }
-                                     });
-                              }else{
-                                $('#date'+i).html('');
-                                $('#date'+i).val('');
-                              }
-                            });
-                            
-                            
-                            $('i[data="makeupsave"]').click(function(){
-                              var i=$(this).attr('data2');
-                              if($('#season'+i).val()!='' && $('#classes'+i).val()!='' && $('#batches'+i).val()!='' && $('#date'+i).val()!=''){
-                                
-                                $(this).parent().append('<i class="uk-icon-spinner uk-icon-large uk-icon-spin"id="makeupsavespin'+i+'" data="makeupsavespin'+i+'" data2='+i+'></i>');
-                                $('#makeupsave'+i).hide();
-                                $.ajax({
-                                  type: "POST",
-                                  url: "{{URL::to('/quick/createMakeupClass')}}",
-                                  data: {'ea_batch_id':$('#eabatch_id'+i).val(),'eadate':$('#eadate'+i).val(),
-                                  'student_id':studentId,'mu_season_id':$('#season'+i).val(),
-                                  'mu_class_id':$('#classes'+i).val(),'mu_batches_id':$('#batches'+i).val(),
-                                  'mu_date':$('#date'+i).val(),'attendance_id':$('#attendance_id'+i).val()},
-                                  dataType: 'json',
-                                  success: function(response){
-                                    console.log(response);
-                                    if(response.status==='success'){
-                                      $('#makeupsavespin'+i).parent().append("<i class=' btn btn-success uk-icon-check  uk-icon-large' id='makeupcheck"+i+"' data='makeupcheck' data2="+i+"></i>");
-                                      $('#makeupsavespin'+i).remove();
-                                      $('#makeupmsg'+i).html("<p class='uk-alert uk-alert-success'>Makeup Class Created successfully</p>")
-                                      setTimeout(function(){
-                                        $('#makeupcheck'+i).parent().parent().parent().slideUp();
-                                        $('#makeupcheck'+i).parent().parent().parent().remove();
-                                      }, 3000)
-                                    }else if(response.status==='exists'){
-                                                //$('#makeupsavespin'+i).parent().append("<i class=' btn btn-success uk-icon-save  uk-icon-large' id='makeupsave"+i+"' data='makeupsave' data2="+i+"></i>");
-                                                $('#makeupsavespin'+i).remove();
-                                                $('#makeupsave'+i).show();
-                                                $('#makeupmsg'+i).html("<p class='uk-alert uk-alert-danger'>student is already enrolled to this class</p>");
-                                                setTimeout(function(){
-                                                  $('#makeupcheck'+i).parent().parent().parent().slideUp();
-                                                  $('#makeupmsg'+i).html('');
-                                                  $('#makeupcheck'+i).parent().parent().parent().remove();
-                                                }, 3000)
-                                              }
-                                            }
-                                          });
-                              }else{
-                                $('#makeupmsg'+i).hide();
-                                $('#makeupmsg'+i).html("<p class='uk-alert uk-alert-danger'>Please select all required Fields</p>");
-                                $('#makeupmsg'+i).show('slow');
-                                setTimeout(function(){
-                                 $('#makeupmsg'+i).slideUp();
-                                 $('#makeupmsg'+i).html('');
-                                 $('#makeupmsg'+i).show();
-                               }, 2000)
-                              }    
-                            });
-
+                          }
+                        }
+                          //console.log(string);
+                          
+                          $('#batches'+i).html(string);
+                          $('#date'+i).html('');
+                          $('#date'+i).val('');
+                        }
+                      });
+               }else{
+                $('#batches'+i).html('');
+                $('#batches'+i).val('');
+                $('#date'+i).html('');
+                $('#date'+i).val('');
+                 //display error
+               }
+             });
+          
+          //checking for batches to get dates
+          $('select[data="batch"]').change(function(){
+            var i=$(this).attr('data2');
+            if($('#season'+i).val()!='' && $('#classes'+i).val()!='' && $('#batches'+i).val()!=''){
+              $.ajax({
+                type: "POST",
+                url: "{{URL::to('/quick/getBatchDatesByBatchId')}}",
+                data: {'batch_id':$('#batches'+i).val()},
+                dataType: 'json',
+                success: function(response){
+                  if(response.status=='success'){
+                    console.log(response.dates);
+                    var data='';
+                    for(var x=0;x<response.dates.length;x++){
+                      data+="<option value='"+response.dates[x]['schedule_date']+"'>"+response.dates[x]['schedule_date']+"</option>";
+                    }
+                         // console.log(data);
+                         $('#date'+i).html(data);
+                         $('#date'+i).val('');
+                       }else{
+                         
+                       }
+                     }
+                   });
+            }else{
+              $('#date'+i).html('');
+              $('#date'+i).val('');
+            }
+          });
+          
+          
+          $('i[data="makeupsave"]').click(function(){
+            var i=$(this).attr('data2');
+            if($('#season'+i).val()!='' && $('#classes'+i).val()!='' && $('#batches'+i).val()!='' && $('#date'+i).val()!=''){
+              
+              $(this).parent().append('<i class="uk-icon-spinner uk-icon-large uk-icon-spin"id="makeupsavespin'+i+'" data="makeupsavespin'+i+'" data2='+i+'></i>');
+              $('#makeupsave'+i).hide();
+              $.ajax({
+                type: "POST",
+                url: "{{URL::to('/quick/createMakeupClass')}}",
+                data: {'ea_batch_id':$('#eabatch_id'+i).val(),'eadate':$('#eadate'+i).val(),
+                'student_id':studentId,'mu_season_id':$('#season'+i).val(),
+                'mu_class_id':$('#classes'+i).val(),'mu_batches_id':$('#batches'+i).val(),
+                'mu_date':$('#date'+i).val(),'attendance_id':$('#attendance_id'+i).val()},
+                dataType: 'json',
+                success: function(response){
+                  console.log(response);
+                  if(response.status==='success'){
+                    $('#makeupsavespin'+i).parent().append("<i class=' btn btn-success uk-icon-check  uk-icon-large' id='makeupcheck"+i+"' data='makeupcheck' data2="+i+"></i>");
+                    $('#makeupsavespin'+i).remove();
+                    $('#makeupmsg'+i).html("<p class='uk-alert uk-alert-success'>Makeup Class Created successfully</p>")
+                    setTimeout(function(){
+                      $('#makeupcheck'+i).parent().parent().parent().slideUp();
+                      $('#makeupcheck'+i).parent().parent().parent().remove();
+                    }, 3000)
+                  }else if(response.status==='exists'){
+                              //$('#makeupsavespin'+i).parent().append("<i class=' btn btn-success uk-icon-save  uk-icon-large' id='makeupsave"+i+"' data='makeupsave' data2="+i+"></i>");
+                              $('#makeupsavespin'+i).remove();
+                              $('#makeupsave'+i).show();
+                              $('#makeupmsg'+i).html("<p class='uk-alert uk-alert-danger'>student is already enrolled to this class</p>");
+                              setTimeout(function(){
+                                $('#makeupcheck'+i).parent().parent().parent().slideUp();
+                                $('#makeupmsg'+i).html('');
+                                $('#makeupcheck'+i).parent().parent().parent().remove();
+                              }, 3000)
+                            }
                           }
                         });
+            }else{
+              $('#makeupmsg'+i).hide();
+              $('#makeupmsg'+i).html("<p class='uk-alert uk-alert-danger'>Please select all required Fields</p>");
+              $('#makeupmsg'+i).show('slow');
+              setTimeout(function(){
+               $('#makeupmsg'+i).slideUp();
+               $('#makeupmsg'+i).html('');
+               $('#makeupmsg'+i).show();
+             }, 2000)
+            }    
+          });
 
-}else{
-  $('#errorMsgDiv').hide();
-  $('#errorMsgDiv').html("<p class='uk-alert uk-alert-warning'> please select the year and batch</p>");
-  $('#errorMsgDiv').show('slow');
-  setTimeout(function(){
-   $('#errorMsgDiv').slideUp();
-   $('#errorMsgDiv').html('');
-   $('#errorMsgDiv').show(); 
- },2000);
-}  
+        }
+      });
+
+        }else{
+          $('#errorMsgDiv').hide();
+          $('#errorMsgDiv').html("<p class='uk-alert uk-alert-warning'> please select the year and batch</p>");
+          $('#errorMsgDiv').show('slow');
+          setTimeout(function(){
+           $('#errorMsgDiv').slideUp();
+           $('#errorMsgDiv').html('');
+           $('#errorMsgDiv').show(); 
+         },2000);
+        }  
 
 });
 
@@ -2462,52 +2462,48 @@ $('#makeupsession').click(function(){
           dataType: 'json',
           success: function(response){
             console.log(response);
-                            //return;
-                            if(response.status==='success'){
-                              var data="<table class='uk-table table-striped'>"+
-                              "<thead>"+
-                              "<tr><th>EA Date</th><th>Description</th><th>Makeup Batch</th><th>Makeup-date</th><th>Make-up Given By</th></tr>"+
-                              "</thead>"+
-                              "<tbody>";
-                              for(var i=0;i<response.attendancedata.length;i++){
-                               data+="<tr><td>"+response.attendancedata[i]['attendance_date']+"</td>"+
-                               "<td>"+response.attendancedata[i]['description_absent']+"</td>"+
-                               "<td>"+response.student_class_data[i][0]['batch_name']+"</td>"+
-                               "<td>"+response.student_class_data[i][0]['enrollment_end_date']+"</td>"+
-                               "<td>"+response.student_class_data[i][0]['receivedby']+"</td>"+
-                               "</tr>";
-                             }
-                             data+="</tbody>";
-                             
-                             
-                             $('#eaabsentbody').html(data);
-                             $('#ea').modal('show');
-                           }else{
-                            $('#errorMsgDiv').hide();
-                            $('#errorMsgDiv').html("<p class='uk-alert uk-alert-danger'>No Makeups Given for this Batch</p>");
-                            $('#errorMsgDiv').show('slow');
-                            setTimeout(function(){
-                              $('#errorMsgDiv').slideUp();
-                              $('#errorMsgDiv').html();
-                              $('#errorMsgDiv').show();
-                            },4000);
-                          }
-                        }
-                      });
-        
-        
-        
-        
-      }else{
-        $('#errorMsgDiv').hide();
-        $('#errorMsgDiv').html("<p class='uk-alert uk-alert-warning'> please select the year and batch</p>");
-        $('#errorMsgDiv').show('slow');
-        setTimeout(function(){
-          $('#errorMsgDiv').slideUp();
-          $('#errorMsgDiv').html(''); 
-          $('#errorMsgDiv').show();
-        },4000);
-      }
+                //return;
+                if(response.status==='success'){
+                  var data="<table class='uk-table table-striped'>"+
+                  "<thead>"+
+                  "<tr><th>EA Date</th><th>Description</th><th>Makeup Batch</th><th>Makeup-date</th><th>Make-up Given By</th></tr>"+
+                  "</thead>"+
+                  "<tbody>";
+                  for(var i=0;i<response.attendancedata.length;i++){
+                   data+="<tr><td>"+response.attendancedata[i]['attendance_date']+"</td>"+
+                   "<td>"+response.attendancedata[i]['description_absent']+"</td>"+
+                   "<td>"+response.student_class_data[i][0]['batch_name']+"</td>"+
+                   "<td>"+response.student_class_data[i][0]['enrollment_end_date']+"</td>"+
+                   "<td>"+response.student_class_data[i][0]['receivedby']+"</td>"+
+                   "</tr>";
+                 }
+                 data+="</tbody>";
+                 
+                 
+                 $('#eaabsentbody').html(data);
+                 $('#ea').modal('show');
+               }else{
+                $('#errorMsgDiv').hide();
+                $('#errorMsgDiv').html("<p class='uk-alert uk-alert-danger'>No Makeups Given for this Batch</p>");
+                $('#errorMsgDiv').show('slow');
+                setTimeout(function(){
+                  $('#errorMsgDiv').slideUp();
+                  $('#errorMsgDiv').html();
+                  $('#errorMsgDiv').show();
+                },4000);
+              }
+            }
+          });
+            }else{
+              $('#errorMsgDiv').hide();
+              $('#errorMsgDiv').html("<p class='uk-alert uk-alert-warning'> please select the year and batch</p>");
+              $('#errorMsgDiv').show('slow');
+              setTimeout(function(){
+                $('#errorMsgDiv').slideUp();
+                $('#errorMsgDiv').html(''); 
+                $('#errorMsgDiv').show();
+              },4000);
+            }
     });
 
 $('#Transfers').click(function(){
@@ -3413,17 +3409,17 @@ id="user_profile">
   <div class="md-card">
     <div class="user_heading">
         <!--
-                                <div class="user_heading_menu" data-uk-dropdown="{pos:'left-top'}">
-                                    <i class="md-icon material-icons md-icon-light">&#xE5D4;</i>
-                                    <div class="uk-dropdown uk-dropdown-small ">
-                                        <ul class="uk-nav">
-                                            <li><a href="#"><i class="material-icons">delete</i> IV Data</a></li>
-                                            <li><a href="#"><i class="material-icons">delete</i> Birthday Data <br> <em class="text-center" style="color:black">(with payments)</em></a></li>
-                                            <li><a href="#"><i class="material-icons">delete</i> Enrollment Data<br> <em class="text-center" style="color:black">(with payments)</em></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                              -->
+        <div class="user_heading_menu" data-uk-dropdown="{pos:'left-top'}">
+            <i class="md-icon material-icons md-icon-light">&#xE5D4;</i>
+            <div class="uk-dropdown uk-dropdown-small ">
+                <ul class="uk-nav">
+                    <li><a href="#"><i class="material-icons">delete</i> IV Data</a></li>
+                    <li><a href="#"><i class="material-icons">delete</i> Birthday Data <br> <em class="text-center" style="color:black">(with payments)</em></a></li>
+                    <li><a href="#"><i class="material-icons">delete</i> Enrollment Data<br> <em class="text-center" style="color:black">(with payments)</em></a></li>
+                </ul>
+            </div>
+        </div>
+      -->
                               <div class="user_heading_avatar">
                                 <?php if($student->profile_image!=''){ ?>
                                 <img src="{{url()}}/upload/profile/student/{{$student->profile_image}}" />
@@ -4548,577 +4544,679 @@ style="margin-top: 50px; z-index: 99999;">
                 </td>
               </tr>
               <?php  } ?>
-                                                                        <!-- <?php
-                                                                         //if(Session::get('userType') == 'ADMIN')
-                                                                        {?> -->
-                                                                          <tr>
-                                                                            <td colspan="2" style="text-align: right; font-weight: bold"><div><p>Special Discount For you</p></div></td>
-                                                                            <td><input style="font-weight: bold; width:50%" type="number"
-                                                                              name="admin_discount_amount" id="admin_discount_amount"  value="0"
-                                                                              class="form-control" />
-                                                                            </td>
-                                                                          </tr>
-                                                                          <!-- <?php } ?> -->
-                                                                          <?php if(!$customermembership){?>
-                                                                          <tr>
+        <!-- <?php
+         //if(Session::get('userType') == 'ADMIN')
+        {?> -->
+          <tr>
+            <td colspan="2" style="text-align: right; font-weight: bold"><div><p>Special Discount For you</p></div></td>
+            <td><input style="font-weight: bold; width:50%" type="number"
+              name="admin_discount_amount" id="admin_discount_amount"  value="0"
+              class="form-control" />
+            </td>
+          </tr>
+          <!-- <?php } ?> -->
+          <?php if(!$customermembership){?>
+          <tr>
 
-                                                                            <td>
-                                                                              
-                                                                            </td>
-                                                                            <td>
-                                                                              <select id="membershipType" name="membershipType" class="input-sm md-input-width-small"
-                                                                              style='padding: 0px; font-weight: bold; color: #727272;width:50%; float:right'>
-                                                                              
-                                                                              
-                                                                            </select>
-                                                                            <input type="hidden" name="membershipAmount"
-                                                                            id="membershipAmount" readonly value=""
-                                                                            class="" />
-                                                                          </td>
-                                                                          <td>
-                                                                            <label style="font-weight: bold;" id='membershipAmounttotalslabel'>0</label>
-                                                                            <input type="hidden" name="membershipAmounttotals"
-                                                                            id="membershipAmounttotals" readonly value=""
-                                                                            class="" />
-                                                                          </td>
-                                                                        </tr>
-                                                                        <?php }?>
-                                                                        <tr>
-                                                                          <td colspan="2" style="text-align: right; font-weight: bold">Subtotal</td>
-                                                                          <td><label id="subtotallabel" style="font-weight: bold"></label>
-                                                                            <input style="font-weight: bold" type="hidden"
-                                                                            name="subtotal" id="subtotal" readonly value=""
-                                                                            class="" />
-                                                                            <input type="hidden" name="totalEnrollmentAmount" id="totalEnrollmentAmount"/>  
-                                                                            
-                                                                          </td>
-                                                                        </tr>
-                                                                        <tr>
+            <td>
+              
+            </td>
+            <td>
+              <select id="membershipType" name="membershipType" class="input-sm md-input-width-small"
+              style='padding: 0px; font-weight: bold; color: #727272;width:50%; float:right'>
+              
+              
+            </select>
+            <input type="hidden" name="membershipAmount"
+            id="membershipAmount" readonly value=""
+            class="" />
+          </td>
+          <td>
+            <label style="font-weight: bold;" id='membershipAmounttotalslabel'>0</label>
+            <input type="hidden" name="membershipAmounttotals"
+            id="membershipAmounttotals" readonly value=""
+            class="" />
+          </td>
+        </tr>
+        <?php }?>
+        <tr>
+          <td colspan="2" style="text-align: right; font-weight: bold">Subtotal</td>
+          <td><label id="subtotallabel" style="font-weight: bold"></label>
+            <input style="font-weight: bold" type="hidden"
+            name="subtotal" id="subtotal" readonly value=""
+            class="" />
+            <input type="hidden" name="totalEnrollmentAmount" id="totalEnrollmentAmount"/>  
+            
+          </td>
+        </tr>
+        <tr>
 
-                                                                          <td colspan="2" style="text-align: right; font-weight: bold;"> 
-                                                                            <?php if(Session::get('franchiseId') == 11) {?>
-                                                                              <input id="diplomatOption" name="diplomatOption" type="checkbox"  value="yes" class="checkbox-custom"  />
-                                                                              <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
-                                                                                class="req"> </span></label> /
-                                                                            <?php } ?>
-                                                                            <?php 
-                                                                            if(isset($tax_data)){
-                                                                              echo "[";
-                                                                              for($i=0;$i<count($tax_data);$i++){
-                                                                                echo $tax_data[$i]['tax_particular'].':'.$tax_data[$i]['tax_percentage'].'%';
-                                                                                if($i != count($tax_data) -1){
-                                                                                  echo ", &nbsp;";
-                                                                                }
-                                                                              }
-                                                                              echo "]";
-                                                                            } 
-                                                                            ?> 
-                                                                          </td>
+          <td colspan="2" style="text-align: right; font-weight: bold;"> 
+            <?php if(Session::get('franchiseId') == 11) {?>
+              <input id="diplomatOption" name="diplomatOption" type="checkbox"  value="yes" class="checkbox-custom"  />
+              <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
+                class="req"> </span></label> /
+            <?php } ?>
+            <?php 
+            if(isset($tax_data)){
+              echo "[";
+              for($i=0;$i<count($tax_data);$i++){
+                echo $tax_data[$i]['tax_particular'].':'.$tax_data[$i]['tax_percentage'].'%';
+                if($i != count($tax_data) -1){
+                  echo ", &nbsp;";
+                }
+              }
+              echo "]";
+            } 
+            ?> 
+          </td>
 
-                                                                          <td>
-                                                                            <?php if(Session::get('franchiseId') == 11) {?>
-                                                                              <label style="font-weight:bold;padding-top:7px;" id="taxAmountlabel"></label>
-                                                                            <?php }else{ ?>
-                                                                              <label style="font-weight:bold;" id="taxAmountlabel"></label>
-                                                                            <?php } ?>
-                                                                            <label for="duplicatetaxAmountlabel" id="duplicatetaxAmountlabel" style="display:none;padding-top:7px;" class="checkbox-custom-label">0<span
-                                                                                class="req"> </span></label>
-                                                                            <input style="font-weight: bold;" type="hidden"
-                                                                            name="taxAmount" id="taxAmount" value="" readonly
-                                                                            class="" />
-                                                                          </td>
-                                                                          </tr>
-                                                                          <tr>
-                                                                            <td colspan="2" style="text-align: right; font-weight: bold">Grand
-                                                                            Total</td>
-                                                                            <td><label style="font-weight:bold" id='grandTotallabel' name='grandTotallabel'></label>
-                                                                              <input style="font-weight: bold" type="hidden"
-                                                                              name="grandTotal" id="grandTotal" value="" readonly
-                                                                              class=""
-                                                                              style="font-weight:bold" /></td>
-                                                                            </tr>
-                                                                          </tbody>
-                                                                        </table>
+          <td>
+            <?php if(Session::get('franchiseId') == 11) {?>
+              <label style="font-weight:bold;padding-top:7px;" id="taxAmountlabel"></label>
+            <?php }else{ ?>
+              <label style="font-weight:bold;" id="taxAmountlabel"></label>
+            <?php } ?>
+            <label for="duplicatetaxAmountlabel" id="duplicatetaxAmountlabel" style="display:none;padding-top:7px;" class="checkbox-custom-label">0<span
+                class="req"> </span></label>
+            <input style="font-weight: bold;" type="hidden"
+            name="taxAmount" id="taxAmount" value="" readonly
+            class="" />
+          </td>
+          </tr>
+          <tr>
+            <td colspan="2" style="text-align: right; font-weight: bold">Grand
+            Total</td>
+            <td><label style="font-weight:bold" id='grandTotallabel' name='grandTotallabel'></label>
+              <input style="font-weight: bold" type="hidden"
+              name="grandTotal" id="grandTotal" value="" readonly
+              class=""
+              style="font-weight:bold" /></td>
+            </tr>
+          </tbody>
+        </table>
 
 
-                                                                        <div id="paymentType" class="uk-grid" data-uk-grid-margin>
-                                                                          <div class="uk-width-medium-1-3">
-                                                                            <div class="parsley-row">
-                                                                              <input type="radio" name="paymentTypeRadio" required
-                                                                              id="paymentOptions_1" value="card" /> <label
-                                                                              for="paymentOptions_1" class="inline-label">Card</label> <input
-                                                                              type="radio" name="paymentTypeRadio" id="paymentOptions_2"
-                                                                              value="cash" /> <label for="paymentOptions_2"
-                                                                              class="inline-label">Cash</label> <input type="radio"
-                                                                              name="paymentTypeRadio" id="paymentOptions_3" value="cheque" />
-                                                                              <label for="paymentOptions_3" class="inline-label">Cheque</label>
+        <div id="paymentType" class="uk-grid" data-uk-grid-margin>
+          <div class="uk-width-medium-1-3">
+            <div class="parsley-row">
+              <input type="radio" name="paymentTypeRadio" required
+              id="paymentOptions_1" value="card" /> <label
+              for="paymentOptions_1" class="inline-label">Card</label> <input
+              type="radio" name="paymentTypeRadio" id="paymentOptions_2"
+              value="cash" /> <label for="paymentOptions_2"
+              class="inline-label">Cash</label> <input type="radio"
+              name="paymentTypeRadio" id="paymentOptions_3" value="cheque" />
+              <label for="paymentOptions_3" class="inline-label">Cheque</label>
 
-                                                                            </div>
-                                                                          </div>
-                                                                          <div class="uk-width-medium-1-3">
-                                                                            <div class="parsley-row" id="Order-date" style="display: none;">
-                                                                              <label for="OrderDate">Order date<span
-                                                                                class="req">*</span></label><br>
-                                                                                {{Form::text('OrderDate',
-                                                                                null,array('id'=>'OrderDate', 'required'=>'','class' =>
-                                                                                'uk-form-width-medium'))}}
-                                                                              </div>
-                                                                            </div>
-                                                                            
-                                                                            <div class="uk-width-medium-1-3">
-                                                                              <div class="parsley-row Order-Date"  style="display: none;">
-                                                                               
-                                                                              </div>
-                                                                            </div>
-                                                                          </div>
-                                                                          
-                                                                          
-                                                                          <div id="paymentType" style="width: 100%">
-                                                                            <div id="cardDetailsDiv" class="uk-grid" data-uk-grid-margin>
-                                                                              <div class="uk-width-medium-1-1">
-                                                                                <h4>Card details</h4>
-                                                                              </div>
-                                                                              <div class="uk-width-medium-1-2">
-                                                                                <div class="parsley-row">
-                                                                                  <select name="cardType" id="cardType"
-                                                                                  class="input-sm md-input"
-                                                                                  class="form-control input-sm md-input"
-                                                                                  style='padding: 0px; font-weight: bold; color: #727272;'>
-                                                                                  <option value="master">Master card</option>
-                                                                                  <option value="maestro">Maestro</option>
-                                                                                  <option value="visa">Visa</option>
-                                                                                  <option value="Rupay">Rupay</option>
-                                                                                </select>
-                                                                              </div>
-                                                                            </div>
-                                                                            <div class="uk-width-medium-1-2">
-                                                                              <div class="parsley-row">
-                                                                                
-                                                                                <label for="cardBankName" class="inline-label">Bank Name of your card<span class="req">*</span>
-                                                                                </label> <input id="cardBankName" number name="cardBankName"
-                                                                                type="text"
-                                                                                class="form-control input-sm md-input" />
-                                                                              </div>
-                                                                            </div>
-                                                                            <br clear="all">
-                                                                            <br clear="all">
-                                                                            <br clear="all">
-                                                                            
-                                                                            <div class="uk-width-medium-1-2">
-                                                                              <div class="parsley-row">
-                                                                                <label for="card4digits" class="inline-label" style="display:none">Last 4 digits
-                                                                                  of your card<span class="req">*</span>
-                                                                                </label> <input id="card4digits" number name="card4digits"
-                                                                                maxlength="4" type="hidden" value="1234"
-                                                                                class="form-control input-sm md-input" />
-                                                                                
-                                                                              </div>
-                                                                            </div>
-                                                                            
-                                                                            <div class="uk-width-medium-1-2">
-                                                                              <div class="parsley-row">
-                                                                                <label for="cardRecieptNumber" class="inline-label" style="display:none">Reciept number<span class="req">*</span>
-                                                                                </label> <input id="cardRecieptNumber" number name="cardRecieptNumber"
-                                                                                maxlength="4" type="hidden"  value="1234" 
-                                                                                class="form-control input-sm md-input" />
-                                                                              </div>
-                                                                            </div>
+            </div>
+          </div>
+          <div class="uk-width-medium-1-3">
+            <div class="parsley-row" id="Order-date" style="display: none;">
+              <label for="OrderDate">Order date<span
+                class="req">*</span></label><br>
+                {{Form::text('OrderDate',
+                null,array('id'=>'OrderDate', 'required'=>'','class' =>
+                'uk-form-width-medium'))}}
+              </div>
+            </div>
+            
+            <div class="uk-width-medium-1-3">
+              <div class="parsley-row Order-Date"  style="display: none;">
+               
+              </div>
+            </div>
+          </div>
+          
+          
+          <div id="paymentType" style="width: 100%">
+            <div id="cardDetailsDiv" class="uk-grid" data-uk-grid-margin>
+              <div class="uk-width-medium-1-1">
+                <h4>Card details</h4>
+              </div>
+              <div class="uk-width-medium-1-2">
+                <div class="parsley-row">
+                  <select name="cardType" id="cardType"
+                  class="input-sm md-input"
+                  class="form-control input-sm md-input"
+                  style='padding: 0px; font-weight: bold; color: #727272;'>
+                  <option value="master">Master card</option>
+                  <option value="maestro">Maestro</option>
+                  <option value="visa">Visa</option>
+                  <option value="Rupay">Rupay</option>
+                </select>
+              </div>
+            </div>
+            <div class="uk-width-medium-1-2">
+              <div class="parsley-row">
+                
+                <label for="cardBankName" class="inline-label">Bank Name of your card<span class="req">*</span>
+                </label> <input id="cardBankName" number name="cardBankName"
+                type="text"
+                class="form-control input-sm md-input" />
+              </div>
+            </div>
+            <br clear="all">
+            <br clear="all">
+            <br clear="all">
+            
+            <div class="uk-width-medium-1-2">
+              <div class="parsley-row">
+                <label for="card4digits" class="inline-label" style="display:none">Last 4 digits
+                  of your card<span class="req">*</span>
+                </label> <input id="card4digits" number name="card4digits"
+                maxlength="4" type="hidden" value="1234"
+                class="form-control input-sm md-input" />
+                
+              </div>
+            </div>
+            
+            <div class="uk-width-medium-1-2">
+              <div class="parsley-row">
+                <label for="cardRecieptNumber" class="inline-label" style="display:none">Reciept number<span class="req">*</span>
+                </label> <input id="cardRecieptNumber" number name="cardRecieptNumber"
+                maxlength="4" type="hidden"  value="1234" 
+                class="form-control input-sm md-input" />
+              </div>
+            </div>
 
-                                                                          </div>
-                                                                          <div id="chequeDetailsDiv" class="uk-grid" data-uk-grid-margin>
+          </div>
+          <div id="chequeDetailsDiv" class="uk-grid" data-uk-grid-margin>
 
-                                                                            <div class="uk-width-medium-1-1">
-                                                                              <h4>Cheque details</h4>
-                                                                              <br clear="all"/>
-                                                                            </div>
-                                                                            <br clear="all"/><br clear="all"/>
-                                                                            <div class="uk-width-medium-1-2">
-                                                                              <div class="parsley-row">
-                                                                                <label for="chequeBankName" class="inline-label">Bank name<span
-                                                                                  class="req">*</span></label> <input id="chequeBankName"
-                                                                                  name="bankName" type="text"
-                                                                                  class="form-control input-sm md-input" />
-                                                                                </div>
-                                                                              </div>
-                                                                              <div class="uk-width-medium-1-2">
-                                                                                <div class="parsley-row">
-                                                                                  <label for="chequeNumber" class="inline-label">Cheque number<span
-                                                                                    class="req">*</span></label> <input id="chequeNumber"
-                                                                                    name="chequeNumber" type="text"
-                                                                                    class="form-control input-sm md-input" />
-                                                                                  </div>
-                                                                                </div>
-                                                                              </div>
-                                                                            </div>
-                                                                            
-                                                                            <!-- id="paymentType2" for old customer 2nd order box -->
-                                                                            
-                                                                            <div  id="Order-date2" class="uk-grid" data-uk-grid-margin>
-                                                                              <div class="uk-width-medium-1-3" >
-                                                                                <div class="parsley-row Order-Date2" style="display:none">
-                                                                                  <input type="radio" name="paymentTypeRadioOldCustomer2" required
-                                                                                  id="paymentOptionsOldCustomer_1" value="card" /> <label
-                                                                                  for="paymentOptionsOldCustomer_1" class="inline-label">Card</label> <input
-                                                                                  type="radio" name="paymentTypeRadioOldCustomer2" id="paymentOptionsOldCustomer_2"
-                                                                                  value="cash" /> <label for="paymentOptionsOldCustomer_2"
-                                                                                  class="inline-label">Cash</label> <input type="radio"
-                                                                                  name="paymentTypeRadioOldCustomer2" id="paymentOptionsOldCustomer_3" value="cheque" />
-                                                                                  <label for="paymentOptionsOldCustomer_3" class="inline-label">Cheque</label>
+            <div class="uk-width-medium-1-1">
+              <h4>Cheque details</h4>
+              <br clear="all"/>
+            </div>
+            <br clear="all"/><br clear="all"/>
+            <div class="uk-width-medium-1-2">
+              <div class="parsley-row">
+                <label for="chequeBankName" class="inline-label">Bank name<span
+                  class="req">*</span></label> <input id="chequeBankName"
+                  name="bankName" type="text"
+                  class="form-control input-sm md-input" />
+                </div>
+              </div>
+              <div class="uk-width-medium-1-2">
+                <div class="parsley-row">
+                  <label for="chequeNumber" class="inline-label">Cheque number<span
+                    class="req">*</span></label> <input id="chequeNumber"
+                    name="chequeNumber" type="text"
+                    class="form-control input-sm md-input" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- id="paymentType2" for old customer 2nd order box -->
+            
+            <div  id="Order-date2" class="uk-grid" data-uk-grid-margin>
+              <div class="uk-width-medium-1-3" >
+                <div class="parsley-row Order-Date2" style="display:none">
+                  <input type="radio" name="paymentTypeRadioOldCustomer2" required
+                  id="paymentOptionsOldCustomer_1" value="card" /> <label
+                  for="paymentOptionsOldCustomer_1" class="inline-label">Card</label> <input
+                  type="radio" name="paymentTypeRadioOldCustomer2" id="paymentOptionsOldCustomer_2"
+                  value="cash" /> <label for="paymentOptionsOldCustomer_2"
+                  class="inline-label">Cash</label> <input type="radio"
+                  name="paymentTypeRadioOldCustomer2" id="paymentOptionsOldCustomer_3" value="cheque" />
+                  <label for="paymentOptionsOldCustomer_3" class="inline-label">Cheque</label>
 
-                                                                                </div>
-                                                                              </div>
-                                                                              <div class="uk-width-medium-1-3">
-                                                                                <div class="parsley-row Order-Date2"  style="display: none;">
-                                                                                 <label for="OrderDate2">Order date<span
-                                                                                  class="req">*</span></label><br>
-                                                                                  {{Form::text('OrderDate2',
-                                                                                  null,array('id'=>'OrderDate2', 'required'=>'','class' =>
-                                                                                  'uk-form-width-medium'))}}
-                                                                                </div>
-                                                                              </div>
-                                                                              
-                                                                              <div class="uk-width-medium-1-3">
-                                                                                <div class="parsley-row Order-Date2"  style="display: none;">
-                                                                                 
-                                                                                </div>
-                                                                              </div>
-                                                                            </div>
-                                                                            
-                                                                            
-                                                                            <div  id="paymentType2" style="width: 100%; display:none">
-                                                                              <div  class="uk-grid" data-uk-grid-margin id="cardDetailsDiv2">
-                                                                                <div class="uk-width-medium-1-1" >
-                                                                                  <h4>Card details</h4>
-                                                                                </div>
-                                                                                <div class="uk-width-medium-1-2">
-                                                                                  <div class="parsley-row">
-                                                                                    <select name="cardType2" id="cardType2"
-                                                                                    class="input-sm md-input"
-                                                                                    class="form-control input-sm md-input"
-                                                                                    style='padding: 0px; font-weight: bold; color: #727272;'>
-                                                                                    <option value="master">Master card</option>
-                                                                                    <option value="maestro">Maestro</option>
-                                                                                    <option value="visa">Visa</option>
-                                                                                    <option value="Rupay">Rupay</option>
-                                                                                  </select>
-                                                                                </div>
-                                                                              </div>
-                                                                              <div class="uk-width-medium-1-2">
-                                                                                <div class="parsley-row">
-                                                                                  <label for="card4digits2" class="inline-label">Last 4 digits
-                                                                                    of your card<span class="req">*</span>
-                                                                                  </label> <input id="card4digits2" number name="card4digits2"
-                                                                                  maxlength="4" type="text"
-                                                                                  class="form-control input-sm md-input" />
-                                                                                </div>
-                                                                              </div>
-                                                                              
-                                                                              <div class="uk-width-medium-1-2">
-                                                                                <div class="parsley-row">
-                                                                                  <label for="cardBankName2" class="inline-label">Bank Name of your card<span class="req">*</span>
-                                                                                  </label> <input id="cardBankName2" number name="cardBankName2"
-                                                                                  type="text"
-                                                                                  class="form-control input-sm md-input" />
-                                                                                </div>
-                                                                              </div>
-                                                                              
-                                                                              <div class="uk-width-medium-1-2">
-                                                                                <div class="parsley-row">
-                                                                                  <label for="cardRecieptNumber2" class="inline-label">Reciept number<span class="req">*</span>
-                                                                                  </label> <input id="cardRecieptNumber2" number name="cardRecieptNumber2"
-                                                                                  maxlength="4" type="text" 
-                                                                                  class="form-control input-sm md-input" />
-                                                                                </div>
-                                                                              </div>
+                </div>
+              </div>
+              <div class="uk-width-medium-1-3">
+                <div class="parsley-row Order-Date2"  style="display: none;">
+                 <label for="OrderDate2">Order date<span
+                  class="req">*</span></label><br>
+                  {{Form::text('OrderDate2',
+                  null,array('id'=>'OrderDate2', 'required'=>'','class' =>
+                  'uk-form-width-medium'))}}
+                </div>
+              </div>
+              
+              <div class="uk-width-medium-1-3">
+                <div class="parsley-row Order-Date2"  style="display: none;">
+                 
+                </div>
+              </div>
+            </div>
+            
+            
+            <div  id="paymentType2" style="width: 100%; display:none">
+              <div  class="uk-grid" data-uk-grid-margin id="cardDetailsDiv2">
+                <div class="uk-width-medium-1-1" >
+                  <h4>Card details</h4>
+                </div>
+                <div class="uk-width-medium-1-2">
+                  <div class="parsley-row">
+                    <select name="cardType2" id="cardType2"
+                    class="input-sm md-input"
+                    class="form-control input-sm md-input"
+                    style='padding: 0px; font-weight: bold; color: #727272;'>
+                    <option value="master">Master card</option>
+                    <option value="maestro">Maestro</option>
+                    <option value="visa">Visa</option>
+                    <option value="Rupay">Rupay</option>
+                  </select>
+                </div>
+              </div>
+              <div class="uk-width-medium-1-2">
+                <div class="parsley-row">
+                  <label for="card4digits2" class="inline-label">Last 4 digits
+                    of your card<span class="req">*</span>
+                  </label> <input id="card4digits2" number name="card4digits2"
+                  maxlength="4" type="text"
+                  class="form-control input-sm md-input" />
+                </div>
+              </div>
+              
+              <div class="uk-width-medium-1-2">
+                <div class="parsley-row">
+                  <label for="cardBankName2" class="inline-label">Bank Name of your card<span class="req">*</span>
+                  </label> <input id="cardBankName2" number name="cardBankName2"
+                  type="text"
+                  class="form-control input-sm md-input" />
+                </div>
+              </div>
+              
+              <div class="uk-width-medium-1-2">
+                <div class="parsley-row">
+                  <label for="cardRecieptNumber2" class="inline-label">Reciept number<span class="req">*</span>
+                  </label> <input id="cardRecieptNumber2" number name="cardRecieptNumber2"
+                  maxlength="4" type="text" 
+                  class="form-control input-sm md-input" />
+                </div>
+              </div>
 
-                                                                            </div>
-                                                                            <div id="chequeDetailsDiv2" class="uk-grid" data-uk-grid-margin>
+            </div>
+            <div id="chequeDetailsDiv2" class="uk-grid" data-uk-grid-margin>
 
-                                                                              <div class="uk-width-medium-1-1">
-                                                                                <h4>Cheque details</h4>
-                                                                                <br clear="all"/>
-                                                                              </div>
-                                                                              <br clear="all"/><br clear="all"/>
-                                                                              <div class="uk-width-medium-1-2">
-                                                                                <div class="parsley-row">
-                                                                                  <label for="chequeBankName2" class="inline-label">Bank name<span
-                                                                                    class="req">*</span></label> <input id="chequeBankName2"
-                                                                                    name="bankName2" type="text"
-                                                                                    class="form-control input-sm md-input" />
-                                                                                  </div>
-                                                                                </div>
-                                                                                <div class="uk-width-medium-1-2">
-                                                                                  <div class="parsley-row">
-                                                                                    <label for="chequeNumber2" class="inline-label">Cheque number<span
-                                                                                      class="req">*</span></label> <input id="chequeNumber2"
-                                                                                      name="chequeNumber2" type="text"
-                                                                                      class="form-control input-sm md-input" />
-                                                                                    </div>
-                                                                                  </div>
-                                                                                </div>
-                                                                                
-                                                                              </div>
-                                                                              
-                                                                              <!-- id="paymentType3" for old customer 3rd order box -->
-                                                                              
-                                                                              <div  id="Order-date3" class="uk-grid" data-uk-grid-margin>
-                                                                                
-                                                                                <div class="uk-width-medium-1-3" >
-                                                                                  <div class="parsley-row Order-Date3" style="display:none">
-                                                                                    <input type="radio" name="paymentTypeRadioOldCustomer3" required
-                                                                                    id="paymentOptionsOldCustomer3_1" value="card" /> <label
-                                                                                    for="paymentOptionsOldCustomer3_1" class="inline-label">Card</label> <input
-                                                                                    type="radio" name="paymentTypeRadioOldCustomer3" id="paymentOptionsOldCustomer3_2"
-                                                                                    value="cash" /> <label for="paymentOptionsOldCustomer3_2"
-                                                                                    class="inline-label">Cash</label> <input type="radio"
-                                                                                    name="paymentTypeRadioOldCustomer3" id="paymentOptionsOldCustomer3_3" value="cheque" />
-                                                                                    <label for="paymentOptionsOldCustomer3_3" class="inline-label">Cheque</label>
+              <div class="uk-width-medium-1-1">
+                <h4>Cheque details</h4>
+                <br clear="all"/>
+              </div>
+              <br clear="all"/><br clear="all"/>
+              <div class="uk-width-medium-1-2">
+                <div class="parsley-row">
+                  <label for="chequeBankName2" class="inline-label">Bank name<span
+                    class="req">*</span></label> <input id="chequeBankName2"
+                    name="bankName2" type="text"
+                    class="form-control input-sm md-input" />
+                  </div>
+                </div>
+                <div class="uk-width-medium-1-2">
+                  <div class="parsley-row">
+                    <label for="chequeNumber2" class="inline-label">Cheque number<span
+                      class="req">*</span></label> <input id="chequeNumber2"
+                      name="chequeNumber2" type="text"
+                      class="form-control input-sm md-input" />
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+              
+              <!-- id="paymentType3" for old customer 3rd order box -->
+              
+              <div  id="Order-date3" class="uk-grid" data-uk-grid-margin>
+                
+                <div class="uk-width-medium-1-3" >
+                  <div class="parsley-row Order-Date3" style="display:none">
+                    <input type="radio" name="paymentTypeRadioOldCustomer3" required
+                    id="paymentOptionsOldCustomer3_1" value="card" /> <label
+                    for="paymentOptionsOldCustomer3_1" class="inline-label">Card</label> <input
+                    type="radio" name="paymentTypeRadioOldCustomer3" id="paymentOptionsOldCustomer3_2"
+                    value="cash" /> <label for="paymentOptionsOldCustomer3_2"
+                    class="inline-label">Cash</label> <input type="radio"
+                    name="paymentTypeRadioOldCustomer3" id="paymentOptionsOldCustomer3_3" value="cheque" />
+                    <label for="paymentOptionsOldCustomer3_3" class="inline-label">Cheque</label>
 
-                                                                                  </div>
-                                                                                </div> 
-                                                                                
-                                                                                <div class="uk-width-medium-1-3">
-                                                                                  <div class="parsley-row Order-Date3"  style="display: none;">
-                                                                                   <label for="OrderDate3">Order date<span
-                                                                                    class="req">*</span></label><br>
-                                                                                    {{Form::text('OrderDate3',
-                                                                                    null,array('id'=>'OrderDate3', 'required'=>'','class' =>
-                                                                                    'uk-form-width-medium'))}}
-                                                                                  </div>
-                                                                                </div>
-                                                                                
-                                                                                <div class="uk-width-medium-1-3">
-                                                                                  <div class="parsley-row Order-Date3"  style="display: none;">
+                  </div>
+                </div> 
+                
+                <div class="uk-width-medium-1-3">
+                  <div class="parsley-row Order-Date3"  style="display: none;">
+                   <label for="OrderDate3">Order date<span
+                    class="req">*</span></label><br>
+                    {{Form::text('OrderDate3',
+                    null,array('id'=>'OrderDate3', 'required'=>'','class' =>
+                    'uk-form-width-medium'))}}
+                  </div>
+                </div>
+                
+                <div class="uk-width-medium-1-3">
+                  <div class="parsley-row Order-Date3"  style="display: none;">
+                   
+                  </div>
+                </div>
+                
+              </div>
+              
+              
+              <div  id="paymentType3" style="width: 100%; display:none">
+                
+                <div  class="uk-grid" data-uk-grid-margin id="cardDetailsDiv3">
+                  <div class="uk-width-medium-1-1" >
+                    <h4>Card details</h4>
+                  </div>
+                  <div class="uk-width-medium-1-2">
+                    <div class="parsley-row">
+                      <select name="cardType3" id="cardType3"
+                      class="input-sm md-input"
+                      class="form-control input-sm md-input"
+                      style='padding: 0px; font-weight: bold; color: #727272;'>
+                      <option value="master">Master card</option>
+                      <option value="maestro">Maestro</option>
+                      <option value="visa">Visa</option>
+                      <option value="Rupay">Rupay</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="uk-width-medium-1-2">
+                  <div class="parsley-row">
+                    <label for="card4digits3" class="inline-label">Last 4 digits
+                      of your card<span class="req">*</span>
+                    </label> <input id="card4digits3" number name="card4digits3"
+                    maxlength="4" type="text"
+                    class="form-control input-sm md-input" />
+                  </div>
+                </div>
+                
+                <div class="uk-width-medium-1-2">
+                  <div class="parsley-row">
+                    <label for="cardBankName3" class="inline-label">Bank Name of your card<span class="req">*</span>
+                    </label> <input id="cardBankName3" number name="cardBankName3"
+                    type="text"
+                    class="form-control input-sm md-input" />
+                  </div>
+                </div>
+                
+                <div class="uk-width-medium-1-2">
+                  <div class="parsley-row">
+                    <label for="cardRecieptNumber3" class="inline-label">Reciept number<span class="req">*</span>
+                    </label> <input id="cardRecieptNumber3" number name="cardRecieptNumber3"
+                    maxlength="4" type="text" 
+                    class="form-control input-sm md-input" />
+                  </div>
+                </div>
+
+              </div>
+              
+              
+              <div id="chequeDetailsDiv3" class="uk-grid" data-uk-grid-margin>
+                
+                <div class="uk-width-medium-1-1">
+                  <h4>Cheque details</h4>
+                  <br clear="all"/>
+                </div>
+                
+                <br clear="all"/><br clear="all"/>
+                <div class="uk-width-medium-1-2">
+                  <div class="parsley-row">
+                    <label for="chequeBankName3" class="inline-label">Bank name<span
+                      class="req">*</span></label> <input id="chequeBankName3"
+                      name="bankName3" type="text"
+                      class="form-control input-sm md-input" />
+                    </div>
+                  </div>
+                  <div class="uk-width-medium-1-2">
+                    <div class="parsley-row">
+                      <label for="chequeNumber3" class="inline-label">Cheque number<span
+                        class="req">*</span></label> <input id="chequeNumber3"
+                        name="chequeNumber3" type="text"
+                        class="form-control input-sm md-input" />
+                      </div>
+                    </div>
+                    
+                  </div>
+                  
+                </div>
+                
+                
+                
+                <!--  for old customer 4th order box -->
+                
+                <div  id="Order-date4" class="uk-grid" data-uk-grid-margin>
+                  <div class="uk-width-medium-1-3" >
+                    <div class="parsley-row Order-Date4" style="display:none">
+                      <input type="radio" name="paymentTypeRadioOldCustomer4" required
+                      id="paymentOptionsOldCustomer4_1" value="card" /> <label
+                      for="paymentOptionsOldCustomer4_1" class="inline-label">Card</label> <input
+                      type="radio" name="paymentTypeRadioOldCustomer4" id="paymentOptionsOldCustomer4_2"
+                      value="cash" /> <label for="paymentOptionsOldCustomer4_2"
+                      class="inline-label">Cash</label> <input type="radio"
+                      name="paymentTypeRadioOldCustomer4" id="paymentOptionsOldCustomer4_3" value="cheque" />
+                      <label for="paymentOptionsOldCustomer4_3" class="inline-label">Cheque</label>
+
+                    </div>
+                  </div>
+                  <div class="uk-width-medium-1-3">
+                    <div class="parsley-row Order-Date4"  style="display: none;">
+                     <label for="OrderDate4">Order date<span
+                      class="req">*</span></label><br>
+                      {{Form::text('OrderDate4',
+                      null,array('id'=>'OrderDate4', 'required'=>'','class' =>
+                      'uk-form-width-medium'))}}
+                    </div>
+                  </div>
+                  
+                  <div class="uk-width-medium-1-3">
+                    <div class="parsley-row Order-Date4"  style="display: none;">
+                     
+                    </div>
+                  </div>
+                </div>
+                
+                
+                <div  id="paymentType4" style="width: 100%; display:none">
+                  <div  class="uk-grid" data-uk-grid-margin id="cardDetailsDiv4">
+                    <div class="uk-width-medium-1-1" >
+                      <h4>Card details</h4>
+                    </div>
+                    <div class="uk-width-medium-1-2">
+                      <div class="parsley-row">
+                        <select name="cardType4" id="cardType4"
+                        class="input-sm md-input"
+                        class="form-control input-sm md-input"
+                        style='padding: 0px; font-weight: bold; color: #727272;'>
+                        <option value="master">Master card</option>
+                        <option value="maestro">Maestro</option>
+                        <option value="visa">Visa</option>
+                        <option value="Rupay">Rupay</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="uk-width-medium-1-2">
+                    <div class="parsley-row">
+                      <label for="card4digits4" class="inline-label">Last 4 digits
+                        of your card<span class="req">*</span>
+                      </label> <input id="card4digits4" number name="card4digits4"
+                      maxlength="4" type="text"
+                      class="form-control input-sm md-input" />
+                    </div>
+                  </div>
+                  
+                  <div class="uk-width-medium-1-2">
+                    <div class="parsley-row">
+                      <label for="cardBankName4" class="inline-label">Bank Name of your card<span class="req">*</span>
+                      </label> <input id="cardBankName4" number name="cardBankName4"
+                      type="text"
+                      class="form-control input-sm md-input" />
+                    </div>
+                  </div>
+                  
+                  <div class="uk-width-medium-1-2">
+                    <div class="parsley-row">
+                      <label for="cardRecieptNumber4" class="inline-label">Reciept number<span class="req">*</span>
+                      </label> <input id="cardRecieptNumber4" number name="cardRecieptNumber4"
+                      maxlength="4" type="text" 
+                      class="form-control input-sm md-input" />
+                    </div>
+                  </div>
+
+                </div>
+                <div id="chequeDetailsDiv4" class="uk-grid" data-uk-grid-margin>
+
+                  <div class="uk-width-medium-1-1">
+                    <h4>Cheque details</h4>
+                    <br clear="all"/>
+                  </div>
+                  <br clear="all"/><br clear="all"/>
+                  <div class="uk-width-medium-1-2">
+                    <div class="parsley-row">
+                      <label for="chequeBankName4" class="inline-label">Bank name<span
+                        class="req">*</span></label> <input id="chequeBankName4"
+                        name="bankName4" type="text"
+                        class="form-control input-sm md-input" />
+                      </div>
+                    </div>
+                    <div class="uk-width-medium-1-2">
+                      <div class="parsley-row">
+                        <label for="chequeNumber4" class="inline-label">Cheque number<span
+                          class="req">*</span></label> <input id="chequeNumber4"
+                          name="chequeNumber4" type="text"
+                          class="form-control input-sm md-input" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
                                                                                    
-                                                                                  </div>
-                                                                                </div>
-                                                                                
-                                                                              </div>
-                                                                              
-                                                                              
-                                                                              <div  id="paymentType3" style="width: 100%; display:none">
-                                                                                
-                                                                                <div  class="uk-grid" data-uk-grid-margin id="cardDetailsDiv3">
-                                                                                  <div class="uk-width-medium-1-1" >
-                                                                                    <h4>Card details</h4>
-                                                                                  </div>
-                                                                                  <div class="uk-width-medium-1-2">
-                                                                                    <div class="parsley-row">
-                                                                                      <select name="cardType3" id="cardType3"
-                                                                                      class="input-sm md-input"
-                                                                                      class="form-control input-sm md-input"
-                                                                                      style='padding: 0px; font-weight: bold; color: #727272;'>
-                                                                                      <option value="master">Master card</option>
-                                                                                      <option value="maestro">Maestro</option>
-                                                                                      <option value="visa">Visa</option>
-                                                                                      <option value="Rupay">Rupay</option>
-                                                                                    </select>
-                                                                                  </div>
-                                                                                </div>
-                                                                                <div class="uk-width-medium-1-2">
-                                                                                  <div class="parsley-row">
-                                                                                    <label for="card4digits3" class="inline-label">Last 4 digits
-                                                                                      of your card<span class="req">*</span>
-                                                                                    </label> <input id="card4digits3" number name="card4digits3"
-                                                                                    maxlength="4" type="text"
-                                                                                    class="form-control input-sm md-input" />
-                                                                                  </div>
-                                                                                </div>
-                                                                                
-                                                                                <div class="uk-width-medium-1-2">
-                                                                                  <div class="parsley-row">
-                                                                                    <label for="cardBankName3" class="inline-label">Bank Name of your card<span class="req">*</span>
-                                                                                    </label> <input id="cardBankName3" number name="cardBankName3"
-                                                                                    type="text"
-                                                                                    class="form-control input-sm md-input" />
-                                                                                  </div>
-                                                                                </div>
-                                                                                
-                                                                                <div class="uk-width-medium-1-2">
-                                                                                  <div class="parsley-row">
-                                                                                    <label for="cardRecieptNumber3" class="inline-label">Reciept number<span class="req">*</span>
-                                                                                    </label> <input id="cardRecieptNumber3" number name="cardRecieptNumber3"
-                                                                                    maxlength="4" type="text" 
-                                                                                    class="form-control input-sm md-input" />
-                                                                                  </div>
-                                                                                </div>
+              <!-- for invoice -->
+              <div id="emailEnrollPrintDiv" class="uk-grid" data-uk-grid-margin>
+                <div class="uk-width-medium-1-1">
+                  <h4>Invoice option</h4>
+                </div>
+                <div class="uk-width-medium-1-2">
+                  <div class="parsley-row">
+                    <input id="invoicePrintOption" name="invoicePrintOption"  value="yes"  type="checkbox"       class="checkbox-custom" />
+                    <label for="invoicePrintOption"  class="checkbox-custom-label">Print Invoice<span
+                           class="req">*</span></label>
+                  </div>
+                  </div>
+                  <div class="uk-width-medium-1-2">
+                    <div class="parsley-row">
+                      <input id="emailOption" name="emailOption" type="checkbox"  value="yes" class="        checkbox-custom"  />
+                      <label for="emailOption" class="checkbox-custom-label">Email Invoice<span
+                             class="req">*</span></label> 
+                    </div>
+                  </div>
+              </div>
+                </div>
+              </div>
+              
+            </div>
+            <div class="modal-footer">
+              <!-- <button type="button" class="btn btn-default" id="getSchedulesSessions" >Fetch Number of sessions</button> -->
+              <button type="submit" class="btn btn-default" id="enrollNow">Enroll now</button>
+              <button type="button" class="btn btn-default"
+              id="closeEnrollmentModal" data-dismiss="modal">Close</button>
+            </div>
 
-                                                                              </div>
-                                                                              
-                                                                              
-                                                                              <div id="chequeDetailsDiv3" class="uk-grid" data-uk-grid-margin>
-                                                                                
-                                                                                <div class="uk-width-medium-1-1">
-                                                                                  <h4>Cheque details</h4>
-                                                                                  <br clear="all"/>
-                                                                                </div>
-                                                                                
-                                                                                <br clear="all"/><br clear="all"/>
-                                                                                <div class="uk-width-medium-1-2">
-                                                                                  <div class="parsley-row">
-                                                                                    <label for="chequeBankName3" class="inline-label">Bank name<span
-                                                                                      class="req">*</span></label> <input id="chequeBankName3"
-                                                                                      name="bankName3" type="text"
-                                                                                      class="form-control input-sm md-input" />
-                                                                                    </div>
-                                                                                  </div>
-                                                                                  <div class="uk-width-medium-1-2">
-                                                                                    <div class="parsley-row">
-                                                                                      <label for="chequeNumber3" class="inline-label">Cheque number<span
-                                                                                        class="req">*</span></label> <input id="chequeNumber3"
-                                                                                        name="chequeNumber3" type="text"
-                                                                                        class="form-control input-sm md-input" />
-                                                                                      </div>
-                                                                                    </div>
-                                                                                    
-                                                                                  </div>
-                                                                                  
-                                                                                </div>
-                                                                                
-                                                                                
-                                                                                
-                                                                                <!--  for old customer 4th order box -->
-                                                                                
-                                                                                <div  id="Order-date4" class="uk-grid" data-uk-grid-margin>
-                                                                                  <div class="uk-width-medium-1-3" >
-                                                                                    <div class="parsley-row Order-Date4" style="display:none">
-                                                                                      <input type="radio" name="paymentTypeRadioOldCustomer4" required
-                                                                                      id="paymentOptionsOldCustomer4_1" value="card" /> <label
-                                                                                      for="paymentOptionsOldCustomer4_1" class="inline-label">Card</label> <input
-                                                                                      type="radio" name="paymentTypeRadioOldCustomer4" id="paymentOptionsOldCustomer4_2"
-                                                                                      value="cash" /> <label for="paymentOptionsOldCustomer4_2"
-                                                                                      class="inline-label">Cash</label> <input type="radio"
-                                                                                      name="paymentTypeRadioOldCustomer4" id="paymentOptionsOldCustomer4_3" value="cheque" />
-                                                                                      <label for="paymentOptionsOldCustomer4_3" class="inline-label">Cheque</label>
+          </form>
+        </div>
 
-                                                                                    </div>
-                                                                                  </div>
-                                                                                  <div class="uk-width-medium-1-3">
-                                                                                    <div class="parsley-row Order-Date4"  style="display: none;">
-                                                                                     <label for="OrderDate4">Order date<span
-                                                                                      class="req">*</span></label><br>
-                                                                                      {{Form::text('OrderDate4',
-                                                                                      null,array('id'=>'OrderDate4', 'required'=>'','class' =>
-                                                                                      'uk-form-width-medium'))}}
-                                                                                    </div>
-                                                                                  </div>
-                                                                                  
-                                                                                  <div class="uk-width-medium-1-3">
-                                                                                    <div class="parsley-row Order-Date4"  style="display: none;">
-                                                                                     
-                                                                                    </div>
-                                                                                  </div>
-                                                                                </div>
-                                                                                
-                                                                                
-                                                                                <div  id="paymentType4" style="width: 100%; display:none">
-                                                                                  <div  class="uk-grid" data-uk-grid-margin id="cardDetailsDiv4">
-                                                                                    <div class="uk-width-medium-1-1" >
-                                                                                      <h4>Card details</h4>
-                                                                                    </div>
-                                                                                    <div class="uk-width-medium-1-2">
-                                                                                      <div class="parsley-row">
-                                                                                        <select name="cardType4" id="cardType4"
-                                                                                        class="input-sm md-input"
-                                                                                        class="form-control input-sm md-input"
-                                                                                        style='padding: 0px; font-weight: bold; color: #727272;'>
-                                                                                        <option value="master">Master card</option>
-                                                                                        <option value="maestro">Maestro</option>
-                                                                                        <option value="visa">Visa</option>
-                                                                                        <option value="Rupay">Rupay</option>
-                                                                                      </select>
-                                                                                    </div>
-                                                                                  </div>
-                                                                                  <div class="uk-width-medium-1-2">
-                                                                                    <div class="parsley-row">
-                                                                                      <label for="card4digits4" class="inline-label">Last 4 digits
-                                                                                        of your card<span class="req">*</span>
-                                                                                      </label> <input id="card4digits4" number name="card4digits4"
-                                                                                      maxlength="4" type="text"
-                                                                                      class="form-control input-sm md-input" />
-                                                                                    </div>
-                                                                                  </div>
-                                                                                  
-                                                                                  <div class="uk-width-medium-1-2">
-                                                                                    <div class="parsley-row">
-                                                                                      <label for="cardBankName4" class="inline-label">Bank Name of your card<span class="req">*</span>
-                                                                                      </label> <input id="cardBankName4" number name="cardBankName4"
-                                                                                      type="text"
-                                                                                      class="form-control input-sm md-input" />
-                                                                                    </div>
-                                                                                  </div>
-                                                                                  
-                                                                                  <div class="uk-width-medium-1-2">
-                                                                                    <div class="parsley-row">
-                                                                                      <label for="cardRecieptNumber4" class="inline-label">Reciept number<span class="req">*</span>
-                                                                                      </label> <input id="cardRecieptNumber4" number name="cardRecieptNumber4"
-                                                                                      maxlength="4" type="text" 
-                                                                                      class="form-control input-sm md-input" />
-                                                                                    </div>
-                                                                                  </div>
+      </div>
+    </div>
 
-                                                                                </div>
-                                                                                <div id="chequeDetailsDiv4" class="uk-grid" data-uk-grid-margin>
 
-                                                                                  <div class="uk-width-medium-1-1">
-                                                                                    <h4>Cheque details</h4>
-                                                                                    <br clear="all"/>
-                                                                                  </div>
-                                                                                  <br clear="all"/><br clear="all"/>
-                                                                                  <div class="uk-width-medium-1-2">
-                                                                                    <div class="parsley-row">
-                                                                                      <label for="chequeBankName4" class="inline-label">Bank name<span
-                                                                                        class="req">*</span></label> <input id="chequeBankName4"
-                                                                                        name="bankName4" type="text"
-                                                                                        class="form-control input-sm md-input" />
-                                                                                      </div>
-                                                                                    </div>
-                                                                                    <div class="uk-width-medium-1-2">
-                                                                                      <div class="parsley-row">
-                                                                                        <label for="chequeNumber4" class="inline-label">Cheque number<span
-                                                                                          class="req">*</span></label> <input id="chequeNumber4"
-                                                                                          name="chequeNumber4" type="text"
-                                                                                          class="form-control input-sm md-input" />
-                                                                                        </div>
-                                                                                      </div>
-                                                                                    </div>
-                                                                                  </div>
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  <!-- for invoice -->
-                                                                                  <div id="emailEnrollPrintDiv" class="uk-grid" data-uk-grid-margin>
 
-                                                                                    <div class="uk-width-medium-1-1">
-                                                                                      <h4>Invoice option</h4>
-                                                                                    </div>
-                                                                                    <div class="uk-width-medium-1-2">
-                                                                                      <div class="parsley-row">
-                                                                                        
-                                                                                        <input id="invoicePrintOption" name="invoicePrintOption"  value="yes"  type="checkbox"  class="checkbox-custom" />
-                                                                                        <label for="invoicePrintOption"  class="checkbox-custom-label">Print Invoice<span
-                                                                                          class="req">*</span></label> 
-                                                                                        </div>
-                                                                                      </div>
-                                                                                      <div class="uk-width-medium-1-2">
-                                                                                        <div class="parsley-row">
-                                                                                          <input id="emailOption" name="emailOption" type="checkbox"  value="yes" class="checkbox-custom"  />
-                                                                                          <label for="emailOption" class="checkbox-custom-label">Email Invoice<span
-                                                                                            class="req">*</span></label> 
-                                                                                          </div>
-                                                                                        </div>
-                                                                                      </div>
 
-                                                                                    </div>
 
-                                                                                    
+              <!-- Error Div  -->
+              <div id="errorModal" class="modal fade" role="dialog"
+              style="margin-top: 50px; z-index: 99999;">
+              <div class="modal-dialog modal-lg">
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">
+                      Something wrong!!!
+                    </h4>
+                  </div>
+                  <div class="modal-body">
+                    <div id="messageErrorDiv"></div>
+                    
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                  
+                </div>
+
+              </div>
+            </div>
+            <!-- Error Div -->
+
+
+                    <!-- Edit Introvisit Modal Div  -->
+                    <div id="editIntrovisitModal" class="modal fade" role="dialog"
+                    style="margin-top: 50px; z-index: 99999;">
+                    <div class="modal-dialog modal-lg">
+                      <!-- Modal content-->
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          <h4 id="editIntrovisitModalTitle" class="modal-title">
+                            Edit Introvisit
+                          </h4>
+                        </div>
+                        <div class="modal-body">
+                          
+                          <div id="introVisitEditMessage"></div> <br clear="all" /> <br
+                          clear="all" />
+                          
+                          <div id="ivEditForm">
+                            <div class="uk-width-medium-1-2" id="introvisitEditDiv">
+                              <div class="parsley-row">
+                                <label for="iveditSelect" class="inline-label">Status<span
+                                  class="req">*</span></label>
+                                  <select name="iveditSelect" id="iveditSelect" class="input-sm md-input" data-iveditid=""  class="form-control input-sm md-input" style='padding: 0px; font-weight: bold; color: #727272;'>
+                                    <option value="ACTIVE">Active</option>
+                                    <option value="ATTENDED">Attended</option>
+                                    <option value="NO_SHOW">No show</option>
+                                    <option value="IN_ACTIVE">In active</option>
+                                    <option value="RE_SCHEDULE">Re Schedule</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <br clear="all" /> <br clear="all" />
+                              <div class="uk-grid" data-uk-grid-margin>
+                               <div class="uk-width-medium-1-3">
+                                <div class="parsley-row" id="reschedule" style="margin-top: -20px;display: none;">
+                                  <label for="reschedule-date">Reschedule-date<span
+                                    class="req">*</span></label> <br>
+                                    {{Form::text('reschedule-date',
+                                    null,array('id'=>'reschedule-date', 'required'=>'', 'class' =>
+                                    ''))}}
+                                  </div>
+                                </div>
+                                <div class="uk-width-medium-1-3"></div>
+                                <div class="uk-width-medium-1-3"></div>
+                              </div>
+                              <div class="uk-grid" data-uk-grid-margin>
+                                <div class="uk-width-medium-1-1">
+                                  <div class="parsley-row">
+                                    <label for="healthIssue">Comments<span class="req">*</span></label>
+                                    {{ Form::textarea('ivcustomerCommentTxtarea', null, ['id'=>'ivcustomerCommentTxtarea',
+                                    'size' => '60x3', 'class' => 'form-control input-sm md-input'])
+                                  }}
+                                </div>
+                              </div>
+                            </div>
+                          </div>  
+                          
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-primary" id="saveIntroVisitBtn">Save</button>
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                        
+                      </div>
+
+                    </div>
+                  </div>
+                  <!-- Edit Introvisit Modal Div -->
 
 
 
@@ -5126,446 +5224,317 @@ style="margin-top: 50px; z-index: 99999;">
 
 
 
+                  <!-- Add Kids  -->
+                  <div id="addKidsModal" class="modal fade" role="dialog"
+                  style="margin-top: 50px; z-index: 99999;">
+                  <div class="modal-dialog modal-lg">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">
+                          Edit Kids<span id="kidNameInPopup"></span>
+                        </h4>
+                      </div>
+                      <div class="modal-body">
+                        <div id="messageStudentAddDiv"></div>
+                        <div id="formBody">
+                          <form id="kidsAddForm" method="post>
+                            <br  clear="all" />
+                            <div class="uk-grid" data-uk-grid-margin>
+                              <div class="uk-width-medium-1-3">
+                                <div class="parsley-row">
+                                  <label for="customerName">Kid Name<span class="req">*</span></label>
+                                  {{Form::text('studentName', null,array('id'=>'studentName',
+                                  'required', 'class' => 'form-control input-sm md-input'))}}
+                                </div>
+                              </div>
+                              <div class="uk-width-medium-1-3">
+                                <div class="parsley-row">
+                                  <label for="nickname">Nickname</label>
+                                  {{Form::text('nickname', null,array('id'=>'nickname',
+                                  'class' => 'form-control input-sm md-input'))}}
+                                </div>
+                              </div>
+                              <div class="uk-width-medium-1-3">
+                                <div class="parsley-row">
+                                  <label for="studentDob">Date of birth</label>
+                                  {{Form::text('studentDob',
+                                  null,array('id'=>'studentDob', 'class' => '','required'))}}
+                                </div>
+                              </div>
+                            </div>
+                            <br clear="all" />
+                            <br clear="all" />
+                            <div class="uk-grid" data-uk-grid-margin>
+                              <div class="uk-width-medium-1-3">
+                                <div class="parsley-row">
+                                  <label for="studentGender">Gender</label>
+                                  <select id="studentGender" name="studentGender"
+                                  class="form-control input-sm md-input"
+                                  style="padding: 0px; font-weight: bold; color: #727272;">
+                                  <option value=""></option>
+                                  <option value="male">Male</option>
+                                  <option value="female">Female</option>
+                                </select>
 
+                              </div>
+                            </div>
+                            <div class="uk-width-medium-1-3">
+                              <div class="parsley-row">
+                                <label for="school">School</label>
+                                {{Form::text('school', null,array('id'=>'school',
+                                'class' => 'form-control input-sm md-input'))}}
+                              </div>
+                            </div>
+                            <div class="uk-width-medium-1-3">
+                              <div class="parsley-row">
+                                <label for="location">Location</label>
+                                {{Form::text('location', null,array('id'=>'location',
+                                'class' => 'form-control input-sm md-input'))}}
+                              </div>
+                            </div>
+                          </div>
+                          <br clear="all" />
+                          <br clear="all" />
+                          <div class="uk-grid" data-uk-grid-margin>
+                            <div class="uk-width-medium-1-3">
+                              <div class="parsley-row">
+                                <label for="hobbies">Hobbies</label>
+                                {{Form::text('hobbies', null,array('id'=>'hobbies', 
+                                'class' => 'form-control input-sm md-input'))}}
+                              </div>
+                            </div>
+                            <div class="uk-width-medium-1-3">
+                              <div class="parsley-row">
+                                <label for="emergencyContact">Emergency contact</label>
+                                {{Form::text('emergencyContact',
+                                null,array('id'=>'emergencyContact',  'class' =>
+                                'form-control input-sm md-input'))}}
+                              </div>
+                            </div>
+                            <div class="uk-width-medium-1-3">
+                              <div class="parsley-row">
+                                <label for="remarks">Remarks</label>
+                                {{Form::text('remarks', null,array('id'=>'remarks', 
+                                'class' => 'form-control input-sm md-input'))}}
+                              </div>
+                            </div>
+                          </div>
+                          <div class="uk-grid" data-uk-grid-margin>
+                            <div class="uk-width-medium-1-1">
+                              <div class="parsley-row">
+                                <label for="healthIssue">Health Issues</label>
+                                {{ Form::textarea('healthIssue', null, ['id'=>'healthIssue',
+                                'size' => '10x3', 'class' => 'form-control input-sm md-input'])
+                              }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="submit" id="saveKidsBtn" class="md-btn md-btn-primary">Save</button>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                  </form>
+                </div>
 
+              </div>
+            </div>
+            <!-- Add Kids -->
 
-                                                                                  </div>
+            <!-- pendingamount -->
+            <div id="pendingamount" class="modal fade" role="dialog" style="margin-top: 50px; z-index: 99999;">
+              <div class="modal-dialog modal-lg">
+                
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    
+                    <h4 class="modal-title">PendingAmountPaid</h4>
+                  </div>
+                  <div class="modal-body" id="pendingamountbody">
+                    
+                  </div>
+                  <div class="modal-footer" id="pendingamountfooter">
+                    <button type="button" id="pendingamountclose" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
 
-
-
-                                                                                  
-                                                                                </div>
-                                                                                <div class="modal-footer">
-                                                                                  <!-- <button type="button" class="btn btn-default" id="getSchedulesSessions" >Fetch Number of sessions</button> -->
-                                                                                  <button type="submit" class="btn btn-default" id="enrollNow">Enroll
-                                                                                  now</button>
-                                                                                  <button type="button" class="btn btn-default"
-                                                                                  id="closeEnrollmentModal" data-dismiss="modal">Close</button>
-                                                                                </div>
-
-                                                                              </form>
-                                                                            </div>
-
-                                                                          </div>
-                                                                        </div>
-
-
-
-
-
-                                                                        <!-- Error Div  -->
-                                                                        <div id="errorModal" class="modal fade" role="dialog"
-                                                                        style="margin-top: 50px; z-index: 99999;">
-                                                                        <div class="modal-dialog modal-lg">
-                                                                          <!-- Modal content-->
-                                                                          <div class="modal-content">
-                                                                            <div class="modal-header">
-                                                                              <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                              <h4 class="modal-title">
-                                                                                Something wrong!!!
-                                                                              </h4>
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                              <div id="messageErrorDiv"></div>
-                                                                              
-                                                                            </div>
-                                                                            <div class="modal-footer">
-                                                                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                                            </div>
-                                                                            
-                                                                          </div>
-
-                                                                        </div>
-                                                                      </div>
-                                                                      <!-- Error Div -->
-
-
-                                                                      <!-- Edit Introvisit Modal Div  -->
-                                                                      <div id="editIntrovisitModal" class="modal fade" role="dialog"
-                                                                      style="margin-top: 50px; z-index: 99999;">
-                                                                      <div class="modal-dialog modal-lg">
-                                                                        <!-- Modal content-->
-                                                                        <div class="modal-content">
-                                                                          <div class="modal-header">
-                                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                            <h4 id="editIntrovisitModalTitle" class="modal-title">
-                                                                              Edit Introvisit
-                                                                            </h4>
-                                                                          </div>
-                                                                          <div class="modal-body">
-                                                                            
-                                                                            <div id="introVisitEditMessage"></div> <br clear="all" /> <br
-                                                                            clear="all" />
-                                                                            
-                                                                            <div id="ivEditForm">
-                                                                              <div class="uk-width-medium-1-2" id="introvisitEditDiv">
-                                                                                <div class="parsley-row">
-                                                                                  <label for="iveditSelect" class="inline-label">Status<span
-                                                                                    class="req">*</span></label>
-                                                                                    <select name="iveditSelect" id="iveditSelect" class="input-sm md-input" data-iveditid=""  class="form-control input-sm md-input" style='padding: 0px; font-weight: bold; color: #727272;'>
-                                                                                      <option value="ACTIVE">Active</option>
-                                                                                      <option value="ATTENDED">Attended</option>
-                                                                                      <option value="NO_SHOW">No show</option>
-                                                                                      <option value="IN_ACTIVE">In active</option>
-                                                                                      <option value="RE_SCHEDULE">Re Schedule</option>
-                                                                                    </select>
-                                                                                  </div>
-                                                                                </div>
-                                                                                <br clear="all" /> <br clear="all" />
-                                                                                <div class="uk-grid" data-uk-grid-margin>
-                                                                                 <div class="uk-width-medium-1-3">
-                                                                                  <div class="parsley-row" id="reschedule" style="margin-top: -20px;display: none;">
-                                                                                    <label for="reschedule-date">Reschedule-date<span
-                                                                                      class="req">*</span></label> <br>
-                                                                                      {{Form::text('reschedule-date',
-                                                                                      null,array('id'=>'reschedule-date', 'required'=>'', 'class' =>
-                                                                                      ''))}}
-                                                                                    </div>
-                                                                                  </div>
-                                                                                  <div class="uk-width-medium-1-3"></div>
-                                                                                  <div class="uk-width-medium-1-3"></div>
-                                                                                </div>
-                                                                                <div class="uk-grid" data-uk-grid-margin>
-                                                                                  <div class="uk-width-medium-1-1">
-                                                                                    <div class="parsley-row">
-                                                                                      <label for="healthIssue">Comments<span class="req">*</span></label>
-                                                                                      {{ Form::textarea('ivcustomerCommentTxtarea', null, ['id'=>'ivcustomerCommentTxtarea',
-                                                                                      'size' => '60x3', 'class' => 'form-control input-sm md-input'])
-                                                                                    }}
-                                                                                  </div>
-                                                                                </div>
-                                                                              </div>
-                                                                            </div>  
-                                                                            
-                                                                          </div>
-                                                                          <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-primary" id="saveIntroVisitBtn">Save</button>
-                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                                          </div>
-                                                                          
-                                                                        </div>
-
-                                                                      </div>
-                                                                    </div>
-                                                                    <!-- Edit Introvisit Modal Div -->
-
-
-
-
-
-
-
-                                                                    <!-- Add Kids  -->
-                                                                    <div id="addKidsModal" class="modal fade" role="dialog"
-                                                                    style="margin-top: 50px; z-index: 99999;">
-                                                                    <div class="modal-dialog modal-lg">
-                                                                      <!-- Modal content-->
-                                                                      <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                          <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                          <h4 class="modal-title">
-                                                                            Edit Kids<span id="kidNameInPopup"></span>
-                                                                          </h4>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                          <div id="messageStudentAddDiv"></div>
-                                                                          <div id="formBody">
-                                                                            <form id="kidsAddForm" method="post>
-                                                                              <br  clear="all" />
-                                                                              <div class="uk-grid" data-uk-grid-margin>
-                                                                                <div class="uk-width-medium-1-3">
-                                                                                  <div class="parsley-row">
-                                                                                    <label for="customerName">Kid Name<span class="req">*</span></label>
-                                                                                    {{Form::text('studentName', null,array('id'=>'studentName',
-                                                                                    'required', 'class' => 'form-control input-sm md-input'))}}
-                                                                                  </div>
-                                                                                </div>
-                                                                                <div class="uk-width-medium-1-3">
-                                                                                  <div class="parsley-row">
-                                                                                    <label for="nickname">Nickname</label>
-                                                                                    {{Form::text('nickname', null,array('id'=>'nickname',
-                                                                                    'class' => 'form-control input-sm md-input'))}}
-                                                                                  </div>
-                                                                                </div>
-                                                                                <div class="uk-width-medium-1-3">
-                                                                                  <div class="parsley-row">
-                                                                                    <label for="studentDob">Date of birth</label>
-                                                                                    {{Form::text('studentDob',
-                                                                                    null,array('id'=>'studentDob', 'class' => '','required'))}}
-                                                                                  </div>
-                                                                                </div>
-                                                                              </div>
-                                                                              <br clear="all" />
-                                                                              <br clear="all" />
-                                                                              <div class="uk-grid" data-uk-grid-margin>
-                                                                                <div class="uk-width-medium-1-3">
-                                                                                  <div class="parsley-row">
-                                                                                    <label for="studentGender">Gender</label>
-                                                                                    <select id="studentGender" name="studentGender"
-                                                                                    class="form-control input-sm md-input"
-                                                                                    style="padding: 0px; font-weight: bold; color: #727272;">
-                                                                                    <option value=""></option>
-                                                                                    <option value="male">Male</option>
-                                                                                    <option value="female">Female</option>
-                                                                                  </select>
-
-                                                                                </div>
-                                                                              </div>
-                                                                              <div class="uk-width-medium-1-3">
-                                                                                <div class="parsley-row">
-                                                                                  <label for="school">School</label>
-                                                                                  {{Form::text('school', null,array('id'=>'school',
-                                                                                  'class' => 'form-control input-sm md-input'))}}
-                                                                                </div>
-                                                                              </div>
-                                                                              <div class="uk-width-medium-1-3">
-                                                                                <div class="parsley-row">
-                                                                                  <label for="location">Location</label>
-                                                                                  {{Form::text('location', null,array('id'=>'location',
-                                                                                  'class' => 'form-control input-sm md-input'))}}
-                                                                                </div>
-                                                                              </div>
-                                                                            </div>
-                                                                            <br clear="all" />
-                                                                            <br clear="all" />
-                                                                            <div class="uk-grid" data-uk-grid-margin>
-                                                                              <div class="uk-width-medium-1-3">
-                                                                                <div class="parsley-row">
-                                                                                  <label for="hobbies">Hobbies</label>
-                                                                                  {{Form::text('hobbies', null,array('id'=>'hobbies', 
-                                                                                  'class' => 'form-control input-sm md-input'))}}
-                                                                                </div>
-                                                                              </div>
-                                                                              <div class="uk-width-medium-1-3">
-                                                                                <div class="parsley-row">
-                                                                                  <label for="emergencyContact">Emergency contact</label>
-                                                                                  {{Form::text('emergencyContact',
-                                                                                  null,array('id'=>'emergencyContact',  'class' =>
-                                                                                  'form-control input-sm md-input'))}}
-                                                                                </div>
-                                                                              </div>
-                                                                              <div class="uk-width-medium-1-3">
-                                                                                <div class="parsley-row">
-                                                                                  <label for="remarks">Remarks</label>
-                                                                                  {{Form::text('remarks', null,array('id'=>'remarks', 
-                                                                                  'class' => 'form-control input-sm md-input'))}}
-                                                                                </div>
-                                                                              </div>
-                                                                            </div>
-                                                                            <div class="uk-grid" data-uk-grid-margin>
-                                                                              <div class="uk-width-medium-1-1">
-                                                                                <div class="parsley-row">
-                                                                                  <label for="healthIssue">Health Issues</label>
-                                                                                  {{ Form::textarea('healthIssue', null, ['id'=>'healthIssue',
-                                                                                  'size' => '10x3', 'class' => 'form-control input-sm md-input'])
-                                                                                }}
-                                                                              </div>
-                                                                            </div>
-                                                                          </div>
-                                                                        </div>
-                                                                      </div>
-                                                                      <div class="modal-footer">
-                                                                        <button type="submit" id="saveKidsBtn" class="md-btn md-btn-primary">Save</button>
-                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                                      </div>
-                                                                    </form>
-                                                                  </div>
-
-                                                                </div>
-                                                              </div>
-                                                              <!-- Add Kids -->
-
-                                                              <!-- pendingamount -->
-                                                              <div id="pendingamount" class="modal fade" role="dialog" style="margin-top: 50px; z-index: 99999;">
-                                                                <div class="modal-dialog modal-lg">
-                                                                  
-                                                                  <!-- Modal content-->
-                                                                  <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                      
-                                                                      <h4 class="modal-title">PendingAmountPaid</h4>
-                                                                    </div>
-                                                                    <div class="modal-body" id="pendingamountbody">
-                                                                      
-                                                                    </div>
-                                                                    <div class="modal-footer" id="pendingamountfooter">
-                                                                      <button type="button" id="pendingamountclose" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                                    </div>
-                                                                  </div>
-                                                                  
-                                                                </div>
-                                                              </div>
-
-                                                              <!-- history iv Modal -->
-                                                              <div id='ivhistory' class="modal fade" role="dialog" style="margin-top: 50px; z-index: 99999;"> 
-                                                                <div class="modal-dialog modal-lg">
-                                                                  
-                                                                  <!-- Modal content-->
-                                                                  <div class="modal-content">
-                                                                    <div class="modal-header" id="ivhistoryheader">
-                                                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                      <h4 class="modal-title">Introvisit History</h4>
-                                                                    </div>
-                                                                    <div class="modal-body" id="ivhistorybody">
-                                                                      <p></p>
-                                                                    </div>
-                                                                    <div class="modal-footer" id="ivhistoryfooter">
-                                                                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                                                    </div>
-                                                                  </div>
-                                                                  
-                                                                </div>
-                                                              </div>
+            <!-- history iv Modal -->
+            <div id='ivhistory' class="modal fade" role="dialog" style="margin-top: 50px; z-index: 99999;"> 
+              <div class="modal-dialog modal-lg">
+                
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header" id="ivhistoryheader">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Introvisit History</h4>
+                  </div>
+                  <div class="modal-body" id="ivhistorybody">
+                    <p></p>
+                  </div>
+                  <div class="modal-footer" id="ivhistoryfooter">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
 
                                                               
                                                               
-                                                              <!-- Receive due Modal -->
-                                                              <div id='receivedue' class="modal fade" role="dialog" style="margin-top: 50px; z-index: 99999;"> 
-                                                                <div class="modal-dialog modal-lg">
-                                                                  
-                                                                  <!-- Modal content-->
-                                                                  <div class="modal-content">
-                                                                    <div class="modal-header" id="receivedueheader">
-                                                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                      <h4 class="modal-title">Receive Due</h4>
-                                                                    </div>
-                                                                    <div class="modal-body" id="receiveduebody">
-                                                                      <div  class="uk-grid" data-uk-grid-margin>
-                                                                        <div class="uk-width-medium-1-1" id="receiveDueMsg"></div>
-                                                                      </div>
-                                                                      <div  class="uk-grid" data-uk-grid-margin>
-                                                                        <div class="uk-width-medium-1-1" >
-                                                                         <h4>Select Payment Type</h4>
-                                                                       </div>
-                                                                     </div>
-                                                                     <div id="receivepaymentType" class="uk-grid" data-uk-grid-margin>
-                                                                      <div class="uk-width-medium-1-3">
-                                                                        <div class="parsley-row">
-                                                                          <input type="radio" name="paymentReceiveTypeRadio" required
-                                                                          id="paymentOptionsReceive_1" value="card" /> <label
-                                                                          for="paymentOptionsReceive_1" class="inline-label">Card</label> 
-                                                                          <input type="radio" name="paymentReceiveTypeRadio" id="paymentOptionsReceive_2"
-                                                                          value="cash" /> <label for="paymentOptionsReceive_2"
-                                                                          class="inline-label">Cash</label>
-                                                                          <input type="radio" name="paymentReceiveTypeRadio" id="paymentOptionsReceive_3" value="cheque" />
-                                                                          <label for="paymentOptionsReceive_3" class="inline-label">Cheque</label>
+            <!-- Receive due Modal -->
+            <div id='receivedue' class="modal fade" role="dialog" style="margin-top: 50px; z-index: 99999;"> 
+              <div class="modal-dialog modal-lg">
+                
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header" id="receivedueheader">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Receive Due</h4>
+                  </div>
+                  <div class="modal-body" id="receiveduebody">
+                    <div  class="uk-grid" data-uk-grid-margin>
+                      <div class="uk-width-medium-1-1" id="receiveDueMsg"></div>
+                    </div>
+                    <div  class="uk-grid" data-uk-grid-margin>
+                      <div class="uk-width-medium-1-1" >
+                       <h4>Select Payment Type</h4>
+                     </div>
+                   </div>
+                   <div id="receivepaymentType" class="uk-grid" data-uk-grid-margin>
+                    <div class="uk-width-medium-1-3">
+                      <div class="parsley-row">
+                        <input type="radio" name="paymentReceiveTypeRadio" required
+                        id="paymentOptionsReceive_1" value="card" /> <label
+                        for="paymentOptionsReceive_1" class="inline-label">Card</label> 
+                        <input type="radio" name="paymentReceiveTypeRadio" id="paymentOptionsReceive_2"
+                        value="cash" /> <label for="paymentOptionsReceive_2"
+                        class="inline-label">Cash</label>
+                        <input type="radio" name="paymentReceiveTypeRadio" id="paymentOptionsReceive_3" value="cheque" />
+                        <label for="paymentOptionsReceive_3" class="inline-label">Cheque</label>
 
-                                                                          
-                                                                        </div>
-                                                                      </div>
-                                                                      <div class="uk-width-medium-1-3">
-                                                                        <input type="hidden" id="pending_id" value=""/>
-                                                                        <input type="hidden" id="pending_amt" value=""/>
-                                                                        <input type="hidden" id="pending_discount" value=""/>
-                                                                      </div>
-                                                                    </div>
-                                                                    <div id="paymentReceiveType" style="width: 100%">
-                                                                      <div id="receiveCardDetailsDiv" class="uk-grid" data-uk-grid-margin>
-                                                                        <div class="uk-width-medium-1-1">
-                                                                          <h4>Card details</h4>
-                                                                        </div>
-                                                                        <div class="uk-width-medium-1-2">
-                                                                          <div class="parsley-row">
-                                                                            <select name="receivecardType" id="receivecardType"
-                                                                            class="input-sm md-input"
-                                                                            class="form-control input-sm md-input"
-                                                                            style='padding: 0px; font-weight: bold; color: #727272;'>
-                                                                            <option value="master">Master card</option>
-                                                                            <option value="maestro">Maestro</option>
-                                                                            <option value="visa">Visa</option>
-                                                                            <option value="Rupay">Rupay</option>
-                                                                          </select>
-                                                                        </div>
-                                                                      </div>
-                                                                      <div class="uk-width-medium-1-2">
-                                                                        <div class="parsley-row">
-                                                                          <label for="card4digits" class="inline-label">Last 4 digits
-                                                                           of your card<span class="req">*</span>
-                                                                         </label> 
-                                                                         <input id="receivecard4digits" number name="receivecard4digits"
-                                                                         maxlength="4" type="text" class="form-control input-sm md-input" />
-                                                                       </div>
-                                                                     </div>
-                                                                     <br clear="all"/><br clear="all"/>            
-                                                                     <div class="uk-width-medium-1-2">
-                                                                      <div class="parsley-row">
-                                                                        <label for="receivecardBankName" class="inline-label">Bank Name of your card<span class="req">*</span>
-                                                                        </label> 
-                                                                        <input id="receivecardBankName" number name="receivecardBankName"  type="text"
-                                                                        class="form-control input-sm md-input" />
-                                                                      </div>
-                                                                    </div>
-                                                                    
-                                                                    <div class="uk-width-medium-1-2">
-                                                                      <div class="parsley-row">
-                                                                        <label for="receivecardRecieptNumber" class="inline-label">Reciept number<span class="req">*</span>
-                                                                        </label> 
-                                                                        <input id="receivecardRecieptNumber" number name="receivecardRecieptNumber"
-                                                                        type="text" class="form-control input-sm md-input" />
-                                                                      </div>
-                                                                    </div>
+                        
+                      </div>
+                    </div>
+                    <div class="uk-width-medium-1-3">
+                      <input type="hidden" id="pending_id" value=""/>
+                      <input type="hidden" id="pending_amt" value=""/>
+                      <input type="hidden" id="pending_discount" value=""/>
+                    </div>
+                  </div>
+                  <div id="paymentReceiveType" style="width: 100%">
+                    <div id="receiveCardDetailsDiv" class="uk-grid" data-uk-grid-margin>
+                      <div class="uk-width-medium-1-1">
+                        <h4>Card details</h4>
+                      </div>
+                      <div class="uk-width-medium-1-2">
+                        <div class="parsley-row">
+                          <select name="receivecardType" id="receivecardType"
+                          class="input-sm md-input"
+                          class="form-control input-sm md-input"
+                          style='padding: 0px; font-weight: bold; color: #727272;'>
+                          <option value="master">Master card</option>
+                          <option value="maestro">Maestro</option>
+                          <option value="visa">Visa</option>
+                          <option value="Rupay">Rupay</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="uk-width-medium-1-2">
+                      <div class="parsley-row">
+                        <label for="card4digits" class="inline-label">Last 4 digits
+                         of your card<span class="req">*</span>
+                       </label> 
+                       <input id="receivecard4digits" number name="receivecard4digits"
+                       maxlength="4" type="text" class="form-control input-sm md-input" />
+                     </div>
+                   </div>
+                   <br clear="all"/><br clear="all"/>            
+                   <div class="uk-width-medium-1-2">
+                    <div class="parsley-row">
+                      <label for="receivecardBankName" class="inline-label">Bank Name of your card<span class="req">*</span>
+                      </label> 
+                      <input id="receivecardBankName" number name="receivecardBankName"  type="text"
+                      class="form-control input-sm md-input" />
+                    </div>
+                  </div>
+                  
+                  <div class="uk-width-medium-1-2">
+                    <div class="parsley-row">
+                      <label for="receivecardRecieptNumber" class="inline-label">Reciept number<span class="req">*</span>
+                      </label> 
+                      <input id="receivecardRecieptNumber" number name="receivecardRecieptNumber"
+                      type="text" class="form-control input-sm md-input" />
+                    </div>
+                  </div>
 
-                                                                  </div>
-                                                                  <div id="receiveChequeDetailsDiv" class="uk-grid" data-uk-grid-margin>
+                </div>
+                <div id="receiveChequeDetailsDiv" class="uk-grid" data-uk-grid-margin>
 
-                                                                    <div class="uk-width-medium-1-1">
-                                                                      <h4>Cheque details</h4>
-                                                                      <br clear="all"/>
-                                                                    </div>
-                                                                    <div class="uk-width-medium-1-2">
-                                                                      <div class="parsley-row">
-                                                                        <label for="receivechequeBankName" class="inline-label">Bank name<span
-                                                                          class="req">*</span></label> <input id="receivechequeBankName"
-                                                                          name="receivebankName" type="text"
-                                                                          accept=""class="form-control input-sm md-input" />
-                                                                        </div>
-                                                                      </div>
-                                                                      <div class="uk-width-medium-1-2">
-                                                                        <div class="parsley-row">
-                                                                          <label for="receivechequeNumber" class="inline-label">Cheque number<span
-                                                                            class="req">*</span></label> <input id="receivechequeNumber"
-                                                                            name="receivechequeNumber" type="text"
-                                                                            class="form-control input-sm md-input" />
-                                                                          </div>
-                                                                        </div>
-                                                                      </div>
-                                                                      
-                                                                      
-                                                                      <div id="receiveemailEnrollPrintDiv" class="uk-grid" data-uk-grid-margin>
-                                                                        <div class="uk-width-medium-1-1">
-                                                                          <h4>Invoice option</h4>
-                                                                        </div>
-                                                                        <div class="uk-width-medium-1-2">
-                                                                          <div class="parsley-row">
-                                                                            <input id="receiveinvoicePrintOption" name="receiveinvoicePrintOption"  value="yes"  type="checkbox"  class="checkbox-custom" />
-                                                                            <label for="receiveinvoicePrintOption"  class="checkbox-custom-label">Print Invoice<span
-                                                                              class="req">*</span></label> 
-                                                                            </div>
-                                                                          </div>
-                                                                          <div class="uk-width-medium-1-2" id='receiveemail' style="display:none">
-                                                                            <div class="parsley-row">
-                                                                              <input id="receiveemailOption" name="receiveemailOption" type="checkbox"  value="yes" class="checkbox-custom"  />
-                                                                              <label for="receiveemailOption" class="checkbox-custom-label">Email Invoice<span
-                                                                                class="req">*</span></label> 
-                                                                              </div>
-                                                                            </div>
-                                                                          </div>
+                  <div class="uk-width-medium-1-1">
+                    <h4>Cheque details</h4>
+                    <br clear="all"/>
+                  </div>
+                  <div class="uk-width-medium-1-2">
+                    <div class="parsley-row">
+                      <label for="receivechequeBankName" class="inline-label">Bank name<span
+                        class="req">*</span></label> <input id="receivechequeBankName"
+                        name="receivebankName" type="text"
+                        accept=""class="form-control input-sm md-input" />
+                      </div>
+                    </div>
+                    <div class="uk-width-medium-1-2">
+                      <div class="parsley-row">
+                        <label for="receivechequeNumber" class="inline-label">Cheque number<span
+                          class="req">*</span></label> <input id="receivechequeNumber"
+                          name="receivechequeNumber" type="text"
+                          class="form-control input-sm md-input" />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    
+                    <div id="receiveemailEnrollPrintDiv" class="uk-grid" data-uk-grid-margin>
+                      <div class="uk-width-medium-1-1">
+                        <h4>Invoice option</h4>
+                      </div>
+                      <div class="uk-width-medium-1-2">
+                        <div class="parsley-row">
+                          <input id="receiveinvoicePrintOption" name="receiveinvoicePrintOption"  value="yes"  type="checkbox"  class="checkbox-custom" />
+                          <label for="receiveinvoicePrintOption"  class="checkbox-custom-label">Print Invoice<span
+                            class="req">*</span></label> 
+                          </div>
+                        </div>
+                        <div class="uk-width-medium-1-2" id='receiveemail' style="display:none">
+                          <div class="parsley-row">
+                            <input id="receiveemailOption" name="receiveemailOption" type="checkbox"  value="yes" class="checkbox-custom"  />
+                            <label for="receiveemailOption" class="checkbox-custom-label">Email Invoice<span
+                              class="req">*</span></label> 
+                            </div>
+                          </div>
+                        </div>
 
-                                                                        </div>
+                      </div>
 
-                                                                      </div>     
-                                                                      
-                                                                      <div class="modal-footer" id="receiveduefooter">
-                                                                        <button type="submit" class="btn btn-primary" id="receivepayment">Receive Payment</button>
-                                                                        <button type="button" class="btn btn-default" id='receivedueclose'>Close</button>
-                                                                      </div>
-                                                                      
-                                                                      
-                                                                    </div>
-                                                                  </div>
+                    </div>     
+                    
+                    <div class="modal-footer" id="receiveduefooter">
+                      <button type="submit" class="btn btn-primary" id="receivepayment">Receive Payment</button>
+                      <button type="button" class="btn btn-default" id='receivedueclose'>Close</button>
+                    </div>
+                    
+                    
+                  </div>
+                </div>
 
-                                                                  
-                                                                  
+                
+                
 
 
-                                                                  @stop
+                @stop
