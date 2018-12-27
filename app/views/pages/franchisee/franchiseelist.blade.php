@@ -19,7 +19,8 @@
 <script type="text/javascript">
 
 	$(document).on('click', '.franchiseeEdit', function() {
-        var franchisee_id = $(this).parent().parent().find('.id').text();
+        var franchisee_id = '';
+        franchisee_id = $(this).parent().parent().find('.id').text();
         $.ajax({
             type: "POST",
             url: "{{URL::to('/quick/getDataForFranchisee')}}",
@@ -28,6 +29,22 @@
             success: function(response){
               if (response.status === 'success') {
                 $('#franchisee_id').val(franchisee_id);
+                if (franchisee_id == 11) {
+                  var content = '';
+                  content += '<div class="uk-grid" data-uk-grid-margin>' + '<div class = "col-lg-4 col-md-4 col-sm-4 col-xs-4" ' + '</div>' + '<div class = "col-lg-4 col-md-4 col-sm-4 col-xs-4"'
+                             '<label class="uk-width-medium-1-5" style="text-align:center;padding-top:7px;">' + 
+                             'VAT (%) * :' + 
+                             '</label>' + 
+                             '<div class="uk-width-medium-1-4">' + 
+                             '<div class="parsley-row form-group">' + 
+                             '{{Form::number("cgst",0,array("id"=>"cgst","min"=> 0,"class"=>"form-control","required"=>""))}}' + 
+                             '</div>' + '</div>' + 
+                             '</div>';   
+
+ // {{Form::number('cgst',0,array("id"=>"cgst","min"=> 0,"class"=>"form-control","required"=>""))}}
+                  $('#forSriLanka').html(content);
+                  $('#taxDiv').hide();
+                }
                 $('#franchiseeName').val(response.franchisee_data[0]['franchisee_name']);
                 $('#franchiseAddress').val(response.franchisee_data[0]['franchisee_address']);
                 $('#franchiseEmailId').val(response.franchisee_data[0]['franchisee_official_email']);
@@ -365,7 +382,8 @@
                                 </center>
                               </div>
                               <hr>
-                              <div class="uk-grid" data-uk-grid-margin>
+                              <div id="forSriLanka"></div>
+                              <div class="uk-grid" data-uk-grid-margin id = "taxDiv">
                                 <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">CGST (%) * :</label>
                                 <div class="uk-width-medium-1-4">
                                   <div class="parsley-row form-group">
