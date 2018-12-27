@@ -317,13 +317,25 @@ class DashboardController extends \BaseController {
                         }
 
 
+                        $today = Carbon::now();
                         $upcoming15Days = Carbon::now()->addDays(14);
                         $upcoming15DaysMonth = date('m', strtotime($upcoming15Days));
                         $upcoming15DaysDay = date('d', strtotime($upcoming15Days));
-                        $upcomingBdays = DB::select(DB::raw("select * from `students` 
+                        $todayMonth = date('m', strtotime($today));
+                        $todayDate = date('d', strtotime($today));
+                            if($todayMonth == 12 && $todayDate > 16){
+                               $upcomingBdays = DB::select(DB::raw("select * from students
+                                                 where franchisee_id = ".Session::get('franchiseId')."  
+                                                 and (DATE_FORMAT(student_date_of_birth, '%m-%d') >=  DATE_FORMAT(CURDATE(), '%m-%d') 
+                                                 or DATE_FORMAT(student_date_of_birth, '%m-%d') <= DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 15 DAY), '%m-%d'))
+                                                 order by DATE_FORMAT(student_date_of_birth, '%m-%d') asc"));
+                            }
+                            else{
+                              $upcomingBdays = DB::select(DB::raw("select * from `students` 
                                         where  DATE_FORMAT(student_date_of_birth, '%m-%d') <= DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 15 DAY), '%m-%d') 
                                         and DATE_FORMAT(student_date_of_birth, '%m-%d') >=  DATE_FORMAT(CURDATE(), '%m-%d') and franchisee_id = ".Session::get('franchiseId')."
                                         order by DATE_FORMAT(student_date_of_birth, '%m-%d') asc"));
+                            }
                         // return $upcomingBdays;                                                
                         // $upcomingBdays = json_decode(json_encode($upcomingBdays), true);  
                         foreach ($upcomingBdays as $key => $value) {
