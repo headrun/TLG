@@ -31,17 +31,18 @@
                 $('#franchisee_id').val(franchisee_id);
                 if (franchisee_id == 11) {
                   var content = '';
-                  content += '<div class="uk-grid" data-uk-grid-margin>' + '<div class = "col-lg-4 col-md-4 col-sm-4 col-xs-4" ' + '</div>' + '<div class = "col-lg-4 col-md-4 col-sm-4 col-xs-4"'
+                  content += '<div class="uk-grid" data-uk-grid-margin>' + 
                              '<label class="uk-width-medium-1-5" style="text-align:center;padding-top:7px;">' + 
                              'VAT (%) * :' + 
                              '</label>' + 
                              '<div class="uk-width-medium-1-4">' + 
                              '<div class="parsley-row form-group">' + 
-                             '{{Form::number("cgst",0,array("id"=>"cgst","min"=> 0,"class"=>"form-control","required"=>""))}}' + 
-                             '</div>' + '</div>' + 
-                             '</div>';   
+                             '{{Form::number("vat",0,array("id"=>"vat","min"=> 0,"class"=>"form-control","required"=>""))}}' + 
+                             '</div>' + 
+                             '</div>' + 
+                             '</div>'; 
 
- // {{Form::number('cgst',0,array("id"=>"cgst","min"=> 0,"class"=>"form-control","required"=>""))}}
+
                   $('#forSriLanka').html(content);
                   $('#taxDiv').hide();
                 }
@@ -61,8 +62,12 @@
                 $('#tin_no').val(response.invoice_data[0]['tin_no']);
                 $('#annaul_membership').val(response.annual[0]['fee_amount']);
                 $('#lifetime_membership').val(response.lifetime[0]['fee_amount']);
+                if (franchisee_id != 11) {  
                 $('#cgst').val(response.cgst[0]['tax_percentage']);
                 $('#sgst').val(response.sgst[0]['tax_percentage']);
+                } else{
+                $('#vat').val(response.vat[0]['tax_percentage']);                 
+                }
                 $('#legalEntity').val(response.invoice_data[0]['legal_entry_name']);
               }
             }
@@ -91,6 +96,7 @@
         var lifetime_membership = $('#lifetime_membership').val();
         var cgst = $('#cgst').val();
         var sgst = $('#sgst').val();
+        var vat = $('#vat').val();
 
         $.ajax({
           type: "POST",
@@ -115,7 +121,8 @@
              'annaul_membership': annaul_membership,
              'lifetime_membership': lifetime_membership,
              'cgst': cgst,
-             'sgst': sgst
+             'sgst': sgst,
+             'vat': vat
             },
           dataType: 'json',
           success: function(response){
