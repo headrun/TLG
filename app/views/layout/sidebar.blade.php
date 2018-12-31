@@ -201,7 +201,7 @@
                             
                         </ul>
                     </li>
-                    <li id="EASY_CORRECTIONS_MENU_MAIN">
+                    <!-- <li id="EASY_CORRECTIONS_MENU_MAIN">
                         <a href="#">
                             <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
                             <span class="menu_title">Easy Corrections</span>
@@ -210,7 +210,7 @@
                             <li id="Madecorrections_LI"><a href="{{url()}}/corrections/madecorrections">Made Corrections</a></li>
                             
                         </ul>
-                    </li>
+                    </li> -->
                <?php }?>
                 
                 
