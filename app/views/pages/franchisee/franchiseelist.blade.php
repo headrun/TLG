@@ -29,8 +29,8 @@
             success: function(response){
               if (response.status === 'success') {
                 $('#franchisee_id').val(franchisee_id);
+                var content = '';
                 if (franchisee_id == 11) {
-                  var content = '';
                   content += '<div class="uk-grid" data-uk-grid-margin>' + 
                              '<label class="uk-width-medium-1-5" style="text-align:center;padding-top:7px;">' + 
                              'VAT (%) * :' + 
@@ -42,9 +42,11 @@
                              '</div>' + 
                              '</div>'; 
 
-
                   $('#forSriLanka').html(content);
                   $('#taxDiv').hide();
+                } else {
+                  $('#forSriLanka').empty();
+                  $('#taxDiv').show();
                 }
                 $('#franchiseeName').val(response.franchisee_data[0]['franchisee_name']);
                 $('#franchiseAddress').val(response.franchisee_data[0]['franchisee_address']);
@@ -63,10 +65,10 @@
                 $('#annaul_membership').val(response.annual[0]['fee_amount']);
                 $('#lifetime_membership').val(response.lifetime[0]['fee_amount']);
                 if (franchisee_id != 11) {  
-                $('#cgst').val(response.cgst[0]['tax_percentage']);
-                $('#sgst').val(response.sgst[0]['tax_percentage']);
+                  $('#cgst').val(response.cgst[0]['tax_percentage']);
+                  $('#sgst').val(response.sgst[0]['tax_percentage']);
                 } else{
-                $('#vat').val(response.vat[0]['tax_percentage']);                 
+                  $('#vat').val(response.vat[0]['tax_percentage']);                 
                 }
                 $('#legalEntity').val(response.invoice_data[0]['legal_entry_name']);
               }
