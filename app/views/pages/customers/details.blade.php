@@ -3041,7 +3041,7 @@ $('#memberhsipchequeNumber').keyup(function(){
                                                     <div class="md-list-content">
                                                         <span class="md-list-heading">
                                                         
-                                                        {{ucfirst($customer->source)}} - 
+                                                        {{ucfirst($customer->source)}} 
                                                         <?php if($customer->source == "events"){
                                                         		if(isset($customer->Events)){
                                                         	?>
@@ -3715,35 +3715,58 @@ $('#memberhsipchequeNumber').keyup(function(){
                                                           </tbody>
                                                       </table>
                                                   </div>
-                                                  <div class="uk-width-medium-1-1">
-                                                      <h5 class="uk-text-bold"><i class="uk-icon-shopping-cart"></i> Purchased Membership Details</h5>
-                                                      <ul class="md-list" >
-                                                      	@foreach($membership_data as $membership)
-                                                      		<li>
-                                                      		<div class="md-list-content">
-                                                      			<span class="md-list-heading">
-                                                      			 	<a href="javascript:void(0)">{{$membership->description}}</a>
-                                                      			</span>
-                                                      			<div class="uk-margin-small-top">
-	                                                                <span class="uk-margin-right">
-	                                                    				<i class="material-icons"></i> 
-	                                                    					<span class="uk-text-muted uk-text-small">                                    Start Date: {{$membership->membership_start_date}}
-	                                                    						&nbsp; &nbsp;
-	                                                    						End Date: {{$membership->membership_end_date}} 
-	                                                    						<span class="uk-text-right"><a class="uk-button uk-button-primary uk-button-small" target="_blank" href="{{url()}}/orders/Membershipprint/{{$membership->enc_order_id}}">Print</a></span> 
-	                                                    					</span>
+  <div class="uk-width-medium-1-1">
+      <h5 class="uk-text-bold"><i class="uk-icon-shopping-cart"></i> Purchased Membership Details</h5>
+      <ul class="md-list" >
+      	@foreach($membership_data as $membership)
+      		<li>
+      		<div class="md-list-content">
+      			<span class="md-list-heading">
+      			 	<a href="javascript:void(0)">{{$membership->description}}</a>
+      			</span>
+      			<div class="uk-margin-small-top">
+                    <span class="uk-margin-right">
+        				<i class="material-icons"></i> 
+        					<span class="uk-text-muted uk-text-small">                                    Start Date: {{$membership->membership_start_date}}
+        						&nbsp; &nbsp;
+        						End Date: {{$membership->membership_end_date}} 
+        						<span class="uk-text-right"><a class="uk-button uk-button-primary uk-button-small" target="_blank" href="{{url()}}/orders/Membershipprint/{{$membership->enc_order_id}}">Print</a></span> 
+        					</span>
 
-	                                                				</span>
-	                                                
-	                                                			
-	                                                			</div>
+    				</span>
+    
+    			
+    			</div>
 
-                                                      		</div>
-                                                      		</li>
-                                                      	@endforeach	
-                                                      </ul>
-                                                      
-                                                  </div>
+      		</div>
+      		</li>
+      	@endforeach	
+      </ul>
+      
+  </div>
+
+  <div class="uk-width-medium-1-1">
+      <ul class="md-list" >
+      	@foreach($membership_dates as $membership)
+      		<li>
+      		<div class="md-list-content">
+      			<div class="uk-margin-small-top">
+                    <span class="uk-margin-right">
+        				<i class="material-icons"></i> 
+        					<span class="uk-text-muted uk-text-small">                                    Start Date: {{$membership->membership_start_date}}
+        						&nbsp; &nbsp;
+        						End Date: {{$membership->membership_end_date}}  
+        						&nbsp; &nbsp;
+        						<span class="new badge" style="background-color: #7CB342">Purchased through enrollment / Birthday</span> 
+        					</span>
+    				</span>
+    			</div>
+      		</div>
+      		</li>
+      	@endforeach	
+      </ul>
+      
+  </div>
                                                 </div>
                                              </div>   
 

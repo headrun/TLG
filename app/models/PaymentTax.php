@@ -23,12 +23,22 @@ class PaymentTax extends \Eloquent {
     }
 
     public static function updatePaymentTaxForNewFranchisee($inputs) {
-        $updateTax = PaymentTax::where('franchisee_id', '=', $inputs['franchisee_id'])
+        if($inputs['franchisee_id'] == 11) {
+            $updateTax = PaymentTax::where('franchisee_id', '=', $inputs['franchisee_id'])
+                            ->update([
+                                'tax_percentage' => $inputs['vat'],
+                                'updated_at' => date("Y-m-d H:i:s"),
+                                'updated_by' => Session::get('userId')
+                            ]);
+                        } else {
+                            $updateTax = PaymentTax::where('franchisee_id', '=', $inputs['franchisee_id'])
                             ->update([
                                 'tax_percentage' => $inputs['cgst'] + $inputs['sgst'],
                                 'updated_at' => date("Y-m-d H:i:s"),
                                 'updated_by' => Session::get('userId')
                             ]);
+                        }
+        
 
         return $updateTax;
     }

@@ -418,7 +418,7 @@
                                 <div class = "col-md-4">
                                     <center><span class="uk-text-muted uk-text-small">Total</span></center>
                                     <center><h2 class="uk-margin-remove"><span class="countUpMe">    
-                                    {{ $singleEnrollments + $multipleEnrollments}}
+                                    {{ $singleEnrollments + ($multipleEnrollments) * 2 }}
 				    <noscript>12456</noscript></span></h2></center>
                                 </div>
                                 <div class = "col-md-4">
@@ -426,7 +426,7 @@
                                     <h2 class="uk-margin-remove"><span class="countUpMe">@if($singleEnrollments)
                                         {{$singleEnrollments}}
                                     @else 
-                                        0 
+                                        0
                                     @endif
                                     <noscript>12456</noscript></span></h2>
                                 </div>
@@ -453,7 +453,7 @@
                             <center><span class="uk-text-muted uk-text-small" id = "Titles">Total Enrollments</span></center>
                             <div class = "row" style = "padding-top:18px;">
                                 <center><h2 class="uk-margin-remove"><span class="countUpMe">    
-                                {{ $singleEnrollments + $multipleEnrollments * 2}}
+                                {{ $totalEnrollments}}
                                 <noscript>12456</noscript></span></h2></center>
                             </div>
                             
