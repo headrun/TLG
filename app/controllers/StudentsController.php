@@ -450,6 +450,71 @@ class StudentsController extends \BaseController {
     }
   }
   
+  public function deleteBatchesEnrollForId () {
+      if((Auth::check()) && (Session::get('userType')=='ADMIN') ){
+        $inputs=Input::all();
+        $payment_no = PaymentDues::where('student_class_id', '=', $inputs['student_class_id'])
+                                  ->where('franchisee_id', '=', Session::get('franchiseId'))
+                                  ->get();
+        if (isset($payment_no) && !empty($payment_no) && count($payment_no)) {
+          $orderDelete = Orders::where('student_id', '=', $inputs['studentId'])
+                               ->where('franchisee_id', '=', Session::get('franchiseId'))
+                               ->where('payment_no', '=', $payment_no[0]['payment_no'])
+                               ->delete();
+          $paymentsDelete = PaymentDues::where('student_class_id', '=', $inputs['student_class_id'])
+                                    ->where('franchisee_id', '=', Session::get('franchiseId'))
+                                    ->delete();
+          $paymentMasterDelete = PaymentMaster::where('student_id', '=', $inputs['studentId'])
+                               ->where('payment_no', '=', $payment_no[0]['payment_no'])
+                               ->delete();
+          $paymentFollowupsDelete = PaymentFollowups::where('student_id', '=', $inputs['studentId'])
+                               ->where('payment_no', '=', $payment_no[0]['payment_no'])
+                               ->delete();
+          $studentClassesDelete = StudentClasses::where('id', '=', $payment_no[0]['student_class_id'])
+                               ->where('student_id', '=', $inputs['studentId'])
+                               ->delete();
+        } else {
+          $studentClassesDelete = StudentClasses::where('id', '=', $inputs['student_class_id'])
+                               ->where('student_id', '=', $inputs['studentId'])
+                               ->delete();
+        }
+        if ($studentClassesDelete) {
+          return Response::json(array('status'=>'success', 'data' => $inputs));
+        } else {
+          return Response::json(array('status'=>'failure'));
+        }                           
+      } else {
+        return Response::json(array('status'=>'failure'));
+      }
+    }
+
+  public function deleteAllBatchesEnrollForId () {
+    if((Auth::check()) && (Session::get('userType')=='ADMIN') ){
+      $inputs=Input::all();
+      $orderDelete = Orders::where('student_id', '=', $inputs['studentId'])
+                           ->where('franchisee_id', '=', Session::get('franchiseId'))
+                           ->delete();
+      $paymentMasterDelete = PaymentMaster::where('student_id', '=', $inputs['studentId'])
+                           ->delete();
+      $paymentFollowupsDelete = PaymentFollowups::where('student_id', '=', $inputs['studentId'])
+                           ->delete();
+      $studentClassesDelete = StudentClasses::where('student_id', '=', $inputs['studentId'])
+                           ->delete();
+      $paymentsDelete = PaymentDues::where('student_id', '=', $inputs['studentId'])
+                                ->where('franchisee_id', '=', Session::get('franchiseId'))
+                                ->delete();
+      $paymentsDelete = Attendance::where('student_id', '=', $inputs['studentId'])
+                                ->delete();                        
+
+      if ($paymentsDelete) {
+        return Response::json(array('status'=>'success', 'data' => $inputs));
+      } else {
+        return Response::json(array('status'=>'failure'));
+      }
+    } else {
+      return Response::json(array('status'=>'failure'));
+    }
+  }
 
   public function getAttendanceForStudent(){
     $inputs = Input::all();

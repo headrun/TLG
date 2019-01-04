@@ -356,10 +356,10 @@ function fullEnrollmentReset(){
       url: "{{URL::to('/quick/checkSecondSibling')}}",
       data: {'student_id': studentId},
       dataType: 'json',
+      async: true,
       success: function(response){
-        if (parseInt(response.data) !== parseInt(studentId)) {
+        if (response.data !== parseInt(studentId)) {
           <?php if($discount_second_child_elligible){ ?>
-	    $('#second_child_hide').show();
             $('#second_child_discount_to_form').val({{$discount_second_child}});
             second_child_discount_amt = parseFloat(finalAmount*{{$discount_second_child}}/100);
             $('#second_child_amount').val('-'+(second_child_discount_amt).toFixed(2));
@@ -369,11 +369,10 @@ function fullEnrollmentReset(){
             $('#second_child_amountlabel').html((Math.round(finalAmount/10)*10).toFixed(2));
           <?php } ?>
         } else {
-	  $('#second_child_hide').hide();
           $('#second_child_discount').hide();
           $('#second_child_amountlabel').hide();
         }
-	calculateAfterCheckSibling();
+        calculateAfterCheckSibling()
       }
     });
 
@@ -452,67 +451,65 @@ function fullEnrollmentReset(){
          $("#grandTotal").val((Amount).toFixed(0));
          $('#grandTotallabel').html((Amount).toFixed(0));
        });
-       
-      $('#diplomatOption').click(function() {
-            if ($(this).is(':checked')) {
+       $('#diplomatOption').click(function() {
+             if ($(this).is(':checked')) {
+               $("#taxAmount").val(0);
+               tax_Percentage = 0;
+               $('#taxAmountlabel').hide();
+               $('#duplicatetaxAmountlabel').show();               
+               var subtotal = $("#subtotal").val();
+               Amount = Math.round((subtotal)*100)/100;
+               $("#grandTotal").val((Amount).toFixed(0));
+               $('#grandTotallabel').html((Amount).toFixed(0)); 
+             } else {
+               tax_Percentage = "<?php echo $taxPercentage->tax_percentage; ?>";
+               $('#taxAmountlabel').show();
+               $('#duplicatetaxAmountlabel').hide();               
+               var subtotal = $("#subtotal").val();
+               subtotal = parseInt(subtotal);
+               var tax = ((subtotal)*tax_Percentage/100);
+               tax=Math.round(tax*100)/100;
+               $("#taxAmount").val((tax).toFixed(2));
+               $('#taxAmountlabel').html((tax).toFixed(2));
+               Amount = Math.round(((subtotal)+tax)*100)/100;
+               $("#grandTotal").val((Amount).toFixed(0));
+               $('#grandTotallabel').html((Amount).toFixed(0));
+             }
+         });
+          
+          $('#admin_discount_amount').keyup(function(){
+            if(($('#admin_discount_amount').val() == '')||($('#admin_discount_amount').val()<0)){
+             $('#admin_discount_amount').val('0'); 
+            }
+            if($('#diplomatOption').is(':checked')){
               $("#taxAmount").val(0);
               tax_Percentage = 0;
               $('#taxAmountlabel').hide();
-              $('#duplicatetaxAmountlabel').show();               
+              $('#duplicatetaxAmountlabel').show(); 
               var subtotal = $("#subtotal").val();
               Amount = Math.round((subtotal)*100)/100;
               $("#grandTotal").val((Amount).toFixed(0));
-              $('#grandTotallabel').html((Amount).toFixed(0)); 
+              $('#grandTotallabel').html((Amount).toFixed(0));
             } else {
               tax_Percentage = "<?php echo $taxPercentage->tax_percentage; ?>";
               $('#taxAmountlabel').show();
-              $('#duplicatetaxAmountlabel').hide();               
-              var subtotal = $("#subtotal").val();
-              subtotal = parseInt(subtotal);
-              var tax = ((subtotal)*tax_Percentage/100);
-              tax=Math.round(tax*100)/100;
+              var adminamt = parseFloat($('#admin_discount_amount').val());
+              var subtotal = Adminamountcal;
+              $("#subtotal").val((subtotal-adminamt).toFixed(2));
+              $('#subtotallabel').html((subtotal-adminamt).toFixed(2));
+              var tax = (((subtotal-adminamt)*tax_Percentage/100).toFixed(2));
+              tax = Math.round(tax*100)/100;
+              
               $("#taxAmount").val((tax).toFixed(2));
               $('#taxAmountlabel').html((tax).toFixed(2));
-              Amount = Math.round(((subtotal)+tax)*100)/100;
+              Amount = Math.round(((subtotal-adminamt)+tax)*100)/100;
               $("#grandTotal").val((Amount).toFixed(0));
               $('#grandTotallabel').html((Amount).toFixed(0));
             }
-        });
-
-       $('#admin_discount_amount').keyup(function(){
-         if(($('#admin_discount_amount').val() == '')||($('#admin_discount_amount').val()<0)){
-          $('#admin_discount_amount').val('0'); 
-         }
-         if($('#diplomatOption').is(':checked')){
-           $("#taxAmount").val(0);
-           tax_Percentage = 0;
-           $('#taxAmountlabel').hide();
-           $('#duplicatetaxAmountlabel').show(); 
-           var subtotal = $("#subtotal").val();
-           Amount = Math.round((subtotal)*100)/100;
-           $("#grandTotal").val((Amount).toFixed(0));
-           $('#grandTotallabel').html((Amount).toFixed(0));
-         } else {
-           tax_Percentage = "<?php echo $taxPercentage->tax_percentage; ?>";
-           $('#taxAmountlabel').show();
-           var adminamt = parseFloat($('#admin_discount_amount').val());
-           var subtotal = Adminamountcal;
-           $("#subtotal").val((subtotal-adminamt).toFixed(2));
-           $('#subtotallabel').html((subtotal-adminamt).toFixed(2));
-           var tax = (((subtotal-adminamt)*tax_Percentage/100).toFixed(2));
-           tax = Math.round(tax*100)/100;
-           
-           $("#taxAmount").val((tax).toFixed(2));
-           $('#taxAmountlabel').html((tax).toFixed(2));
-           Amount = Math.round(((subtotal-adminamt)+tax)*100)/100;
-           $("#grandTotal").val((Amount).toFixed(0));
-           $('#grandTotallabel').html((Amount).toFixed(0));
-         }
-      });
-       
+         });
       }
-
-     }
+        
+      }
 
       $("input[name='paymentTypeRadio']").change(function (){
         $("#enrollNow").show();
@@ -1989,6 +1986,25 @@ $('#enrollmentEndDateForOld').change(function(){
 //  }
 });
 
+function deleteBatchesDataForId(student_class_id) {
+  $.ajax({
+    type: "POST",
+    url: "{{URL::to('/quick/deleteBatchesEnrollForId')}}",
+    data: {'studentId': studentId, 'student_class_id': student_class_id},
+    dataType: 'json',
+    success: function(response){
+      if (response.status == 'success') {
+        $('#succussMsg').html("<p class='uk-alert uk-alert-success'>Selected batch has been deleted successfully.</p>")
+        setTimeout(function () {
+          window.location.reload(1);
+        },3000)
+      } else {
+        $('#succussMsg').html("<p class='uk-alert uk-alert-warning'>Something went wrong.Please try again later</p>")
+      }
+    }
+  });
+}
+
 function getDatesForAttendance(class_id, batch_name, startDate, endDate) {
   $.ajax({
     type: "POST",
@@ -2871,6 +2887,31 @@ $('.deletbirthdaydata').click(function(){
   });
 });
 
+$('.deleteBatchdata').click(function () {
+  $('#BatchDeleteId').modal('show');
+  $('#my-id').modal('hide');
+});
+
+function deleteAllBatches() {
+  $.ajax({
+    type: "POST",
+    url: "{{URL::to('/quick/deleteAllBatchesEnrollForId')}}",
+    data: {'studentId': studentId},
+    dataType: 'json',
+    success: function(response){
+      if (response.status == 'success') {
+        $('#succussMsg').html("<p class='uk-alert uk-alert-success'>All batches has been deleted successfully.</p>")
+        setTimeout(function () {
+          window.location.reload(1);
+        },3000)
+      } else {
+        $('#succussMsg').html("<p class='uk-alert uk-alert-warning'>Something went wrong.Please try again later</p>")
+      }
+    }
+  });
+
+}
+
 $('.deleteenrollmentdata').click(function(){
   $('.deletemsg').html("<p class='uk-alert uk-alert-warning'>Please wait... Enrollment Data Deleting...</p>");
   $.ajax({
@@ -2907,48 +2948,48 @@ $('.deleteenrollmentdata').click(function(){
 });
 
 $(document).on('change','#discountPercentageForSummer, #no_of_classes, #pricePerClass', function() {
-	var discount = $('#discountPercentageForSummer').val();
-	var noOfClasses = $('#no_of_classes').val();
-	var perClassAmount = $('#pricePerClass').val();
-	var amountForSummer = noOfClasses * perClassAmount;
-	var amountAfterDiscount = (discount/100)*amountForSummer;
-	var beforeTax = amountForSummer - amountAfterDiscount;
-	var tax = $('#taxPercentageForSummer').val();
-	var finalAmountForSummer = ((tax/100)*beforeTax) + beforeTax;
-	$('#totalAmountForSummer').val(finalAmountForSummer);
+  var discount = $('#discountPercentageForSummer').val();
+  var noOfClasses = $('#no_of_classes').val();
+  var perClassAmount = $('#pricePerClass').val();
+  var amountForSummer = noOfClasses * perClassAmount;
+  var amountAfterDiscount = (discount/100)*amountForSummer;
+  var beforeTax = amountForSummer - amountAfterDiscount;
+  var tax = $('#taxPercentageForSummer').val();
+  var finalAmountForSummer = ((tax/100)*beforeTax) + beforeTax;
+  $('#totalAmountForSummer').val(finalAmountForSummer);
 });
 
 $(document).on('click','.summer-cls-btn', function(){
-	$('.summer-cls-btn').addClass('disabled');
+  $('.summer-cls-btn').addClass('disabled');
         var startDateForSummer = $('#summerWeekStartdate').val();
         var NoOfWeeksForSummer = $('#no_of_classes').val();
-	var amountForSummer = $('#pricePerClass').val();
-	var typeOfClass = $('#typeOfClass').val();
-	var taxPercentageForSummer = $('#taxPercentageForSummer').val();
-	var discountPercentageForSummer = $('#discountPercentageForSummer').val();
-	var totalAmountForSummer = $('#totalAmountForSummer').val();
-	$.ajax({
+  var amountForSummer = $('#pricePerClass').val();
+  var typeOfClass = $('#typeOfClass').val();
+  var taxPercentageForSummer = $('#taxPercentageForSummer').val();
+  var discountPercentageForSummer = $('#discountPercentageForSummer').val();
+  var totalAmountForSummer = $('#totalAmountForSummer').val();
+  $.ajax({
     type: "POST",
     url: "{{URL::to('/quick/enrollYard')}}",
     data: {'studentId': studentId, 
-		   'startDateForSummer': startDateForSummer, 
-		   'NoOfWeeksForSummer': NoOfWeeksForSummer, 
-		   'amountForSummer': amountForSummer, 
-		   'typeOfClass':typeOfClass, 
-		   'discountPercentageForSummer':discountPercentageForSummer,
-		   'totalAmountForSummer':totalAmountForSummer,
-		   'taxPercentageForSummer':taxPercentageForSummer
-		  },
+       'startDateForSummer': startDateForSummer, 
+       'NoOfWeeksForSummer': NoOfWeeksForSummer, 
+       'amountForSummer': amountForSummer, 
+       'typeOfClass':typeOfClass, 
+       'discountPercentageForSummer':discountPercentageForSummer,
+       'totalAmountForSummer':totalAmountForSummer,
+       'taxPercentageForSummer':taxPercentageForSummer
+      },
     dataType: 'json',
     success: function(response){
         if(response.status === "success"){
         $('#summerMsgDiv').html("<p class='uk-alert uk-alert-success'>Camps / Yard has been taken successfully.Please wait untill the page reloads</p>");
             setTimeout(function(){
-     		window.location.reload(1);
-   	    }, 4000);
+        window.location.reload(1);
+        }, 4000);
         } else {
-		    $('#summerMsgDiv').html("<p class='uk-alert uk-alert-warning'>Camps / Yard not yet taken.Please try again.</P>");
-		    }
+        $('#summerMsgDiv').html("<p class='uk-alert uk-alert-warning'>Camps / Yard not yet taken.Please try again.</P>");
+        }
             }
         });
 });
@@ -3523,20 +3564,26 @@ id="user_profile">
                                     <div class="modaldata">
                                       <div class="deletemsg"></div>
                                       <div class="uk-grid" data-uk-grid-margin="">
-                                        <div class="uk-width-medium-1-3 " >
+                                        <div class="uk-width-medium-1-2" >
                                           <button class=" center-block text-center uk-button uk-button-danger uk-button-large deleteivdata" style="font-size:12px;">
                                             <i class="material-icons" style="color:white">delete</i> Introvisit Data
                                           </button>
                                         </div>
-                                        <div class="uk-width-medium-1-3">
+                                        <div class="uk-width-medium-1-2">
                                           <button class="  center-block text-center uk-button uk-button-danger uk-button-large deletbirthdaydata" style="font-size:12px;">
                                             <i class="material-icons" style="color:white">delete</i> Birthday Party Data
                                           </button>
                                           <em class="uk-text-center-small center-block text-center" style="color:black;font-size:12px;"> (with payments)</em>
                                         </div>
-                                        <div class="uk-width-medium-1-3">
+                                        <div class="uk-width-medium-1-2">
                                           <button class="center-block text-center  uk-button uk-button-danger uk-button-large  deleteenrollmentdata" style="font-size:12px;">
                                             <i class="material-icons" style="color:white">delete</i> Enrollment Data
+                                          </button>
+                                          <em class="uk-text-center-small text-center center-block " style="color:black;font-size:12px;">(with payments)</em>
+                                        </div>
+                                        <div class="uk-width-medium-1-2">
+                                          <button class="center-block text-center  uk-button uk-button-danger uk-button-large  deleteBatchdata" style="font-size:12px;">
+                                            <i class="material-icons" data-toggle="modal" data-target="#my-idl" data-dismiss="modal" style="color:white">delete</i> Batch Data
                                           </button>
                                           <em class="uk-text-center-small text-center center-block " style="color:black;font-size:12px;">(with payments)</em>
                                         </div>
@@ -3841,14 +3888,14 @@ id="user_profile">
                                                                                       <td>{{$payment_made_data[$j][$i]['selected_order_sessions']}}</td>
                                                                                       <td>{{$payment_made_data[$j][$i]['payment_due_amount_after_discount']}}</td>
                                                                                       <td>{{$payment_made_data[$j][$i]['receivedname']}}</td>
-										      <?php if((count($payment_made_data[$j])>1) && $i==0 ) {?>
+                          <?php if((count($payment_made_data[$j])>1) && $i==0 ) {?>
                                                                                       <td style="text-align:justify;vertical-align:middle;"  rowspan=<?php echo count($payment_made_data[$j])?> ><a id='Print' target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
                                                                                       <?php }else if(count($payment_made_data[$j])==1){ ?>
                                                                                       <td><a id='Print'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
                                                                                       <?php } ?>
                                                                                     </tr>
                                                                                     <?php }
-										     }
+                         }
                                                                                   }
                                                                                 } ?>
                                                                                 
@@ -4011,7 +4058,6 @@ id="user_profile">
           </div>
         </div>
       </li>
-                                                          
                                           <li id="discovery">   
                                             @if(Session::has('imageUploadMessage')) 
                                             <div class="uk-alert uk-alert-success" data-uk-alert>
@@ -4076,35 +4122,35 @@ id="user_profile">
                                                                         null,array('id'=>'typeOfClass', 'class' => 'form-control','required'))}}
                                                                         </div>
                                                                     </div>
-                           					    <div class="uk-width-medium-1-5">
-                             						<div class="parsley-row form-group">
-                                						<label for="startDate">Start Date</label><br>
-                                							{{Form::text('summerWeekStartdate',
-                                					null,array('id'=>'summerWeekStartdate', 'class' => '','required'))}}
-                             						</div>
-                           					    </div>
-								</div>
-								<div class="uk-grid" data-uk-grid-margin>
-                           					    <div class="uk-width-medium-1-5">
-                             						<div class="parsley-row form-group">
-                                						<label for="numberOfWeeks">No.of Classes</label><br>
-                                							{{Form::number('no_of_classes',
-                                					null,array('id'=>'no_of_classes', 'class' => 'form-control','required'))}}
-                             						</div>
-                           					    </div>
-								    <div class="uk-width-medium-1-5">
-									<div class="parsley-row form-group">
-										<label for="amountPerClass">Price per Class</label><br>
-											{{Form::number('amountPerClass',null,array('id'=>'pricePerClass','class'=>'form-control','required'))}}
-									</div>
-								    </div>
-								    <div class="uk-width-medium-1-5">
-									<div class="parsely-row form-group">
-										<label for="discountPercentageForSummer">Discount %</label><br>
-											{{Form::number('discountPercentageForSummer',null,array('id'=>'discountPercentageForSummer','class'=>'form-control','required'))}}
-									</div>
-								    </div>
-								    <div class="uk-width-medium-1-5">
+                                        <div class="uk-width-medium-1-5">
+                                        <div class="parsley-row form-group">
+                                            <label for="startDate">Start Date</label><br>
+                                              {{Form::text('summerWeekStartdate',
+                                          null,array('id'=>'summerWeekStartdate', 'class' => '','required'))}}
+                                        </div>
+                                        </div>
+                </div>
+                <div class="uk-grid" data-uk-grid-margin>
+                                        <div class="uk-width-medium-1-5">
+                                        <div class="parsley-row form-group">
+                                            <label for="numberOfWeeks">No.of Classes</label><br>
+                                              {{Form::number('no_of_classes',
+                                          null,array('id'=>'no_of_classes', 'class' => 'form-control','required'))}}
+                                        </div>
+                                        </div>
+                    <div class="uk-width-medium-1-5">
+                  <div class="parsley-row form-group">
+                    <label for="amountPerClass">Price per Class</label><br>
+                      {{Form::number('amountPerClass',null,array('id'=>'pricePerClass','class'=>'form-control','required'))}}
+                  </div>
+                    </div>
+                    <div class="uk-width-medium-1-5">
+                  <div class="parsely-row form-group">
+                    <label for="discountPercentageForSummer">Discount %</label><br>
+                      {{Form::number('discountPercentageForSummer',null,array('id'=>'discountPercentageForSummer','class'=>'form-control','required'))}}
+                  </div>
+                    </div>
+                    <div class="uk-width-medium-1-5">
                                                                         <div class="parsely-row form-group">
                                                                                 <label for="taxPercentageForSummer">Tax %</label><br>
                                                                                         {{Form::number('taxPercentageForSummer',18,array('id'=>'taxPercentageForSummer','class'=>'form-control'))}}
@@ -4131,21 +4177,21 @@ id="user_profile">
 				
 							    <div class="md-card" style="margin-top: 100px;">
                                                               <div class='uk-overflow-container'>
-								<h3>Payments Made</h3>
+                <h3>Payments Made</h3>
                                                                 <table id='reportTable' class='uk-table'>
                                                                   <thead>
                                                                     <tr>
                                                                       <th>Type of Class</th>
                                                                       <th>Start Date</th>
                                                                       <th>Sessions</th>
-							              <th>Amount</th>
+                            <th>Amount</th>
                                                                       <th>Received By</th>
                                                                       <th>Actions</th>
                                                                     </tr>
                                                                   </thead>
                                                                   <tbody>
-									
-									 <?php if(isset($payment_made_data_summer[0])){
+                  
+                   <?php if(isset($payment_made_data_summer[0])){
                                                                                 for($j=0;$j<count($payment_made_data_summer);$j++){
                                                                                     ?>
                                                                                     <tr>
@@ -4161,7 +4207,7 @@ id="user_profile">
                                                                                       <td><a id='Print'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" href="{{$payment_made_data_summer[$j]['encrypted_payment_no']}}">Print</a></td>
                                                                                       <?php } ?>
                                                                                     </tr>
-                                                                                    <?php }	 
+                                                                                    <?php }  
                                                                                   
                                                                                 } ?>										
 								  </tbody>
@@ -4169,7 +4215,6 @@ id="user_profile">
 							      </div>
 							     </div>
 							  </li>
-
               <li id = "introvisit">
                 <div class="md-card">
                   <div id = "errorMsgDiv"></div>
@@ -4281,7 +4326,75 @@ id="user_profile">
 1000  
 -->
 
-
+<div class="modal fade" id="BatchDeleteId" role="dialog" style="z-index: 9999;">
+  <div class="modal-dialog">
+    <div class="modal-content" style="width:130%;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Delete Batch Data</h4>
+      </div>
+      <div id="succussMsg"></div>
+      <div class="modal-body">
+        <ul class="md-list">
+          <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
+            <div class="uk-width-medium-1-1">
+              <div class="md-card uk-margin-medium-bottom">
+               <div class="md-card-content">
+                <div class="uk-overflow-container">
+                 <table class="uk-table table-striped" id="paymentsMadeTable" >
+                   <thead>
+                     <tr>
+                       <th class="uk-text-nowrap">Enrolled class</th>
+                       <th class="uk-text-nowrap">Day</th>
+                       <th class="uk-text-nowrap">Time</th>
+                       <th class="uk-text-nowrap">class start date</th>
+                       <th class="uk-text-nowrap">class end date</th>
+                       <th class="uk-text-nowrap">sessions</th>
+                       <th class="uk-text-nowrap">option</th>  
+                     </tr>
+                   </thead>
+                   <tbody> 
+                     <?php if(isset($batchDetails) && !empty($batchDetails)){?>
+                     @foreach($batchDetails as $value)
+                     <tr>
+                       <td>{{ $value['batch_name'] }}</td>
+                       <td>{{ $value['Day'] }}</td>
+                       <td>{{ $value['time'] }}</td>
+                       <td>{{ $value['enrollment_start_date'] }}</td>
+                       <td>{{ $value['enrollment_end_date'] }}</td>
+                       <td >{{ $value['selected_sessions'] }}&nbsp;<span id="stageChange" class="new badge" style="background-color: #7CB342;">{{ $value['stage'] }}</span></td>
+                       
+                       <td><button style="text-align:justify" class="btn btn-primary btn-xs" onclick="deleteBatchesDataForId('{{ $value['id']}}')">Delete</button></td>
+                     </tr>
+                     @endforeach
+                     <?php  }else{ ?>
+                     <tr>
+                       <td>
+                         ------------- No batches found --------------
+                       </td>
+                     </tr>
+                     <?php } ?>
+                   </tbody>
+                  </table>
+                 </div>
+                 <?php if(isset($batchDetails) && count($batchDetails) > 0){ ?>
+                 <div align="center" style="padding-top: 20px;">
+                   <button style="text-align:justify; font-size: 17px;" class="btn btn-primary btn-xs" onclick="deleteAllBatches()"> Delete all</button>
+                 </div>
+                 <?php } else { ?>
+                 <div align="center" style="padding-top: 20px;">
+                   <p>No Records Found.</p>
+                 </div>
+                 <?php } ?>
+               </div>
+              </div>
+            </div>
+          </div>
+            </ul>
+          </div>
+       </div>
+    </div>
+</div>
 <div id="enrollmentModal" class="modal fade" role="dialog"
 style="margin-top: 50px; z-index: 99999;">
 <div class="modal-dialog modal-lg">
@@ -4623,7 +4736,7 @@ style="margin-top: 50px; z-index: 99999;">
                 </td>
               </tr>
               <?php if($discount_second_child_elligible){ ?>
-              <tr id="second_child_hide">
+              <tr>
                 <td colspan="2" style="text-align: right; font-weight: bold"><div id="second_child_discount"><p>Sibling Consideration:0%</p></div></td>
                 <td><label style="font-weight: bold" id="second_child_amountlabel" name="second_child_amountlabel">-0</label>
                   <input style="font-weight: bold" type="hidden"
