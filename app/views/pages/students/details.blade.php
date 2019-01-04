@@ -330,7 +330,7 @@ function fullEnrollmentReset(){
       var selected = $("input[name='enrollmentClassesSelect']:checked").val();
     }
 
-    if( remaining_classes < selected && (selected-remaining_classes) != 1) {
+    if( remaining_classes < selected && (selected-remaining_classes) != 1 && (selected-remaining_classes) != 2) {
       var second_discount =  remaining_classes ;
     }else{ 
       var second_discount = 0;
