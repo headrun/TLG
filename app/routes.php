@@ -427,17 +427,28 @@ Route::group(array('prefix' => 'quick'), function() {
 		$inputs       = Input::all();
 		$term         = $inputs['term'];
 		$franchiseeId = Session::get('franchiseId');
-		
 		$customers = Customers::where('franchisee_id', '=', $franchiseeId)
+		                    ->where('mobile_no', 'LIKE', '%' . $term . '%')
+		                    ->selectRaw('CONCAT(customer_name,customer_lastname, " (Parent)", "-", mobile_no) as label, CONCAT(id, "####CST") as id, mobile_no')
+		                    ->get()->toArray();
+		$customers_mobile = Customers::where('franchisee_id', '=', $franchiseeId)
 		                    ->where('customer_name', 'LIKE', '%' . $term . '%')
-		                    ->selectRaw('CONCAT(customer_name,customer_lastname, " (Parent)") as label, CONCAT(id, "####CST") as id')
+		                    ->selectRaw('CONCAT(customer_name,customer_lastname, " (Parent)") as label, CONCAT(id, "####CST") as id, mobile_no')
+		                    ->get()->toArray();
+		$student_id = [];
+		foreach ($customers as $key => $value) {
+		  $student_id[] = $value['id'];
+		}
+		$students_mobile = Students::where('franchisee_id', '=', $franchiseeId)
+							->whereIn('customer_id',$student_id)
+		                    ->selectRaw('CONCAT(student_name, " (Kid)") as label, CONCAT(id, "####STD") as id')
 		                    ->get()->toArray();
 		$students = Students::where('franchisee_id', '=', $franchiseeId)
 							->where('student_name', 'LIKE', '%' . $term . '%')
 		                    ->selectRaw('CONCAT(student_name, " (Kid)") as label, CONCAT(id, "####STD") as id')
 		                    ->get()->toArray();
 			                   
-		$result = array_merge($customers, $students);
+		$result = array_merge($customers, $students_mobile, $customers_mobile, $students);
 			
 		if(isset($result)){
 			return Response::json($result);
