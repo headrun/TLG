@@ -148,9 +148,11 @@ class StudentsController extends \BaseController {
       $paymentDues = PaymentDues::getAllPaymentDuesByStudent($id);
       $customermembership = CustomerMembership::getCustomerMembership($student['0']->customer_id);
                         
-                        $scheduledIntroVisits = IntroVisit::getIntrovisitByStudentId($id);
+      $scheduledIntroVisits = IntroVisit::getIntrovisitByStudentId($id);
       $discountEligibility  = StudentClasses::discount($id, $student['0']->customer_id);
       
+               
+
                         //for dues
                       //  $order_due_data=Orders::getpendingPaymentsid($id);
                        $order_due_data=  PaymentDues::getAllDuebyStudentId($id);
@@ -407,14 +409,41 @@ class StudentsController extends \BaseController {
                                   $batchDetails[$i]['remaining_classes'] = 0;
                               }
                         }
-                       // return $batchDetails;
+
+                      //Introvisit Tab
+
+                      $introvisit_list = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+                                               ->where('student_id', '=', $id)
+                                               ->where('status', '=', 'introvisit')
+                                               ->get();
+                      for($i = 0; $i < count($introvisit_list); $i++){
+                         $batches = Batches::where('id', '=', $introvisit_list[0]['batch_id'])
+                                           ->get();
+                         $introvisit_list[$i]['batch_name'] = $batches[0]['batch_name'];
+                         $introvisit_list[$i]['preferred_time'] = $batches[0]['preferred_time'];
+                         $introvisit_list[$i]['Day'] = date('l', strtotime($batches[0]['start_date']));
+                        
+                      }
+
+                      $makeup_list = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+                                               ->where('student_id', '=', $id)
+                                               ->where('status', '=', 'makeup')
+                                               ->get();
+                      for($i = 0; $i < count($makeup_list); $i++){
+                         $batches = Batches::where('id', '=', $makeup_list[0]['batch_id'])
+                                           ->get();
+                         $makeup_list[$i]['batch_name'] = $batches[0]['batch_name'];
+                         $makeup_list[$i]['preferred_time'] = $batches[0]['preferred_time'];
+                         $makeup_list[$i]['Day'] = date('l', strtotime($batches[0]['start_date']));
+                        
+                      }
 
       $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll','end', 'last_Enrollment_EndDate','attachment_location',
                                                                 'discountEnrollmentData','latestEnrolledData','taxPercentage','tax_data',
                                                                 'discount_second_class_elligible','discount_second_child_elligible','discount_second_child','discount_second_class',
                 'studentEnrollments','customermembership','paymentDues',
                 'scheduledIntroVisits', 'introvisit', 'discountEligibility','paidAmountdata','order_due_data',
-                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata','base_price','stage','batchDetails','payment_made_data_summer');
+                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata','base_price','stage','batchDetails','payment_made_data_summer','introvisit_list','makeup_list');
       return View::make('pages.students.details',compact($dataToView));
     }else{
       return Redirect::action('VaultController@logout');
