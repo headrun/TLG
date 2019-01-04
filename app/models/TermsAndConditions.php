@@ -42,4 +42,12 @@ The taxes paid by you are not refundable.
 
 		return $terms;
 	}
+
+	public static function updateTermsAndCondtions ($inputs) {
+		$update = TermsAndConditions::where('franchisee_id', '=', $inputs['franchisee_id'])
+								    ->update(array(
+								    	'terms_conditions' => $inputs['terms_conditions']
+								    ));
+		return $update;								    
+	}	
 }

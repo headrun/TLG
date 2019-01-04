@@ -31,6 +31,19 @@ class TaxParticulars extends \Eloquent {
         	return $tax;
         }
 
+
+        public static function updateVatTaxParicularNewFranchisee($inputs) {
+                $tax = TaxParticulars::where('franchisee_id', '=', $inputs['franchisee_id'])
+                                     ->where('tax_particular', '=', 'VAT')
+                                     ->update([
+                                        'tax_percentage' => $inputs['vat'],
+                                        'tax_particular_for' => 'both',
+                                        'updated_at' => date('Y-m-d H:i:s'),
+                                        'updated_by' => Session::get('userId')
+                                     ]);
+                return $tax;
+        }
+
         public static function updateCgstTaxParicularNewFranchisee($inputs) {
                 $tax = TaxParticulars::where('franchisee_id', '=', $inputs['franchisee_id'])
                                      ->where('tax_particular', '=', 'CGST')
@@ -52,4 +65,5 @@ class TaxParticulars extends \Eloquent {
                                      ]);
                 return $tax;
         }
+        
 }

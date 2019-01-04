@@ -74,5 +74,35 @@ class Inquiry extends \Eloquent {
          return $inquiry;
             
     }
-        
+
+    static function lastTwoInqNotShed ($inputs) {
+      $lastTwoDays = date('Y-m-d', strtotime('-2 day', strtotime($inputs['start_date'])));
+      $inquiry = Inquiry::where('franchisee_id', '=', Session::get('franchiseId'))
+                        ->whereDate('created_at', '>=',$lastTwoDays)
+                        ->whereDate('created_at', '<=',$inputs['start_date'])
+                        ->get();
+                        
+
+      $iv_ids = array();
+      foreach ($inquiry as $key => $value) {
+        $data = IntroVisit::where('franchisee_id', '=', Session::get('franchiseId'))
+                          ->where('customer_id', '=', $value['customer_id'])
+                          ->where('iv_date', '>=',$lastTwoDays)
+                          ->count();
+        $iv_ids[$key]['customer_id'] = $value['customer_id'];
+        $iv_ids[$key]['status_count'] = $data;
+      }
+      for ($i=0; $i <count($iv_ids) ; $i++) {
+        if($iv_ids[$i]['status_count'] == 0) {  
+          $customers = Customers::where('franchisee_id', '=', Session::get('franchiseId'))
+                                ->where('id', '=', $iv_ids[$i]['customer_id'])
+                                ->get();
+          $iv_ids[$i]['customer_name'] = $customers[0]['customer_name'] . $customers[0]['customer_lastname'];
+          $iv_ids[$i]['mobile_no'] = $customers[0]['mobile_no'];
+          $iv_ids[$i]['email'] = $customers[0]['customer_email'];
+        }
+      }
+      return $iv_ids;
+
+    } 
 }

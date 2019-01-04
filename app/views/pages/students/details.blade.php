@@ -3608,6 +3608,8 @@ id="user_profile">
                                 <li id="attendanceTabheading"class=""><a href="#attendace">Attendance</a></li>
                                 <li id="discoveryTabheading"class=""><a href="#discovery">Discovery</a></li>
                                 <li id="summerTabheading" class=""><a href="#yard">Camps/Yard</a></li>
+                                <li id="intovisitTabheading" class=""><a href="#introvisit">Introvisit</a></li>
+                                <li id="makeupTabheading" class=""><a href="#makeup">Makeup</a></li>
 
                                 <!--<li id="introvisitTabheading"class=""><a href="#introvisit">Intro Visit</a></li>-->
                               </ul>
@@ -3910,211 +3912,210 @@ id="user_profile">
                                                                 </li>
 
 
-                                                                <li id= "attendance">
-                                                                  <div class="md-card">
-                                                                    <div id = "errorMsgDiv"></div>
-                                                                    <br clear = "all"/>
-                                                                    <br clear = "all"/>
-                                                                    <div class="uk-grid" data-uk-grid-margin>
-                                                                      <div class="uk-width-medium-1-3">    
-                                                                        <div class="parsley-row">
-                                                                          <label for="year">Select Year <span class="req">*</span></label><br>
-                                                                          <select id="year" name="year" class="form-control input-sm md-input" required style='padding:0px; font-weight:bold;color: #727272;'>
-                                                                            <option></option>
-                                                                            @for($i = 0; $i< count($AttendanceYeardata); $i++)
-                                                                            <option value = "{{$AttendanceYeardata[$i]->year}}">{{$AttendanceYeardata[$i]->year}}</option>
-                                                                            @endfor
-                                                                          </select>                         
-                                                                        </div>
-                                                                      </div>
-                                                                      <div class="uk-width-medium-1-3">    
-                                                                        <div class="parsley-row">
-                                                                          <label for="batchName">Select Batch Name <span class="req">*</span></label><br>
-                                                                          <select id="batchName" name="batchName" class="form-control input-sm md-input" required style='padding:0px; font-weight:bold;color: #727272;'>
-                                                                            <option></option>
-                                                                            
-                                                                          </select>
-                                                                          <input type = "hidden" value = "{{$student[0]['id']}}" id = "studentIdForAttendance">                         
-                                                                        </div>
-                                                                      </div>
-                                                                      <div class="uk-width-medium-1-3"></div>    
-                                                                    </div>
-                                                                    <br clear = "all"/>
-                                                                    <br clear = "all"/>
-                                                                    <div class="uk-grid data-uk-grid-margin" id="presentDiv">
-                                                                      <div class="uk-width-medium-1-4">
-                                                                        <div class="parsley-row">
-                                                                          <span class="md-btn md-btn-success" style="border-radius: 15px; font-size:12px;">
-                                                                            Present days - <span class = "badge" id = "Pcount" style = "background: #000"></span> 
-                                                                          </span>
-                                                                        </div>
-                                                                      </div>
-                                                                   <!--   <div class="uk-width-medium-1-4">
-                                                                        <div class="parsley-row">
-                                                                          <span class="md-btn md-btn-warning" style="border-radius: 15px; font-size:12px;" id="excusedabsent">
-                                                                            Excused absent - <span class = "badge" id = "EAcount" style = "background: #000"></span>
-                                                                          </span>
-                                                                        </div>
-                                                                      </div> -->
-                                                                      <div class="uk-width-medium-1-4">
-                                                                        <div class="parsley-row">
-                                                                          <span class="md-btn md-btn-danger" style="border-radius: 15px; font-size:12px;">
-                                                                           Absent days - <span class = "badge" id = "Acount" style = "background: #000"></span>
-                                                                         </span>
-                                                                       </div>
-                                                                     </div>
-                                                                     <div class="uk-width-medium-1-4">
-                                                                      <div class="parsley-row">
-                                                                        <span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
-                                                                         Remaining Days - <span class = "badge" id = "Rcount" style = "background: #000"></span>
-                                                                       </span>
-                                                                     </div>
-                                                                   </div>
-                                                                 </div>
-                                                                 <div class="uk-grid data-uk-grid-margin" id="makeupGiven">
-                                                                  <div class="uk-width-medium-1-4">
-                                                                    <div class="parsley-row">
-                                                                      <span class="md-btn md-btn-warning" id='makeupsession' style="border-radius: 15px; font-size:12px;">
-                                                                        Make-up given <span class = "badge" id = "makeup-session" style = "background: #000"></span>
-                                                                      </span>
-                                                                    </div>
-                                                                  </div>
-                                                                  <div class="uk-width-medium-1-4">
-                                                                    <div class="parsley-row">
-                                                                      <span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
-                                                                        Total-Session - <span class = "badge" id = "total-session" style = "background: #000"></span>
-                                                                      </span>
-                                                                    </div>
-                                                                  </div>
-                                                                  <div class="uk-width-medium-1-4">
-                                                                    <div class="parsley-row">
-                                                                      <span class="md-btn md-btn-success" id="Transfers" style="border-radius: 15px; font-size:12px;">
-                                                                      Transfer</span>
-                                                                    </span>
-                                                                  </div>
-                                                                </div>
-                                                                
-                                                                
-                                                                
-                                                                <br clear="all"/>
-                                                                <br clear="all"/>
-                                                                <div class="uk-width-medium-1-1"  id = "AttendanceDiv"> 
-                                                                  
-                                                                </div>
-                                                              </div>
-                                                              <div class="uk-width-medium-1-1"  id = "AttendanceDivForIntrovisit"> 
-                                                                
-                                                              </div>
-                                                            </div>
-                                                            <div class="md-card" style="margin-top: 100px;">
-                                                              <div class='uk-overflow-container'>
-                                                                <table id='reportTable' class='uk-table'>
-                                                                  <thead>
-                                                                    <tr>
-                                                                      <th>Batch Name</th>
-                                                                      <th>Day</th>
-                                                                      <th>Time</th>
-                                                                      <th>Start Date</th>
-                                                                      <th>End Date</th>
-                                                                      <th>Total Classes</th>
-                                                                      <th>Present</th>
-                                                                      <th>Absent</th>
-                                                                      <th>EA</th>
-                                                                      <th>Makeup Given</th>
-                                                                      <th>Remining Classes</th>
-                                                                      <th>Actions</th>
-                                                                    </tr>
-                                                                  </thead>
-                                                                  <tbody> 
-                                                                    <?php if(isset($batchDetails) && !empty($batchDetails)){?>
-                                                                    @foreach($batchDetails as $value)
-                                                                    <tr>
-                                                                      <td>{{ $value['batch_name'] }}</td>
-                                                                      <td>{{ $value['Day'] }}</td>
-                                                                      <td>{{ $value['time'] }}</td>
-                                                                      <td>{{ $value['enrollment_start_date'] }}</td>
-                                                                      <td>{{ $value['enrollment_end_date'] }}</td>
-                                                                      <td >{{ $value['selected_sessions'] }}</td>
-                                                                      <td >{{ $value['present'] }} </td>
-                                                                      <td >{{ $value['Absent']}}</td>
-                                                                      <td >{{ $value['EA'] }}</td>
-                                                                      <td >{{ $value['makeup']  }}</td>
-                                                                      <td >{{ $value['remaining_classes'] }}&nbsp;<span id="stageChange" class="new badge" style="background-color: #7CB342;">{{ $value['stage'] }}</span></td>
-                                                                      
-                                                                      <td><button class="btn btn-primary" onclick="getDatesForAttendance('{{ $value['id']}}', '{{ $value['batch_name']}}','{{ $value['enrollment_start_date'] }}', '{{ $value['enrollment_end_date'] }}')">View Dates</button></td>
-                                                                    </tr>
-                                                                    @endforeach
-                                                                    <?php  }else{ ?>
-                                                                    <tr>
-                                                                      <td>
-                                                                        ------------- No batches found --------------
-                                                                      </td>
-                                                                    </tr>
-                                                                    <?php } ?>
-                                                                  </tbody>
-                                                                </table>  
-                                                              </div>
-                                                            </div>
-                                                          </li>
-                                                          
-                                                            <li id="discovery">   
-                                                              @if(Session::has('imageUploadMessage')) 
-                                                              <div class="uk-alert uk-alert-success" data-uk-alert>
-                                                                <a href="#" class="uk-alert-close uk-close"></a> 
-                                                                {{Session::get('imageUploadMessage') }}
-                                                              </div> <br clear="all" />
-                                                              @endif
-                                                              @if(Session::has('imageDownloadError')) 
-                                                              <div class="uk-alert uk-alert-danger" data-uk-alert>
-                                                                <a href="#" class="uk-alert-close uk-close"></a> 
-                                                                {{Session::get('imageDownloadError') }}
-                                                              </div> <br clear="all" />
-                                                              @endif
-                                                              @if(Session::has('imageDownloadMessage')) 
-                                                              <div class="uk-alert uk-alert-success" data-uk-alert>
-                                                                <a href="#" class="uk-alert-close uk-close"></a> 
-                                                                {{Session::get('imageDownloadMessage') }}
-                                                              </div> <br clear="all" />
-                                                              @endif
-                                                              <h3>Upload Discovery Sheet</h3>
-                                                              <div class="row" style="width:50%;">
-                                                                  <div class="col-md-6">
-                                                                    {{Form::open(array('files'=> true, 'url'=>'students/discovery/picture'))}} 
-                                                                    <span class="md-list-heading">{{Form::file('discoveryPicture',array('required', 'class'=>'form-control'))}}</span><br>
-                                                                    <span class="uk-text-small uk-text-muted"></span>
-                                                                    <input name="studentId"
-                                                                    value="{{$student->id}}" type="hidden" /> 
-                                                                    <input
-                                                                    type="submit" class="md-btn md-btn-primary"
-                                                                    value="Upload Discovery Picture" /><br>
-                                                                    {{Form::close()}}
-                                                                  </div>
-                                                                  <div class="col-md-6" style="margin-top: 50px;">
-                                                                    {{Form::open(array('files'=> true,
-                                                                    'url'=>'students/discovery/download'))}}
-                                                                    <span class="uk-text-small uk-text-muted"></span>
-                                                                    <input name="studentId"
-                                                                    value="{{$student->id}}" type="hidden" /> 
-                                                                    <input type="submit" class="md-btn md-btn-primary"
-                                                                    value="Download Discovery Picture" />
-                                                                    {{Form::close()}}      
-                                                                  </div>
-                                                              </div>
-                                                              @if($attachment_location)
-                                                              <h3 style="margin-top: 50px;margin-bottom: 10px">Uploaded Discovery Sheets</h3>
-                                                              <div class="col-md-7">
-                                                                <div>
-                                                                 <img src="{{ $attachment_location }}", alt="Discovery Sheet", width="400", height="300" margin-top="200"><br />;
-                                                                </div>  
-                                                              </div>
-                                                              @endif
-                                                          </li>
-                <li id="yard">
-                   <div id = "summerMsgDiv"></div>
-                   <h3>Camps / Yard</h3></br>
-                   {{ Form::open(array('url' => '/students/enrollYard', "class"=>"uk-form-stacked", 'method' => 'post')) }}
-                                  <div class="uk-grid" data-uk-grid-margin>
-                    <div class="uk-width-medium-1-5">
+            <li id= "attendance">
+              <div class="md-card">
+                <div id = "errorMsgDiv"></div>
+                  <br clear = "all"/>
+                  <br clear = "all"/>
+                    <div class="uk-grid" data-uk-grid-margin>
+                      <div class="uk-width-medium-1-3">    
+                        <div class="parsley-row">
+                          <label for="year">Select Year <span class="req">*</span></label><br>
+                            <select id="year" name="year" class="form-control input-sm md-input" required style='padding:0px; font-weight:bold;color: #727272;'>
+                              <option></option>
+                                @for($i = 0; $i< count($AttendanceYeardata); $i++)
+                                <option value = "{{$AttendanceYeardata[$i]->year}}">{{$AttendanceYeardata[$i]->year}}</option>
+                                @endfor
+                            </select>                         
+                        </div>
+                      </div>
+                 <div class="uk-width-medium-1-3">    
+                    <div class="parsley-row">
+                      <label for="batchName">Select Batch Name <span class="req">*</span></label><br>
+                      <select id="batchName" name="batchName" class="form-control input-sm md-input" required style='padding:0px; font-weight:bold;color: #727272;'>
+                        <option></option>
+                        
+                      </select>
+                      <input type = "hidden" value = "{{$student[0]['id']}}" id = "studentIdForAttendance">                         
+                    </div>
+                  </div>
+                  <div class="uk-width-medium-1-3"></div>    
+                </div>
+                  <br clear = "all"/>
+                  <br clear = "all"/>
+                    <div class="uk-grid data-uk-grid-margin" id="presentDiv">
+                      <div class="uk-width-medium-1-4">
+                        <div class="parsley-row">
+                          <span class="md-btn md-btn-success" style="border-radius: 15px; font-size:12px;">
+                            Present days - <span class = "badge" id = "Pcount" style = "background: #000"></span> 
+                          </span>
+                        </div>
+                      </div>
+               <!--   <div class="uk-width-medium-1-4">
+                    <div class="parsley-row">
+                      <span class="md-btn md-btn-warning" style="border-radius: 15px; font-size:12px;" id="excusedabsent">
+                        Excused absent - <span class = "badge" id = "EAcount" style = "background: #000"></span>
+                      </span>
+                    </div>
+                  </div> -->
+                  <div class="uk-width-medium-1-4">
+                    <div class="parsley-row">
+                      <span class="md-btn md-btn-danger" style="border-radius: 15px; font-size:12px;">
+                       Absent days - <span class = "badge" id = "Acount" style = "background: #000"></span>
+                     </span>
+                   </div>
+                 </div>
+                 <div class="uk-width-medium-1-4">
+                  <div class="parsley-row">
+                    <span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
+                     Remaining Days - <span class = "badge" id = "Rcount" style = "background: #000"></span>
+                   </span>
+                 </div>
+               </div>
+             </div>
+             <div class="uk-grid data-uk-grid-margin" id="makeupGiven">
+              <div class="uk-width-medium-1-4">
+                <div class="parsley-row">
+                  <span class="md-btn md-btn-warning" id='makeupsession' style="border-radius: 15px; font-size:12px;">
+                    Make-up given <span class = "badge" id = "makeup-session" style = "background: #000"></span>
+                  </span>
+                </div>
+              </div>
+              <div class="uk-width-medium-1-4">
+                <div class="parsley-row">
+                  <span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
+                    Total-Session - <span class = "badge" id = "total-session" style = "background: #000"></span>
+                  </span>
+                </div>
+              </div>
+              <div class="uk-width-medium-1-4">
+                <div class="parsley-row">
+                  <span class="md-btn md-btn-success" id="Transfers" style="border-radius: 15px; font-size:12px;">
+                  Transfer</span>
+                </span>
+              </div>
+            </div>
+            
+            
+            
+            <br clear="all"/>
+            <br clear="all"/>
+            <div class="uk-width-medium-1-1"  id = "AttendanceDiv"> 
+              
+            </div>
+          </div>
+          <div class="uk-width-medium-1-1"  id = "AttendanceDivForIntrovisit"> 
+            
+          </div>
+        </div>
+        <div class="md-card" style="margin-top: 100px;">
+          <div class='uk-overflow-container'>
+            <table id='reportTable' class='uk-table'>
+              <thead>
+                <tr>
+                  <th>Batch Name</th>
+                  <th>Day</th>
+                  <th>Time</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Total Classes</th>
+                  <th>Present</th>
+                  <th>Absent</th>
+                  <th>EA</th>
+                  <th>Makeup Given</th>
+                  <th>Remining Classes</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody> 
+                <?php if(isset($batchDetails) && !empty($batchDetails)){?>
+                @foreach($batchDetails as $value)
+                <tr>
+                  <td>{{ $value['batch_name'] }}</td>
+                  <td>{{ $value['Day'] }}</td>
+                  <td>{{ $value['time'] }}</td>
+                  <td>{{ $value['enrollment_start_date'] }}</td>
+                  <td>{{ $value['enrollment_end_date'] }}</td>
+                  <td >{{ $value['selected_sessions'] }}</td>
+                  <td >{{ $value['present'] }} </td>
+                  <td >{{ $value['Absent']}}</td>
+                  <td >{{ $value['EA'] }}</td>
+                  <td >{{ $value['makeup']  }}</td>
+                  <td >{{ $value['remaining_classes'] }}&nbsp;<span id="stageChange" class="new badge" style="background-color: #7CB342;">{{ $value['stage'] }}</span></td>
+                  
+                  <td><button class="btn btn-primary" onclick="getDatesForAttendance('{{ $value['id']}}', '{{ $value['batch_name']}}','{{ $value['enrollment_start_date'] }}', '{{ $value['enrollment_end_date'] }}')">View Dates</button></td>
+                </tr>
+                @endforeach
+                <?php  }else{ ?>
+                <tr>
+                  <td>
+                    ------------- No batches found --------------
+                  </td>
+                </tr>
+                <?php } ?>
+              </tbody>
+            </table>  
+          </div>
+        </div>
+      </li>
+                                          <li id="discovery">   
+                                            @if(Session::has('imageUploadMessage')) 
+                                            <div class="uk-alert uk-alert-success" data-uk-alert>
+                                              <a href="#" class="uk-alert-close uk-close"></a> 
+                                              {{Session::get('imageUploadMessage') }}
+                                            </div> <br clear="all" />
+                                            @endif
+                                            @if(Session::has('imageDownloadError')) 
+                                            <div class="uk-alert uk-alert-danger" data-uk-alert>
+                                              <a href="#" class="uk-alert-close uk-close"></a> 
+                                              {{Session::get('imageDownloadError') }}
+                                            </div> <br clear="all" />
+                                            @endif
+                                            @if(Session::has('imageDownloadMessage')) 
+                                            <div class="uk-alert uk-alert-success" data-uk-alert>
+                                              <a href="#" class="uk-alert-close uk-close"></a> 
+                                              {{Session::get('imageDownloadMessage') }}
+                                            </div> <br clear="all" />
+                                            @endif
+                                            <h3>Upload Discovery Sheet</h3>
+                                            <div class="row" style="width:50%;">
+                                                <div class="col-md-6">
+                                                  {{Form::open(array('files'=> true, 'url'=>'students/discovery/picture'))}} 
+                                                  <span class="md-list-heading">{{Form::file('discoveryPicture',array('required', 'class'=>'form-control'))}}</span><br>
+                                                  <span class="uk-text-small uk-text-muted"></span>
+                                                  <input name="studentId"
+                                                  value="{{$student->id}}" type="hidden" /> 
+                                                  <input
+                                                  type="submit" class="md-btn md-btn-primary"
+                                                  value="Upload Discovery Picture" /><br>
+                                                  {{Form::close()}}
+                                                </div>
+                                                <div class="col-md-6" style="margin-top: 50px;">
+                                                  {{Form::open(array('files'=> true,
+                                                  'url'=>'students/discovery/download'))}}
+                                                  <span class="uk-text-small uk-text-muted"></span>
+                                                  <input name="studentId"
+                                                  value="{{$student->id}}" type="hidden" /> 
+                                                  <input type="submit" class="md-btn md-btn-primary"
+                                                  value="Download Discovery Picture" />
+                                                  {{Form::close()}}      
+                                                </div>
+                                            </div>
+                                            @if($attachment_location)
+                                            <h3 style="margin-top: 50px;margin-bottom: 10px">Uploaded Discovery Sheets</h3>
+                                            <div class="col-md-7">
+                                              <div>
+                                               <img src="{{ $attachment_location }}", alt="Discovery Sheet", width="400", height="300" margin-top="200"><br />;
+                                              </div>  
+                                            </div>
+                                            @endif
+                                        </li>
+							  <li id="yard">
+							     <div id = "summerMsgDiv"></div>
+							     <h3>Camps / Yard</h3></br>
+							     {{ Form::open(array('url' => '/students/enrollYard', "class"=>"uk-form-stacked", 'method' => 'post')) }}
+                        					<div class="uk-grid" data-uk-grid-margin>
+								    <div class="uk-width-medium-1-5">
                                                                         <div class="parsley-row form-group">
                                                                                 <label for="typeOfClass">Type Of Class</label><br>
                                                                                         {{Form::select('typeOfClass',array('camps'=> 'camps','yard'=> 'yard'),
@@ -4155,26 +4156,26 @@ id="user_profile">
                                                                                         {{Form::number('taxPercentageForSummer',18,array('id'=>'taxPercentageForSummer','class'=>'form-control'))}}
                                                                         </div>
                                                                     </div>
-                 </div>
-                 <div class="uk-grid" data-uk-grid-margin>
-                    <div class="uk-width-medium-1-5">
-                  <div class="parsely-row form-group">
-                    <label for="totalAmountForYard">Total Amount</label><br>
-                      {{Form::number('totalAmountForSummer',null,array('id'=>'totalAmountForSummer','class'=>'form-control','readonly'))}}
+								 </div>
+								 <div class="uk-grid" data-uk-grid-margin>
+								    <div class="uk-width-medium-1-5">
+									<div class="parsely-row form-group">
+										<label for="totalAmountForYard">Total Amount</label><br>
+											{{Form::number('totalAmountForSummer',null,array('id'=>'totalAmountForSummer','class'=>'form-control','readonly'))}}
 
-                  </div>
-                    </div>
+									</div>
+								    </div>
+								</div>
+								<div class="row pull-right">
+   					      <div class="uk-width-1-2">
+     					      <div class="parsley-row" style="padding: 25px 30px;">
+        						  <button type="button" class="md-btn md-btn-primary summer-cls-btn">Enroll</button>
+     						    </div>
+   					      </div>
                 </div>
-                <div class="row pull-right">
-                                        <div class="uk-width-1-2">
-                                            <div class="parsley-row" style="padding: 25px 30px;">
-                                            <button type="button" class="md-btn md-btn-primary summer-cls-btn">Enroll</button>
-                                        </div>
-                                        </div>
-                                  </div>
-                                       {{ Form::close() }}<br>
-        
-                  <div class="md-card" style="margin-top: 100px;">
+                      					       {{ Form::close() }}<br>
+				
+							    <div class="md-card" style="margin-top: 100px;">
                                                               <div class='uk-overflow-container'>
                 <h3>Payments Made</h3>
                                                                 <table id='reportTable' class='uk-table'>
@@ -4208,18 +4209,116 @@ id="user_profile">
                                                                                     </tr>
                                                                                     <?php }  
                                                                                   
-                                                                                } ?>                    
-                  </tbody>
-                </table>
-                    </div>
-                   </div>
-                </li>
-                                                        </ul>
-                                                      </div>
-                                                    </div>
-                                                  </div>
+                                                                                } ?>										
+								  </tbody>
+								</table>
+							      </div>
+							     </div>
+							  </li>
+              <li id = "introvisit">
+                <div class="md-card">
+                  <div id = "errorMsgDiv"></div>
+                    <div class="uk-grid data-uk-grid-margin" id="makeupGiven">  
+                      <div class="uk-width-medium-1-1"  id = "AttendanceDiv"> 
+                        <div class="md-card" style="margin-top: 100px;">
+                          <div class='uk-overflow-container'>
+                            <table id='reportTable' class='uk-table'>
+                              <thead>
+                                <tr>
+                                  <th>Batch Name</th>
+                                  <th>Day</th>
+                                  <th>Time</th>
+                                  <th>IV Date</th>
+                                </tr>
+                              </thead>
+                              
 
-                                                </div>
+                              <tbody> 
+                                <?php if(count($introvisit_list) != 0){?>
+                                @foreach($introvisit_list as $value)
+                                <tr>
+                                  <td>{{ $value['batch_name'] }}</td>
+                                  <td>{{ $value['Day'] }}</td>
+                                  <td>{{ $value['preferred_time'] }}</td>
+                                  <td>{{ $value['enrollment_start_date'] }}</td>
+                                                   
+                                </tr>
+                                @endforeach
+                                <?php  }else{ ?>
+                                <tr>
+                                  <td>
+                                    ------------- No records found --------------
+                                  </td>
+                                </tr>
+                                <?php } ?>
+                              </tbody>
+                                 
+
+                                
+
+                            </table>  
+                          </div>
+                        </div>
+                      </div>
+                    </div>       
+                </div>
+              </li>
+
+              <li id = "makeup">
+                <div class="md-card">
+                  <div id = "errorMsgDiv"></div>
+                    <div class="uk-grid data-uk-grid-margin" id="makeupGiven">  
+                      <div class="uk-width-medium-1-1"  id = "AttendanceDiv"> 
+                        <div class="md-card" style="margin-top: 100px;">
+                          <div class='uk-overflow-container'>
+                            <table id='reportTable' class='uk-table'>
+                              <thead>
+                                <tr>
+                                  <th>Batch Name</th>
+                                  <th>Day</th>
+                                  <th>Time</th>
+                                  <th>Makeup Date</th>
+                                </tr>
+                              </thead>
+                              
+
+                              <tbody> 
+                                <?php if(count($makeup_list) != 0){?>
+                                @foreach($makeup_list as $value)
+                                <tr>
+                                  <td>{{ $value['batch_name'] }}</td>
+                                  <td>{{ $value['Day'] }}</td>
+                                  <td>{{ $value['preferred_time'] }}</td>
+                                  <td>{{ $value['enrollment_start_date'] }}</td>
+                                                   
+                                </tr>
+                                @endforeach
+                                <?php  }else{ ?>
+                                <tr>
+                                  <td>
+                                    ------------- No records found --------------
+                                  </td>
+                                </tr>
+                                <?php } ?>
+                              </tbody>
+                                 
+
+                                
+
+                            </table>  
+                          </div>
+                        </div>
+                      </div>
+                    </div>       
+                </div>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+        </div>
+
+        </div>
 
 <!-- 
 15

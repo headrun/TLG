@@ -49,39 +49,39 @@ class StudentsController extends \BaseController {
   }
         
   public function enrolledstudents(){
-            if(Auth::check()){
-                $currentPage  =  "ENROLLEDSTUDENTS";
-                $mainMenu     =  "STUDENTS_MAIN";
-                $students = StudentClasses::getAllEnrolledStudents(Session::get('franchiseId'));
-		$status_array = array();
-		foreach($students as $key=> $value) {
-			$list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
-                                                   ->where('student_id', '=', $value['student_id'])
-                                                   ->where('end_order_date', '>=', date('Y-m-d'))
-						   ->where('payment_due_for', '=', 'enrollment')
-                                                   ->count();
-                        if($list > 1){
-                                $status = 'Multiple';
-                        }else{  
-                                $status = 'Single';
-                        }
-                       $status_array[$value['student_id']] = array('status'=> $status
-                                                                     );
-                }
-		foreach($students as $key=> $value) {
-                            $students[$key]['status'] = '';
-                            if(array_key_exists($value['student_id'], $status_array)) {
-                                $students[$key]['status'] = $status_array[$value['student_id']]['status'];
-                            }
-                        }
-		
-                $dataToView = array('students','currentPage', 'mainMenu');
-                return View::make('pages.students.enrolledstudentslist', compact($dataToView));
-            }else{
-      return Redirect::action('VaultController@logout');
-            }
-    
+    if(Auth::check()){
+        $currentPage  =  "ENROLLEDSTUDENTS";
+        $mainMenu     =  "STUDENTS_MAIN";
+        $students = StudentClasses::getAllEnrolledStudents(Session::get('franchiseId'));
+        $status_array = array();
+    		foreach($students as $key=> $value) {
+    			$list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                             ->where('student_id', '=', $value['student_id'])
+                             ->where('end_order_date', '>=', date('Y-m-d'))
+                              ->where('payment_due_for', '=', 'enrollment')
+                             ->count();
+          if($list > 1){
+                  $status = 'Multiple';
+          }else{  
+                  $status = 'Single';
+          }
+          $status_array[$value['student_id']] = array('status'=> $status
+                                                                         );
         }
+		    foreach($students as $key=> $value) {
+            $students[$key]['status'] = '';
+            if(array_key_exists($value['student_id'], $status_array)) {
+                $students[$key]['status'] = $status_array[$value['student_id']]['status'];
+            }
+        }
+		
+        $dataToView = array('students','currentPage', 'mainMenu');
+        return View::make('pages.students.enrolledstudentslist', compact($dataToView));
+      }else{
+        return Redirect::action('VaultController@logout');
+      }
+    
+  }
   public function addstudent(){
             if(Auth::check()){
     $inputs = Input::all();
@@ -148,9 +148,11 @@ class StudentsController extends \BaseController {
       $paymentDues = PaymentDues::getAllPaymentDuesByStudent($id);
       $customermembership = CustomerMembership::getCustomerMembership($student['0']->customer_id);
                         
-                        $scheduledIntroVisits = IntroVisit::getIntrovisitByStudentId($id);
+      $scheduledIntroVisits = IntroVisit::getIntrovisitByStudentId($id);
       $discountEligibility  = StudentClasses::discount($id, $student['0']->customer_id);
       
+               
+
                         //for dues
                       //  $order_due_data=Orders::getpendingPaymentsid($id);
                        $order_due_data=  PaymentDues::getAllDuebyStudentId($id);
@@ -211,7 +213,7 @@ class StudentsController extends \BaseController {
                         }
                     // Getting latest batches for showing in header of student tab
                         $latestEnrolledData = StudentClasses::where('student_id','=',$id)
-							    ->where('enrollment_end_date', '>=', date('Y-m-d'))
+							                                              ->where('enrollment_end_date', '>=', date('Y-m-d'))
                                                             ->orderBy('created_at','desc')
                                                             ->limit(2)
                                                             ->get();
@@ -242,8 +244,7 @@ class StudentsController extends \BaseController {
 			 
 			
                     //getting the data from payment_master
-                        $payments_master_details = PaymentMaster::where('student_id','=',$id)
-                                                                  ->where('order_id','<>','0')
+                        $payments_master_details = PaymentDues::where('student_id','=',$id)
                                                                   ->distinct('payment_no')
                                                                   ->select('payment_no')
                                                                   ->get();
@@ -267,7 +268,7 @@ class StudentsController extends \BaseController {
 
                               		$payment_made_data[$i][$j]['time'] = $start_time[0].':'.$start_time[1].'-'.$end_time[0].':'.$end_time[1];
                               
-                              		$payment_made_data[$i][$j]['receivedname'] = $batch_user->first_name.$batch_user->last_name;
+                              		$payment_made_data[$i][$j]['receivedname'] = $batch_user['first_name'].$batch_user['last_name'];
                               
                               		$payment_made_data[$i][$j]['class_name'] = $batch_name[0]['batch_name'];
                             	}
@@ -336,7 +337,7 @@ class StudentsController extends \BaseController {
                                               ->get();
                               $bacth_name = explode('-', $batch[0 ]['batch_name']); 
                               $batchDetails[$i]['batch_name'] = $bacth_name[0].' '.$bacth_name[1].' '.$bacth_name[2];
-                              $batchDetails[$i]['Day'] = date('l', strtotime($batch[0]['start_date']));
+                              $batchDetails[$i]['Day'] = date('l', strtotime($batch_id[$i]['enrollment_start_date']));
                               $timeStart = explode(':',$batch[0]['preferred_time']);
                               $timeEnd = explode(':',$batch[0]['preferred_end_time']);
                               $batchDetails[$i]['time'] = $timeStart[0].':'.$timeStart[1].'-'.$timeEnd[0].':'.$timeEnd[1]; 
@@ -408,14 +409,41 @@ class StudentsController extends \BaseController {
                                   $batchDetails[$i]['remaining_classes'] = 0;
                               }
                         }
-                       // return $batchDetails;
+
+                      //Introvisit Tab
+
+                      $introvisit_list = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+                                               ->where('student_id', '=', $id)
+                                               ->where('status', '=', 'introvisit')
+                                               ->get();
+                      for($i = 0; $i < count($introvisit_list); $i++){
+                         $batches = Batches::where('id', '=', $introvisit_list[0]['batch_id'])
+                                           ->get();
+                         $introvisit_list[$i]['batch_name'] = $batches[0]['batch_name'];
+                         $introvisit_list[$i]['preferred_time'] = $batches[0]['preferred_time'];
+                         $introvisit_list[$i]['Day'] = date('l', strtotime($batches[0]['start_date']));
+                        
+                      }
+
+                      $makeup_list = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+                                               ->where('student_id', '=', $id)
+                                               ->where('status', '=', 'makeup')
+                                               ->get();
+                      for($i = 0; $i < count($makeup_list); $i++){
+                         $batches = Batches::where('id', '=', $makeup_list[0]['batch_id'])
+                                           ->get();
+                         $makeup_list[$i]['batch_name'] = $batches[0]['batch_name'];
+                         $makeup_list[$i]['preferred_time'] = $batches[0]['preferred_time'];
+                         $makeup_list[$i]['Day'] = date('l', strtotime($batches[0]['start_date']));
+                        
+                      }
 
       $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll','end', 'last_Enrollment_EndDate','attachment_location',
                                                                 'discountEnrollmentData','latestEnrolledData','taxPercentage','tax_data',
                                                                 'discount_second_class_elligible','discount_second_child_elligible','discount_second_child','discount_second_class',
                 'studentEnrollments','customermembership','paymentDues',
                 'scheduledIntroVisits', 'introvisit', 'discountEligibility','paidAmountdata','order_due_data',
-                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata','base_price','stage','batchDetails','payment_made_data_summer');
+                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata','base_price','stage','batchDetails','payment_made_data_summer','introvisit_list','makeup_list');
       return View::make('pages.students.details',compact($dataToView));
     }else{
       return Redirect::action('VaultController@logout');
