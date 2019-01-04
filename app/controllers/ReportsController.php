@@ -610,7 +610,7 @@ class ReportsController extends \BaseController {
             }
         }
 
-        public static function getMisMatchReports () {
+        /*  public static function getMisMatchReports () {
             if((Auth::check()) && (Session::get('userType'))=='ADMIN'){
                 $data = DB::select(DB::raw("SELECT student_id,enrollment_start_date, enrollment_end_date,selected_sessions, 
                     ROUND((DATEDIFF(enrollment_end_date,enrollment_start_date))/7) as count from student_classes 
@@ -618,6 +618,40 @@ class ReportsController extends \BaseController {
                     and enrollment_end_date >= '2018-10-18'"));
                 if ($data) {
                     return Response::json(array('status'=>'success', 'data' => $data));
+                } else {
+                    return Response::json(array('status'=>'failed'));
+                }
+            }
+        }  */
+
+        public static function getMisMatchReports () {
+            if((Auth::check()) && (Session::get('userType'))=='ADMIN'){
+                $finalData = [];
+                $finalDataForDisplay = [];
+                $data = DB::select(DB::raw("SELECT cust.customer_name,cust.customer_email,cust.mobile_no , s.id, s.student_name, ROUND(DATEDIFF('2018-10-24', s.student_date_of_birth) / 365.25) as age,cls.class_name, sc.enrollment_start_date, sc.enrollment_end_date, cs.course_name,
+                    sc.selected_sessions from students s, student_classes sc,classes c, courses cs, customers cust, classes cls where s.franchisee_id = ".Session::get('franchiseId')." and
+                    sc.franchisee_id = ".Session::get('franchiseId')." and s.id = sc.student_id and status != 'introvisit' and cls.id = sc.class_id and
+                    sc.class_id = c.id and c.course_id = cs.id and sc.status != 'makeup' and s.customer_id = cust.id ORDER BY sc.created_at DESC"));
+                foreach ($data as $key => $value) {
+                    if (array_key_exists($value->id,$finalData)) {
+                        array_push($finalData[$value->id], $value);
+                    } else {
+                        $finalData[$value->id][0]['id'] = $value->id;
+                        $finalData[$value->id][0]['customer_name'] = $value->customer_name;
+                        $finalData[$value->id][0]['customer_email'] = $value->customer_email;
+                        $finalData[$value->id][0]['mobile_no'] = $value->mobile_no;
+                        $finalData[$value->id][0]['student_name'] = $value->student_name;
+                        $finalData[$value->id][0]['age'] = $value->age;
+                        $finalData[$value->id][0]['class_name'] = $value->class_name;
+                        $finalData[$value->id][0]['enrollment_start_date'] = $value->enrollment_start_date;
+                        $finalData[$value->id][0]['enrollment_end_date'] = $value->enrollment_end_date;
+                        $finalData[$value->id][0]['course_name'] = $value->course_name;
+                        $finalData[$value->id][0]['selected_sessions'] = $value->selected_sessions;
+                    }
+                }
+
+                if ($finalData) {
+                    return Response::json(array('status'=>'success', 'data' => $finalData));
                 } else {
                     return Response::json(array('status'=>'failed'));
                 }
