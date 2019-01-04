@@ -140,9 +140,13 @@ class FranchiseeController extends \BaseController {
           $updateFranchiseeAnnaulMembership = MembershipTypes::updateAnnaulMembershipFranchisee($inputs);
           $updateFranchiseeLifetimeMembership = MembershipTypes::updateLifeTimeMembershipFranchisee($inputs);
           $updateFranchiseePaymentTax = PaymentTax::updatePaymentTaxForNewFranchisee($inputs);
-          $updateFranchiseeCgstTaxParticular = TaxParticulars::updateCgstTaxParicularNewFranchisee($inputs);
-          $updateFranchiseeSgstTaxParticular = TaxParticulars::updateSgstTaxParicularNewFranchisee($inputs);
-          if($updateFranchiseeSgstTaxParticular){			
+          if($inputs['franchisee_id'] != 11){
+	          $updateFranchiseeCgstTaxParticular = TaxParticulars::updateCgstTaxParicularNewFranchisee($inputs);
+	          $updateFranchiseeSgstTaxParticular = TaxParticulars::updateSgstTaxParicularNewFranchisee($inputs);
+          }else{									
+          	$updateFranchiseeVatTaxParticular = TaxParticulars::updateVatTaxParicularNewFranchisee($inputs);
+          }
+          if($updateFranchisee){			
           	return Response::json(array('status'=>'success'));
           }else{
           	return Response::json(array('status'=>'failure'));
@@ -169,7 +173,10 @@ class FranchiseeController extends \BaseController {
             					               ->get();
             $sgst = TaxParticulars::where('franchisee_id','=',$inputs['franchisee_id'])
             					               ->where('tax_particular', '=', 'SGST')
-            					               ->get();            					                                              	
+            					               ->get();
+            $vat = TaxParticulars::where('franchisee_id','=',$inputs['franchisee_id'])
+            					               ->where('tax_particular', '=', 'VAT')
+            					               ->get();         					                                              	
 	        if($franchiseDetails){
 	          return Response::json(array('status'=> "success", 'franchisee_data' => $franchiseDetails,
 	          	                          'bday_data'=>$bdayDetails,
@@ -178,7 +185,8 @@ class FranchiseeController extends \BaseController {
 	          							  'annual' => $annual,
 	          							  'lifetime' => $lifetime,
 	          							  'cgst' => $cgst,
-	          							  'sgst' => $sgst
+	          							  'sgst' => $sgst,
+	          							  'vat' => $vat
 	          							  )
 	                                );
 	        }else{
