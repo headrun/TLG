@@ -14,6 +14,7 @@ class InvoiceData extends \Eloquent {
     	$invoice->service_tax_no = $inputs['service_tax_no'];
     	$invoice->tin_no = $inputs['tin_no'];
     	$invoice->tan_no = '';
+        $invoice->gst_no = $inputs['gst_no'];
     	$invoice->created_at = date("Y-m-d H:i:s");
     	$invoice->save();
     	
@@ -27,7 +28,8 @@ class InvoiceData extends \Eloquent {
                                       'legal_entry_name' => $inputs['legalEntity'],
                                       'pan_no' => $inputs['pan_no'],
                                       'service_tax_no' => $inputs['service_tax_no'],
-                                      'tin_no' => $inputs['tin_no']
+                                      'tin_no' => $inputs['tin_no'],
+                                      'gst_no' => $inputs['gst_no'],
                                     ]);
 
         return $updateDetails;                                    

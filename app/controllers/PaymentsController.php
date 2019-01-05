@@ -378,6 +378,8 @@ class PaymentsController extends \BaseController {
 			//getting data for printing 
 			$orderid = Crypt::decrypt($oid);
 			$order_data = Orders::find($orderid);
+            $invoice_data = InvoiceData::where('franchise_id', '=', Session::get('franchiseId'))->get();
+
 			if($order_data->payment_for=='birthday'){
 				PaymentsController:: printBdayOrder($oid);
 			}
@@ -410,7 +412,7 @@ class PaymentsController extends \BaseController {
 			}
 			$data=array('order_data','customer_data','membership_data',
 						'membership_type','paymentDueDetails','franchisee_data',
-						'getTermsAndConditions');
+						'getTermsAndConditions', 'invoice_data');
 			return View::make( 'pages.orders.membershipprintorder',compact ($data) ); 
 
 		}else{
