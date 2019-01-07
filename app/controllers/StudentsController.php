@@ -594,7 +594,7 @@ class StudentsController extends \BaseController {
     $destinationPath = 'assets/discovery_images/';
     $filename = $file->getClientOriginalName();   
     $fileExtension = '.'.$file->getClientOriginalExtension();
-    $filename = 'discovery_'.$studentId.'.jpg';
+    $filename = 'discovery_'.$studentId.$fileExtension;
     $discovery_image = Input::file('discoveryPicture')->move($destinationPath, $filename);
 
     Session::flash('imageUploadMessage', "Discovery Sheet is uploaded successfully." );    
@@ -613,9 +613,9 @@ class StudentsController extends \BaseController {
     }
     
     if (file_exists($attachment_location)) {
-      define('DIRECTORY', '/home/bala/discoverysheet');
+      define('DIRECTORY', '');
        $content = file_get_contents('assets/discovery_images/discovery_'.$studentId.'.jpg','D');
-      file_put_contents(  DIRECTORY . '/images/discovery_'.$studentId.'.jpg', $content);
+      file_put_contents(  DIRECTORY . 'discovery_'.$studentId.'.jpg', $content);
         /*$pdf = new MPDF();
         $pdf->AddPage();
         $pdf->Image($attachment_location,15,20,300,240);
