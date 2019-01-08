@@ -21,7 +21,6 @@
 		else{
 			childCheck = '0';	
 		}
-
 		$.ajax({
         		type: "POST",
         		url: "{{URL::to('/quick/approvingDiscounts')}}",
@@ -31,6 +30,7 @@
         		{
         			if (response.status == "success") {
         				$('#msgDiv').html('<h5 class = "uk-alert-success" style = "color: #fff; width: 90%; padding: 10px; text-align: center"> Changes are saved Successfully. Please wait untill this page reload</h5>');			
+        				// $('#enableDisLoad').show();
         				setTimeout(function(){
  							window.location.reload(1);
            				}, 3500);
@@ -51,6 +51,12 @@
 		<li><a href="#" style="z-index:8;">Discounts</a></li>
 		<li><a href="#" style="z-index:7;">Enable/Desable Discounts</a></li>
 	</ul>
+</div>
+<div id="enableDisLoad" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Changes saved successfully.Please wait . . .
+    </p>
 </div>
 <br clear="all"/>
 

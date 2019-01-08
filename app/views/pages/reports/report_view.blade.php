@@ -4,7 +4,7 @@
 	<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.print.css" media="all"> -->
 	<link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.common-material.min.css"/>
     <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.material.min.css"/>
-    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel='stylesheet' />
+    <link href='{{url()}}/assets/css/bootstrap.min.css' rel='stylesheet' />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- <link href="https://cdn.datatables.net/buttons/1.2.0/css/buttons.dataTables.min.css" rel="stylesheet"> -->
 @stop
@@ -529,9 +529,54 @@
                                             '<th>Customer Name</th>'+
                                             '<th>Kid Name</th>'+
                                             '<th>Type of Call</th>'+
+                                            '<th>Comment</th>'+
+                                            '<th>Reminder Date</th>'+
+                                            '<th>Status</th>'+
+                                            '</tr>'+
+                                            '</thead>';
+                                for(var i=0;i<response[0]['data'].length;i++){
+                                    header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
+                                          response[0]['data'][i]['student_name']+"</td><td>"+
+                                          response[0]['data'][i]['followup_type']+"</td><td>"+
+                                          response[0]['data'][i]['log_text']+"</td><td>"+
+                                          response[0]['data'][i]['reminder_date']+"</td><td>"+
+                                          response[0]['data'][i]['followup_status']+"</td></tr>";
+                                    }
+                                    header_data+="</table></div></div>";
+                                    console.log(header_data);
+                                    $('#reportdata').html(header_data);
+                                    $("#reportTable").DataTable({
+                                        "ordering": false,
+                                        dom: 'Bfrtip',
+                                            buttons: [
+                                                'excelHtml5',
+                                                'csvHtml5',
+                                                'pdfHtml5'
+                                            ],
+                                            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                                                /*$(nRow).click(function() {
+                                                  window.location = $(this).find('a').attr('href');
+                                                });
+
+                                                return nRow;*/
+                                           },
+                                           "iDisplayLength": 10,
+                                           "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                       });
+                            }else if(response[1]==='Calls_Made'){
+                                var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Calls Made Report</h3>"+
+                                            "<div class='md-card-content'>"+
+                                                "<div class='uk-overflow-container'>"+
+                                            "<table id='reportTable' class='uk-table'>"+
+                                            "<thead>"+
+                                            '<tr>'+
+                                            '<th>Customer Name</th>'+
+                                            '<th>Kid Name</th>'+
+                                            '<th>Type of Call</th>'+
                                             '<th>Schedule Date</th>'+
                                             '<th>Comment</th>'+
                                             '<th>Status</th>'+
+                                            '<th>Created At</th>'+
                                             '</tr>'+
                                             '</thead>';
                                 for(var i=0;i<response[0]['data'].length;i++){
@@ -540,7 +585,53 @@
                                           response[0]['data'][i]['followup_type']+"</td><td>"+
                                           response[0]['data'][i]['reminder_date']+"</td><td>"+
                                           response[0]['data'][i]['log_text']+"</td><td>"+
-                                          response[0]['data'][i]['followup_status']+"</td></tr>";
+                                          response[0]['data'][i]['followup_status']+"</td><td>"+
+                                          response[0]['data'][i]['created_at']+"</td></tr>";
+                                    }
+                                    header_data+="</table></div></div>";
+                                    console.log(header_data);
+                                    $('#reportdata').html(header_data);
+                                    $("#reportTable").DataTable({
+                                        dom: 'Bfrtip',
+                                            buttons: [
+                                                'excelHtml5',
+                                                'csvHtml5',
+                                                'pdfHtml5'
+                                            ],
+                                            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                                                /*$(nRow).click(function() {
+                                                  window.location = $(this).find('a').attr('href');
+                                                });
+
+                                                return nRow;*/
+                                           },
+                                           "iDisplayLength": 10,
+                                           "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                                       });
+			    }else if(response[1]==='Calls_Made'){
+                                var header_data="<h3 style='padding-top:20px;padding-left:20px;'>Calls Made Report</h3>"+
+                                            "<div class='md-card-content'>"+
+                                                "<div class='uk-overflow-container'>"+
+                                            "<table id='reportTable' class='uk-table'>"+
+                                            "<thead>"+
+                                            '<tr>'+
+                                            '<th>Customer Name</th>'+
+                                            '<th>Kid Name</th>'+
+                                            '<th>Type of Call</th>'+
+                                            '<th>Schedule Date</th>'+
+                                            '<th>Comment</th>'+
+                                            '<th>Status</th>'+
+					    '<th>Created At</th>'+
+                                            '</tr>'+
+                                            '</thead>';
+                                for(var i=0;i<response[0]['data'].length;i++){
+                                    header_data+="<tr><td>"+response[0]['data'][i]['customer_name']+"</td><td>"+
+                                          response[0]['data'][i]['student_name']+"</td><td>"+
+                                          response[0]['data'][i]['followup_type']+"</td><td>"+
+                                          response[0]['data'][i]['reminder_date']+"</td><td>"+
+                                          response[0]['data'][i]['log_text']+"</td><td>"+
+					  response[0]['data'][i]['followup_status']+"</td><td>"+
+                                          response[0]['data'][i]['created_at']+"</td></tr>";
                                     }
                                     header_data+="</table></div></div>";
                                     console.log(header_data);
@@ -868,10 +959,11 @@ $(document).on('click', '.salse_alloc_btn', function(){
                                                     <option value="Introvisit">Introvisit</option>
                                                     <option value="Inquiry">Inquiry</option>
                                                     <option value="Calls">Calls Report</option>
-                                                    <option value="Customer_mails">Customer Emails</option>
+						                                        <option value="Calls_Made">Calls Made</option>
+                                                    <!-- <option value="Customer_mails">Customer Emails</option>
                                                     <option value="Renewal_due">Total renewals</option>
                                                     <option value="Renewal_done">Renewal Done</option>
-                                                    <option value="Renewal_pending">Pending Renewals</option>
+                                                    <option value="Renewal_pending">Pending Renewals</option> -->
                                                     <!-- <option value="BySchool">By School</option>
                                                     <option value="ByLocality">By Locality</option>
                                                     <option value="ByApartment">By Apartmnet</option> -->

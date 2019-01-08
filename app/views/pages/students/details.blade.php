@@ -153,8 +153,9 @@ $.ajax({
           //  console.log(response);          
           if(response.status == "success"){
             $("#messageStudentAddDiv").html('<p class="uk-alert uk-alert-success">Kid details has been updated successfully. Please wait till this page reloads</p>');
+            $("#addKidsModal").modal('hide');
+            // $('#updateKidDetails').show();
             $("#KidsformBody").hide();
-
             setTimeout(function(){
              window.location.reload(1);
            }, 5000);
@@ -350,18 +351,32 @@ function fullEnrollmentReset(){
       finalAmount;
     }
 
-    
-    <?php if($discount_second_child_elligible){ ?>
+    $.ajax({
+      type: "POST",
+      url: "{{URL::to('/quick/checkSecondSibling')}}",
+      data: {'student_id': studentId},
+      dataType: 'json',
+      async: true,
+      success: function(response){
+        if (response.data !== parseInt(studentId)) {
+          <?php if($discount_second_child_elligible){ ?>
+            $('#second_child_discount_to_form').val({{$discount_second_child}});
+            second_child_discount_amt = parseFloat(finalAmount*{{$discount_second_child}}/100);
+            $('#second_child_amount').val('-'+(second_child_discount_amt).toFixed(2));
+            
+            finalAmount = parseFloat(finalAmount-second_child_discount_amt);
+            $('#second_child_discount').html('<p>By Enrolling Sibling You are Saving('+{{$discount_second_child}}+'%:[-'+(second_child_discount_amt).toFixed(2)+'Rs])</p>');
+            $('#second_child_amountlabel').html((Math.round(finalAmount/10)*10).toFixed(2));
+          <?php } ?>
+        } else {
+          $('#second_child_discount').hide();
+          $('#second_child_amountlabel').hide();
+        }
+        calculateAfterCheckSibling()
+      }
+    });
 
-      $('#second_child_discount_to_form').val({{$discount_second_child}});
-      second_child_discount_amt = parseFloat(finalAmount*{{$discount_second_child}}/100);
-      $('#second_child_amount').val('-'+(second_child_discount_amt).toFixed(2));
-      
-      finalAmount = parseFloat(finalAmount-second_child_discount_amt);
-      $('#second_child_discount').html('<p>By Enrolling Sibling You are Saving('+{{$discount_second_child}}+'%:[-'+(second_child_discount_amt).toFixed(2)+'Rs])</p>');
-      $('#second_child_amountlabel').html((Math.round(finalAmount/10)*10).toFixed(2));
-      <?php } ?>
-      
+    function calculateAfterCheckSibling () {
       <?php if($discount_second_class_elligible){ ?>
         if(enrollmentStartDate <= '{{ $end }}'){   
           $('#second_class_discount_to_form').val({{$discount_second_class}});
@@ -370,7 +385,7 @@ function fullEnrollmentReset(){
             $('#second_class_amount').val('-'+(second_class_discount_amt).toFixed(2));
           }else{
             second_class_discount_amt = parseFloat(base_price*{{$discount_second_class}}/100);
-            $('#second_class_amount').val('-'+(base_price).toFixed(2));
+            $('#second_class_amount').val('-'+(second_class_discount_amt).toFixed(2));
           }
           $('#second_class_amountlabel').html('-'+(second_class_discount_amt).toFixed(2));
           finalAmount = parseFloat(finalAmount-second_class_discount_amt);
@@ -436,24 +451,63 @@ function fullEnrollmentReset(){
          $("#grandTotal").val((Amount).toFixed(0));
          $('#grandTotallabel').html((Amount).toFixed(0));
        });
-        $('#admin_discount_amount').keyup(function(){
-          if(($('#admin_discount_amount').val() == '')||($('#admin_discount_amount').val()<0)){
-           $('#admin_discount_amount').val('0'); 
-         }
-         var adminamt = parseFloat($('#admin_discount_amount').val());
-         var subtotal = Adminamountcal;
-         
-         $("#subtotal").val((subtotal-adminamt).toFixed(2));
-         $('#subtotallabel').html((subtotal-adminamt).toFixed(2));
-         var tax = (((subtotal-adminamt)*tax_Percentage/100).toFixed(2));
-         tax = Math.round(tax*100)/100;
-         
-         $("#taxAmount").val((tax).toFixed(2));
-         $('#taxAmountlabel').html((tax).toFixed(2));
-         Amount = Math.round(((subtotal-adminamt)+tax)*100)/100;
-         $("#grandTotal").val((Amount).toFixed(0));
-         $('#grandTotallabel').html((Amount).toFixed(0));
-       });
+       $('#diplomatOption').click(function() {
+             if ($(this).is(':checked')) {
+               $("#taxAmount").val(0);
+               tax_Percentage = 0;
+               $('#taxAmountlabel').hide();
+               $('#duplicatetaxAmountlabel').show();               
+               var subtotal = $("#subtotal").val();
+               Amount = Math.round((subtotal)*100)/100;
+               $("#grandTotal").val((Amount).toFixed(0));
+               $('#grandTotallabel').html((Amount).toFixed(0)); 
+             } else {
+               tax_Percentage = "<?php echo $taxPercentage->tax_percentage; ?>";
+               $('#taxAmountlabel').show();
+               $('#duplicatetaxAmountlabel').hide();               
+               var subtotal = $("#subtotal").val();
+               subtotal = parseInt(subtotal);
+               var tax = ((subtotal)*tax_Percentage/100);
+               tax=Math.round(tax*100)/100;
+               $("#taxAmount").val((tax).toFixed(2));
+               $('#taxAmountlabel').html((tax).toFixed(2));
+               Amount = Math.round(((subtotal)+tax)*100)/100;
+               $("#grandTotal").val((Amount).toFixed(0));
+               $('#grandTotallabel').html((Amount).toFixed(0));
+             }
+         });
+          
+          $('#admin_discount_amount').keyup(function(){
+            if(($('#admin_discount_amount').val() == '')||($('#admin_discount_amount').val()<0)){
+             $('#admin_discount_amount').val('0'); 
+            }
+            if($('#diplomatOption').is(':checked')){
+              $("#taxAmount").val(0);
+              tax_Percentage = 0;
+              $('#taxAmountlabel').hide();
+              $('#duplicatetaxAmountlabel').show(); 
+              var subtotal = $("#subtotal").val();
+              Amount = Math.round((subtotal)*100)/100;
+              $("#grandTotal").val((Amount).toFixed(0));
+              $('#grandTotallabel').html((Amount).toFixed(0));
+            } else {
+              tax_Percentage = "<?php echo $taxPercentage->tax_percentage; ?>";
+              $('#taxAmountlabel').show();
+              var adminamt = parseFloat($('#admin_discount_amount').val());
+              var subtotal = Adminamountcal;
+              $("#subtotal").val((subtotal-adminamt).toFixed(2));
+              $('#subtotallabel').html((subtotal-adminamt).toFixed(2));
+              var tax = (((subtotal-adminamt)*tax_Percentage/100).toFixed(2));
+              tax = Math.round(tax*100)/100;
+              
+              $("#taxAmount").val((tax).toFixed(2));
+              $('#taxAmountlabel').html((tax).toFixed(2));
+              Amount = Math.round(((subtotal-adminamt)+tax)*100)/100;
+              $("#grandTotal").val((Amount).toFixed(0));
+              $('#grandTotallabel').html((Amount).toFixed(0));
+            }
+         });
+      }
         
       }
 
@@ -615,6 +669,18 @@ function fullEnrollmentReset(){
        $("#GrandTotalForOld").val(GrandTotalForOld);               
        
      }
+     $('#closeData').click(function () {
+       $("#batchCbx").val("");
+       $("#eligibleClassesCbx").val("");
+       $('#enrollmentStartDate').val('');
+       $('#enrollmentEndDate').val('');
+       $("#paymentOptions").hide();
+       $("#sessionsTable").hide();
+       $("#enrollmentOptions").val("enroll");
+       fullEnrollmentReset();
+       $('#enrollmentModal').modal('hide');
+     });
+
      $("#closeEnrollmentModal").click(function (){
 
       $("#batchCbx").val("");
@@ -975,6 +1041,10 @@ function fullEnrollmentReset(){
                   $('#seasonMsgDiv').hide();
                   $("#KidsformBody").hide();
                   $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-info">Enrolling student.Please wait till process is completed.</p>');
+                  
+                  if ($('#diplomatOption').is(':checked')) {
+                    $('#taxAmount').val(0);
+                  }
                   $.ajax({
                     type: "POST",
                     url: "{{URL::to('/quick/enrollkid')}}",
@@ -986,9 +1056,11 @@ function fullEnrollmentReset(){
                       if(response.status == "success"){
                         if(response.printUrl == ""){
                           $("#messageStudentEnrollmentDiv").html('<p class="uk-alert uk-alert-success">Student has been successfully enrolled. Please wait till this page reloads</p>');
+                          $('#enrollmentModal').modal('hide');
+                          // $("#enrollLoading").show();
                           setTimeout(function(){
                            window.location.reload(1);
-                         }, 5000);
+                          }, 5000);
                         }else{
 
                           var printvars = '<a target="_blank" href="'+response.printUrl+'" class="btn btn-primary">Print</a>';
@@ -1773,7 +1845,7 @@ $('#batchName').change(function(){
           $('#makeup-session').text(makeup);
           $('#total-session').text(response.totalSession);
         }
-        if (parseInt(response.introvisit) === 1){
+        /*if (parseInt(response.introvisit) === 1){
           $('#Transfers').hide();
           $('#presentDiv').hide();
           $('#makeupGiven').hide();
@@ -1798,7 +1870,7 @@ $('#batchName').change(function(){
           $('#Rcount').text('0');
         } else {
           $('#total-session').text(response.totalSession);
-        }
+        }*/
       }
     });
   }else{
@@ -1913,6 +1985,25 @@ $('#enrollmentEndDateForOld').change(function(){
 //        }, 3500)
 //  }
 });
+
+function deleteBatchesDataForId(student_class_id) {
+  $.ajax({
+    type: "POST",
+    url: "{{URL::to('/quick/deleteBatchesEnrollForId')}}",
+    data: {'studentId': studentId, 'student_class_id': student_class_id},
+    dataType: 'json',
+    success: function(response){
+      if (response.status == 'success') {
+        $('#succussMsg').html("<p class='uk-alert uk-alert-success'>Selected batch has been deleted successfully.</p>")
+        setTimeout(function () {
+          window.location.reload(1);
+        },3000)
+      } else {
+        $('#succussMsg').html("<p class='uk-alert uk-alert-warning'>Something went wrong.Please try again later</p>")
+      }
+    }
+  });
+}
 
 function getDatesForAttendance(class_id, batch_name, startDate, endDate) {
   $.ajax({
@@ -2796,6 +2887,31 @@ $('.deletbirthdaydata').click(function(){
   });
 });
 
+$('.deleteBatchdata').click(function () {
+  $('#BatchDeleteId').modal('show');
+  $('#my-id').modal('hide');
+});
+
+function deleteAllBatches() {
+  $.ajax({
+    type: "POST",
+    url: "{{URL::to('/quick/deleteAllBatchesEnrollForId')}}",
+    data: {'studentId': studentId},
+    dataType: 'json',
+    success: function(response){
+      if (response.status == 'success') {
+        $('#succussMsg').html("<p class='uk-alert uk-alert-success'>All batches has been deleted successfully.</p>")
+        setTimeout(function () {
+          window.location.reload(1);
+        },3000)
+      } else {
+        $('#succussMsg').html("<p class='uk-alert uk-alert-warning'>Something went wrong.Please try again later</p>")
+      }
+    }
+  });
+
+}
+
 $('.deleteenrollmentdata').click(function(){
   $('.deletemsg').html("<p class='uk-alert uk-alert-warning'>Please wait... Enrollment Data Deleting...</p>");
   $.ajax({
@@ -2832,49 +2948,48 @@ $('.deleteenrollmentdata').click(function(){
 });
 
 $(document).on('change','#discountPercentageForSummer, #no_of_classes, #pricePerClass', function() {
-	var discount = $('#discountPercentageForSummer').val();
-	var noOfClasses = $('#no_of_classes').val();
-	var perClassAmount = $('#pricePerClass').val();
-	var amountForSummer = noOfClasses * perClassAmount;
-	var amountAfterDiscount = (discount/100)*amountForSummer;
-	var beforeTax = amountForSummer - amountAfterDiscount;
-	var tax = $('#taxPercentageForSummer').val();
-	var finalAmountForSummer = ((tax/100)*beforeTax) + beforeTax;
-	$('#totalAmountForSummer').val(finalAmountForSummer);
+  var discount = $('#discountPercentageForSummer').val();
+  var noOfClasses = $('#no_of_classes').val();
+  var perClassAmount = $('#pricePerClass').val();
+  var amountForSummer = noOfClasses * perClassAmount;
+  var amountAfterDiscount = (discount/100)*amountForSummer;
+  var beforeTax = amountForSummer - amountAfterDiscount;
+  var tax = $('#taxPercentageForSummer').val();
+  var finalAmountForSummer = ((tax/100)*beforeTax) + beforeTax;
+  $('#totalAmountForSummer').val(finalAmountForSummer);
 });
 
 $(document).on('click','.summer-cls-btn', function(){
-	$('.summer-cls-btn').addClass('disabled');
+  $('.summer-cls-btn').addClass('disabled');
         var startDateForSummer = $('#summerWeekStartdate').val();
         var NoOfWeeksForSummer = $('#no_of_classes').val();
-	var amountForSummer = $('#pricePerClass').val();
-	var typeOfClass = $('#typeOfClass').val();
-	var taxPercentageForSummer = $('#taxPercentageForSummer').val();
-	var discountPercentageForSummer = $('#discountPercentageForSummer').val();
-	var totalAmountForSummer = $('#totalAmountForSummer').val();
-	$.ajax({
-
-            type: "POST",
-            url: "{{URL::to('/quick/enrollYard')}}",
-            data: {'studentId': studentId, 
-		   'startDateForSummer': startDateForSummer, 
-		   'NoOfWeeksForSummer': NoOfWeeksForSummer, 
-		   'amountForSummer': amountForSummer, 
-		   'typeOfClass':typeOfClass, 
-		   'discountPercentageForSummer':discountPercentageForSummer,
-		   'totalAmountForSummer':totalAmountForSummer,
-		   'taxPercentageForSummer':taxPercentageForSummer
-		  },
-            dataType: 'json',
-            success: function(response){
-                if(response.status === "success"){
-		    $('#summerMsgDiv').html("<p class='uk-alert uk-alert-success'>Camps / Yard has been taken successfully.Please wait untill the page reloads</p>");
-                    setTimeout(function(){
-             		window.location.reload(1);
-           	    }, 4000);
-                } else {
-		    $('#summerMsgDiv').html("<p class='uk-alert uk-alert-warning'>Camps / Yard not yet taken.Please try again.</P>");
-		}
+  var amountForSummer = $('#pricePerClass').val();
+  var typeOfClass = $('#typeOfClass').val();
+  var taxPercentageForSummer = $('#taxPercentageForSummer').val();
+  var discountPercentageForSummer = $('#discountPercentageForSummer').val();
+  var totalAmountForSummer = $('#totalAmountForSummer').val();
+  $.ajax({
+    type: "POST",
+    url: "{{URL::to('/quick/enrollYard')}}",
+    data: {'studentId': studentId, 
+       'startDateForSummer': startDateForSummer, 
+       'NoOfWeeksForSummer': NoOfWeeksForSummer, 
+       'amountForSummer': amountForSummer, 
+       'typeOfClass':typeOfClass, 
+       'discountPercentageForSummer':discountPercentageForSummer,
+       'totalAmountForSummer':totalAmountForSummer,
+       'taxPercentageForSummer':taxPercentageForSummer
+      },
+    dataType: 'json',
+    success: function(response){
+        if(response.status === "success"){
+        $('#summerMsgDiv').html("<p class='uk-alert uk-alert-success'>Camps / Yard has been taken successfully.Please wait untill the page reloads</p>");
+            setTimeout(function(){
+        window.location.reload(1);
+        }, 4000);
+        } else {
+        $('#summerMsgDiv').html("<p class='uk-alert uk-alert-warning'>Camps / Yard not yet taken.Please try again.</P>");
+        }
             }
         });
 });
@@ -2883,6 +2998,18 @@ $(document).on('click','.summer-cls-btn', function(){
 </script>
 @stop 
 @section('content')
+<div id="updateKidDetails" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Updated successfully.Please wait . . .
+    </p>
+</div>
+<div id="enrollLoading" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Enroled successfully.Please wait . . .
+    </p>
+</div>
 <div id="addAttendance" class="modal fade" role="dialog" style="margin-top: 50px; z-index: 99999;"
 >
 
@@ -3437,20 +3564,26 @@ id="user_profile">
                                     <div class="modaldata">
                                       <div class="deletemsg"></div>
                                       <div class="uk-grid" data-uk-grid-margin="">
-                                        <div class="uk-width-medium-1-3 " >
+                                        <div class="uk-width-medium-1-2" >
                                           <button class=" center-block text-center uk-button uk-button-danger uk-button-large deleteivdata" style="font-size:12px;">
                                             <i class="material-icons" style="color:white">delete</i> Introvisit Data
                                           </button>
                                         </div>
-                                        <div class="uk-width-medium-1-3">
+                                        <div class="uk-width-medium-1-2">
                                           <button class="  center-block text-center uk-button uk-button-danger uk-button-large deletbirthdaydata" style="font-size:12px;">
                                             <i class="material-icons" style="color:white">delete</i> Birthday Party Data
                                           </button>
                                           <em class="uk-text-center-small center-block text-center" style="color:black;font-size:12px;"> (with payments)</em>
                                         </div>
-                                        <div class="uk-width-medium-1-3">
+                                        <div class="uk-width-medium-1-2">
                                           <button class="center-block text-center  uk-button uk-button-danger uk-button-large  deleteenrollmentdata" style="font-size:12px;">
                                             <i class="material-icons" style="color:white">delete</i> Enrollment Data
+                                          </button>
+                                          <em class="uk-text-center-small text-center center-block " style="color:black;font-size:12px;">(with payments)</em>
+                                        </div>
+                                        <div class="uk-width-medium-1-2">
+                                          <button class="center-block text-center  uk-button uk-button-danger uk-button-large  deleteBatchdata" style="font-size:12px;">
+                                            <i class="material-icons" data-toggle="modal" data-target="#my-idl" data-dismiss="modal" style="color:white">delete</i> Batch Data
                                           </button>
                                           <em class="uk-text-center-small text-center center-block " style="color:black;font-size:12px;">(with payments)</em>
                                         </div>
@@ -3475,6 +3608,8 @@ id="user_profile">
                                 <li id="attendanceTabheading"class=""><a href="#attendace">Attendance</a></li>
                                 <li id="discoveryTabheading"class=""><a href="#discovery">Discovery</a></li>
                                 <li id="summerTabheading" class=""><a href="#yard">Camps/Yard</a></li>
+                                <li id="intovisitTabheading" class=""><a href="#introvisit">Introvisit</a></li>
+                                <li id="makeupTabheading" class=""><a href="#makeup">Makeup</a></li>
 
                                 <!--<li id="introvisitTabheading"class=""><a href="#introvisit">Intro Visit</a></li>-->
                               </ul>
@@ -3753,14 +3888,14 @@ id="user_profile">
                                                                                       <td>{{$payment_made_data[$j][$i]['selected_order_sessions']}}</td>
                                                                                       <td>{{$payment_made_data[$j][$i]['payment_due_amount_after_discount']}}</td>
                                                                                       <td>{{$payment_made_data[$j][$i]['receivedname']}}</td>
-										      <?php if((count($payment_made_data[$j])>1) && $i==0 ) {?>
+                          <?php if((count($payment_made_data[$j])>1) && $i==0 ) {?>
                                                                                       <td style="text-align:justify;vertical-align:middle;"  rowspan=<?php echo count($payment_made_data[$j])?> ><a id='Print' target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
                                                                                       <?php }else if(count($payment_made_data[$j])==1){ ?>
                                                                                       <td><a id='Print'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
                                                                                       <?php } ?>
                                                                                     </tr>
                                                                                     <?php }
-										     }
+                         }
                                                                                   }
                                                                                 } ?>
                                                                                 
@@ -3777,205 +3912,200 @@ id="user_profile">
                                                                 </li>
 
 
-                                                                <li id= "attendance">
-                                                                  <div class="md-card">
-                                                                    <div id = "errorMsgDiv"></div>
-                                                                    <br clear = "all"/>
-                                                                    <br clear = "all"/>
-                                                                    <div class="uk-grid" data-uk-grid-margin>
-                                                                      <div class="uk-width-medium-1-3">    
-                                                                        <div class="parsley-row">
-                                                                          <label for="year">Select Year <span class="req">*</span></label><br>
-                                                                          <select id="year" name="year" class="form-control input-sm md-input" required style='padding:0px; font-weight:bold;color: #727272;'>
-                                                                            <option></option>
-                                                                            @for($i = 0; $i< count($AttendanceYeardata); $i++)
-                                                                            <option value = "{{$AttendanceYeardata[$i]->year}}">{{$AttendanceYeardata[$i]->year}}</option>
-                                                                            @endfor
-                                                                          </select>                         
-                                                                        </div>
-                                                                      </div>
-                                                                      <div class="uk-width-medium-1-3">    
-                                                                        <div class="parsley-row">
-                                                                          <label for="batchName">Select Batch Name <span class="req">*</span></label><br>
-                                                                          <select id="batchName" name="batchName" class="form-control input-sm md-input" required style='padding:0px; font-weight:bold;color: #727272;'>
-                                                                            <option></option>
-                                                                            
-                                                                          </select>
-                                                                          <input type = "hidden" value = "{{$student[0]['id']}}" id = "studentIdForAttendance">                         
-                                                                        </div>
-                                                                      </div>
-                                                                      <div class="uk-width-medium-1-3"></div>    
-                                                                    </div>
-                                                                    <br clear = "all"/>
-                                                                    <br clear = "all"/>
-                                                                    <div class="uk-grid data-uk-grid-margin" id="presentDiv">
-                                                                      <div class="uk-width-medium-1-4">
-                                                                        <div class="parsley-row">
-                                                                          <span class="md-btn md-btn-success" style="border-radius: 15px; font-size:12px;">
-                                                                            Present days - <span class = "badge" id = "Pcount" style = "background: #000"></span> 
-                                                                          </span>
-                                                                        </div>
-                                                                      </div>
-                                                                   <!--   <div class="uk-width-medium-1-4">
-                                                                        <div class="parsley-row">
-                                                                          <span class="md-btn md-btn-warning" style="border-radius: 15px; font-size:12px;" id="excusedabsent">
-                                                                            Excused absent - <span class = "badge" id = "EAcount" style = "background: #000"></span>
-                                                                          </span>
-                                                                        </div>
-                                                                      </div> -->
-                                                                      <div class="uk-width-medium-1-4">
-                                                                        <div class="parsley-row">
-                                                                          <span class="md-btn md-btn-danger" style="border-radius: 15px; font-size:12px;">
-                                                                           Absent days - <span class = "badge" id = "Acount" style = "background: #000"></span>
-                                                                         </span>
-                                                                       </div>
-                                                                     </div>
-                                                                     <div class="uk-width-medium-1-4">
-                                                                      <div class="parsley-row">
-                                                                        <span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
-                                                                         Remaining Days - <span class = "badge" id = "Rcount" style = "background: #000"></span>
-                                                                       </span>
-                                                                     </div>
-                                                                   </div>
-                                                                 </div>
-                                                                 <div class="uk-grid data-uk-grid-margin" id="makeupGiven">
-                                                                  <div class="uk-width-medium-1-4">
-                                                                    <div class="parsley-row">
-                                                                      <span class="md-btn md-btn-warning" id='makeupsession' style="border-radius: 15px; font-size:12px;">
-                                                                        Make-up given <span class = "badge" id = "makeup-session" style = "background: #000"></span>
-                                                                      </span>
-                                                                    </div>
-                                                                  </div>
-                                                                  <div class="uk-width-medium-1-4">
-                                                                    <div class="parsley-row">
-                                                                      <span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
-                                                                        Total-Session - <span class = "badge" id = "total-session" style = "background: #000"></span>
-                                                                      </span>
-                                                                    </div>
-                                                                  </div>
-                                                                  <div class="uk-width-medium-1-4">
-                                                                    <div class="parsley-row">
-                                                                      <span class="md-btn md-btn-success" id="Transfers" style="border-radius: 15px; font-size:12px;">
-                                                                      Transfer</span>
-                                                                    </span>
-                                                                  </div>
-                                                                </div>
-                                                                
-                                                                
-                                                                
-                                                                <br clear="all"/>
-                                                                <br clear="all"/>
-                                                                <div class="uk-width-medium-1-1"  id = "AttendanceDiv"> 
-                                                                  
-                                                                </div>
-                                                              </div>
-                                                              <div class="uk-width-medium-1-1"  id = "AttendanceDivForIntrovisit"> 
-                                                                
-                                                              </div>
-                                                            </div>
-                                                            <div class="md-card" style="margin-top: 100px;">
-                                                              <div class='uk-overflow-container'>
-                                                                <table id='reportTable' class='uk-table'>
-                                                                  <thead>
-                                                                    <tr>
-                                                                      <th>Batch Name</th>
-                                                                      <th>Day</th>
-                                                                      <th>Time</th>
-                                                                      <th>Start Date</th>
-                                                                      <th>End Date</th>
-                                                                      <th>Total Classes</th>
-                                                                      <th>Present</th>
-                                                                      <th>Absent</th>
-                                                                      <th>EA</th>
-                                                                      <th>Makeup Given</th>
-                                                                      <th>Remining Classes</th>
-                                                                      <th>Actions</th>
-                                                                    </tr>
-                                                                  </thead>
-                                                                  <tbody> 
-                                                                    <?php if(isset($batchDetails) && !empty($batchDetails)){?>
-                                                                    @foreach($batchDetails as $value)
-                                                                    <tr>
-                                                                      <td>{{ $value['batch_name'] }}</td>
-                                                                      <td>{{ $value['Day'] }}</td>
-                                                                      <td>{{ $value['time'] }}</td>
-                                                                      <td>{{ $value['enrollment_start_date'] }}</td>
-                                                                      <td>{{ $value['enrollment_end_date'] }}</td>
-                                                                      <td >{{ $value['selected_sessions'] }}</td>
-                                                                      <td >{{ $value['present'] }} </td>
-                                                                      <td >{{ $value['Absent']}}</td>
-                                                                      <td >{{ $value['EA'] }}</td>
-                                                                      <td >{{ $value['makeup']  }}</td>
-                                                                      <td >{{ $value['remaining_classes'] }}&nbsp;<span id="stageChange" class="new badge" style="background-color: #7CB342;">{{ $value['stage'] }}</span></td>
-                                                                      
-                                                                      <td><button class="btn btn-primary" onclick="getDatesForAttendance('{{ $value['id']}}', '{{ $value['batch_name']}}','{{ $value['enrollment_start_date'] }}', '{{ $value['enrollment_end_date'] }}')">View Dates</button></td>
-                                                                    </tr>
-                                                                    @endforeach
-                                                                    <?php  }else{ ?>
-                                                                    <tr>
-                                                                      <td>
-                                                                        ------------- No batches found --------------
-                                                                      </td>
-                                                                    </tr>
-                                                                    <?php } ?>
-                                                                  </tbody>
-                                                                </table>  
-                                                              </div>
-                                                            </div>
-                                                          </li>
-                                                          
-                                                            <li id="discovery">   
-                                                              @if(Session::has('imageUploadMessage')) 
-                                                              <div class="uk-alert uk-alert-success" data-uk-alert>
-                                                                <a href="#" class="uk-alert-close uk-close"></a> 
-                                                                {{Session::get('imageUploadMessage') }}
-                                                              </div> <br clear="all" />
-                                                              @endif
-                                                              @if(Session::has('imageDownloadError')) 
-                                                              <div class="uk-alert uk-alert-danger" data-uk-alert>
-                                                                <a href="#" class="uk-alert-close uk-close"></a> 
-                                                                {{Session::get('imageDownloadError') }}
-                                                              </div> <br clear="all" />
-                                                              @endif
-                                                              @if(Session::has('imageDownloadMessage')) 
-                                                              <div class="uk-alert uk-alert-success" data-uk-alert>
-                                                                <a href="#" class="uk-alert-close uk-close"></a> 
-                                                                {{Session::get('imageDownloadMessage') }}
-                                                              </div> <br clear="all" />
-                                                              @endif
-                                                              <h3>Upload Discovery Sheet</h3>
-                                                              <div class="row" style="width:50%;">
-                                                                  <div class="col-md-6">
-                                                                    {{Form::open(array('files'=> true, 'url'=>'students/discovery/picture'))}} 
-                                                                    <span class="md-list-heading">{{Form::file('discoveryPicture',array('required', 'class'=>'form-control'))}}</span><br>
-                                                                    <span class="uk-text-small uk-text-muted"></span>
-                                                                    <input name="studentId"
-                                                                    value="{{$student->id}}" type="hidden" /> 
-                                                                    <input
-                                                                    type="submit" class="md-btn md-btn-primary"
-                                                                    value="Upload Discovery Picture" /><br>
-                                                                    {{Form::close()}}
-                                                                  </div>
-                                                                  <div class="col-md-6" style="margin-top: 50px;">
-                                                                    {{Form::open(array('files'=> true,
-                                                                    'url'=>'students/discovery/download'))}}
-                                                                    <span class="uk-text-small uk-text-muted"></span>
-                                                                    <input name="studentId"
-                                                                    value="{{$student->id}}" type="hidden" /> 
-                                                                    <input type="submit" class="md-btn md-btn-primary"
-                                                                    value="Download Discovery Picture" />
-                                                                    {{Form::close()}}      
-                                                                  </div>
-                                                              </div>
-                                                              @if($attachment_location)
-                                                              <h3 style="margin-top: 50px;margin-bottom: 10px">Uploaded Discovery Sheets</h3>
-                                                              <div class="col-md-7">
-                                                                <div>
-                                                                 <img src="{{ $attachment_location }}", alt="Discovery Sheet", width="400", height="300" margin-top="200"><br />;
-                                                                </div>  
-                                                              </div>
-                                                              @endif
-                                                          </li>
+            <li id= "attendance">
+              <div class="md-card">
+                <div id = "errorMsgDiv"></div>
+                  <br clear = "all"/>
+                  <br clear = "all"/>
+                    <div class="uk-grid" data-uk-grid-margin>
+                      <div class="uk-width-medium-1-3">    
+                        <div class="parsley-row">
+                          <label for="year">Select Year <span class="req">*</span></label><br>
+                            <select id="year" name="year" class="form-control input-sm md-input" required style='padding:0px; font-weight:bold;color: #727272;'>
+                              <option></option>
+                                @for($i = 0; $i< count($AttendanceYeardata); $i++)
+                                <option value = "{{$AttendanceYeardata[$i]->year}}">{{$AttendanceYeardata[$i]->year}}</option>
+                                @endfor
+                            </select>                         
+                        </div>
+                      </div>
+                 <div class="uk-width-medium-1-3">    
+                    <div class="parsley-row">
+                      <label for="batchName">Select Batch Name <span class="req">*</span></label><br>
+                      <select id="batchName" name="batchName" class="form-control input-sm md-input" required style='padding:0px; font-weight:bold;color: #727272;'>
+                        <option></option>
+                        
+                      </select>
+                      <input type = "hidden" value = "{{$student[0]['id']}}" id = "studentIdForAttendance">                         
+                    </div>
+                  </div>
+                  <div class="uk-width-medium-1-3"></div>    
+                </div>
+                  <br clear = "all"/>
+                  <br clear = "all"/>
+                    <div class="uk-grid data-uk-grid-margin" id="presentDiv">
+                      <div class="uk-width-medium-1-4">
+                        <div class="parsley-row">
+                          <span class="md-btn md-btn-success" style="border-radius: 15px; font-size:12px;">
+                            Present days - <span class = "badge" id = "Pcount" style = "background: #000"></span> 
+                          </span>
+                        </div>
+                      </div>
+               <!--   <div class="uk-width-medium-1-4">
+                    <div class="parsley-row">
+                      <span class="md-btn md-btn-warning" style="border-radius: 15px; font-size:12px;" id="excusedabsent">
+                        Excused absent - <span class = "badge" id = "EAcount" style = "background: #000"></span>
+                      </span>
+                    </div>
+                  </div> -->
+                  <div class="uk-width-medium-1-4">
+                    <div class="parsley-row">
+                      <span class="md-btn md-btn-danger" style="border-radius: 15px; font-size:12px;">
+                       Absent days - <span class = "badge" id = "Acount" style = "background: #000"></span>
+                     </span>
+                   </div>
+                 </div>
+                 <div class="uk-width-medium-1-4">
+                  <div class="parsley-row">
+                    <span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
+                     Remaining Days - <span class = "badge" id = "Rcount" style = "background: #000"></span>
+                   </span>
+                 </div>
+               </div>
+             </div>
+             <div class="uk-grid data-uk-grid-margin" id="makeupGiven">
+              <div class="uk-width-medium-1-4">
+                <div class="parsley-row">
+                  <span class="md-btn md-btn-warning" id='makeupsession' style="border-radius: 15px; font-size:12px;">
+                    Make-up given <span class = "badge" id = "makeup-session" style = "background: #000"></span>
+                  </span>
+                </div>
+              </div>
+              <div class="uk-width-medium-1-4">
+                <div class="parsley-row">
+                  <span class="md-btn md-btn-primary" style="border-radius: 15px; font-size:12px;">
+                    Total-Session - <span class = "badge" id = "total-session" style = "background: #000"></span>
+                  </span>
+                </div>
+              </div>
+              <div class="uk-width-medium-1-4">
+                <div class="parsley-row">
+                  <span class="md-btn md-btn-success" id="Transfers" style="border-radius: 15px; font-size:12px;">
+                  Transfer</span>
+                </span>
+              </div>
+            </div>
+            
+            
+            
+            <br clear="all"/>
+            <br clear="all"/>
+            <div class="uk-width-medium-1-1"  id = "AttendanceDiv"> 
+              
+            </div>
+          </div>
+          <div class="uk-width-medium-1-1"  id = "AttendanceDivForIntrovisit"> 
+            
+          </div>
+        </div>
+        <div class="md-card" style="margin-top: 100px;">
+          <div class='uk-overflow-container'>
+            <table id='reportTable' class='uk-table'>
+              <thead>
+                <tr>
+                  <th>Batch Name</th>
+                  <th>Day</th>
+                  <th>Time</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Total Classes</th>
+                  <th>Present</th>
+                  <th>Absent</th>
+                  <th>EA</th>
+                  <th>Makeup Given</th>
+                  <th>Remining Classes</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody> 
+                <?php if(isset($batchDetails) && !empty($batchDetails)){?>
+                @foreach($batchDetails as $value)
+                <tr>
+                  <td>{{ $value['batch_name'] }}</td>
+                  <td>{{ $value['Day'] }}</td>
+                  <td>{{ $value['time'] }}</td>
+                  <td>{{ $value['enrollment_start_date'] }}</td>
+                  <td>{{ $value['enrollment_end_date'] }}</td>
+                  <td >{{ $value['selected_sessions'] }}</td>
+                  <td >{{ $value['present'] }} </td>
+                  <td >{{ $value['Absent']}}</td>
+                  <td >{{ $value['EA'] }}</td>
+                  <td >{{ $value['makeup']  }}</td>
+                  <td >{{ $value['remaining_classes'] }}&nbsp;<span id="stageChange" class="new badge" style="background-color: #7CB342;">{{ $value['stage'] }}</span></td>
+                  
+                  <td><button class="btn btn-primary" onclick="getDatesForAttendance('{{ $value['id']}}', '{{ $value['batch_name']}}','{{ $value['enrollment_start_date'] }}', '{{ $value['enrollment_end_date'] }}')">View Dates</button></td>
+                </tr>
+                @endforeach
+                <?php  }else{ ?>
+                <tr>
+                  <td>
+                    ------------- No batches found --------------
+                  </td>
+                </tr>
+                <?php } ?>
+              </tbody>
+            </table>  
+          </div>
+        </div>
+      </li>
+                  <li id="discovery">   
+                    @if(Session::has('imageUploadMessage')) 
+                    <div class="uk-alert uk-alert-success" data-uk-alert>
+                      <a href="#" class="uk-alert-close uk-close"></a> 
+                      {{Session::get('imageUploadMessage') }}
+                    </div> <br clear="all" />
+                    @endif
+                    @if(Session::has('imageDownloadError')) 
+                    <div class="uk-alert uk-alert-danger" data-uk-alert>
+                      <a href="#" class="uk-alert-close uk-close"></a> 
+                      {{Session::get('imageDownloadError') }}
+                    </div> <br clear="all" />
+                    @endif
+                    @if(Session::has('imageDownloadMessage')) 
+                    <div class="uk-alert uk-alert-success" data-uk-alert>
+                      <a href="#" class="uk-alert-close uk-close"></a> 
+                      {{Session::get('imageDownloadMessage') }}
+                    </div> <br clear="all" />
+                    @endif
+                    <h3>Upload Discovery Sheet</h3>
+                    <div class="row" style="width:50%;">
+                        <div class="col-md-6">
+                          {{Form::open(array('files'=> true, 'url'=>'students/discovery/picture'))}} 
+                          <span class="md-list-heading">{{Form::file('discoveryPicture',array('required', 'class'=>'form-control'))}}</span><br>
+                          <span class="uk-text-small uk-text-muted"></span>
+                          <input name="studentId"
+                          value="{{$student->id}}" type="hidden" /> 
+                          <input
+                          type="submit" class="md-btn md-btn-primary"
+                          value="Upload Discovery Picture" /><br>
+                          {{Form::close()}}
+                        </div>
+                    </div>
+                    @if($discovery_sheet)
+                    <h3 style="margin-top: 50px;margin-bottom: 10px">Uploaded Discovery Sheets</h3>
+                    <div class="col-md-7">
+                      <div>
+                       <img src="{{url()}}/{{$discovery_sheet}}", alt="Discovery Sheet", width="400", height="300" margin-top="200"><br />
+                      </div>  
+                    </div>
+                    <div class="col-md-6" style="margin-top: 25px;">
+                      <a href='{{url()}}/{{$discovery_sheet}}' download>
+                        <input type="submit" class="md-btn md-btn-primary"
+                        value="Download Discovery Picture"/>
+                      </a>
+                    </div>
+                    @endif
+                </li>
 							  <li id="yard">
 							     <div id = "summerMsgDiv"></div>
 							     <h3>Camps / Yard</h3></br>
@@ -3988,35 +4118,35 @@ id="user_profile">
                                                                         null,array('id'=>'typeOfClass', 'class' => 'form-control','required'))}}
                                                                         </div>
                                                                     </div>
-                           					    <div class="uk-width-medium-1-5">
-                             						<div class="parsley-row form-group">
-                                						<label for="startDate">Start Date</label><br>
-                                							{{Form::text('summerWeekStartdate',
-                                					null,array('id'=>'summerWeekStartdate', 'class' => '','required'))}}
-                             						</div>
-                           					    </div>
-								</div>
-								<div class="uk-grid" data-uk-grid-margin>
-                           					    <div class="uk-width-medium-1-5">
-                             						<div class="parsley-row form-group">
-                                						<label for="numberOfWeeks">No.of Classes</label><br>
-                                							{{Form::number('no_of_classes',
-                                					null,array('id'=>'no_of_classes', 'class' => 'form-control','required'))}}
-                             						</div>
-                           					    </div>
-								    <div class="uk-width-medium-1-5">
-									<div class="parsley-row form-group">
-										<label for="amountPerClass">Price per Class</label><br>
-											{{Form::number('amountPerClass',null,array('id'=>'pricePerClass','class'=>'form-control','required'))}}
-									</div>
-								    </div>
-								    <div class="uk-width-medium-1-5">
-									<div class="parsely-row form-group">
-										<label for="discountPercentageForSummer">Discount %</label><br>
-											{{Form::number('discountPercentageForSummer',null,array('id'=>'discountPercentageForSummer','class'=>'form-control','required'))}}
-									</div>
-								    </div>
-								    <div class="uk-width-medium-1-5">
+                                        <div class="uk-width-medium-1-5">
+                                        <div class="parsley-row form-group">
+                                            <label for="startDate">Start Date</label><br>
+                                              {{Form::text('summerWeekStartdate',
+                                          null,array('id'=>'summerWeekStartdate', 'class' => '','required'))}}
+                                        </div>
+                                        </div>
+                </div>
+                <div class="uk-grid" data-uk-grid-margin>
+                                        <div class="uk-width-medium-1-5">
+                                        <div class="parsley-row form-group">
+                                            <label for="numberOfWeeks">No.of Classes</label><br>
+                                              {{Form::number('no_of_classes',
+                                          null,array('id'=>'no_of_classes', 'class' => 'form-control','required'))}}
+                                        </div>
+                                        </div>
+                    <div class="uk-width-medium-1-5">
+                  <div class="parsley-row form-group">
+                    <label for="amountPerClass">Price per Class</label><br>
+                      {{Form::number('amountPerClass',null,array('id'=>'pricePerClass','class'=>'form-control','required'))}}
+                  </div>
+                    </div>
+                    <div class="uk-width-medium-1-5">
+                  <div class="parsely-row form-group">
+                    <label for="discountPercentageForSummer">Discount %</label><br>
+                      {{Form::number('discountPercentageForSummer',null,array('id'=>'discountPercentageForSummer','class'=>'form-control','required'))}}
+                  </div>
+                    </div>
+                    <div class="uk-width-medium-1-5">
                                                                         <div class="parsely-row form-group">
                                                                                 <label for="taxPercentageForSummer">Tax %</label><br>
                                                                                         {{Form::number('taxPercentageForSummer',18,array('id'=>'taxPercentageForSummer','class'=>'form-control'))}}
@@ -4033,31 +4163,31 @@ id="user_profile">
 								    </div>
 								</div>
 								<div class="row pull-right">
-                           					    <div class="uk-width-1-2">
-                             					    	<div class="parsley-row" style="padding: 25px 30px;">
-                                						<button type="button" class="md-btn md-btn-primary summer-cls-btn">Enroll</button>
-                             						</div>
-                           					    </div>
-                         					</div>
+   					      <div class="uk-width-1-2">
+     					      <div class="parsley-row" style="padding: 25px 30px;">
+        						  <button type="button" class="md-btn md-btn-primary summer-cls-btn">Enroll</button>
+     						    </div>
+   					      </div>
+                </div>
                       					       {{ Form::close() }}<br>
 				
 							    <div class="md-card" style="margin-top: 100px;">
                                                               <div class='uk-overflow-container'>
-								<h3>Payments Made</h3>
+                <h3>Payments Made</h3>
                                                                 <table id='reportTable' class='uk-table'>
                                                                   <thead>
                                                                     <tr>
                                                                       <th>Type of Class</th>
                                                                       <th>Start Date</th>
                                                                       <th>Sessions</th>
-							              <th>Amount</th>
+                            <th>Amount</th>
                                                                       <th>Received By</th>
                                                                       <th>Actions</th>
                                                                     </tr>
                                                                   </thead>
                                                                   <tbody>
-									
-									 <?php if(isset($payment_made_data_summer[0])){
+                  
+                   <?php if(isset($payment_made_data_summer[0])){
                                                                                 for($j=0;$j<count($payment_made_data_summer);$j++){
                                                                                     ?>
                                                                                     <tr>
@@ -4073,7 +4203,7 @@ id="user_profile">
                                                                                       <td><a id='Print'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" href="{{$payment_made_data_summer[$j]['encrypted_payment_no']}}">Print</a></td>
                                                                                       <?php } ?>
                                                                                     </tr>
-                                                                                    <?php }	 
+                                                                                    <?php }  
                                                                                   
                                                                                 } ?>										
 								  </tbody>
@@ -4081,12 +4211,110 @@ id="user_profile">
 							      </div>
 							     </div>
 							  </li>
-                                                        </ul>
-                                                      </div>
-                                                    </div>
-                                                  </div>
+              <li id = "introvisit">
+                <div class="md-card">
+                  <div id = "errorMsgDiv"></div>
+                    <div class="uk-grid data-uk-grid-margin" id="makeupGiven">  
+                      <div class="uk-width-medium-1-1"  id = "AttendanceDiv"> 
+                        <div class="md-card" style="margin-top: 100px;">
+                          <div class='uk-overflow-container'>
+                            <table id='reportTable' class='uk-table'>
+                              <thead>
+                                <tr>
+                                  <th>Batch Name</th>
+                                  <th>Day</th>
+                                  <th>Time</th>
+                                  <th>IV Date</th>
+                                </tr>
+                              </thead>
+                              
 
-                                                </div>
+                              <tbody> 
+                                <?php if(count($introvisit_list) != 0){?>
+                                @foreach($introvisit_list as $value)
+                                <tr>
+                                  <td>{{ $value['batch_name'] }}</td>
+                                  <td>{{ $value['Day'] }}</td>
+                                  <td>{{ $value['preferred_time'] }}</td>
+                                  <td>{{ $value['enrollment_start_date'] }}</td>
+                                                   
+                                </tr>
+                                @endforeach
+                                <?php  }else{ ?>
+                                <tr>
+                                  <td>
+                                    ------------- No records found --------------
+                                  </td>
+                                </tr>
+                                <?php } ?>
+                              </tbody>
+                                 
+
+                                
+
+                            </table>  
+                          </div>
+                        </div>
+                      </div>
+                    </div>       
+                </div>
+              </li>
+
+              <li id = "makeup">
+                <div class="md-card">
+                  <div id = "errorMsgDiv"></div>
+                    <div class="uk-grid data-uk-grid-margin" id="makeupGiven">  
+                      <div class="uk-width-medium-1-1"  id = "AttendanceDiv"> 
+                        <div class="md-card" style="margin-top: 100px;">
+                          <div class='uk-overflow-container'>
+                            <table id='reportTable' class='uk-table'>
+                              <thead>
+                                <tr>
+                                  <th>Batch Name</th>
+                                  <th>Day</th>
+                                  <th>Time</th>
+                                  <th>Makeup Date</th>
+                                </tr>
+                              </thead>
+                              
+
+                              <tbody> 
+                                <?php if(count($makeup_list) != 0){?>
+                                @foreach($makeup_list as $value)
+                                <tr>
+                                  <td>{{ $value['batch_name'] }}</td>
+                                  <td>{{ $value['Day'] }}</td>
+                                  <td>{{ $value['preferred_time'] }}</td>
+                                  <td>{{ $value['enrollment_start_date'] }}</td>
+                                                   
+                                </tr>
+                                @endforeach
+                                <?php  }else{ ?>
+                                <tr>
+                                  <td>
+                                    ------------- No records found --------------
+                                  </td>
+                                </tr>
+                                <?php } ?>
+                              </tbody>
+                                 
+
+                                
+
+                            </table>  
+                          </div>
+                        </div>
+                      </div>
+                    </div>       
+                </div>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+        </div>
+
+        </div>
 
 <!-- 
 15
@@ -4094,7 +4322,75 @@ id="user_profile">
 1000  
 -->
 
-
+<div class="modal fade" id="BatchDeleteId" role="dialog" style="z-index: 9999;">
+  <div class="modal-dialog">
+    <div class="modal-content" style="width:130%;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Delete Batch Data</h4>
+      </div>
+      <div id="succussMsg"></div>
+      <div class="modal-body">
+        <ul class="md-list">
+          <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
+            <div class="uk-width-medium-1-1">
+              <div class="md-card uk-margin-medium-bottom">
+               <div class="md-card-content">
+                <div class="uk-overflow-container">
+                 <table class="uk-table table-striped" id="paymentsMadeTable" >
+                   <thead>
+                     <tr>
+                       <th class="uk-text-nowrap">Enrolled class</th>
+                       <th class="uk-text-nowrap">Day</th>
+                       <th class="uk-text-nowrap">Time</th>
+                       <th class="uk-text-nowrap">class start date</th>
+                       <th class="uk-text-nowrap">class end date</th>
+                       <th class="uk-text-nowrap">sessions</th>
+                       <th class="uk-text-nowrap">option</th>  
+                     </tr>
+                   </thead>
+                   <tbody> 
+                     <?php if(isset($batchDetails) && !empty($batchDetails)){?>
+                     @foreach($batchDetails as $value)
+                     <tr>
+                       <td>{{ $value['batch_name'] }}</td>
+                       <td>{{ $value['Day'] }}</td>
+                       <td>{{ $value['time'] }}</td>
+                       <td>{{ $value['enrollment_start_date'] }}</td>
+                       <td>{{ $value['enrollment_end_date'] }}</td>
+                       <td >{{ $value['selected_sessions'] }}&nbsp;<span id="stageChange" class="new badge" style="background-color: #7CB342;">{{ $value['stage'] }}</span></td>
+                       
+                       <td><button style="text-align:justify" class="btn btn-primary btn-xs" onclick="deleteBatchesDataForId('{{ $value['id']}}')">Delete</button></td>
+                     </tr>
+                     @endforeach
+                     <?php  }else{ ?>
+                     <tr>
+                       <td>
+                         ------------- No batches found --------------
+                       </td>
+                     </tr>
+                     <?php } ?>
+                   </tbody>
+                  </table>
+                 </div>
+                 <?php if(isset($batchDetails) && count($batchDetails) > 0){ ?>
+                 <div align="center" style="padding-top: 20px;">
+                   <button style="text-align:justify; font-size: 17px;" class="btn btn-primary btn-xs" onclick="deleteAllBatches()"> Delete all</button>
+                 </div>
+                 <?php } else { ?>
+                 <div align="center" style="padding-top: 20px;">
+                   <p>No Records Found.</p>
+                 </div>
+                 <?php } ?>
+               </div>
+              </div>
+            </div>
+          </div>
+            </ul>
+          </div>
+       </div>
+    </div>
+</div>
 <div id="enrollmentModal" class="modal fade" role="dialog"
 style="margin-top: 50px; z-index: 99999;">
 <div class="modal-dialog modal-lg">
@@ -4102,7 +4398,7 @@ style="margin-top: 50px; z-index: 99999;">
   <!-- Modal content-->
   <div class="modal-content">
     <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <button type="button" class="close" id="closeData">&times;</button>
       <h4 class="modal-title">Enroll Kids</h4>
     </div>
     <form id="enrollKidForm" method="post"
@@ -4508,7 +4804,13 @@ style="margin-top: 50px; z-index: 99999;">
                                                                           </td>
                                                                         </tr>
                                                                         <tr>
-                                                                          <td colspan="2" style="text-align: right; font-weight: bold">Tax {{$taxPercentage->tax_percentage}}% 
+
+                                                                          <td colspan="2" style="text-align: right; font-weight: bold;"> 
+                                                                            <?php if(Session::get('franchiseId') == 11) {?>
+                                                                              <input id="diplomatOption" name="diplomatOption" type="checkbox"  value="yes" class="checkbox-custom"  />
+                                                                              <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
+                                                                                class="req"> </span></label> /
+                                                                            <?php } ?>
                                                                             <?php 
                                                                             if(isset($tax_data)){
                                                                               echo "[";
@@ -4522,10 +4824,19 @@ style="margin-top: 50px; z-index: 99999;">
                                                                             } 
                                                                             ?> 
                                                                           </td>
-                                                                          <td><label style="font-weight:bold" id="taxAmountlabel"></label>
-                                                                            <input style="font-weight: bold" type="hidden"
+
+                                                                          <td>
+                                                                            <?php if(Session::get('franchiseId') == 11) {?>
+                                                                              <label style="font-weight:bold;padding-top:7px;" id="taxAmountlabel"></label>
+                                                                            <?php }else{ ?>
+                                                                              <label style="font-weight:bold;" id="taxAmountlabel"></label>
+                                                                            <?php } ?>
+                                                                            <label for="duplicatetaxAmountlabel" id="duplicatetaxAmountlabel" style="display:none;padding-top:7px;" class="checkbox-custom-label">0<span
+                                                                                class="req"> </span></label>
+                                                                            <input style="font-weight: bold;" type="hidden"
                                                                             name="taxAmount" id="taxAmount" value="" readonly
-                                                                            class="" /></td>
+                                                                            class="" />
+                                                                          </td>
                                                                           </tr>
                                                                           <tr>
                                                                             <td colspan="2" style="text-align: right; font-weight: bold">Grand

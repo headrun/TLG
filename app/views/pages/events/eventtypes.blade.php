@@ -65,6 +65,8 @@
 
 	$("#eventTypeEditSubmit").click(function (e){
 		event.preventDefault();
+		$('#editEventTypesModal').modal('hide');
+		// $('#editEventTypeLoad').show();
 		saveEventTypes();
 	})
 
@@ -108,11 +110,12 @@
 @section('content')
 <div class="container">
 	<div class="row">
-	
-		
-		
-		
-		
+		<div id="editEventTypeLoad" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+		    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+		    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+		     Event type updated successfully.Please wait . . .
+		    </p>
+	    </div>
 		 <h4>Event Type</h4>
 		 <div class="md-card">
                 <div class="md-card-content large-padding">

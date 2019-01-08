@@ -49,8 +49,8 @@ Log::useFiles(storage_path().'/logs/laravel.log');
 
 App::error(function($exception, $code)
 {
-	 $data = TryController::send_mail($exception);
-         return View::make('pages.error404');
+	 // $data = TryController::send_mail($exception);
+    // return View::make('pages.error404');
 });
 
 

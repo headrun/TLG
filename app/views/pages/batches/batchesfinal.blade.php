@@ -166,7 +166,7 @@ $(document).ready(function(){
 		                                	"<a class='btn btn-info btn-xs' href='{{url()}}/batches/attendance/"+response.data[i]['id']+"' title='Summary'><i class='Small material-icons' style='font-size:20px;'>assignment</i></a> " +
 		                                        "<a class='btn btn-primary btn-xs' href='{{url()}}/batches/view/"+ response.data[i]['id'] +"' title='Attendance'><i class='Small material-icons' style='font-size:20px;'>snooze</i></a>"+
 		                                	"<a  id='editBatchbutton' class='btn btn-warning btn-xs' onclick='editbatch("+response.data[i]['id']+','+response.data[i]['location_id']+','+response.data[i]['lead_instructor']+")' title='Edit'> <i class='Small material-icons' style='font-size:20px;'>mode_edit</i></a>"+
-                                                        "<a id='deleteBatchbutton' class='btn btn-danger btn-xs' onclick='deletebatch("+response.data[i]['id']+")'title='Delete'> <i class='Small material-icons' style='font-size:20px;'>delete </i> </a>"+
+                                                       //  "<a id='deleteBatchbutton' class='btn btn-danger btn-xs' onclick='deletebatch("+response.data[i]['id']+")'title='Delete'> <i class='Small material-icons' style='font-size:20px;'>delete </i> </a>"+
                                                 "</td>"+
 		                                
 		                      "</tr>";
@@ -553,6 +553,7 @@ $('#seasonLocation').change(function(){
 });
 
 $('#addbatch').click(function(){
+	// $('#addingNewBatch').show();
 	$('#addbatch').addClass('disabled');
 });
 //
@@ -611,13 +612,15 @@ $('#savebatchedit').click(function(){
                                 'batchStartTime':$('#changeBatchStartTime').val(),'batchEndTime':$('#changeBatchEndTime').val()},
 			dataType: 'json',
 			success: function(response){
-                            if(response.status=='success'){
-                                $('#batchEditMsg').html("<p class='uk-alert uk-alert-success'>updated successfully. please wait till page reloads.</p>");
-                                setTimeout(function(){
-				   window.location.reload(1);
-				}, 2000);
-                            }
-                        }
+                    if(response.status=='success'){
+                        $('#batchEditMsg').html("<p class='uk-alert uk-alert-success'>updated successfully. please wait till page reloads.</p>");
+                        $('#editBatchmodal').modal('hide');
+                        // $('#updateEdit').show();
+                        setTimeout(function(){
+						   window.location.reload(1);
+						}, 2000);
+                    }
+                }
           });  
 });
 
@@ -638,11 +641,15 @@ $('#batch_delete').click(function(){
 			dataType: 'json',
 			success: function(response){
                             //console.log(response);
-                                 if(response.status=='success'){   
-				   window.location.reload(1);
-                                 }
-                        }
-             });  
+                     if(response.status=='success'){
+                     $('#deletebatch').modal('hide');	
+                     // $('#deleteEdit').show();   
+                        setTimeout(function(){
+						   window.location.reload(1);
+						}, 2000);
+                     }
+            }
+         });  
 });
 
 </script>		                           	                            									
@@ -664,7 +671,24 @@ $('#batch_delete').click(function(){
        
 </div>
 <br clear="all"/>
-
+<div id="deleteEdit" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Deleted successfully.Please wait . . .
+    </p>
+</div>
+<div id="updateEdit" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Updated successfully.Please wait . . .
+    </p>
+</div>
+<div id="addingNewBatch" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Batch added successfully.Please wait . . .
+    </p>
+</div>
 <?php 
 
 
@@ -895,7 +919,7 @@ $('#batch_delete').click(function(){
       <div class="modal-content">
         <div class="modal-header" id="editBatchheader">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">EditBatch</h4>
+          <h4 class="modal-title">Edit Batch</h4>
         </div>
         <div class="modal-body" id="editBatchbody">
             <div class="batchEditMsg" id="batchEditMsg"></div>

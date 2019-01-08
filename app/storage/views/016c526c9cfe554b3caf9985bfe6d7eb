@@ -1,4 +1,3 @@
-
 <!doctype html>
 <!--[if lte IE 9]> <html class="lte-ie9" lang="en"> <![endif]-->
 <!--[if gt IE 9]><!--> <html lang="en"> <!--<![endif]-->
@@ -38,15 +37,15 @@
     
     
 	
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="<?php echo url(); ?>/assets/css/bootstrap.min.css">
 	
 	
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="<?php echo url(); ?>/assets/css/bootstrap-theme.min.css">
 	
 	
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<link rel="stylesheet" href="<?php echo url(); ?>/assets/css/jquery-ui.css">
 	
-	
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">	
 	<?php echo $__env->yieldContent('libraryCSS'); ?>
 	<style>
 		.has-error .form-control {
@@ -60,11 +59,52 @@
 		    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 		    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 		}
+		#screenShot_switcher {
+            		position: fixed;
+            		right: 0;
+	                top: 175px;
+                        background: #fff;
+                        width: 240px;
+                        z-index: 1094;
+                        box-sizing: border-box;
+                        padding: 16px;
+                        margin-right: -246px;
+                        -webkit-transition: margin 280ms cubic-bezier(.4,0,.2,1);
+                        transition: margin 280ms cubic-bezier(.4,0,.2,1);
+            		box-shadow: -2px 2px 5px rgba(0,0,0,.26);
+        	}
+
+        	#screenShot_switcher_toggle {
+            		position: absolute;
+            		top: 8px;
+            		left: -44px;
+	                width: 44px;
+            		height: 36px;
+	                background: #fff;
+            		border-radius: 4px 0 0 4px;
+            		cursor: pointer;
+            		padding: 0 5px;
+           	        box-shadow: -2px 2px 5px rgba(0,0,0,.26);
+            		box-sizing: border-box;
+            		z-index: 1096;
+        	}
+
+        	#screenShot_switcher_toggle .material-icons {
+            		font-size: 29px;
+            		line-height: 36px;
+            		color: #212121;
+        	}		
+
+    #commonSearchTxt::selection {
+      #commonSearchTxt::placeholder{
+        color:white;  
+      }
+      
+    }
 	
 	</style>
 	 
    
-	<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
 	
 </head>
 <body class="sidebar_main_open sidebar_main_swipe">
@@ -84,16 +124,15 @@
                 <div class="" style="display: block; padding-top:10px;">
 		            <!-- <i class="md-icon header_main_search_close material-icons">&#xE5CD;</i> -->
 		            <form class="uk-form" id="profileSearchForm" action="<?php echo url(); ?>/quick/navigateToProfile" method="post">
-		                <input type="text" id="commonSearchTxt" name="term" class="headerSearchInput" />
+		                <input type="text" id="commonSearchTxt" name="term" class="headerSearchInput" placeholder="Search" />
 		                <input type="hidden"  id="idCommonSearchTxt" name="idCommonSearchTxt" class="" />
-		                <button id="profileSearchFormSubmitBtn" class="buttonSearch uk-button-link" type="submit">
+		                <button  style="display: none;" id="profileSearchFormSubmitBtn" class="buttonSearch uk-button-link" type="submit">
 		                	<i class="md-icon material-icons" style="color: #FFF;">&#xE8B6;</i>
 		                </button>
 		            </form>
 		</div>
                 <div class="" style="display: block; padding-top:10px; color: white;">
-                    <?php echo Session::get('firstName'); ?><?php echo Session::get('lastName'); ?>
-
+                    
                 </div>
                 <div class="uk-navbar-flip">
                     <ul class="uk-navbar-nav user_actions">
@@ -111,7 +150,8 @@
                         <!-- <li><a href="#" id="main_search_btn" class="user_action_icon"><i class="material-icons md-24 md-light">&#xE8B6;</i></a></li> -->
                         
                         <li data-uk-dropdown="{mode:'click'}">
-                            <a href="#" class="user_action_image" style="margin-top: -40px;">
+                            <a href="#" class="user_action_image" style="margin-top: -20px;">
+                             <label style="padding: 5px;"><?php echo Session::get('firstName'); ?> <?php echo Session::get('lastName'); ?></label>
                                 <img class="md-user-image" src="<?php echo url(); ?>/assets/img/avatars/avatar_11_tn.png" alt="" title=<?php echo Session::get('firstName'); ?><?php echo Session::get('lastName'); ?>  /> 
                             
                             </a>
@@ -220,7 +260,56 @@
         </p>
     </div>
 </div>
-	
+<!------ <div id="screenShot_switcher" style="background-color: #c5c5c5">
+    <div id="screenShot_switcher_toggle"><i class="material-icons" style="font-size: 29px;">camera_alt</i></div>
+    <div class="uk-margin-medium-bottom">
+        <h4 class="heading_c uk-margin-bottom">Colors</h4>
+        <ul class="switcher_app_themes" id="screenShot_switcher_theme_switcher">
+            <li class="app_style_default active_theme" data-app-theme="">
+                <span class="app_color_main"></span>
+                <span class="app_color_accent"></span>
+            </li>
+            <li class="switcher_theme_a" data-app-theme="app_theme_a">
+                <span class="app_color_main"></span>
+                <span class="app_color_accent"></span>
+            </li>
+            <li class="switcher_theme_b" data-app-theme="app_theme_b">
+                <span class="app_color_main"></span>
+                <span class="app_color_accent"></span>
+            </li>
+            <li class="switcher_theme_c" data-app-theme="app_theme_c">
+                <span class="app_color_main"></span>
+                <span class="app_color_accent"></span>
+            </li>
+            <li class="switcher_theme_d" data-app-theme="app_theme_d">
+                <span class="app_color_main"></span>
+                <span class="app_color_accent"></span>
+            </li>
+            <li class="switcher_theme_e" data-app-theme="app_theme_e">
+                <span class="app_color_main"></span>
+                <span class="app_color_accent"></span>
+            </li>
+            <li class="switcher_theme_f" data-app-theme="app_theme_f">
+                <span class="app_color_main"></span>
+                <span class="app_color_accent"></span>
+            </li>
+            <li class="switcher_theme_g" data-app-theme="app_theme_g">
+                <span class="app_color_main"></span>
+                <span class="app_color_accent"></span>
+            </li>
+        </ul>
+    </div>
+    <div id="capture" style="padding: 10px; background: #f5da55">
+    	<h4 style="color: #000; "></h4>
+    </div> ------>
+    <!-- <div class="uk-visible-large">
+        <h4 class="heading_c">Sidebar</h4>
+        <p>
+            <input type="checkbox" name="style_sidebar_mini" id="screenShot_switcher_sidebar_mini" data-md-icheck />
+            <label for="style_sidebar_mini" class="inline-label">Mini Sidebar</label>
+        </p>
+    </div> -->
+</div>
 	<!-- common functions -->
     <script src="<?php echo url(); ?>/assets/js/common.min.js"></script>
 	<!-- uikit functions -->
@@ -228,24 +317,37 @@
     <!-- altair common functions/helpers -->
     
     <script src="<?php echo url(); ?>/assets/js/altair_admin_common.min.js"></script>
+    <script src="<?php echo url(); ?>/assets/css/jquery-ui.css"></script>
+    <script type="text/javascript" src="<?php echo url(); ?>/assets/js/idle-timer.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="<?php echo url(); ?>/assets/js/idle-timer.js"></script>
+    <!--- <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>	--->
     <script>
-	 	$( "#commonSearchTxt" ).autocomplete({
-	        source: "<?php echo url(); ?>/quick/customerStudentSearch",
-	        minLength: 2,
-	        select: function( event, ui ) {
 
+	$(document).ready(function() {
+	    $("#commonSearchTxt").autocomplete({
+	        source: "<?php echo url(); ?>/quick/customerStudentSearch",
+	        minLength: 3,
+	        select: function( event, ui ) {
 	        	$( "#commonSearchTxt" ).val(ui.item.value);
 	        	$( "#idCommonSearchTxt" ).val(ui.item.id);
-
+            		event.preventDefault();
+           	 	if($("#idCommonSearchTxt").val() != ""){
+           		 	$("#profileSearchForm").submit();
+            	 	}
 		        
-	          console.log( ui.item ?
-	            "Selected: " + ui.item.value + " aka " + ui.item.id :
-	            "Nothing selected, input was " + this.value );
+	          	console.log( ui.item ?
+	            	"Selected: " + ui.item.value + " aka " + ui.item.id :
+	            	"Nothing selected, input was " + this.value );
 	        }
 	      });
 
-
+	});
+    $("#profileSearchFormSubmitBtn").click(function (event){
+      event.preventDefault();      
+    });
+    /*
 	 	$("#profileSearchFormSubmitBtn").click(function (event){
 
 		 	event.preventDefault();
@@ -260,6 +362,7 @@
 
 
 		})
+    */
 
 
 	</script>
@@ -280,7 +383,21 @@
             }
         });
     </script>
-    
+
+	
+    <script>
+	$(function() {
+   		var session_lifetime = 1400;
+   		// Set idle time
+   		$( document ).idleTimer( parseInt(session_lifetime)*60*1000 );
+	});
+
+	$(function() {
+   		$( document ).on( "idle.idleTimer", function(event, elem, obj){
+       			window.location.href = "<?php echo url(); ?>/vault/logout";
+   		});
+	});
+    </script>
 <script>
     
     $(function() {
@@ -354,7 +471,26 @@
         }
     });
 </script>
+<script type="text/javascript" src="http://assets.freshdesk.com/widget/freshwidget.js"></script>
+	<script type="text/javascript">
+    		FreshWidget.init("", {"queryString": "&widgetType=popup&formTitle=TLG+Support", "utf8": "✓", "widgetType": "popup", "buttonType": "text", "buttonText": "Support", "buttonColor": "white", "buttonBg": "#006063", "alignment": "2", "offset": "235px", "formHeight": "500px", "url": "https://supporttlg.freshdesk.com"} );
+	</script>
 
+
+<!---	<script type="text/javascript">
+            window.doorbellOptions = {
+                id: '9294',
+                appKey: 'po9zZ4TJOKoNi89gfkEXvlUCbjMO8HVr4HPMPBwg9mJPOyltC6JlswEU51Q9eFkf'
+            };
+            (function(w, d, t) {
+                var hasLoaded = false;
+                function l() { if (hasLoaded) { return; } hasLoaded = true; window.doorbellOptions.windowLoaded = true; var g = d.createElement(t);g.id = 'doorbellScript';g.type = 'text/javascript';g.async = true;g.src = 'https://embed.doorbell.io/button/'+window.doorbellOptions['id']+'?t='+(new Date().getTime());(d.getElementsByTagName('head')[0]||d.getElementsByTagName('body')[0]).appendChild(g); }
+                if (w.attachEvent) { w.attachEvent('onload', l); } else if (w.addEventListener) { w.addEventListener('load', l, false); } else { l(); }
+                if (d.readyState == 'complete') { l(); }
+            }(window, document, 'script'));
+    </script> --->
+
+</script>
 
 </body>
 </html>

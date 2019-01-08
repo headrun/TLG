@@ -43,7 +43,7 @@
 	<link rel="stylesheet" href="{{url()}}/assets/css/bootstrap-theme.min.css">
 	
 	
-	<link rel="stylesheet" href="{{url()}}/assets/css/jquery-ui.css">
+	<link rel="stylesheet" href="{{url()}}/assets/css/jquery-ui.min.css">
 	
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">	
 	@yield('libraryCSS')
@@ -105,7 +105,6 @@
 	</style>
 	 
    
-	<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
 	
 </head>
 <body class="sidebar_main_open sidebar_main_swipe">
@@ -149,10 +148,21 @@
 					        </div>
                     	</li> -->
                         <!-- <li><a href="#" id="main_search_btn" class="user_action_icon"><i class="material-icons md-24 md-light">&#xE8B6;</i></a></li> -->
-                        
+                        <?php if(Session::get('userType')=='ADMIN'){ ?>
+                        <li id = "DailyReoprt_LI">
+                            <a href = "{{url()}}/reports/daily_reports/1" >
+                              <div style="color: #fff; margin-top: -10px; cursor: pointer;">
+                                <i class="material-icons" style="color: #fff;">
+                                  phone
+                                </i>
+                              </div>
+                            </a>
+                        </li>
+                        <?php }?>
+
                         <li data-uk-dropdown="{mode:'click'}">
                             <a href="#" class="user_action_image" style="margin-top: -20px;">
-                             <label style="padding: 5px;">{{ Session::get('firstName') }}{{ Session::get('lastName') }}</label>
+                             <label style="padding: 5px;">{{ Session::get('firstName') }} {{ Session::get('lastName') }}</label>
                                 <img class="md-user-image" src="{{url()}}/assets/img/avatars/avatar_11_tn.png" alt="" title={{ Session::get('firstName') }}{{ Session::get('lastName') }}  /> 
                             
                             </a>
@@ -318,30 +328,33 @@
     <!-- altair common functions/helpers -->
     
     <script src="{{url()}}/assets/js/altair_admin_common.min.js"></script>
+    <link rel="stylesheet" type="text/css" src="{{url()}}/assets/css/jquery-ui.min.css"/>
+    <script type="text/javascript" src="{{url()}}/assets/js/idle-timer.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script type="text/javascript" src="{{url()}}/assets/js/idle-timer.js"></script>
     <!--- <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>	--->
     <script>
-	 	$( "#commonSearchTxt" ).autocomplete({
+
+	$(document).ready(function() {
+	    $("#commonSearchTxt").autocomplete({
 	        source: "{{url()}}/quick/customerStudentSearch",
 	        minLength: 3,
 	        select: function( event, ui ) {
-
 	        	$( "#commonSearchTxt" ).val(ui.item.value);
 	        	$( "#idCommonSearchTxt" ).val(ui.item.id);
-            event.preventDefault();
-            if($("#idCommonSearchTxt").val() != ""){
-            $("#profileSearchForm").submit();
-            }
+            		event.preventDefault();
+           	 	if($("#idCommonSearchTxt").val() != ""){
+           		 	$("#profileSearchForm").submit();
+            	 	}
 		        
-	          console.log( ui.item ?
-	            "Selected: " + ui.item.value + " aka " + ui.item.id :
-	            "Nothing selected, input was " + this.value );
+	          	console.log( ui.item ?
+	            	"Selected: " + ui.item.value + " aka " + ui.item.id :
+	            	"Nothing selected, input was " + this.value );
 	        }
 	      });
 
-
+	});
     $("#profileSearchFormSubmitBtn").click(function (event){
       event.preventDefault();      
     });
@@ -381,6 +394,7 @@
             }
         });
     </script>
+
 	
     <script>
 	$(function() {

@@ -201,7 +201,6 @@ class CustomersController extends \BaseController {
 		if(Auth::check()){
 			$currentPage = "CUSTOMERS_LIST";
 			$mainMenu = "CUSTOMERS_MAIN";
-			
 			$inputs = Input::all ();
 			if (isset ( $inputs ['customerName'] )) {
 				if (Customers::addCustomers ( $inputs )) {
@@ -217,9 +216,6 @@ class CustomersController extends \BaseController {
 			$kidsSelect = Students::getStudentsForSelectBox($id);
 			$membershipTypes = MembershipTypes::getMembershipTypesForSelectBox();
 			$birthdays = BirthdayParties::getBirthdaysByCustomer($id);
-			
-			
-			//return $customer;
 			
 			//Membership
 			if (isset ($inputs['membershipTypesMembersDiv'])){
@@ -332,13 +328,12 @@ class CustomersController extends \BaseController {
                       //for retention
                          $retention_data=Retention::getRetentionByCustomerId($id);
                          for($i=0;$i<count($retention_data);$i++){
-                               $retention_data[$i]['comments']=  Comments::where('retention_id','=',$retention_data[$i]['id'])
+                               $retention_data[$i]['comments'] = Comments::where('retention_id','=',$retention_data[$i]['id'])
                                                                  ->orderBy('id','DESC')
                                                                  ->first();
                                $student_data=  Students::find($retention_data[$i]['student_id']);
                                $retention_data[$i]['student_name']=$student_data['student_name'];
                          }
-                    	 //return $end_date;
                       //for inquiry
                          $inuiry_data=Inquiry::getInquiryByCustomerId($id);
                          for($i=0;$i<count($inuiry_data);$i++){
@@ -356,10 +351,8 @@ class CustomersController extends \BaseController {
                                                  ->get();
                         for($i=0;$i<count($customer_student_data);$i++){
                             $student_classes=StudentClasses::getEnrolledStudentBatch($customer_student_data[$i]['id']);
-                            //return $student_classes[0]['batch_id'];
                             $customer_student_data[$i]['student_classes_data']=$student_classes;
                         }
-                        //return $customer_student_data;
                         for($i=0;$i<count($customer_student_data);$i++){
                             for($j=0;$j<count($customer_student_data[$i]['student_classes_data']);$j++){
                                 $find=  Batches::find($customer_student_data[$i]['student_classes_data'][$j]['batch_id']);
@@ -391,8 +384,13 @@ class CustomersController extends \BaseController {
                         $tax_data=TaxParticulars::where('franchisee_id','=',Session::get('franchiseId'))->get();
                         $birthday_base_price = BirthdayBasePrice::getBirthdaybasePrice();
                         $membership_data=CustomerMembership::getCustomerMembershipDetails($customer->id);
-                        
-                        
+                        $membership_ids = array();
+                        foreach ($membership_data as $key => $value) {
+                        	$membership_ids[] = $value['id'];
+                        }
+                        $membership_dates = CustomerMembership::where('customer_id','=',$id)
+                        						  ->whereNotIn('id', $membership_ids)
+                                                  ->get();
 
                         
                         
@@ -422,6 +420,7 @@ class CustomersController extends \BaseController {
                                         'membership_followup_data',
                                         'taxPercentage',
                                         'tax_data',
+                                        'membership_dates',
 			);
 			return View::make ( 'pages.customers.details', compact ( $viewData ) );
 		}else{
@@ -446,14 +445,26 @@ class CustomersController extends \BaseController {
     			$inputs['membership_amount']=$inputs['amount'];
     			$inputs['payment_due_amount']=$inputs['amount'];
     			$inputs['payment_due_amount_after_discount']=$inputs['amount'];
-     			$tax=PaymentTax::where('franchisee_id','=',Session::get('franchiseId'))
-    						->select('tax_percentage')->get();
-    			$tax=$tax[0];
-    			$inputs['tax']= $tax['tax_percentage'];
-     			$payment_data=PaymentDues::createMembershipPaymentDues($inputs);
+    			if (Session::get('franchiseId') === 11) {
+    				if ($inputs['diplomatCheck'] === 'yes') {
+						$inputs['tax']= 0;
+						$inputs['taxamt'] = 0;
+    				} else {
+			 			$tax=PaymentTax::where('franchisee_id','=',Session::get('franchiseId'))
+									->select('tax_percentage')->get();
+						$tax=$tax[0];
+						$inputs['tax']= $tax['tax_percentage'];	
+    				}
+    			} else {
+		 			$tax=PaymentTax::where('franchisee_id','=',Session::get('franchiseId'))
+								->select('tax_percentage')->get();
+					$tax=$tax[0];
+					$inputs['tax']= $tax['tax_percentage'];
+    			}
+			$payment_data=PaymentDues::createMembershipPaymentDues($inputs);
     			$inputs['payment_due_id']=$payment_data->id;
     			$inputs['taxamt']=($inputs['membership_amount']*$inputs['tax'])/100;
-			$inputs['invoice_format'] = Orders::invoiceFormat($invoiceNo);
+				$inputs['invoice_format'] = Orders::invoiceFormat($invoiceNo);
     			$order_data=Orders::CreateMembershipOrder($inputs);
     			
     			DB::commit();

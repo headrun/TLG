@@ -6,8 +6,8 @@
     <link rel="icon" type="image/png" href="<?php echo url(); ?>/assets/img/favicon-16x16.png" sizes="16x16">
     <link rel="icon" type="image/png" href="<?php echo url(); ?>/assets/img/favicon-32x32.png" sizes="32x32">
     <title>TLG - Administration</title> 	
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="<?php echo url(); ?>/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="<?php echo url(); ?>/assets/css/bootstrap-theme.min.css">
 	<style>
 		.datarow{
 			margin-bottom:10px;
@@ -104,35 +104,35 @@
 				<br clear="all"/>
 				<div class="col-md-7" style="margin:0px auto !important; float:left; border-bottom:2px dashed #EEEEEE;">
                                     <h4>Invoice Number :
+					<?php if(strtotime($order_data->created_at) > '2018-04-16'): ?>
+                                         <?php echo $order_data['invoice_format']; ?>
 
-                                             <?php
-                                                  $yrdata= strtotime($paymentDueDetails['created_at']);
-                                                  
-                                                  
-                                                  switch (strlen($order_data['id'])){
-                                                    
+                                        <?php else: ?>
+                                         <?php
+                                                  $yrdata= strtotime($order_data->created_at);
+                                                  switch (strlen($paymentMode[0]['id'])){
                                                     case 1:
-                                                        echo 'TLG|'.$franchisee_data['franchisee_name'].'|'.date('M', $yrdata).'|00000'.$order_data['id'];
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|00000'.$order_data['id'];
                                                         break;
                                                     case 2:
-                                                        echo 'TLG|'.$franchisee_data['franchisee_name'].'|'.date('M', $yrdata).'|0000'.$order_data['id'];
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|0000'.$order_data['id'];
                                                         break;
                                                     case 3:
-                                                        echo 'TLG|'.$franchisee_data['franchisee_name'].'|'.date('M', $yrdata).'|000'.$order_data['id'];
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|000'.$order_data['id'];
                                                         break;
-                                                    case 4: 
-                                                        echo 'TLG|'.$franchisee_data['franchisee_name'].'|'.date('M', $yrdata).'|00'.$order_data['id'];
+                                                    case 4:
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|00'.$order_data['id'];
                                                         break;
                                                     case 5:
-                                                        echo 'TLG|'.$franchisee_data['franchisee_name'].'|'.date('M', $yrdata).'|0'.$order_data['id'];
+                                                        echo 'TLG|'.$franchisee_name['franchisee_name'].'|'.date('M', $yrdata).'|0'.$order_data['id'];
                                                         break;
                                                     default:
                                                         echo $order_data['id'];
                                                         break;
                                                     }
-                                                
-                                            ?> 
-                                    </h4>
+                                            ?>
+                                        <?php endif; ?>
+				    </h4>
                                     <h4>Payment Reciept and Enrollment  Details</h4>
 				</div>
 				<div class = "col-md-4" style = "float: right">
@@ -170,7 +170,15 @@
 								<td><?php echo $membership_data->membership_start_date; ?></td>
 								<td><?php echo $membership_data->membership_end_date; ?></td>
 								<td><?php echo $membership_type->fee_amount; ?></td>
-								<td><?php echo $order_data->tax_amount; ?></td>
+								<td>
+									<?php if($order_data['tax_percentage'] === 0 && $order_data['tax_particular'] === 'VAT'): ?>
+	                        	    <input id="diplomatOption" name="diplomatOption" type="checkbox"  checked="checked" class="checkbox-custom" onclick="return false;"/>
+	                        	    <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
+	                        	      class="req"> </span></label>
+		                        	<?php else: ?>
+		                        		<?php echo $order_data->tax_amount; ?> 
+		                        	<?php endif; ?>
+								</td>
 								<td><?php echo $membership_type->fee_amount+$order_data->tax_amount; ?></td>
 							</tr>
 						</tbody>

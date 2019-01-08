@@ -90,6 +90,22 @@ class ClassesController extends \BaseController {
                 
         }
 
+    public function addNewClass() {
+	    if(Auth::check() && Session::get('userType')=='SUPER_ADMIN'){
+			$currentPage  =  "CLASSES";
+			$mainMenu     =  "CLASSES_MAIN";
+			$franchiseeCourses = CoursesMaster::getAllCourses();
+			$getAllClassesMasters = ClassesMaster::getAllClassesMasters();
+			for($i=0;$i<sizeof($getAllClassesMasters);$i++){
+	            $courseName=CoursesMaster::where('id','=',$getAllClassesMasters[$i]['course_master_id'])->get();
+	            $courseName=$courseName[0];
+	            $getAllClassesMasters[$i]['course_master_name']=$courseName['course_name'];
+            }
+			return View::make('pages.classes.super_admin_new_classes', compact('currentPage','mainMenu', 'franchiseeCourses', 'getAllClassesMasters'));
+           }else{
+               return Redirect::action('DashboardController@index');
+           }
+    }
 
 	public function add_new_class_franchise(){
             if(Auth::check()){
@@ -131,7 +147,30 @@ class ClassesController extends \BaseController {
         }
 
 
+    public function addNewClassFranchisee() {
+    	if(Auth::check() && Session::get('userType')=='SUPER_ADMIN'){
+    			$currentPage  =  "CLASSES_FRANCHISE";
+    			$mainMenu     =  "CLASSES_MAIN";
+    			$franchiseeCourses = Courses::where('franchisee_id', '=', Session::get('franchiseId'))->get();
+    			$franchiseeBaseprice = ClassBasePrice::getBasePricebyFranchiseeId();
+    			$getAllClassesForFranchise = Classes::getAllClassesForFranchise();
+    			$franchiseelist = Franchisee::getFList();
+    	                
+    			for($i=0;$i<sizeof($getAllClassesForFranchise);$i++){
+    				$courseMasterId = Courses::where('id','=',$getAllClassesForFranchise[$i]['course_id'])->get();
+    				$courseMasterId = $courseMasterId[0];
+    				$courseName = CoursesMaster::where('id', '=', $courseMasterId['master_course_id'])->get();
+    				$courseName = $courseName[0];
 
+    				$getAllClassesForFranchise[$i]['course_name']=$courseName['course_name'];
+	                  $temp=ClassBasePrice::where('base_price_no','=',$getAllClassesForFranchise[$i]['base_price_no'])->where('franchise_id','=',Session::get('franchiseId'))->get();
+	                  $getAllClassesForFranchise[$i]['base_price']=$temp[0]['base_price'];       
+	                }
+    				return View::make('pages.classes.super_admin_add_class_franchisee', compact('currentPage','mainMenu', 'franchiseeCourses', 'franchiseeBaseprice', 'getAllClassesForFranchise', 'franchiseelist'));
+    	        }else{
+    	            return Redirect::action('VaultController@logout');
+    	        }
+    }
 
 	public function updateClassesMaster(){
 		$inputs = Input::all();
@@ -182,7 +221,7 @@ class ClassesController extends \BaseController {
 		
 		$franchiseeCourse = Input::get('franchiseeCourse');
 		//$classess = ClassesMaster::getClassesMasterForDropDown($courseMasterId);
-		$classess = $classess = Classes::getAllClassesLists(Session::get('franchiseId'), $franchiseeCourse);
+		$classess = Classes::getAllClassesLists(Session::get('franchiseId'), $franchiseeCourse);
 		header('Access-Control-Allow-Origin: *');
 		return Response::json($classess);
 		
@@ -533,8 +572,9 @@ class ClassesController extends \BaseController {
                                                                      ->where('batch_id','=',$inputs['batch_id'])
                                                                      ->whereIn('status',array('enrolled','transferred_class'))
                                                                      ->get();
-            $count=0;
+            // $count=0;
             for($i=0;$i<count($student_class_data['student_class_data']);$i++){
+            	$count=0;
                 $student_class_data['student_class_data'][$i]['attendance_count']=Attendance::where('batch_id','=',$inputs['batch_id'])
                                                                ->where('student_id','=',$inputs['student_id'])
                                                                ->whereIn('status',array('P','A','EA'))

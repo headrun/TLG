@@ -97,8 +97,9 @@
         		{
         			if (response.status == "success") {
                         console.log(response);
-        				$('#msgDiv').html('<h5 class = "uk-alert-success" style = "color: #fff; width: 85%; padding: 8px; text-align: center">Discounts is added Successfully. Please wait untill this page reload</h5>');			
-        				setTimeout(function(){
+        				$('#msgDiv').html('<h5 class = "uk-alert-success" style = "color: #fff; width: 85%; padding: 8px; text-align: center">Discount added Successfully. Please wait untill this page reload</h5>');			
+        				// $('#discountsAdd').show();
+                        setTimeout(function(){
  							window.location.reload(1);
            				}, 3500);
         			}
@@ -127,6 +128,8 @@ function deleteDiscounts(id){
                     //console.log(response);
                     $('#deleteDiscounts').modal('hide');
                     $('#successDiv').html('<h5 alert class = "uk-alert-success" style = "color: #fff; width: 100%; padding: 10px; text-align: center">Discount deleted Successfully.</h5>');
+                    $('#deleteDiscounts').modal('hide');
+                    // $('#discountsDelete').show();
                     setTimeout(function(){
                         window.location.reload(1);
                     }, 2000);
@@ -158,6 +161,8 @@ function editDiscounts(Dprcntge,NoClses,id){
                     $('#editDiscounts').modal('hide');
                     if(response.status=='success'){
                         $('#successDiv').html('<h5 alert class = "uk-alert-success" style = "color: #fff; width: 100%; padding: 10px; text-align: center">Discount updated Successfully. Please wait untill this page reload</h5>');
+                        $('#editDiscounts').modal('hide');
+                        // $('#discountsUpdate').show();
                         setTimeout(function(){
                             window.location.reload(1);
                         }, 2000);  
@@ -190,6 +195,8 @@ function editChild_Class_disc(Class, Child){
                     $('#editChild_Class_disc').modal('hide');
                     if(response.status=='success'){
                         $('#successDiv1').html('<h5 alert class = "uk-alert-success" style = "color: #fff; width: 100%; padding: 10px; text-align: center">Discounts are updated Successfully. Please wait untill this page reload</h5>');
+                        $('#editDiscounts').modal('hide');
+                        // $('#discountsUpdate').show();
                         setTimeout(function(){
                             window.location.reload(1);
                         }, 2000);  
@@ -279,8 +286,24 @@ function insertChild_Class_disc(Class, Child){
         <button type="button" id="AddSecondChldCls" class="md-btn md-btn-primary pull-right" style = "margin-right: 3em">Add Second Child & Multi Classes Discounts</button>
     </div>
 </div>
-
-
+<div id="discountsAdd" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Discounts added successfully.Please wait . . .
+    </p>
+</div>
+<div id="discountsUpdate" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Discounts updated successfully.Please wait . . .
+    </p>
+</div>
+<div id="discountsDelete" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Discounts deleted successfully.Please wait . . .
+    </p>
+</div>
 <div id = "mainPercentageDiv" style = "display: none">
     <br clear="all"/>
     <div class="uk-width-medium-1-1">

@@ -63,7 +63,7 @@
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script> -->
 <script src="{{url()}}/assets/tags/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
 
 
@@ -268,6 +268,8 @@ function addKids(event){
         {
 			if(response.status == "success"){
 				$("#messageStudentAddDiv").html('<p class="uk-alert uk-alert-success">Kid details has been added successfully. Please wait till this page reloads</p>');
+				$('#addKidsModal').modal('hide');
+				// $('#addingNewKid').show();
 				$("#formBody").hide();
 
 				setTimeout(function(){
@@ -308,18 +310,16 @@ $("#saveCommentBtn").click(function (){
 	        {
 				if(response.status == "success"){
 					$("#commentMsgDiv").html('<p class="uk-alert uk-alert-success">Comments has been added successfully. Please wait till this page reloads</p>');
+                    // $('#addingComments').show();
 					setTimeout(function(){
 					   window.location.reload(1);
 					}, 3000);
-					
 				}else{
 					$("#commentMsgDiv").html('<p class="uk-alert uk-alert-danger">Sorry! Comments could not be added.</p>');
 				}
 	        }
-	    }); 
-		
+	    });
 	}else{
-
 		$("#commentMsgDiv").html('<p class="uk-alert uk-alert-danger">Please fill up the comments field.</p>');
 	}
 })
@@ -372,9 +372,11 @@ $("#saveCustomerBtn").click(function (e){
                             console.log(response);
                             if(response.status=='success'){
                               $('#messageEditCustomerDiv').html('<p class="uk-alert uk-alert-success">Sucessfully saved changes.please wait till the page reloads </p>');
+                              $('#editCustomerModal').modal('hide');
+                              // $('#updateCustomerProfile').show();
                               setTimeout(function(){
-					   window.location.reload(1);
-					}, 2000);
+							    window.location.reload(1);
+							  }, 2000);
                             }else{
                                  $('#messageEditCustomerDiv').html('<p class="uk-alert uk-alert-failure">cannot save changes.Try again after some time</p>');
                             }
@@ -536,11 +538,16 @@ function calculateBirthdayPartyPrice(){
 
 	$("#taxAmount").empty();
 	$("#totalAmountPayable").empty();
-	var tax = Math.floor(((tax_Percentage/100)*parseInt(advance)))
-	
-	$("#totalAmountPayable").val((parseInt(tax)+parseInt(advance)))
-	$("#taxAmount").val(tax);
-	
+
+	if($('#diplomatOption').is(':checked')) {
+		var tax = 0;
+		$("#totalAmountPayable").val((parseInt(tax)+parseInt(advance)))
+		$("#taxAmount").val(tax);
+	} else {
+		var tax = Math.floor(((tax_Percentage/100)*parseInt(advance)))
+		$("#totalAmountPayable").val((parseInt(tax)+parseInt(advance)))
+		$("#taxAmount").val(tax);
+	}
 }
 
 calculateBirthdayPartyPrice();
@@ -574,6 +581,15 @@ $('#advanceAmount').change(function(){
         }
 	calculateBirthdayPartyPrice();
 });
+
+$('#diplomatOption').click(function() {
+      if ($(this).is(':checked')) {
+      	calculateBirthdayPartyPrice();
+      } else {
+      	calculateBirthdayPartyPrice();
+      }
+});
+
 
 $('#discountAmount').change(function () {
 	if(parseInt($('#discountAmount').val())<0){
@@ -631,6 +647,14 @@ $('#additionalHalfHourCount').keyup(function (){
 	$("#additionalHalfHourPrice").val((parseInt($(this).val())*birthday_additional_half_hour_price));
 	calculateBirthdayPartyPrice();
 
+});
+
+$('#diplomatOption').click(function() {
+      if ($(this).is(':checked')) {
+      	calculateBirthdayPartyPrice();
+      } else {
+      	calculateBirthdayPartyPrice();
+      }
 });
 //  additionalHalfHourCount for change action
 $('#additionalHalfHourCount').change(function (){
@@ -874,8 +898,32 @@ function pendingamount(pendingamountId,pendingAmount){
                             $('#amountpending').val(response.birthday_data['remaining_due_amount']);
                             var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
                             $('#advancepaid').val(response.birthday_data['advance_amount_paid']);
-                            $('#taxamount').val(tax);
-                            $('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt(response.birthday_data['remaining_due_amount']));
+                            
+                            if ($('#diplomatOptionBday').is(':checked')) {
+                            	var tax = 0;
+                            	var tax_Percentage= 0;
+                            	$('#taxamount').val(tax);
+                            	$('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt(response.birthday_data['remaining_due_amount']));
+                            } else {
+                            	var tax_Percentage= "{{$taxPercentage->tax_percentage}}";
+                            	var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
+                            	$('#taxamount').val(tax);
+                            	$('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt(response.birthday_data['remaining_due_amount']));
+                            }
+
+                            $('#diplomatOptionBday').click(function() {
+                                  if ($(this).is(':checked')) {
+                                  	var tax = 0;
+                                  	var tax_Percentage= 0;
+                                  	$('#taxamount').val(tax);
+                                  	$('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt(response.birthday_data['remaining_due_amount']));
+                                  } else {
+                                  	var tax_Percentage= "{{$taxPercentage->tax_percentage}}";
+                                  	var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
+                                  	$('#taxamount').val(tax);
+                                  	$('#amountPendingAfterTax').val(parseInt($('#taxamount').val())+parseInt(response.birthday_data['remaining_due_amount']));
+                                  }
+                            });
                             // $('#birthdayPending_id').val(pendingamountId);
                             // $('#birthdaypending_amt').val(pendingAmount);
                              $('#receiveBirthdayCardDetailsDiv').hide();
@@ -975,6 +1023,15 @@ function pendingamount(pendingamountId,pendingAmount){
    $('#pendingamountpayadd').click(function(){
             var paymentType = $("input[type='radio'][name='birthdayPaymentReceiveTypeRadio']:checked").val();
             var printoption=$('#birthdayReceiveinvoicePrintOption').is(':checked');
+            if ($('#diplomatOptionBday').is(':checked')) {
+            	var tax = 0;
+            	var tax_Percentage= 0;
+            	var taxamount=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
+            } else {
+            	var tax_Percentage= "{{$taxPercentage->tax_percentage}}";
+            	var tax=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
+            	var taxamount=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));
+            }
             if($('#changeorder').is(":checked")==false){
              // create normal order form pending order
             var taxamount=Math.floor(((tax_Percentage/100)*parseInt($('#amountpending').val())));   
@@ -1795,6 +1852,7 @@ $('#addIntroVisitSubmit').click(function(){
 	        	if(response.status === "success"){
 	            	
 					$("#Msg").html('<p class="uk-alert uk-alert-success">Introductory visit was added successfully. Please wait till this page reloads</p>');
+					// $('#addingIv').show();
 					setTimeout(function(){
 					   var path= window.location.href.split('?')[0];
                                             window.location.href = path+'?tab=ivfollowup';
@@ -2550,7 +2608,15 @@ $('.membershipPurchase').click(function(){
 		membershipsenddata['bankName'] = $('#membershipcardbankname').val();
 
 	}
-
+	<?php if (Session::get('franchiseId') == 11) { ?>
+		if ($('#diplomatOptionMember').is(':checked')) {
+			var diplomatCheck = 'yes';
+			membershipsenddata['diplomatCheck'] = diplomatCheck;
+		} else {
+			var diplomatCheck = 'no';
+			membershipsenddata['diplomatCheck'] = diplomatCheck;
+		}
+	<?php } ?>
 
 
 		$.ajax({
@@ -2600,7 +2666,7 @@ $('.disablemembershipPurchasebtn').click(function(){
 	$.ajax({
 			type: "POST",
 			url: "{{URL::to('/quick/getmembershiptypedetails')}}",
-            data: {'mem_type_id': $('#membershipTypeforMembership').val(),},
+            data: {'mem_type_id': $('#membershipTypeforMembership').val()},
 			dataType: 'json',
 			success: function(response){
 				if(response.status=='success') {
@@ -2618,6 +2684,47 @@ $('.disablemembershipPurchasebtn').click(function(){
           	}
     }); 
 });
+
+$('#diplomatOptionMember').click(function() {
+	$('.memtax').html(0);
+	$('.memtaxamt').html(0);
+	if ($(this).is(':checked')) {
+		$('.memtaxamt').html(0);
+			$.ajax({
+				type: "POST",
+				url: "{{URL::to('/quick/getmembershiptypedetails')}}",
+		        data: {'mem_type_id': $('#membershipTypeforMembership').val()},
+				dataType: 'json',
+				success: function(response){
+					if(response.status=='success') {
+						console.log(response);
+						$('.memtotal').html(response.mem_data.fee_amount);
+					}
+		      	}
+		    });
+	} else {
+		getMemberFee();
+	}
+});
+
+function getMemberFee () {
+	$.ajax({
+		type: "POST",
+		url: "{{URL::to('/quick/getmembershiptypedetails')}}",
+        data: {'mem_type_id': $('#membershipTypeforMembership').val(),},
+		dataType: 'json',
+		success: function(response){
+			if(response.status=='success') {
+				console.log(response);
+				$('.memtype').html(response.mem_data.name);
+				$('.memcost').html(response.mem_data.fee_amount);
+				$('.memtax').html(response.tax_data.tax_percentage);
+				$('.memtaxamt').html(response.taxcal);
+				$('.memtotal').html(response.totalcost);
+			}
+      	}
+    });
+}
 
 $("input[name='purchasemempaymentTypeRadio']").click(function(){
 	
@@ -2695,6 +2802,30 @@ $('#memberhsipchequeNumber').keyup(function(){
 		<li><a href="{{url()}}/customers/memberslist" style="z-index:8;">Customers</a></li>
 		<li><a href="#" style="z-index:7;">{{$customer->customer_name}}</a></li>
 	</ul>
+</div>
+<div id="addingNewKid" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Kid added successfully.Please wait . . .
+    </p>
+</div>
+<div id="addingComments" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Added comments successfully.Please wait. . .
+    </p>
+</div>
+<div id="updateCustomerProfile" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Updated successfully.Please wait. . .
+    </p>
+</div>
+<div id="addingIv" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+     Added introductory visit.Please wait . . .
+    </p>
 </div>
 <br clear="all"/>
 
@@ -2910,7 +3041,7 @@ $('#memberhsipchequeNumber').keyup(function(){
                                                     <div class="md-list-content">
                                                         <span class="md-list-heading">
                                                         
-                                                        {{ucfirst($customer->source)}} - 
+                                                        {{ucfirst($customer->source)}} 
                                                         <?php if($customer->source == "events"){
                                                         		if(isset($customer->Events)){
                                                         	?>
@@ -3205,21 +3336,27 @@ $('#memberhsipchequeNumber').keyup(function(){
 																	</td>
 																</tr>																
 																<tr style="text-align: right;">
-																	<td colspan="2">Tax
-                                                                                                                                            <?php 
-                                                                                                                                              if(isset($tax_data)){
-                                                                                                                                                echo "[";
-                                                                                                                                                for($i=0;$i<count($tax_data);$i++){
-                                                                                                                                                echo $tax_data[$i]['tax_particular'].':'.$tax_data[$i]['tax_percentage'].'%';
-                                                                                                                                                if($i != count($tax_data) -1){
-                                                                                                                                                    echo ", &nbsp;";
-                                                                                                                                                }
-                                                                                                                                                }
-                                                                                                                                                echo "]";
-                                                                                                                                               } 
-                                                                                                                                            ?> 
-                                                                                                                                        
-                                                                                                                                        </td>
+																	<td colspan="2">
+																		<?php if(Session::get('franchiseId') == 11) {?>
+																		  <input id="diplomatOption" name="diplomatOption" type="checkbox"  value="yes" class="checkbox-custom"  />
+																		  <label for="diplomatOption" class="checkbox-custom-label">Diplomat <span
+																		    class="req"> </span></label> /
+																		<?php } ?>
+																		Tax
+	                                                                        <?php 
+	                                                                          if(isset($tax_data)){
+	                                                                            echo "[";
+	                                                                            for($i=0;$i<count($tax_data);$i++){
+	                                                                            echo $tax_data[$i]['tax_particular'].':'.$tax_data[$i]['tax_percentage'].'%';
+	                                                                            if($i != count($tax_data) -1){
+	                                                                                echo ", &nbsp;";
+	                                                                            }
+	                                                                            }
+	                                                                            echo "]";
+	                                                                           } 
+	                                                                        ?> 
+	                                                                    
+	                                                                    </td>
 																	<td>
 																		{{Form::text('taxAmount', '',array('id'=>'taxAmount', 'required', 'readonly', 'class' => 'form-control input-sm md-input','style'=>'padding:0px'))}}
                                                                                                                                                 <input type="hidden" name="taxPercentage" id="taxPercentage" value="{{$taxPercentage->tax_percentage}}">
@@ -3578,35 +3715,58 @@ $('#memberhsipchequeNumber').keyup(function(){
                                                           </tbody>
                                                       </table>
                                                   </div>
-                                                  <div class="uk-width-medium-1-1">
-                                                      <h5 class="uk-text-bold"><i class="uk-icon-shopping-cart"></i> Purchased Membership Details</h5>
-                                                      <ul class="md-list" >
-                                                      	@foreach($membership_data as $membership)
-                                                      		<li>
-                                                      		<div class="md-list-content">
-                                                      			<span class="md-list-heading">
-                                                      			 	<a href="javascript:void(0)">{{$membership->description}}</a>
-                                                      			</span>
-                                                      			<div class="uk-margin-small-top">
-	                                                                <span class="uk-margin-right">
-	                                                    				<i class="material-icons"></i> 
-	                                                    					<span class="uk-text-muted uk-text-small">                                    Start Date: {{$membership->membership_start_date}}
-	                                                    						&nbsp; &nbsp;
-	                                                    						End Date: {{$membership->membership_end_date}} 
-	                                                    						<span class="uk-text-right"><a class="uk-button uk-button-primary uk-button-small" target="_blank" href="{{url()}}/orders/Membershipprint/{{$membership->enc_order_id}}">Print</a></span> 
-	                                                    					</span>
+  <div class="uk-width-medium-1-1">
+      <h5 class="uk-text-bold"><i class="uk-icon-shopping-cart"></i> Purchased Membership Details</h5>
+      <ul class="md-list" >
+      	@foreach($membership_data as $membership)
+      		<li>
+      		<div class="md-list-content">
+      			<span class="md-list-heading">
+      			 	<a href="javascript:void(0)">{{$membership->description}}</a>
+      			</span>
+      			<div class="uk-margin-small-top">
+                    <span class="uk-margin-right">
+        				<i class="material-icons"></i> 
+        					<span class="uk-text-muted uk-text-small">                                    Start Date: {{$membership->membership_start_date}}
+        						&nbsp; &nbsp;
+        						End Date: {{$membership->membership_end_date}} 
+        						<span class="uk-text-right"><a class="uk-button uk-button-primary uk-button-small" target="_blank" href="{{url()}}/orders/Membershipprint/{{$membership->enc_order_id}}">Print</a></span> 
+        					</span>
 
-	                                                				</span>
-	                                                
-	                                                			
-	                                                			</div>
+    				</span>
+    
+    			
+    			</div>
 
-                                                      		</div>
-                                                      		</li>
-                                                      	@endforeach	
-                                                      </ul>
-                                                      
-                                                  </div>
+      		</div>
+      		</li>
+      	@endforeach	
+      </ul>
+      
+  </div>
+
+  <div class="uk-width-medium-1-1">
+      <ul class="md-list" >
+      	@foreach($membership_dates as $membership)
+      		<li>
+      		<div class="md-list-content">
+      			<div class="uk-margin-small-top">
+                    <span class="uk-margin-right">
+        				<i class="material-icons"></i> 
+        					<span class="uk-text-muted uk-text-small">                                    Start Date: {{$membership->membership_start_date}}
+        						&nbsp; &nbsp;
+        						End Date: {{$membership->membership_end_date}}  
+        						&nbsp; &nbsp;
+        						<span class="new badge" style="background-color: #7CB342">Purchased through enrollment / Birthday</span> 
+        					</span>
+    				</span>
+    			</div>
+      		</div>
+      		</li>
+      	@endforeach	
+      </ul>
+      
+  </div>
                                                 </div>
                                              </div>   
 
@@ -3641,7 +3801,14 @@ $('#memberhsipchequeNumber').keyup(function(){
 																		 	<td class='memcost uk-text-right'></td>
 																		</tr>
 																		<tr> 
-																		 	<td class="uk-text-right">Tax: <span class="memtax"></span>%</td>
+																		 	<td class="uk-text-right">
+																		 		<?php if(Session::get('franchiseId') == 11) {?>
+																		 		  <input id="diplomatOptionMember" name="diplomatOptionMember" type="checkbox"  value="yes"  />
+																		 		  <label for="diplomatOptionMember" class="checkbox-custom-label">Diplomat <span
+																		 		    class="req"> </span></label> /
+																		 		<?php } ?>
+
+																		 		Tax: <span class="memtax"></span>%</td>
 																		 	<td class='memtaxamt uk-text-right'></td>
 																		</tr>
 																		<tr>
@@ -4499,7 +4666,13 @@ $('#memberhsipchequeNumber').keyup(function(){
                 </tr>
                 <tr>
                     <td></td>
-                    <td>Tax Amount</td>
+                    <td>
+                    	<?php if(Session::get('franchiseId') == 11) {?>
+                    	  <input id="diplomatOptionBday" name="diplomatOptionBday" type="checkbox"  value="yes"  />
+                    	  <label for="diplomatOptionBday" class="checkbox-custom-label">Diplomat <span
+                    	    class="req"> </span></label> /
+                    	<?php } ?>
+                    	Tax Amount</td>
                     <td><input type="number" id="taxamount" class="taxamount form-control input-sm " name="taxamount" readonly value="0"></td>
                 </tr>
                 <tr>

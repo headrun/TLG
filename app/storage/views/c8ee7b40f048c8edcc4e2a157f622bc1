@@ -1,7 +1,7 @@
 
 
 <?php $__env->startSection('libraryCSS'); ?>
-	<link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel='stylesheet' />
+	<link href='<?php echo url(); ?>/assets/css/bootstrap.min.css' rel='stylesheet' />
 	<style>
 		.smallText td a, .smallText td {
 			font-size:12px !important;
@@ -40,8 +40,6 @@
     <script src="<?php echo url(); ?>/assets/js/pages/plugins_datatables.min.js"></script>
     <script>
         
-        
-        
     $("#futurefollowupTable").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
 
@@ -58,7 +56,8 @@
             return nRow;
         },
         "iDisplayLength": 10,
-        "lengthMenu": [ 10, 50, 100, 150, 200 ]
+        "lengthMenu": [ 10, 50, 100, 150, 200 ],
+        "order": [[ 3, "asc" ]],
     });    
     $("#followupTable").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
@@ -94,7 +93,8 @@
             return nRow;
         },
         "iDisplayLength": 10,
-        "lengthMenu": [ 10, 50, 100, 150, 200 ]
+        "lengthMenu": [ 10, 50, 100, 150, 200 ],
+        //"order": [[ 3, "desc" ]]
     });
     $("#followupPending").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
@@ -112,7 +112,8 @@
             return nRow;
         },
         "iDisplayLength": 10,
-        "lengthMenu": [ 10, 50, 100, 150, 200 ]
+        "lengthMenu": [ 10, 50, 100, 150, 200 ],
+        "order": [[ 3, "desc" ]]
     });
         $("#birthdayLog").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
@@ -130,10 +131,11 @@
             return nRow;
         },
         "iDisplayLength": 10,
-        "lengthMenu": [ 10, 50, 100, 150, 200 ]
+        "lengthMenu": [ 10, 50, 100, 150, 200 ],
     });
     
-     $("#birthdayCelebrationTable").DataTable({
+     $("#birthdayDataTable").DataTable({
+        "ordering": false,
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
 
             // Bind click event
@@ -149,8 +151,29 @@
             return nRow;
         },
         "iDisplayLength": 10,
-        "lengthMenu": [ 10, 50, 100, 150, 200 ]
+        "lengthMenu": [ 10, 50, 100, 150, 200 ],
+        "order": [[ 3, "desc" ]]
     });
+
+     /*  $("#birthdayDataTable").DataTable({
+        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+
+            // Bind click event
+            $(nRow).click(function() {
+                  //window.open($(this).find('a').attr('href'));
+                window.location = $(this).find('a').attr('href');
+                  //OR
+
+                // window.open(aData.url);
+
+            });
+
+            return nRow;
+        },
+        "iDisplayLength": 10,
+        "lengthMenu": [ 10, 50, 100, 150, 200 ],
+        "order": [[ 3, "desc" ]]
+    });  */
     
     $("#classesExpiringTable").DataTable({
         "fnRowCallback": function (nRow, aData, iDisplayIndex) {
@@ -168,7 +191,8 @@
             return nRow;
         },
         "iDisplayLength": 10,
-        "lengthMenu": [ 10, 50, 100, 150, 200 ]
+        "lengthMenu": [ 10, 50, 100, 150, 200 ],
+        "order": [[ 1, "desc" ]],
     });
 
     
@@ -244,10 +268,66 @@
                             },
                             "iDisplayLength": 10,
                             "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                           // "order": [[ 3, "asc" ]],
                     });
                 }
             });
     });
+
+    /*$('#BdayDataFilterByDate').change(function(){
+            $.ajax({
+                type: "POST",
+                url: "<?php echo URL::to('/quick/BdayDataFiltering'); ?>",
+                dataType: 'json',
+                data:{"value": $('#BdayDataFilterByDate').val()},
+                success: function(response)
+                {
+                   var tableHeader = '';
+                   tableHeader = '<table class="uk-table" id="birthdayCelebrationTable1">'+
+                                    '<thead>'+
+                                        '<tr>'+
+                                            '<th class="uk-text-nowrap">Customer</th>'+
+                                            '<th class="uk-text-nowrap">Kid</th>'+
+                                            '<th class="uk-text-nowrap">Mobile No</th>'+                                            
+                                            '<th class="uk-text-nowrap">DOB</th>'+                             
+                                        '</tr>'+
+                                    '</thead>'+
+                                    '<tbody>';
+                   for(i = 0; i < response.data.length; i++){
+                        tableHeader  +=  '<tr onclick = navigateToCustomer("<?php echo url(); ?>/customers/view/'+response.data[i]['customer_id']+'?tab=birthdayparty")>'+
+                                        '<td>'+response.data[i]['customer_name']+'</td>'+
+                                        '<td>'+response.data[i]['student_name']+'</td>'+
+                                        '<td>'+response.data[i]['mobile_no']+'</td>'+
+                                        '<td>'+response.data[i]['student_date_of_birth']+'</td>'+
+                                    '</tr>';
+                   } 
+
+                   tableHeader += '</tbody></table>';
+
+                   //console.log(tableHeader);
+                   $('#allBdayData').html(tableHeader);
+
+                   $("#birthdayDataTable").DataTable({
+                        "destroy" : true,
+                        "paging":   false,
+                        "ordering": false,
+                        "info":     false,
+                        "searching" : false
+                   });
+
+                   $("#birthdayDataTable").html('');
+
+                   $("#birthdayCelebrationTable1").DataTable({
+                            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                                return nRow;
+                            },
+                            "iDisplayLength": 10,
+                            "lengthMenu": [ 10, 50, 100, 150, 200 ]
+                           // "order": [[ 3, "asc" ]],
+                    });
+                }
+            });
+    });*/
 
     function navigateToCustomer(url){
         window.location = url;
@@ -259,24 +339,28 @@
 <?php $__env->startSection('content'); ?>
              
 
-            <a href="<?php echo url(); ?>/customers/add" class="md-fab md-fab-accent" id="addEnrollment" title="Add customers" data-uk-tooltip="{pos:'left'}" style="float:right; margin-top: 11em;">
+     <!--       <a href="<?php echo url(); ?>/customers/add" class="md-fab md-fab-accent" id="addEnrollment" title="Add customers" data-uk-tooltip="{pos:'left'}" style="float:right; margin-top: 11em;">
 				<i class="material-icons">&#xE03B;</i>
-			</a>
+			</a> -->
             <!-- statistics (small charts) -->
             <div class="uk-grid uk-grid-width-large-1-4 uk-grid-width-medium-1-2 uk-grid-medium uk-sortable sortable-handler hierarchical_show" data-uk-sortable data-uk-grid-margin>
                 <div>
                     <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
-                            <center><span class="uk-text-muted uk-text-small" id = "Titles">Inquiries</span></center>
+                            <center><span class="uk-text-muted uk-text-small" id = "Titles">Enrolled Information</span></center>
                             <div class = "row" style = "">
-                                <div class = "col-md-6">
-                                    <center><span class="uk-text-muted uk-text-small">Today</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $todaysCustomerReg; ?><noscript>12456</noscript></span></h2></center>
+                                <div class = "col-md-4" align="center">
+                                    <span class="uk-text-muted uk-text-small">Today</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $todayEnrolledList; ?><noscript>12456</noscript></span></h2>
                                 </div>
-                                <div class = "col-md-6" align= "center">
-                                    <center><span class="uk-text-muted uk-text-small">Till now</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $customerCount; ?><noscript>12456</noscript></span></h2></center>
+                                <div class = "col-md-4" align= "center">
+                                    <span class="uk-text-muted uk-text-small">Week</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $thisWeekEnrollment; ?><noscript>12456</noscript></span></h2>
+                                </div>
+                                <div class = "col-md-4" align= "center">
+                                    <span class="uk-text-muted uk-text-small">Month</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $thisMonthEnrollment; ?><noscript>12456</noscript></span></h2>
                                 </div>
                             </div>
                             
@@ -287,74 +371,112 @@
                     <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
-                            <center><span class="uk-text-muted uk-text-small" id = "Titles">Family Memberships</span></center>
-                             <!--<table style="width: 100% " >
-                                <thead>
-                                        <tr>
-                                            <th align="left"><center><span class="uk-text-muted uk-text-small">Today</span></center> </th>
-                                            <th align="right" valign="right"><center><span class="uk-text-muted uk-text-small">Till now</span></center> </th>
-                                        </tr>
-                                </thead>
-                                <tbody align = "center">
-                                <td><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $todaysMemberReg; ?><noscript>12456</noscript></span></h2></td>
-                                <td valign="left"><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $membersCount; ?><noscript>12456</noscript></span></h2></td>
-                                </tbody>
-                            </table>-->
-
-                            <div class = "row" style = "">
-                                <div class = "col-md-6">
-                                    <center><span class="uk-text-muted uk-text-small">Today</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $todaysMemberReg; ?><noscript>12456</noscript></span></h2></center>
+                           <center><span class="uk-text-muted uk-text-small" id = "Titles">Revenue Details</span></center>
+                             
+                           <table style="width:100%;text-align: center;">
+                              <tr>
+                                <td>Today</td>
+                                <td>Rs. <?php echo $todayRevenueDetails; ?>/-</td>
+                              </tr>
+                              <tr>
+                                <td>Week</td>
+                                <td>Rs. <?php echo $thisWeekRevenueDetails; ?>/-</td>
+                              </tr>
+                              <tr>
+                                <td>MTD</td>
+                                <td>Rs. <?php echo $thisMonthRevenueDetails; ?>/-</td>
+                              </tr>
+                            </table>
+                         </div>
+			</div>
+		      </div>
+		    
+                           <!--  <div class = "row" style = "">
+                                <div class = "col-md-4">
+                                    <span class="uk-text-muted uk-text-small">Today</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe"><?php echo 5555555; ?><noscript>12456</noscript></span></h2>
                                 </div>
-                                <div class = "col-md-6" align= "center">
-                                    <center><span class="uk-text-muted uk-text-small">Till now</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $membersCount; ?><noscript>12456</noscript></span></h2></center>
+                                <div class = "col-md-4" align= "center">
+                                    <span class="uk-text-muted uk-text-small">Week</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $membersCount; ?><noscript>12456</noscript></span></h2>
                                 </div>
-                            </div>
+                                <div class = "col-md-4" align= "center">
+                                    <span class="uk-text-muted uk-text-small">MTD</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $membersCount; ?><noscript>12456</noscript></span></h2>
+                                </div>
+                            </div> 
                             
                         </div>
                     </div>
-                </div>
-                <div>
-                    <div class="md-card">
-                        <div class="md-card-content">
-                            <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
-                            <center><span class="uk-text-muted uk-text-small" id = "Titles"> Prospects</span></center>
-                            <div class = "row" style = "">
-                                <div class = "col-md-6">
-                                    <center><span class="uk-text-muted uk-text-small">Today</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $todaysNonmemberReg; ?><noscript>12456</noscript></span></h2></center>
-                                </div>
-                                <div class = "col-md-6" align= "center">
-                                    <center><span class="uk-text-muted uk-text-small">Till now</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $NonmembersCount; ?><noscript>12456</noscript></span></h2></center>
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </div>
-                </div>
+                </div> -->
                 <div>
                     <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <center><span class="uk-text-muted uk-text-small" id = "Titles">Enrolled Kids</span></center>
                             <div class = "row" style = "">
-                                <div class = "col-md-6">
-                                    <center><span class="uk-text-muted uk-text-small">Today</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php if($todaysEnrolledCustomers): ?><?php echo $todaysEnrolledCustomers; ?><?php else: ?> 0 <?php endif; ?><noscript>12456</noscript></span></h2></center>
-                                </div>
-                                <div class = "col-md-6" align= "center">
-                                    <center><span class="uk-text-muted uk-text-small">Till now</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">
-                                                 <?php if($enrolledCustomers): ?>
-                            
-                                                 <?php echo $enrolledCustomers; ?>
+                                <div class = "col-md-4">
+                                    <center><span class="uk-text-muted uk-text-small">Total</span></center>
+                                    <center><h2 class="uk-margin-remove"><span class="countUpMe">    
+                                    <?php echo $singleEnrollments + $multipleEnrollments; ?>
 
-                                                  <?php else: ?>
-                                0
-                          <?php endif; ?>
-                                            <noscript>12456</noscript></span></h2></center>
+				    <noscript>12456</noscript></span></h2></center>
+                                </div>
+                                <div class = "col-md-4">
+                                    <span class="uk-text-muted uk-text-small">Single</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe"><?php if($singleEnrollments): ?>
+                                        <?php echo $singleEnrollments; ?>
+
+                                    <?php else: ?> 
+                                        0 
+                                    <?php endif; ?>
+                                    <noscript>12456</noscript></span></h2>
+                                </div>
+
+                                <div class = "col-md-3" align= "center">
+                                    <span class="uk-text-muted uk-text-small">Multiple</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe">
+                                     <?php if($multipleEnrollments): ?>
+                                        <?php echo $multipleEnrollments; ?>
+
+                                     <?php else: ?> 
+                                        0 
+                                     <?php endif; ?>
+                                    <noscript>12456</noscript></span></h2>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="md-card">
+                        <div class="md-card-content">
+                            <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
+                            <center><span class="uk-text-muted uk-text-small" id = "Titles">Total Enrollments</span></center>
+                            <div class = "row" style = "padding-top:18px;">
+                                <center><h2 class="uk-margin-remove"><span class="countUpMe">    
+                                <?php echo $singleEnrollments + $multipleEnrollments * 2; ?>
+
+                                <noscript>12456</noscript></span></h2></center>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="md-card">
+                        <div class="md-card-content">
+                            <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
+                            <center><span class="uk-text-muted uk-text-small" id = "Titles">Leads Information</span></center>
+                            <div class = "row" style="text-align: center;">
+                                <div class = "col-md-6" >
+                                    <span class="uk-text-muted uk-text-small">Open</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $openLeads; ?><noscript>12456</noscript></span></h2>
+                                </div>
+                                <div class = "col-md-6">
+                                    <span class="uk-text-muted uk-text-small">Hot</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $hotLeads; ?><noscript>12456</noscript></span></h2>
                                 </div>
                             </div>
                             
@@ -368,46 +490,85 @@
                             <center><span class="uk-text-muted uk-text-small" id = "Titles">Follow-up Customers</span></center>
                             <!--<center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $reminderCount; ?><noscript>64</noscript></span></h2></center>-->
                             <div class = "row" style = "">
-                                <div class = "col-md-12">  
-                                    <center><span class="uk-text-muted uk-text-small">Till now</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $reminderCount; ?><noscript>64</noscript></span></h2></center>
+                                <div class = "col-md-4">  
+                                    <span class="uk-text-muted uk-text-small">Today</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe"><?php echo count($todaysFollowup); ?><noscript>64</noscript></span></h2>
+                                </div>
+                                <div class = "col-md-4">  
+                                    <span class="uk-text-muted uk-text-small">Pending</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe"><?php echo count($activeRemindersCount); ?><noscript>64</noscript></span></h2>
+                                </div>
+                                <div class = "col-md-4">  
+                                    <span class="uk-text-muted uk-text-small">Future</span>
+                                    <h2 class="uk-margin-remove"><span class="countUpMe"><?php echo count($futurefollowups); ?><noscript>64</noscript></span></h2>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                 <div>
-                    <div class="md-card">
+               <!--  <div>
+                    <div class="md-card-4">
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <center><span class="uk-text-muted uk-text-small" id = "Titles">Introductory Visit</span></center>
-                            <div class = "row" style = "">
-                                <div class = "col-md-6">
-                                    <center><span class="uk-text-muted uk-text-small">Today</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $introVisitCount; ?><noscript>12456</noscript></span></h2></center>
+                            <table style="width:100%; text-align: center;" >
+                              <tr class="uk-text-muted uk-text-small">
+                                <th></th>
+                                <th>Scheduled</th> 
+                                <th>Attended</th>
+                              </tr>
+                              <tr>
+                                <td>Today</td>
+                                <td><?php echo $todayScheduledIvs; ?></td>
+                                <td><?php echo $todayAttendedIvs; ?></td>
+                              </tr>
+                              <tr>
+                                <td>Week</td>
+                                <td><?php echo $thisWeekScheduledIvs; ?></td>
+                                <td><?php echo $thisWeekAttendedIvs; ?></td>
+                              </tr>
+                              <tr>
+                                <td>Month</td>
+                                <td><?php echo $thisMonthIvScheduled; ?></td>
+                                <td><?php echo $thisMonthAttendedIvs; ?></td>
+                              </tr>
+                            </table>
+                             <table>
+                                <div class = "row" style = "">
+                                    <div class = "col-md-4">
+                                        <span class="uk-text-muted uk-text-small">Today</span>
+                                        <span class="uk-text-muted uk-text-small">Today</span>
+                                        <span class="uk-text-muted uk-text-small">Week</span>
+                                        <span class="uk-text-muted uk-text-small">Month</span> -->
+                                        <!-- <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $introVisitCount; ?><noscript>12456</noscript></span></h2></center> -->
+                                   <!--  </div>
+                                    <div class = "col-md-4">
+                                        <span class="uk-text-muted uk-text-small">Scheduled</span>
+                                        <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $introVisitCount; ?><noscript>12456</noscript></span></h2></center>
+                                    </div>
+                                    <div class = "col-md-4" align= "center">
+                                        <span class="uk-text-muted uk-text-small">Attended</span>
+                                        <h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $totalIntrovisitCount; ?><noscript>12456</noscript></span></h2>
+                                    </div>
                                 </div>
-                                <div class = "col-md-6" align= "center">
-                                    <center><span class="uk-text-muted uk-text-small">Till now</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $totalIntrovisitCount; ?><noscript>12456</noscript></span></h2></center>
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </div>
-                </div>
+                            </table> -->
                                 <div>
                     <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <center><span class="uk-text-muted uk-text-small" id = "Titles">Birthday Party</span></center>
                             <div class = "row" style = "">
-                                <div class = "col-md-6">
+                                <div class = "col-md-4">
                                     <center><span class="uk-text-muted uk-text-small">Today</span></center>
                                     <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $todaysbpartycount; ?><noscript>12456</noscript></span></h2></center>
                                 </div>
-                                <div class = "col-md-6" align= "center">
-                                    <center><span class="uk-text-muted uk-text-small">Till now</span></center>
-                                    <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $totalbpartyCount; ?><noscript>12456</noscript></span></h2></center>
+                                <div class = "col-md-4">
+                                    <center><span class="uk-text-muted uk-text-small">Week</span></center>
+                                    <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $bdayPartyInThisWeek; ?><noscript>12456</noscript></span></h2></center>
+                                </div>
+                                <div class = "col-md-4" align= "center">
+                                    <center><span class="uk-text-muted uk-text-small">Month</span></center>
+                                    <center><h2 class="uk-margin-remove"><span class="countUpMe"><?php echo $bdayPartyInThisMonth; ?><noscript>12456</noscript></span></h2></center>
                                 </div>
                             </div>
                             
@@ -415,7 +576,7 @@
                     </div>
                 </div>
                 <div>
-                    <div class="md-card">
+                 <!--   <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <span class="uk-text-muted uk-text-small" id = "Titles">Current Enrollment</span>
@@ -425,14 +586,17 @@
                                         <?php foreach($courses as $course): ?>
                                         <h5><span class="uk-text-muted uk-text-small_"><span><?php echo $course->course_name; ?> :</span><b><?php echo $course->totalno; ?> &nbsp;&nbsp;</b></span></h5>
                                         <?php endforeach; ?>
+                                        <h5><span class="uk-text-muted uk-text-small_"><span>Total :</span><b><?php echo $totalclasses; ?> &nbsp;&nbsp;</b></span></h5>
                                 </div>
                             </div>
-                            
+       			  </div>                     
                         </div>
-                    </div>
-                </div>
+                    </div> -->
+                </div> 
             </div>
-
+             <div>
+      	    
+	    </div><br><br>
             <!-- large chart -->
             
 
@@ -509,7 +673,7 @@
                                     	?>
                                         <tr class="uk-table-middle smallText">
                                            	<td class="uk-width-3-10 uk-text-nowrap"><?php echo $items->Customers['customer_name']; ?><?php echo $items->Customers['customer_lastname']; ?> </td>
-                                           	<!--<td class="uk-width-3-10 uk-text-nowrap"><?php /*$items->Customers['customer_email']*/ ?></td>-->
+                                           	<!--<td class="uk-width-3-10 uk-text-nowrap"><?php echo -$items->Customers['customer_email']; ?></td>-->
                                            	<td class="uk-width-3-10 uk-text-nowrap"><?php echo $items->Customers['mobile_no']; ?></td>
                                            	<td class="uk-width-3-10 uk-text-nowrap"><?php echo $items->followup_status; ?></td>
                                            	
@@ -547,149 +711,55 @@
                                             <th class="uk-text-nowrap">Date</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                    	<?php foreach($activeRemindersCount as $items){?>
+				                <tbody>
+                                        <?php foreach($activeRemindersCount as $items){?>
                                         <tr class="uk-table-middle smallText">
-                                            <td class="uk-width-3-10 uk-text-nowrap"><?php echo $items->Customers->customer_name; ?><?php echo $items->Customers->customer_lastname; ?><a href="<?php echo url(); ?>/customers/view/<?php echo $items->Customers->id; ?>?tab=ivfollowup"></a></td>
-                                            <td class="uk-width-3-10 uk-text-nowrap"><?php echo $items->followup_type; ?></td>
-                                            <td class="uk-width-3-10 uk-text-nowrap"><?php echo $items->Customers->mobile_no; ?></td>
-                                            <td class="uk-width-3-10 uk-text-nowrap"><?php echo date('d M Y', strtotime($items->reminder_date)); ?></td>
+                                            <td class="uk-width-3-10 uk-text-nowrap"><?php echo $items['customer_name']; ?><?php echo $items['customer_lastname']; ?><a href="<?php echo url(); ?>/customers/view/<?php echo $items['id']; ?>?tab=ivfollowup"></a></td>
+                                            <td class="uk-width-3-10 uk-text-nowrap"><?php echo $items['followup_type']; ?></td>
+                                            <td class="uk-width-3-10 uk-text-nowrap"><?php echo $items['mobile_no']; ?></td>
+                                            <td class="uk-width-3-10 uk-text-nowrap"><?php echo date('d M Y', strtotime($items['reminder_date'])); ?></td>
                                         </tr>   
                                         <?php }?>                                     
-                                    </tbody>
+                                    </tbody> 
                                 </table>
                                 <?php }?>
                             </div>
                         </div>
                     </div>
                 </div>
-                 
-                <div class="uk-width-medium-1-2">
-                    <div class="md-card">
-                        <div class="md-card-content">
-                            <div class="uk-overflow-container">
-                                <h3>Upcoming Birthdays</h3>
-                                
-                                <table class="uk-table" id="birthdayLog">
-                                    <thead>
-                                        <tr>
-                                            <th class="uk-text-nowrap">Customer</th>
-                                            <th class="uk-text-nowrap">Kid</th>
-                                            <th class="uk-text-nowrap">Mobile No</th>                                            
-                                            <th class="uk-text-nowrap">DOB</th>
-                                            <th class="uk-text-nowrap">Type</th>
-                                         
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                       <?php if(isset($birthday_data)){for($i=0;$i<count($birthday_data);$i++){?>
-                                        <tr>
-                                            <td>
-                                                <?php echo $birthday_data[$i]['customer_name']; ?>
-
-                                                <a href="<?php echo url(); ?>/customers/view/<?php echo $birthday_data[$i]['customer_id']; ?>?tab=birthdayparty"></a>
-                                            </td>
-                                            <td> 
-                                                <?php echo $birthday_data[$i]['student_name']; ?>
-
-                                            </td>
-                                            <td> 
-                                                <?php echo $birthday_data[$i]['mobile_no']; ?>
-
-                                            </td>
-                                            <td> <?php echo $birthday_data[$i]['student_date_of_birth']; ?>
-
-                                            
-                                            </td>
-                                            <td> <?php if($birthday_data[$i]['membership']==0){
-                                                 echo "Non member";
-                                                }else{
-                                                    echo "Member";
-                                                }
-                                                 ?>
-                                            </td>
-                                        </tr>
-                                        
-                                       <?php }} ?>
-                                      
-                                        
-           <?php 
-            for($i=0;$i<count($birthday_data_month);$i++){
-              if(isset($birthday_data_month[$i][0])){
-                for($j=0;$j<count($birthday_data_month[$i]);$j++){
-                ?>   
+                 <div class="uk-width-medium-1-2">
+                     <div class="md-card">
+                         <div class="md-card-content">
+                             <div class="uk-overflow-container">
+                             <h3>Follow Ups (Future)</h3>
+                               <?php if(isset($futurefollowups)){?>
+                                 <table class="uk-table dashboardTable" id="futurefollowupTable" >
+                                     <thead>
+                                         <tr>
+                                             <th class="uk-text-nowrap">Customer</th>
+                                             <th class="uk-text-nowrap">Followup Type</th>
+                                             <th class="uk-text-nowrap">Mobile No</th>
+                                             <th class="uk-text-nowrap">Date</th>
+                                         </tr>
+                                     </thead>
+                                     <tbody>
+                                       <?php foreach($futurefollowups as $items){?>
+                                         <tr class="uk-table-middle smallText">
+                                           <td class="uk-width-3-10 uk-text-nowrap"><?php echo $items['customer_name']; ?><?php echo $items['customer_lastname']; ?><a href="<?php echo url(); ?>/customers/view/<?php echo $items['id']; ?>?tab=ivfollowup"></a></td>
+                                           <td class="uk-width-3-10 uk-text-nowrap"><?php echo $items['followup_type']; ?></td>
+                                           <td class="uk-width-3-10 uk-text-nowrap"><?php echo $items['mobile_no']; ?></td>
+                                           <td class="uk-width-3-10 uk-text-nowrap"><?php echo date('d M Y', strtotime($items['reminder_date'])); ?></td>
+                                          </tr>   
+                                         <?php }?>                                     
+                                     </tbody>
+                                 </table>
+                                 <?php }?>
+                             </div>
+                         </div>
+                     </div>
+                </div>
+               </div>  
                 
-                    <tr>
-                                            <td>
-                                                <?php echo $birthday_data_month[$i][$j]['customer_name']; ?>
-
-                                                <a href="<?php echo url(); ?>/customers/view/<?php echo $birthday_data_month[$i][$j]['customer_id']; ?>?tab=birthdayparty"></a>
-                                            </td>
-                                            <td> <?php echo $birthday_data_month[$i][$j]['student_name']; ?>
-
-                                            
-                                            </td>
-                                            <td> <?php echo $birthday_data_month[$i][$j]['mobile_no']; ?>
-
-                                            
-                                            </td>
-                                            <td> <?php echo $birthday_data_month[$i][$j]['student_date_of_birth']; ?>
-
-                                            
-                                            </td>
-                                            <td> <?php if($birthday_data_month[$i][$j]['membership']==0){
-                                                 echo "Non member";
-                                                }else{
-                                                    echo "Member";
-                                                }
-                                                 ?>
-                                            </td>
-                      </tr>
-      <?php    }
-              }
-            }
-      ?>
-                      
-                      
-                      <?php if(isset($birthday_month_startdays[0])){ for($i=0;$i<count($birthday_month_startdays);$i++){ ?>
-                            <tr>
-                                            <td>
-                                                <?php echo $birthday_month_startdays[$i]['customer_name']; ?><?php echo $birthday_month_startdays[$i]['customer_lastname']; ?>
-
-                                                <a href="<?php echo url(); ?>/customers/view/<?php echo $birthday_month_startdays[$i]['customer_id']; ?>?tab=birthdayparty"></a>
-                                            </td>
-                                            <td> <?php echo $birthday_month_startdays[$i]['student_name']; ?>
-
-                                            
-                                            </td>
-                                            <td> <?php echo $birthday_month_startdays[$i]['mobile_no']; ?>
-
-                                            
-                                            </td>
-                                            <td> <?php echo $birthday_month_startdays[$i]['student_date_of_birth']; ?>
-
-                                            
-                                            </td>
-                                            <td> <?php if($birthday_month_startdays[$i]['membership']==0){
-                                                 echo "Non member";
-                                                }else{
-                                                    echo "Member";
-                                                }
-                                                 ?>
-                                            </td>
-                            </tr>
-                      <?php }}?>
-
-                                        
-                                    </tbody>
-                                </table>
-                               
-                            </div>
-                        </div>
-                    </div>
-                </div> 
-             </div>
-            
 			
             <!-- info cards -->
             
@@ -699,81 +769,31 @@
                     <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-overflow-container">
-                                <div width = "100%">
-                                    <div style = "width: 60%; position: absolute">
-                                        <p style  ="font-size: 24px;">Birthdays Celebration </p>        
-                                    </div>
-                                    <div style = "width: 40%; margin-left: 60%">
-                                        <select id="BdayPatiesFilterByDate" required="required" class="form-control input-sm md-input" style="padding: 0px;font-weight:bold;color: #727272;">
-                                            <option value="Week">By Week</option>
-                                            <option value="Month">By Month</option>
-                                            <option value="Year">By Year</option>
-                                        </select>
-
-                                    </div>
-                                </div>
+                                <h3 style  ="font-size: 24px;">Upcoming Birthdays</h3>        
                                 <br clear="all"/>
                             	<div id = "allBdayData"></div>
-                                <table class="uk-table" id="birthdayCelebrationTable">
+                                <table class="uk-table" id="birthdayDataTable">
                                     <thead>
                                         <tr>
                                             <th class="uk-text-nowrap">Customer</th>
                                             <th class="uk-text-nowrap">Kid</th>
                                             <th class="uk-text-nowrap">Mobile No</th>                                            
                                             <th class="uk-text-nowrap">DOB</th>
-                                            <th class="uk-text-nowrap">Time</th>
+                                            <th class="uk-text-nowrap">Status</th>
                               
                                         </tr>
                                     </thead>
                                     <tbody id = "BirthdayTableBody">
-                                        <?php for($i=0;$i<count($birthdayPresentWeek);$i++){
-                                            if($birthdayPresentWeek[$i]['franchisee_id']==Session::get('franchiseId')){?>
+                                        <?php foreach($upcomingBdays as $value): ?>
                                         <tr>
-                                            <td><?php echo $birthdayPresentWeek[$i]['customer_name']; ?><?php echo $birthdayPresentWeek[$i]['customer_lastname']; ?>
+                                            <td><?php echo $value['customer_name']; ?><?php echo $value['customer_lastname']; ?>
 
-                                            <a href="<?php echo url(); ?>/customers/view/<?php echo $birthdayPresentWeek[$i]['customer_id']; ?>?tab=birthdayparty"></a>
+                                            <a href="<?php echo url(); ?>/customers/view/<?php echo $value['customer_id']; ?>?tab=birthdayparty"></a>
                                             </td>
-                                            <td><?php echo $birthdayPresentWeek[$i]['student_name']; ?></td>
-                                            <td><?php echo $birthdayPresentWeek[$i]['mobile_no']; ?></td>
-                                            <td><?php echo $birthdayPresentWeek[$i]['birthday_party_date']; ?></td>
-                                            <td><?php echo $birthdayPresentWeek[$i]['birthday_party_time']; ?></td>
-                                        </tr>
-                                            <?php }} ?>
-                                    </tbody>
-                                </table>
-                               
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="uk-width-medium-1-2">
-                    <div class="md-card">
-                        <div class="md-card-content">
-                            <div class="uk-overflow-container">
-                                <div width = "100%">
-                                    
-                                        <p style  ="font-size: 24px;">Classes (Expiring) </p>        
-                                    
-                                    
-                                </div>
-                                <br clear="all"/>
-                            	<table class="uk-table" id="classesExpiringTable">
-                                    <thead>
-                                        <tr>
-                                            <th class="uk-text-nowrap">Class Name</th>
-                                            <th class="uk-text-nowrap">End Date</th>
-                                            <th class="uk-text-nowrap">Time</th>                                            
-                                            
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach($expiringbatch as $batch): ?>
-                                        <tr>
-                                            <td><?php echo $batch->batch_name; ?></td>
-                                            <td><?php echo $batch->end_date; ?></td>
-                                            <td><?php echo $batch->preferred_time.' - '; ?><?php echo $batch->preferred_end_time; ?></td>
-                                            
+                                            <td><?php echo $value['student_name']; ?></td>
+                                            <td><?php echo $value['mobile_no']; ?></td>
+                                            <td><?php echo $value['student_date_of_birth']; ?></td>
+                                            <td><?php echo $value['status']; ?></td>
                                         </tr>
                                         <?php endforeach; ?>
                                     </tbody>
@@ -783,56 +803,12 @@
                         </div>
                     </div>
                 </div>
-                
               </div>
             
             
-            <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
             
-                <div class="uk-width-medium-1-2">
-                    <div class="md-card">
-                        <div class="md-card-content">
-                            <div class="uk-overflow-container">
-                            <h3>Follow Ups (Future)</h3>
-                            	<?php if(isset($futurefollowups)){?>
-                                <table class="uk-table dashboardTable" id="futurefollowupTable" >
-                                    <thead>
-                                        <tr>
-                                            <th class="uk-text-nowrap">Customer</th>
-                                            <th class="uk-text-nowrap">Followup Type</th>
-                                            <th class="uk-text-nowrap">Mobile No</th>
-                                            <th class="uk-text-nowrap">Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    	<?php foreach($futurefollowups as $items){?>
-                                        <tr class="uk-table-middle smallText">
-                                            <td class="uk-width-3-10 uk-text-nowrap"><?php echo $items->Customers->customer_name; ?> <?php echo $items->Customers->customer_lastname; ?><a href="<?php echo url(); ?>/customers/view/<?php echo $items->Customers->id; ?>?tab=ivfollowup"></a></td>
-                                            <td class="uk-width-3-10 uk-text-nowrap"><?php echo $items->followup_type; ?></td>
-                                            <td class="uk-width-3-10 uk-text-nowrap"><?php echo $items->Customers->mobile_no; ?></td>
-                                            <td class="uk-width-3-10 uk-text-nowrap"><?php echo date('d M Y', strtotime($items->reminder_date)); ?></td>
-                                        </tr>   
-                                        <?php }?>                                     
-                                    </tbody>
-                                </table>
-                                <?php }?>
-                            </div>
-                        </div>
-                    </div>
-               </div>
-               <div class="uk-width-medium-1-2">
-                   <!--
-                    <div class="md-card">
-                        <div class="md-card-content">
-                            <div class="uk-overflow-container">
-                            
-                            </div>
-                        </div>
-                    </div>
-                   -->
-               </div>
-            </div>
               
 
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('layout.master', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

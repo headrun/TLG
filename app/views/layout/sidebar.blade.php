@@ -27,32 +27,33 @@
                         </a>
                         <ul id="FRANCHISEE_MAIN_UL">
                             <li id="NEWFRANCHISEE"><a href="{{url()}}/franchisee/addfranchisee">Add New Franchisee</a></li>
-                            <li id="LISTOFFRANCHISEE"><a href="{{url()}}/franchisee/franchiseelist">Franchisee List</a></li> 
+                            <li id="LISTOFFRANCHISEE"><a href="{{url()}}/franchisee/franchiseelist">Franchisee List</a></li>
+                            <li id="TERMSANDCONDTIONS"><a href="{{url()}}/franchisee/terms_conditions">Terms & Condtions</a></li>
+                            <!-- <li id="ADDCOURSE_LI"><a href="{{url()}}/franchisee/addCoursesForFranchisee">Add Courses</a></li> -->
                         </ul>
                     </li>
-
-                 
-                    
                     <li id="COURSES_MENU_MAIN">
                         <a href="#">
                             <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
                             <span class="menu_title">Courses</span>
                         </a>
                         <ul id="COURSES_MENU_MAIN_UL">
-                           <li id="ADDCOURSE_LI"><a href="#">Add New Course</a></li>
-                           <li id="COURSELIST_LI"><a href="#">Course List</a></li>
+                           <li id="ADDCOURSE_LI"><a href="{{url()}}/courses/addCourses">Add New Course</a></li>
+                           <li id="COURSELIST_LI"><a href="{{url()}}/courses/addCoursesForFranchisee">Course List</a></li>
                         </ul>
-                    </li>
+                    </li>   
                     <li id="CLASSES_MENU_MAIN">
                         <a href="#">
                             <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
                             <span class="menu_title">Classes</span>
                         </a>
                         <ul id="CLASSES_MAIN_UL">
-                           <li id="ADDNEWCLASS_LI"><a href="#">Add New Class</a></li>
-                           <li id="CLASSLIST_LI"><a href="#">Class List</a></li>
+                           <li id="ADDNEWCLASS_LI"><a href="{{url()}}/franchisee/addNewClass">Add New Class</a></li>
+                           <li id="CLASSLIST_LI"><a a href="{{url()}}/franchisee/addNewClassFranchisee">Class List</a></li>
                         </ul>
                     </li>
+                    
+                    <!--
                     <li id="FREPORT_MENU_MAIN">
                         <a href="#">
                             <span class="menu_icon"><i class="material-icons">&#xE8D2;</i></span>
@@ -61,13 +62,13 @@
                         <ul id="FREPORT_MAIN_UL">
                            <li id="GENERATEREPORT_LI"><a href="#">Generate Report</a></li>
                         </ul>
-                    </li>
+                    </li> 
                     <li id="LOGOUT" title="Logout">
                         <a href="{{url()}}/vault/logout">
                             <span class="menu_icon"><i class="material-icons">forward</i></span>
                             <span class="menu_title">Logout</span>
                         </a>
-                    </li>
+                    </li> -->
                     
                 <?php }?>
                     
@@ -88,7 +89,7 @@
                     <ul id="CUSTOMERS_MAIN_UL">
                         <li id="PROSPECTUS_LIST"><a href="{{url()}}/customers/prospectslist">Prospects List</a></li>
                         <li id="MEMBERS_LIST"><a href="{{url()}}/customers/memberslist">Members List</a></li>
-                        <li id="CURRENT_CUSTOMER_LIST"><a href="{{url()}}/customers/currentCustomerList">Current Customers List</a></li>
+                        <!-- <li id="CURRENT_CUSTOMER_LIST"><a href="{{url()}}/customers/currentCustomerList">Current Customers List</a></li> -->
                         <li id="CUSTOMERS_ADD"><a href="{{url()}}/customers/add">Add Customers</a></li>    
                     </ul>
                 </li>
@@ -184,7 +185,8 @@
                         </a>
                         <ul id="REPORTS_MENU_MAIN_UL">
                             <li id="ViewReoprt_LI"><a href="{{url()}}/reports/view_reports">Enrollment</a></li>
-                            <li id="KbiReoprt_LI"><a href="{{url()}}/reports/kbi_reports">KBI</a></li>
+                            <li id="DailyReoprt_LI"><a href="{{url()}}/reports/daily_reports/0">Daily Reports</a></li>
+                            <!-- <li id="KbiReoprt_LI"><a href="{{url()}}/reports/kbi_reports">KBI</a></li> -->
                             <li id="ViewDeletedCustomer_LI"><a href="{{url()}}/reports/deleted_customers">Deleted Customers</a></li>
                         
                         </ul>

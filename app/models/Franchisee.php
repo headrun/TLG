@@ -36,6 +36,36 @@ class Franchisee extends \Eloquent {
 		return $franchisee;
 	}
 
+	public static function createdNewFranchisee($inputs) {
+		$fianancialYearDates = Franchisee::getFinancialStartDates();
+		$franchisee= new Franchisee();
+		$franchisee->franchisee_name = $inputs['firstName'].' '.$inputs['lastName'];
+		$franchisee->franchisee_official_email=$inputs['franchiseeEmail'];
+		$franchisee->franchisee_phone=$inputs['franchiseePhno'];
+		$franchisee->franchisee_address=$inputs['franchiseeAddress'];
+		$franchisee->invoice_code = $inputs['invoiceCode'];
+		$franchisee->franchisee_legal_entity = $inputs['legalEntity'];
+		$franchisee->financial_year_start_date = $fianancialYearDates['start_date'];
+		$franchisee->financial_year_end_date = $fianancialYearDates['end_date'];
+		$franchisee->max_invoice = 0;
+		$franchisee->created_by=Session::get('userId');
+		$franchisee->created_at=date("Y-m-d H:i:s");
+		$franchisee->save();
+		return $franchisee;
+	}
+
+	public static function updateExistingFranchisee($inputs) {
+		$updateFranchisee = Franchisee::where('id', '=', $inputs['franchisee_id'])
+		                              ->update([
+		                              		'franchisee_name' => $inputs['franchisee_name'],
+		                              		'franchisee_phone' => $inputs['franchiseePhno'],
+		                              		'franchisee_address' => $inputs['franchiseeAddress'],
+		                              		'invoice_code' => $inputs['invoiceCode'],
+		                              		'franchisee_legal_entity' => $inputs['legalEntity'],
+		                              		'updated_at' => date("Y-m-d H:i:s")
+		                              	]);
+		return $updateFranchisee;
+	}
 
 	public static function getFranchiseeList(){
 		return Franchisee::paginate(10);

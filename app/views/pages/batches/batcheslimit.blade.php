@@ -39,9 +39,11 @@ $('#savebatcheslimitedit').click(function(){
 			success: function(response){
                             if(response.status=='success'){
                                 $('#batchEditMsg').html("<p class='uk-alert uk-alert-success'>updated successfully. please wait till page reloads.</p>");
+                                $('#editBatchesLimitmodal').modal('hide');
+                                // $('#editBatchLimit').show();
                                 setTimeout(function(){
-				   window.location.reload(1);
-				}, 2000);
+                				   window.location.reload(1);
+                				}, 3000);
                             }
                         }
           });  
@@ -62,11 +64,15 @@ $('#batcheslimit_delete').click(function(){
 			dataType: 'json',
 			success: function(response){
                             //console.log(response);
-                                 if(response.status=='success'){   
-				   window.location.reload(1);
-                                 }
-                        }
-             });  
+                 if(response.status=='success'){  
+                   $('#deletebatcheslimit').modal('hide');
+                   // $('#deleteBatchLimit').show();
+	               setTimeout(function(){
+                       window.location.reload(1);
+                    }, 3000);
+                }
+            }
+        });  
 });
 
 </script>
@@ -80,7 +86,18 @@ $('#batcheslimit_delete').click(function(){
         <li><a href="#" style="z-index:7;">Add/view BatchesLimit</a></li>
     </ul>
 </div>
-
+<div id="editBatchLimit" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:20px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:25%;">
+     Updating batch limit  . . .
+    </p>
+</div>
+<div id="deleteBatchLimit" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+    <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:20px;">
+    <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:25%;">
+     Deleting batch limit  . . .
+    </p>
+</div>
 <br clear="all"/>
 <br clear="all"/>
 <div class="content">

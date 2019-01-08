@@ -181,6 +181,7 @@
                          if(response.status=='success'){
                              console.log('success');
                              $('#sessioninfo').html("<p class=' uk-alert uk-alert-success'> Season added Succesfully for sessions:"+response.sessionafterholidays+".please wait till the page reloads.</p>");
+                             // $('#divLoading').show();
                              setTimeout(function(){
 				   window.location.reload(1);
 				}, 3000);
@@ -221,6 +222,12 @@
 </div>
 <br clear="all"/>
 <div class="">
+    <div id="divLoading" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
+        <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
+        <img src="{{url()}}/assets/img/spinners/load3.gif" style="width:20%;">
+         Season added successfully.Please wait . . .
+        </p>
+    </div>
 	<div class="row">
             <h4>New Season</h4>
 		 <div class="md-card">

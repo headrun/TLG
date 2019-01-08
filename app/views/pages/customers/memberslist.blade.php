@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.material.min.css"/> -->
     <link href='https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css' />
     <link href='https://cdn.datatables.net/buttons/1.4.0/css/buttons.dataTables.min.css' />
-    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel='stylesheet' />
+    <link href='{{url()}}/assets/css/bootstrap.min.css' rel='stylesheet' />
 @stop
 
 @section('libraryJS')
