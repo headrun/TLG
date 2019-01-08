@@ -1,7 +1,7 @@
 @extends('layout.master')
 
 @section('libraryCSS')
-	<link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.common-material.min.css"/>
+  <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.common-material.min.css"/>
     <link rel="stylesheet" href="{{url()}}/bower_components/kendo-ui/styles/kendo.material.min.css"/>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' rel='stylesheet' />
 @stop
@@ -18,7 +18,7 @@
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
 <script type="text/javascript">
 
-	$(document).on('click', '.franchiseeEdit', function() {
+  $(document).on('click', '.franchiseeEdit', function() {
         var franchisee_id = '';
         franchisee_id = $(this).parent().parent().find('.id').text();
         $.ajax({
@@ -44,9 +44,13 @@
 
                   $('#forSriLanka').html(content);
                   $('#taxDiv').hide();
+                  $('#gst_no').hide();
+                  $('#gstNoLabel').hide();
                 } else {
                   $('#forSriLanka').empty();
                   $('#taxDiv').show();
+                  $('#gst_no').show();
+                  $('#gstNoLabel').show();
                 }
                 $('#franchiseeName').val(response.franchisee_data[0]['franchisee_name']);
                 $('#franchiseAddress').val(response.franchisee_data[0]['franchisee_address']);
@@ -146,39 +150,39 @@
         });
     })
 
-	$('.update').click(function(){
-		$(this).addClass('disabled');
-		$('.editmsg').html("<p class='uk-alert uk-alert-warning'>Please wait Updating....</p>");
-		$.ajax({
-			type: "POST",
-			url: "{{URL::to('/quick/updateFranchisee')}}",
+  $('.update').click(function(){
+    $(this).addClass('disabled');
+    $('.editmsg').html("<p class='uk-alert uk-alert-warning'>Please wait Updating....</p>");
+    $.ajax({
+      type: "POST",
+      url: "{{URL::to('/quick/updateFranchisee')}}",
             data: {'franchisee_name':$('.fname').val(), 'franchisee_address':$('.faddress').val(),'ph_no':$('.fcontactno').val(),'email':$('.femail').val(),'franchisee_id':$('.f_id').val() },
-			dataType: 'json',
-			success: function(response){
-				if(response.status==='success'){
-					$('.update').removeClass('disabled');
-					$('.editmsg').html("<p class='uk-alert uk-alert-success'>Updated Successfully...</p>");
-					$('.uk-modal-close').click(function(){
-						window.location.reload(1);
-					});
-					
-				}
-					$('.update').removeClass('disabled');
-					$('.editmsg').html("<p class='uk-alert uk-alert-danger'>Try again Later...</p>");
+      dataType: 'json',
+      success: function(response){
+        if(response.status==='success'){
+          $('.update').removeClass('disabled');
+          $('.editmsg').html("<p class='uk-alert uk-alert-success'>Updated Successfully...</p>");
+          $('.uk-modal-close').click(function(){
+            window.location.reload(1);
+          });
+          
+        }
+          $('.update').removeClass('disabled');
+          $('.editmsg').html("<p class='uk-alert uk-alert-danger'>Try again Later...</p>");
 
-			}
+      }
         });  
-	});
+  });
 </script>>
 @stop
 
 @section('content')
 <div id="breadcrumb">
-	<ul class="crumbs">
-		<li class="first"><a href="{{url()}}" style="z-index:9;"><span></span>Home</a></li>
-		<li><a href="#" style="z-index:8;">Franchisee</a></li>
-		<li><a href="#" style="z-index:7;">Franchisee List</a></li>
-	</ul>
+  <ul class="crumbs">
+    <li class="first"><a href="{{url()}}" style="z-index:9;"><span></span>Home</a></li>
+    <li><a href="#" style="z-index:8;">Franchisee</a></li>
+    <li><a href="#" style="z-index:7;">Franchisee List</a></li>
+  </ul>
 </div>
 <div id="newFranchiseeLoading" style="display:none;margin: 0px; padding: 0px; position: fixed; right: 0px; top: 0px; width: 100%; height: 100%; background-color: rgb(102, 102, 102); z-index: 30001; opacity: 0.8;">
     <p style="position: absolute; color: White; top: 42%; left: 41%;font-size:18px;">
@@ -189,8 +193,8 @@
 <br clear="all"/>
 
 
-	<table class="uk-table">
-	<thead>
+  <table class="uk-table">
+  <thead>
         <tr>
             <th>Name</th>
             <th>Address</th>
@@ -201,18 +205,18 @@
         </tr>
     </thead>
     <tbody>
-    	@foreach ($franchiseeList as $franchisee)
+      @foreach ($franchiseeList as $franchisee)
         <tr>
-        	<td class="id" style="display:none">{{$franchisee->id}}</td>
+          <td class="id" style="display:none">{{$franchisee->id}}</td>
             <td class="name">{{$franchisee->franchisee_name}}</td>
             <td class="address">{{$franchisee->franchisee_address}}</td>
             <td class="phone">{{$franchisee->franchisee_phone}}</td>
             <td class="email">{{$franchisee->franchisee_official_email}}</td>
             <td class="created_at" style="display:none">{{$franchisee->created_at}}</td>
             <td>
-            	<button class="btn btn-warning btn-xs franchiseeEdit" type="button" data-uk-modal="{target:'#my-id'}" style=" color:black" ><i class="Small material-icons">mode_edit</i></button>
+              <button class="btn btn-warning btn-xs franchiseeEdit" type="button" data-uk-modal="{target:'#my-id'}" style=" color:black" ><i class="Small material-icons">mode_edit</i></button>
             </td>
-		</tr>
+    </tr>
         @endforeach
     </tbody>
     </table>
@@ -223,7 +227,7 @@
         <div class="uk-modal-dialog" style="width:70%;">
             <a class="uk-modal-close uk-close" id="deletecustomerclose"></a>
             <div class="modaldata">
-            	<div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
+              <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
                     <div class="uk-width-medium-1-1">
                         <div id="NewFranchiseeMsgDiv"></div>
                         <h3>Edit Franchisee</h3>
@@ -386,7 +390,7 @@
                                     {{Form::text('tin_no',null,array('id'=>'tin_no','class'=>'form-control','required'=>''))}}
                                   </div>
                                 </div>
-                                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">GST Number :</label>
+                                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;" id = "gstNoLabel">GST Number :</label>
                                 <div class="uk-width-medium-1-4">
                                   <div class="parsley-row form-group">
                                     {{Form::text('gst_no',null,array('id'=>'gst_no','class'=>'form-control','required'=>''))}}
@@ -445,8 +449,9 @@
                 </div>
             </div>
         </div>
-    </div>	                                    
+    </div>                                      
 
 
 
 @stop
+

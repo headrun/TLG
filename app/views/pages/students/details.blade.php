@@ -4058,58 +4058,54 @@ id="user_profile">
           </div>
         </div>
       </li>
-                                          <li id="discovery">   
-                                            @if(Session::has('imageUploadMessage')) 
-                                            <div class="uk-alert uk-alert-success" data-uk-alert>
-                                              <a href="#" class="uk-alert-close uk-close"></a> 
-                                              {{Session::get('imageUploadMessage') }}
-                                            </div> <br clear="all" />
-                                            @endif
-                                            @if(Session::has('imageDownloadError')) 
-                                            <div class="uk-alert uk-alert-danger" data-uk-alert>
-                                              <a href="#" class="uk-alert-close uk-close"></a> 
-                                              {{Session::get('imageDownloadError') }}
-                                            </div> <br clear="all" />
-                                            @endif
-                                            @if(Session::has('imageDownloadMessage')) 
-                                            <div class="uk-alert uk-alert-success" data-uk-alert>
-                                              <a href="#" class="uk-alert-close uk-close"></a> 
-                                              {{Session::get('imageDownloadMessage') }}
-                                            </div> <br clear="all" />
-                                            @endif
-                                            <h3>Upload Discovery Sheet</h3>
-                                            <div class="row" style="width:50%;">
-                                                <div class="col-md-6">
-                                                  {{Form::open(array('files'=> true, 'url'=>'students/discovery/picture'))}} 
-                                                  <span class="md-list-heading">{{Form::file('discoveryPicture',array('required', 'class'=>'form-control'))}}</span><br>
-                                                  <span class="uk-text-small uk-text-muted"></span>
-                                                  <input name="studentId"
-                                                  value="{{$student->id}}" type="hidden" /> 
-                                                  <input
-                                                  type="submit" class="md-btn md-btn-primary"
-                                                  value="Upload Discovery Picture" /><br>
-                                                  {{Form::close()}}
-                                                </div>
-                                                <div class="col-md-6" style="margin-top: 50px;">
-                                                  {{Form::open(array('files'=> true,
-                                                  'url'=>'students/discovery/download'))}}
-                                                  <span class="uk-text-small uk-text-muted"></span>
-                                                  <input name="studentId"
-                                                  value="{{$student->id}}" type="hidden" /> 
-                                                  <input type="submit" class="md-btn md-btn-primary"
-                                                  value="Download Discovery Picture" />
-                                                  {{Form::close()}}      
-                                                </div>
-                                            </div>
-                                            @if($attachment_location)
-                                            <h3 style="margin-top: 50px;margin-bottom: 10px">Uploaded Discovery Sheets</h3>
-                                            <div class="col-md-7">
-                                              <div>
-                                               <img src="{{ $attachment_location }}", alt="Discovery Sheet", width="400", height="300" margin-top="200"><br />;
-                                              </div>  
-                                            </div>
-                                            @endif
-                                        </li>
+                  <li id="discovery">   
+                    @if(Session::has('imageUploadMessage')) 
+                    <div class="uk-alert uk-alert-success" data-uk-alert>
+                      <a href="#" class="uk-alert-close uk-close"></a> 
+                      {{Session::get('imageUploadMessage') }}
+                    </div> <br clear="all" />
+                    @endif
+                    @if(Session::has('imageDownloadError')) 
+                    <div class="uk-alert uk-alert-danger" data-uk-alert>
+                      <a href="#" class="uk-alert-close uk-close"></a> 
+                      {{Session::get('imageDownloadError') }}
+                    </div> <br clear="all" />
+                    @endif
+                    @if(Session::has('imageDownloadMessage')) 
+                    <div class="uk-alert uk-alert-success" data-uk-alert>
+                      <a href="#" class="uk-alert-close uk-close"></a> 
+                      {{Session::get('imageDownloadMessage') }}
+                    </div> <br clear="all" />
+                    @endif
+                    <h3>Upload Discovery Sheet</h3>
+                    <div class="row" style="width:50%;">
+                        <div class="col-md-6">
+                          {{Form::open(array('files'=> true, 'url'=>'students/discovery/picture'))}} 
+                          <span class="md-list-heading">{{Form::file('discoveryPicture',array('required', 'class'=>'form-control'))}}</span><br>
+                          <span class="uk-text-small uk-text-muted"></span>
+                          <input name="studentId"
+                          value="{{$student->id}}" type="hidden" /> 
+                          <input
+                          type="submit" class="md-btn md-btn-primary"
+                          value="Upload Discovery Picture" /><br>
+                          {{Form::close()}}
+                        </div>
+                    </div>
+                    @if($discovery_sheet)
+                    <h3 style="margin-top: 50px;margin-bottom: 10px">Uploaded Discovery Sheets</h3>
+                    <div class="col-md-7">
+                      <div>
+                       <img src="{{url()}}/{{$discovery_sheet}}", alt="Discovery Sheet", width="400", height="300" margin-top="200"><br />
+                      </div>  
+                    </div>
+                    <div class="col-md-6" style="margin-top: 25px;">
+                      <a href='{{url()}}/{{$discovery_sheet}}' download>
+                        <input type="submit" class="md-btn md-btn-primary"
+                        value="Download Discovery Picture"/>
+                      </a>
+                    </div>
+                    @endif
+                </li>
 							  <li id="yard">
 							     <div id = "summerMsgDiv"></div>
 							     <h3>Camps / Yard</h3></br>

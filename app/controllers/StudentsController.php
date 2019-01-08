@@ -437,13 +437,17 @@ class StudentsController extends \BaseController {
                          $makeup_list[$i]['Day'] = date('l', strtotime($batches[0]['start_date']));
                         
                       }
+                      $name = "discovery_".$student[0]['id']."_medium.jpg";
+                      $attachment_location = '';  
+                      $file = glob("assets/discovery_images/discovery_".$student[0]['id']."*.{jpg,gif,png,csv,pdf,tif,xls,odt}", GLOB_BRACE);
+                      if(isset($file) && !empty($file)){
+                        $file_extention = explode(".", $file[0]);
+                        $discovery_sheet = "assets/discovery_images/discovery_".$student[0]['id'].".".$file_extention[1];
+                      } else {
+                        $discovery_sheet = '';
+                      }
 
-      $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll','end', 'last_Enrollment_EndDate','attachment_location',
-                                                                'discountEnrollmentData','latestEnrolledData','taxPercentage','tax_data',
-                                                                'discount_second_class_elligible','discount_second_child_elligible','discount_second_child','discount_second_class',
-                'studentEnrollments','customermembership','paymentDues',
-                'scheduledIntroVisits', 'introvisit', 'discountEligibility','paidAmountdata','order_due_data',
-                                                                'payment_made_data','payments_master_details', 'AttendanceYeardata','base_price','stage','batchDetails','payment_made_data_summer','introvisit_list','makeup_list');
+      $dataToView = array("student",'currentPage', 'mainMenu','franchiseeCourses', 'membershipTypesAll','end', 'last_Enrollment_EndDate','attachment_location','discountEnrollmentData','latestEnrolledData','taxPercentage','tax_data','discount_second_class_elligible','discount_second_child_elligible','discount_second_child','discount_second_class','studentEnrollments','customermembership','paymentDues','scheduledIntroVisits', 'introvisit', 'discountEligibility','paidAmountdata','order_due_data','payment_made_data','payments_master_details', 'AttendanceYeardata','base_price','stage','batchDetails','payment_made_data_summer','introvisit_list','makeup_list','discovery_sheet');
       return View::make('pages.students.details',compact($dataToView));
     }else{
       return Redirect::action('VaultController@logout');
@@ -594,7 +598,7 @@ class StudentsController extends \BaseController {
     $destinationPath = 'assets/discovery_images/';
     $filename = $file->getClientOriginalName();   
     $fileExtension = '.'.$file->getClientOriginalExtension();
-    $filename = 'discovery_'.$studentId.'.jpg';
+    $filename = 'discovery_'.$studentId.$fileExtension;
     $discovery_image = Input::file('discoveryPicture')->move($destinationPath, $filename);
 
     Session::flash('imageUploadMessage', "Discovery Sheet is uploaded successfully." );    
@@ -611,19 +615,15 @@ class StudentsController extends \BaseController {
       $file_extention = explode(".", $file[0]);
       $attachment_location = "assets/discovery_images/discovery_".$studentId.".".$file_extention[1];
     }
-    
-    if (file_exists($attachment_location)) {
-      define('DIRECTORY', '/home/bala/discoverysheet');
+    return $attachment_location;
+    /*if (file_exists($attachment_location)) {
+      define('DIRECTORY', '');
        $content = file_get_contents('assets/discovery_images/discovery_'.$studentId.'.jpg','D');
-      file_put_contents(  DIRECTORY . '/images/discovery_'.$studentId.'.jpg', $content);
-        /*$pdf = new MPDF();
-        $pdf->AddPage();
-        $pdf->Image($attachment_location,15,20,300,240);
-        $pdf->Output('discovery_'.$studentId.'.pdf','D');*/
+      file_put_contents(  DIRECTORY . 'discovery_'.$studentId.'.jpg', $content);
     }else{
       Session::flash('imageDownloadError', "Respective file is not found.Please upload it." );
       return Redirect::to("/students/view/".$studentId);
-    }
+    }*/
     Session::flash('imageDownloadMessage', "Discovery Sheet has been downloaded." );
     return Redirect::to("/students/view/".$studentId);
  
