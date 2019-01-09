@@ -191,8 +191,10 @@ class FranchiseeAdministration extends \BaseController {
 	    if(Auth::check()){	
 			$inputs=Input::all();
 
-			$deleteUser = User::find($inputs['user_id']);
-			$deleteUser->delete();
+			/*$deleteUser = User::find($inputs['user_id']);
+			$deleteUser->delete();*/
+			$deleteUser = User::where('id', '=', $inputs['user_id'])
+                                ->update(['status'=>'inactive']);
 			if($deleteUser){
 				return Response::json(array('status'=>'success'));
 			}else{
