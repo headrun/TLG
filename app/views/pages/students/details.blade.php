@@ -2995,6 +2995,41 @@ $(document).on('click','.summer-cls-btn', function(){
 });
 
 
+$('#Edit').click(function(){
+  $.ajax({
+    type: "POST",
+    url: "{{URL::to('/quick/getEnrollmentData')}}",
+    data: {'student_id':studentId},
+    dataType: 'json',
+    success: function(response){
+      /*if(response.status==='success'){
+        console.log(response);
+        if(response.deleted_data==1){
+          $('.deletemsg').html("<p class='uk-alert uk-alert-success'>Enrollment Data Deleted...</p>");
+        }else{
+          $('.deletemsg').html("<p class='uk-alert uk-alert-success'>No Enrollment Data Found...</p>");
+        }
+        $('deletemsg').show('slow');
+        setTimeout(function(){
+          $('.deletemsg').slideUp();
+          $('.deletemsg').html(''); 
+          $('.deletemsg').show('slow');
+        },2000);
+        
+      }else{
+        
+        $('.deletemsg').html("<p class='uk-alert uk-alert-danger'>Sorry.. Error in Deleting Enrollment Data</p>");
+        setTimeout(function(){
+          $('.deletemsg').slideUp();
+          $('.deletemsg').html(''); 
+          $('.deletemsg').show('slow');
+        },2000);
+      }*/
+    }
+  });
+});
+
+
 </script>
 @stop 
 @section('content')
@@ -3844,73 +3879,73 @@ id="user_profile">
                                                               </li>
 
                                                               
-                                                              <li id="payments">
+      <li id="payments">
 
-                                                                <h4 class="heading_c uk-margin-small-bottom">Payments made</h4>
-                                                                <ul class="md-list">
-                                                                  
-                                                                  <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
-                                                                    <div class="uk-width-medium-1-1">
+        <h4 class="heading_c uk-margin-small-bottom">Payments made</h4>
+        <ul class="md-list">
+          
+          <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
+            <div class="uk-width-medium-1-1">
 
-                                                                      <div class="md-card uk-margin-medium-bottom">
-                                                                       <div class="md-card-content">
-                                                                         <div class="uk-overflow-container">
-                                                                           
-                                                                          
-                                                                          <table class="uk-table table-striped" id="paymentsMadeTable" >
-                                                                            <thead>
-                                                                              <tr>
-                                                                                <th class="uk-text-nowrap">Enrolled class</th>
-                                                                                <th class="uk-text-nowrap">Day</th>
-                                                                                <th class="uk-text-nowrap">Time</th>
-                                                                                <th class="uk-text-nowrap">class start date</th>
-                                                                                <th class="uk-text-nowrap">class end date</th>
-                                                                                <th class="uk-text-nowrap">sessions</th>
-                                                                                <th class="uk-text-nowrap">Amount</th>
-                                                                                <th class="uk-text-nowrap">Received by</th>
-                                                                                <th class="uk-text-nowrap">option</th>
-                                                                                
-                                                                              </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                              
-                                                                              <?php if(isset($payment_made_data[0])){ 
-                                                                                for($j=0;$j<count($payment_made_data);$j++){
-                                                                                  for($i=0;$i<sizeof($payment_made_data[$j]);$i++){ 
-                                                                                   if($payment_made_data[$j][$i]['class_name'] != ''){ 
-                                                                                    ?>
-                                                                                    <tr>
-                                                                                      <td>{{$payment_made_data[$j][$i]['class_name']}}</td>
-                                                                                      <td>{{ $payment_made_data[$j][$i]['day'] }}</td>
-                                                                                      <td>{{$payment_made_data[$j][$i]['time']}}</td>
-                                                                                      <td>
-                                                                                      {{date('d-M-Y',strtotime($payment_made_data[$j][$i]['start_order_date']))}}</td>
-                                                                                      <td>{{date('d-M-Y',strtotime($payment_made_data[$j][$i]['end_order_date']))}}</td>
-                                                                                      <td>{{$payment_made_data[$j][$i]['selected_order_sessions']}}</td>
-                                                                                      <td>{{$payment_made_data[$j][$i]['payment_due_amount_after_discount']}}</td>
-                                                                                      <td>{{$payment_made_data[$j][$i]['receivedname']}}</td>
-                          <?php if((count($payment_made_data[$j])>1) && $i==0 ) {?>
-                                                                                      <td style="text-align:justify;vertical-align:middle;"  rowspan=<?php echo count($payment_made_data[$j])?> ><a id='Print' target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
-                                                                                      <?php }else if(count($payment_made_data[$j])==1){ ?>
-                                                                                      <td><a id='Print'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
-                                                                                      <?php } ?>
-                                                                                    </tr>
-                                                                                    <?php }
-                         }
-                                                                                  }
-                                                                                } ?>
-                                                                                
-                                                                              </tbody>
-                                                                            </table>
-                                                                          </div>
-                                                                        </div>
+              <div class="md-card uk-margin-medium-bottom">
+               <div class="md-card-content">
+                 <div class="uk-overflow-container">
+                   
+                  
+                  <table class="uk-table table-striped" id="paymentsMadeTable" >
+                    <thead>
+                      <tr>
+                        <th class="uk-text-nowrap">Enrolled class</th>
+                        <th class="uk-text-nowrap">Day</th>
+                        <th class="uk-text-nowrap">Time</th>
+                        <th class="uk-text-nowrap">class start date</th>
+                        <th class="uk-text-nowrap">class end date</th>
+                        <th class="uk-text-nowrap">sessions</th>
+                        <th class="uk-text-nowrap">Amount</th>
+                        <th class="uk-text-nowrap">Received by</th>
+                        <th class="uk-text-nowrap">option</th>
+                        
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                      <?php if(isset($payment_made_data[0])){ 
+                        for($j=0;$j<count($payment_made_data);$j++){
+                          for($i=0;$i<sizeof($payment_made_data[$j]);$i++){ 
+                           if($payment_made_data[$j][$i]['class_name'] != ''){ 
+                            ?>
+                            <tr>
+                              <td>{{$payment_made_data[$j][$i]['class_name']}}</td>
+                              <td>{{ $payment_made_data[$j][$i]['day'] }}</td>
+                              <td>{{$payment_made_data[$j][$i]['time']}}</td>
+                              <td>
+                              {{date('d-M-Y',strtotime($payment_made_data[$j][$i]['start_order_date']))}}</td>
+                              <td>{{date('d-M-Y',strtotime($payment_made_data[$j][$i]['end_order_date']))}}</td>
+                              <td>{{$payment_made_data[$j][$i]['selected_order_sessions']}}</td>
+                              <td>{{$payment_made_data[$j][$i]['payment_due_amount_after_discount']}}</td>
+                              <td>{{$payment_made_data[$j][$i]['receivedname']}}</td>
+<?php if((count($payment_made_data[$j])>1) && $i==0 ) {?>
+                              <td style="text-align:justify;vertical-align:middle;"  rowspan=<?php echo count($payment_made_data[$j])?> ><a id='Print' target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
+                              <?php }else if(count($payment_made_data[$j])==1){ ?>
+                              <td><a id='Print'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
+                              <?php } ?>
+                            </tr>
+                            <?php }
+}
+                          }
+                        } ?>
+                        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
 
-                                                                        <div class="md-card uk-margin-medium-bottom">  
-                                                                        </div>
-                                                                      </div>
-                                                                    </div>
-                                                                  </ul>  
-                                                                </li>
+                <div class="md-card uk-margin-medium-bottom">  
+                </div>
+              </div>
+            </div>
+          </ul>  
+        </li>
 
 
             <li id= "attendance">
@@ -4357,7 +4392,8 @@ id="user_profile">
                                     <?php if((count($payment_made_data[$j])>1) && $i==0 ) {?>
                                     <td style="text-align:justify;vertical-align:middle;"  rowspan=<?php echo count($payment_made_data[$j])?> ><a id='Print' target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td>
                                     <?php }else if(count($payment_made_data[$j])==1){ ?>
-                                    <td><a id='Edit'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs">Edit</a></td>
+                                    <td><a id="Edit" style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" data-uk-modal="{target:'#my-id-edit'}">Edit</a></td>
+                                    
                                     <!-- <td><a id='Print'  style="text-align:justify" target="_blank" class="btn btn-primary btn-xs" href="{{$payments_master_details[$j]['encrypted_payment_no']}}">Print</a></td> -->
                                     <?php } ?>
                                   </tr>
@@ -4366,6 +4402,83 @@ id="user_profile">
                                 }
                               } ?>
                               
+      <div id="my-id-edit" class="uk-modal">
+        <div class="uk-modal-dialog" style="width:70%;">
+            <a class="uk-modal-close uk-close" id="deletecustomerclose"></a>
+            <div class="modaldata">
+            <div class="uk-grid" data-uk-grid-margin data-uk-grid-match="{target:'.md-card-content'}">
+                    <div class="uk-width-medium-1-1">
+                        <div id="NewFranchiseeMsgDiv"></div>
+                        <h3>Edit Enrollment</h3>
+                        <div id="franchisee_id" style="dispaly:none;"></div>
+                        <div class="md-card">
+                            <div class="md-card-content">
+                              <div class="row">
+                                <center>
+                                  <h4 style="color:#d3d3de;">Enrollment Details</h4>
+                                </center>
+                              </div>
+                              <hr>
+                              {{ Form::open(array('url' => '/students/enrollYard', "class"=>"uk-form-stacked", 'method' => 'post')) }}
+                              <div class="uk-grid" data-uk-grid-margin>
+                                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Batch Name  :</label>
+                                <div class="uk-width-medium-1-4">
+                                  <div class="parsley-row form-group">
+                                    {{Form::text('franchiseeName',null,array('id'=>'franchiseeName','class'=>'form-control','required'=>''))}}
+                                  </div>
+                                </div>
+                                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Day :</label>
+                                <div class="uk-width-medium-1-4">
+                                  <div class="parsley-row form-group">
+                                    {{Form::text('franchiseAddress',null,array('id'=>'franchiseAddress','class'=>'form-control'))}}
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="uk-grid" data-uk-grid-margin>                                
+                                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Time :</label>
+                                <div class="uk-width-medium-1-4">
+                                  <div class="parsley-row form-group">
+                                    {{Form::text('franchiseEmailId',null,array('id'=>'franchiseEmailId','class'=>'form-control','required'=>'', 'readonly'))}}
+                                  </div>
+                                </div>
+                                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Sessions :</label>
+                                <div class="uk-width-medium-1-4">
+                                  <div class="parsley-row form-group">
+                                    {{Form::number('franchiseePhno',null,array('id'=>'franchiseePhno','class'=>'form-control'))}}
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="uk-grid" data-uk-grid-margin>
+                                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Class start date :</label>
+                                <div class="uk-width-medium-1-4">
+                                  <div class="parsley-row form-group">
+                                    {{Form::text('legalEntity',null,array('id'=>'legalEntity','class'=>'form-control'))}}
+                                  </div>
+                                </div>
+                                <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">Class end date :</label>
+                                <div class="uk-width-medium-1-4">
+                                  <div class="parsley-row form-group">
+                                    {{Form::text('invoiceCode',null,array('id'=>'invoiceCode','class'=>'form-control','required'=>''))}}
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row" style="padding-top:20px;">
+                               <div class="col-lg-6" style="text-align:right;">
+                                <button type="button" class="md-btn md-btn-flat btn-warning updateFranchisee" id="updateFranchisee" style="border-radius:5px;">Update</button>
+                               </div>
+                               <div class="col-lg-6">
+                                <button type="button" class=" btn md-btn md-btn-flat uk-modal-close btn-primary" style="border-radius:5px;">Close</button>
+                               </div>
+                              </div>
+                              {{ Form::close() }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+
                             </tbody>
                           </table>
                         </div>

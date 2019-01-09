@@ -286,6 +286,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('deleteIVdata',"StudentsController@deleteIVdata");
         Route::any('deletebirthdaydata',"StudentsController@deletebirthdaydata");
         Route::any('deleteenrollmentdata',"StudentsController@deleteenrollmentdata");
+        Route::any('getEnrollmentData',"StudentsController@getEnrollmentData");
         Route::any('deleteUserFromUsers',"FranchiseeAdministration@deleteUserFromUsers");
         Route::any('deleteBatchesEnrollForId', "StudentsController@deleteBatchesEnrollForId");
         Route::any('deleteAllBatchesEnrollForId', "StudentsController@deleteAllBatchesEnrollForId");

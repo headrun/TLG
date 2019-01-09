@@ -3093,6 +3093,13 @@ public function enrollKid2(){
     return Response::json(array('status'=>'success','data'=>$data));
   }
 
+  public function getEnrollmentData(){
+    $inputs = Input::all();
+    $enrollments = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+                                ->where('student_id','=',$inputs['student_id'])
+                                ->get();
+  }
+
   public function enrollYard(){
 	$inputs = Input::all();
 	$presentDate = Carbon::now();
