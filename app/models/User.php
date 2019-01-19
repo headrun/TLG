@@ -64,8 +64,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		
 		return User::where("franchisee_id", "=", Session::get('franchiseId') )
 					->where("user_type", "<>", "ADMIN")
-					->where("status","=",NULL)
-                    ->orWhere("status","=",'active')
+					->where("status","=",'active')
 					->get();
 	}
 	

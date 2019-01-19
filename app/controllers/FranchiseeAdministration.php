@@ -71,6 +71,19 @@ class FranchiseeAdministration extends \BaseController {
 		
 		$inputs = Input::all();
 		
+        if(isset($inputs['email'])){
+        	$matchedCount = User::where('email', '=', $inputs['email'])
+		               ->where('status','=','inactive')
+		               ->count();
+		if($matchedCount>0){
+			  $matchedUser = User::where("franchisee_id", "=", Session::get('franchiseId'))
+		                          ->where("user_type", "<>", "ADMIN")
+		                          ->where("email","=",$inputs['email'])
+		                          ->delete();
+		              }
+        }
+		
+		
 		if(isset($inputs['userType'])){
 			
 			$inputs['franchiseeId'] = Session::get('franchiseId');
@@ -163,7 +176,9 @@ class FranchiseeAdministration extends \BaseController {
 		
 		$inputs = Input::all();
 		$email = $inputs['email'];
-		$count = User::where('email', '=', $email)->count();
+		$count = User::where('email', '=', $email)
+		               ->where('status','=','active')
+		               ->count();
 		if($count>0){
 			$existence = "exists";
 		}else{
@@ -194,7 +209,7 @@ class FranchiseeAdministration extends \BaseController {
 			/*$deleteUser = User::find($inputs['user_id']);
 			$deleteUser->delete();*/
 			$deleteUser = User::where('id', '=', $inputs['user_id'])
-                                ->update(['status'=>'inactive']);
+			                   ->update(['status'=>'inactive']);
 			if($deleteUser){
 				return Response::json(array('status'=>'success'));
 			}else{
