@@ -736,16 +736,11 @@ class PaymentDues extends \Eloquent {
       		return 0;
     	}
     }else {
-         return 0;
-
       if (isset($getDataForThisYM[0]['budget_amount']) && !empty($getDataForThisYM[0]['budget_amount'])) {
         return $getDataForThisYM[0]['budget_amount'];
       } else {
         return 0;
       }
-    } else {
-      return 0;
-
     }
   }
   static function getNoOfRenwalsDone($presentdate, $currentMonth){
