@@ -3082,7 +3082,7 @@ public function enrollKid2(){
   public static function checkSecondSibling () {
     $inputs = Input::all();
     $secondChild = Students::where('id', '=', $inputs['student_id'])->get();
-    $customer = Students::where('customer_id', '=', $secondChild[0]['customer_id'])
+    $customer = PaymentDues::where('customer_id', '=', $secondChild[0]['customer_id'])
                         ->orderBy('created_at', 'ASC')
                         ->get();
     if (count($customer) > 1) {
