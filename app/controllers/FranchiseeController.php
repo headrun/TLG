@@ -176,7 +176,18 @@ class FranchiseeController extends \BaseController {
             					               ->get();
             $vat = TaxParticulars::where('franchisee_id','=',$inputs['franchisee_id'])
             					               ->where('tax_particular', '=', 'VAT')
-            					               ->get();         					                                              	
+            					               ->get(); 
+            $tax_config = TaxParticulars::where('franchisee_id','=',$inputs['franchisee_id'])
+            					               ->get();
+                if(count($tax_config) > 1){
+                	for ($i=0; $i < count($tax_config); $i++) { 
+                		$tax_config_field[$i] = $tax_config[$i]['tax_particular'];
+                		$tax_config_fields = $tax_config_field[$i];
+                	}
+                } else{
+                	$tax_config_field =  $tax_config[0]['tax_particular'];
+                }
+
 	        if($franchiseDetails){
 	          return Response::json(array('status'=> "success", 'franchisee_data' => $franchiseDetails,
 	          	                          'bday_data'=>$bdayDetails,
@@ -186,7 +197,8 @@ class FranchiseeController extends \BaseController {
 	          							  'lifetime' => $lifetime,
 	          							  'cgst' => $cgst,
 	          							  'sgst' => $sgst,
-	          							  'vat' => $vat
+	          							  'vat' => $vat,
+	          							  'tax_config_field' => $tax_config_field
 	          							  )
 	                                );
 	        }else{

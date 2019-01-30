@@ -27,10 +27,12 @@
             data: {'franchisee_id':franchisee_id},
             dataType: 'json',
             success: function(response){
+              console.log(response.tax_config_field);
               if (response.status === 'success') {
                 $('#franchisee_id').val(franchisee_id);
+                $('#testing').val(tax_config_field);
                 var content = '';
-                if (franchisee_id == 11) {
+                /*if (franchisee_id == 11) {
                   content += '<div class="uk-grid" data-uk-grid-margin>' + 
                              '<label class="uk-width-medium-1-5" style="text-align:center;padding-top:7px;">' + 
                              'VAT (%) * :' + 
@@ -51,7 +53,7 @@
                   $('#taxDiv').show();
                   $('#gst_no').show();
                   $('#gstNoLabel').show();
-                }
+                }*/
                 $('#franchiseeName').val(response.franchisee_data[0]['franchisee_name']);
                 $('#franchiseAddress').val(response.franchisee_data[0]['franchisee_address']);
                 $('#franchiseEmailId').val(response.franchisee_data[0]['franchisee_official_email']);
@@ -405,7 +407,7 @@
                               </div>
                               <hr>
                               <div id="forSriLanka"></div>
-                              <div class="uk-grid" data-uk-grid-margin id = "taxDiv">
+                             <!--  <div class="uk-grid" data-uk-grid-margin id = "taxDiv">
                                 <label class="uk-width-medium-1-5" style="text-align:right;padding-top:7px;">CGST (%) * :</label>
                                 <div class="uk-width-medium-1-4">
                                   <div class="parsley-row form-group">
@@ -418,6 +420,10 @@
                                     {{Form::number('sgst',0,array('id'=>'sgst','min'=> 0,'class'=>'form-control','required'=>''))}}
                                   </div>
                                 </div>
+                              </div> -->
+                              <div>
+                                <p>hh</p>
+                                <p id = "testing"></p>
                               </div>
                               <div class="row" style="padding-top:20px;">
                                <div class="col-lg-6" style="text-align:right;">
