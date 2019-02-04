@@ -78,7 +78,7 @@ class StudentClasses extends \Eloquent {
     
 	static function getMultipleEnrolledList(){
 		$total;
-		$multipleEnrollments = '';
+		$multipleEnrollments = [];
 		    $totalEnrollments = PaymentDues::join('students', 'students.id','=' ,'payments_dues.student_id')
                   ->where('payments_dues.franchisee_id', '=', Session::get('franchiseId'))
                   ->where('payments_dues.end_order_date', '>=',date('Y-m-d'))
@@ -94,7 +94,7 @@ class StudentClasses extends \Eloquent {
 						               ->where('payment_due_for', '=', 'enrollment')
                 				   ->where('end_order_date', '>=', date('Y-m-d') )
                 				   ->count();
-                	if($list > 1){
+                	if($list == 2 ){
                 		$multipleEnrollments[] = $list;
                 	}   	
 		     }		
@@ -103,6 +103,62 @@ class StudentClasses extends \Eloquent {
 			return 0;
 		}
 	}
+
+  static function getThreeEnrollmentsList(){
+    $total;
+    $threeEnrollemnts = [];
+        $totalEnrollments = PaymentDues::join('students', 'students.id','=' ,'payments_dues.student_id')
+                  ->where('payments_dues.franchisee_id', '=', Session::get('franchiseId'))
+                  ->where('payments_dues.end_order_date', '>=',date('Y-m-d'))
+                  ->where('payments_dues.payment_due_for', '=', 'enrollment')
+                  ->groupBy('payments_dues.student_id')
+                  ->get();
+
+    if(count($totalEnrollments) > 0){
+      foreach($totalEnrollments as $c){
+                    $total[] = $c['student_id'];
+                    $list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                           ->where('student_id', '=', $c['student_id'])
+                           ->where('payment_due_for', '=', 'enrollment')
+                           ->where('end_order_date', '>=', date('Y-m-d') )
+                           ->count();
+                  if($list == 3){
+                    $threeEnrollemnts[] = $list;
+                  }     
+         }    
+         return count($threeEnrollemnts);  
+          }else{
+      return 0;
+    }
+  }
+
+  static function getFourEnrollmentsList(){
+    $total;
+    $fourEnrollemnts = [];
+        $totalEnrollments = PaymentDues::join('students', 'students.id','=' ,'payments_dues.student_id')
+                  ->where('payments_dues.franchisee_id', '=', Session::get('franchiseId'))
+                  ->where('payments_dues.end_order_date', '>=',date('Y-m-d'))
+                  ->where('payments_dues.payment_due_for', '=', 'enrollment')
+                  ->groupBy('payments_dues.student_id')
+                  ->get();
+
+    if(count($totalEnrollments) > 0){
+      foreach($totalEnrollments as $c){
+                    $total[] = $c['student_id'];
+                    $list = PaymentDues::where('franchisee_id', '=', Session::get('franchiseId'))
+                           ->where('student_id', '=', $c['student_id'])
+                           ->where('payment_due_for', '=', 'enrollment')
+                           ->where('end_order_date', '>=', date('Y-m-d') )
+                           ->count();
+                  if($list == 4){
+                    $fourEnrollemnts[] = $list;
+                  }     
+         }    
+         return count($fourEnrollemnts);  
+          }else{
+      return 0;
+    }
+  }
 
 	static function getSingleEnrolledList(){
 		$total;
