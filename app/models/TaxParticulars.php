@@ -32,34 +32,45 @@ class TaxParticulars extends \Eloquent {
         }
 
 
-        public static function updateVatTaxParicularNewFranchisee($inputs) {
+        /*public static function updateVatTaxParicularNewFranchisee($inputs) {
                 $tax = TaxParticulars::where('franchisee_id', '=', $inputs['franchisee_id'])
                                      ->where('tax_particular', '=', 'VAT')
                                      ->update([
-                                        'tax_percentage' => $inputs['vat'],
+                                        'tax_percentage' => $inputs['tax'],
                                         'tax_particular_for' => 'both',
                                         'updated_at' => date('Y-m-d H:i:s'),
                                         'updated_by' => Session::get('userId')
                                      ]);
                 return $tax;
-        }
+        }*/
 
-        public static function updateCgstTaxParicularNewFranchisee($inputs) {
+        /*public static function updateCgstTaxParicularNewFranchisee($inputs) {
                 $tax = TaxParticulars::where('franchisee_id', '=', $inputs['franchisee_id'])
                                      ->where('tax_particular', '=', 'CGST')
                                      ->update([
-                                        'tax_percentage' => $inputs['cgst'],
+                                        'tax_percentage' => $inputs['tax'],
                                         'updated_at' => date('Y-m-d H:i:s'),
                                         'updated_by' => Session::get('userId')
                                      ]);
                 return $tax;
-        }
+        }*/
 
-        public static function updateSgstTaxParicularNewFranchisee($inputs) {
+       /* public static function updateSgstTaxParicularNewFranchisee($inputs) {
                 $tax = TaxParticulars::where('franchisee_id', '=', $inputs['franchisee_id'])
                                      ->where('tax_particular', '=', 'SGST')
                                      ->update([
-                                        'tax_percentage' => $inputs['sgst'],
+                                        'tax_percentage' => $inputs['tax'],
+                                        'updated_at' => date('Y-m-d H:i:s'),
+                                        'updated_by' => Session::get('userId')
+                                     ]);
+                return $tax;
+        }*/
+
+         public static function updateTaxParicularNewFranchisee($inputs) {
+                $tax = TaxParticulars::where('franchisee_id', '=', $inputs['franchisee_id'])
+                                     // ->where('tax_particular', '=', 'CGST')
+                                     ->update([
+                                        'tax_percentage' => $inputs['tax'],
                                         'updated_at' => date('Y-m-d H:i:s'),
                                         'updated_by' => Session::get('userId')
                                      ]);

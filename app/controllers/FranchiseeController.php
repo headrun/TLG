@@ -133,6 +133,7 @@ class FranchiseeController extends \BaseController {
     public static function updateFranchiseeDetails() {
 		if(Auth::check() && Session::get('userType')==='SUPER_ADMIN'){
 	      $inputs=Input::all();
+	      // return $inputs;
           $updateFranchisee = Franchisee::updateExistingFranchisee($inputs);
           $updateBdayPrice = BirthdayBasePrice::updateBdayPricing($inputs);
           $updateClassPrice = ClassBasePrice::updateClassBasePrice($inputs);
@@ -140,12 +141,13 @@ class FranchiseeController extends \BaseController {
           $updateFranchiseeAnnaulMembership = MembershipTypes::updateAnnaulMembershipFranchisee($inputs);
           $updateFranchiseeLifetimeMembership = MembershipTypes::updateLifeTimeMembershipFranchisee($inputs);
           $updateFranchiseePaymentTax = PaymentTax::updatePaymentTaxForNewFranchisee($inputs);
-          if($inputs['franchisee_id'] != 11){
+         /* if($inputs['franchisee_id'] != 11){
 	          $updateFranchiseeCgstTaxParticular = TaxParticulars::updateCgstTaxParicularNewFranchisee($inputs);
 	          $updateFranchiseeSgstTaxParticular = TaxParticulars::updateSgstTaxParicularNewFranchisee($inputs);
           }else{									
           	$updateFranchiseeVatTaxParticular = TaxParticulars::updateVatTaxParicularNewFranchisee($inputs);
-          }
+          }*/
+           $updateFranchiseeTaxParticular = TaxParticulars::updateTaxParicularNewFranchisee($inputs);
           if($updateFranchisee){			
           	return Response::json(array('status'=>'success'));
           }else{
@@ -179,14 +181,15 @@ class FranchiseeController extends \BaseController {
             					               ->get(); 
             $tax_config = TaxParticulars::where('franchisee_id','=',$inputs['franchisee_id'])
             					               ->get();
-                if(count($tax_config) > 1){
+                if(count($tax_config) > 0){
                 	for ($i=0; $i < count($tax_config); $i++) { 
                 		$tax_config_field[$i] = $tax_config[$i]['tax_particular'];
-                		$tax_config_fields = $tax_config_field[$i];
+                		$tax_config_percentage[$i] = $tax_config[$i]['tax_percentage'];
+                		//$tax_config_fields = $tax_config_field[$i];
                 	}
-                } else{
-                	$tax_config_field =  $tax_config[0]['tax_particular'];
-                }
+                } /*else{
+                	$tax_config_field =  $tax_config['tax_particular'];
+                }*/
 
 	        if($franchiseDetails){
 	          return Response::json(array('status'=> "success", 'franchisee_data' => $franchiseDetails,
@@ -198,7 +201,8 @@ class FranchiseeController extends \BaseController {
 	          							  'cgst' => $cgst,
 	          							  'sgst' => $sgst,
 	          							  'vat' => $vat,
-	          							  'tax_config_field' => $tax_config_field
+	          							  'tax_config_field' => $tax_config_field,
+	          							  'tax_config_percentage' => $tax_config_percentage
 	          							  )
 	                                );
 	        }else{
