@@ -413,12 +413,12 @@
                     <div class="md-card">
                         <div class="md-card-content">
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
-                            <center><span class="uk-text-muted uk-text-small" id = "Titles">Enrolled Kids</span></center>
+                            <center><span class="uk-text-muted uk-text-small" id = "Titles">Total Unique Kids</span></center>
                             <div class = "row" style = "">
                                 <div class = "col-md-4">
                                     <center><span class="uk-text-muted uk-text-small">Total</span></center>
                                     <center><h2 class="uk-margin-remove"><span class="countUpMe">    
-                                    {{$totalEnrollments }}
+                                    {{$singleEnrollments  + $multipleEnrollments}}
 				    <noscript>12456</noscript></span></h2></center>
                                 </div>
                                 <div class = "col-md-4" align= "center">
