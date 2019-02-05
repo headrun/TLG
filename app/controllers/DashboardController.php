@@ -23,8 +23,6 @@ class DashboardController extends \BaseController {
                         //Enrolled Kid's
                         $singleEnrollments = StudentClasses::getSingleEnrolledList();
                         $multipleEnrollments = StudentClasses::getMultipleEnrolledList();
-                        $threeEnrollemnts = StudentClasses::getThreeEnrollmentsList();
-                        $fourEnrollemnts = StudentClasses::getFourEnrollmentsList();
 			                  $enrolledCustomers = StudentClasses::getEnrolledCustomers();
                         $totalEnrollments = StudentClasses::getTotalEnrolls();
                         if (count($totalEnrollments) > 0) {
@@ -354,7 +352,7 @@ class DashboardController extends \BaseController {
                                                             'totalbpartyCount','todaysbpartycount',
                                                            'courses','futurefollowups',
 							  'todaysCustomerReg','todaysEnrolledCustomers','enrolledCustomers','totalIntrovisitCount', 'introVisitCount', 'allIntrovisits', 'todaysFollowup', 
-							  'todaysIntrovisit','activeRemindersCount','totalclasses', 'expiringbatch', 'bdayPartyInThisWeek', 'bdayPartyInThisMonth', 'todayEnrolledList', 'thisMonthEnrollment', 'thisWeekEnrollment', 'todayRevenueDetails', 'thisWeekRevenueDetails', 'thisMonthRevenueDetails', 'openLeads', 'hotLeads', 'singleEnrollments', 'multipleEnrollments', 'threeEnrollemnts','fourEnrollemnts', 'thisMonthIvScheduled', 'thisMonthAttendedIvs', 'todayScheduledIvs','thisWeekScheduledIvs','todayAttendedIvs','thisWeekAttendedIvs','upcomingBdays', 'totalEnrollments');
+							  'todaysIntrovisit','activeRemindersCount','totalclasses', 'expiringbatch', 'bdayPartyInThisWeek', 'bdayPartyInThisMonth', 'todayEnrolledList', 'thisMonthEnrollment', 'thisWeekEnrollment', 'todayRevenueDetails', 'thisWeekRevenueDetails', 'thisMonthRevenueDetails', 'openLeads', 'hotLeads', 'singleEnrollments', 'multipleEnrollments', 'thisMonthIvScheduled', 'thisMonthAttendedIvs', 'todayScheduledIvs','thisWeekScheduledIvs','todayAttendedIvs','thisWeekAttendedIvs','upcomingBdays', 'totalEnrollments');
    
 			return View::make('pages.dashboard.upcoming',compact($viewData));
      

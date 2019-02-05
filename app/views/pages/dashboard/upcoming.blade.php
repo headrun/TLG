@@ -415,13 +415,13 @@
                             <div class="uk-float-right uk-margin-top uk-margin-small-right"><span class="peity_visitors peity_data">5,3,9,6,5,9,7</span></div>
                             <center><span class="uk-text-muted uk-text-small" id = "Titles">Enrolled Kids</span></center>
                             <div class = "row" style = "">
-                                <div class = "col-md-3">
+                                <div class = "col-md-4">
                                     <center><span class="uk-text-muted uk-text-small">Total</span></center>
                                     <center><h2 class="uk-margin-remove"><span class="countUpMe">    
-                                    {{ $singleEnrollments + (($multipleEnrollments) * 2) + (($threeEnrollemnts) * 3) + (($fourEnrollemnts) * 4)}}
+                                    {{$totalEnrollments }}
 				    <noscript>12456</noscript></span></h2></center>
                                 </div>
-                                <div class = "col-md-2">
+                                <div class = "col-md-4" align= "center">
                                     <span class="uk-text-muted uk-text-small">Single</span>
                                     <h2 class="uk-margin-remove"><span class="countUpMe">@if($singleEnrollments)
                                         {{$singleEnrollments}}
@@ -431,8 +431,8 @@
                                     <noscript>12456</noscript></span></h2>
                                 </div>
 
-                                <div class = "col-md-2" align= "center">
-                                    <span class="uk-text-muted uk-text-small">Two</span>
+                                <div class = "col-md-3" align= "center">
+                                    <span class="uk-text-muted uk-text-small">Multiple</span>
                                     <h2 class="uk-margin-remove"><span class="countUpMe">
                                      @if($multipleEnrollments)
                                         {{$multipleEnrollments}}
@@ -442,26 +442,6 @@
                                     <noscript>12456</noscript></span></h2>
                                 </div>
 
-                                <div class = "col-md-2" align= "center">
-                                    <span class="uk-text-muted uk-text-small">Three</span>
-                                    <h2 class="uk-margin-remove"><span class="countUpMe">
-                                     @if($threeEnrollemnts)
-                                        {{$threeEnrollemnts}}
-                                     @else 
-                                        0 
-                                     @endif
-                                    <noscript>12456</noscript></span></h2>
-                                </div>
-                                <div class = "col-md-2" align= "center">
-                                    <span class="uk-text-muted uk-text-small">Four</span>
-                                    <h2 class="uk-margin-remove"><span class="countUpMe">
-                                     @if($fourEnrollemnts)
-                                        {{$fourEnrollemnts}}
-                                     @else 
-                                        0 
-                                     @endif
-                                    <noscript>12456</noscript></span></h2>
-                                </div>
                             </div>
                             
                         </div>
