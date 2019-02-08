@@ -60,6 +60,7 @@ class Batches extends \Eloquent {
 		}
 		$batch->created_by         = Session::get('userId');
 		$batch->created_at         = date("Y-m-d H:i:s");
+		$batch->status             = 'active';
 		$batch->save();
 		
 		return $batch;
@@ -77,6 +78,7 @@ class Batches extends \Eloquent {
         return Batches::where('franchisee_id', '=', Session::get('franchiseId'))
                                         ->where('season_id','=',$seasonId)
                                         ->where('end_date','>=', date('Y-m-d'))
+                                        ->where('status', '=', 'active')
                                         ->get();
     }
 
@@ -84,6 +86,7 @@ class Batches extends \Eloquent {
         return Batches::where('franchisee_id', '=', Session::get('franchiseId'))
                                         ->where('season_id','=',$seasonId)
                                         ->where('end_date','>=', date('Y-m-d'))
+                                        ->where('status', '=', 'active')
                                         ->get();
     }
 
@@ -109,7 +112,7 @@ class Batches extends \Eloquent {
         
         
     static function deleteBatchById($batchId){
-        return Batches::where('id','=',$batchId)->delete();
+        return Batches::where('id','=',$batchId)->update(['status'=>'inactive']);
     }
 	
     static function getExpiringBatchData(){

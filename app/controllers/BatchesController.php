@@ -409,6 +409,7 @@ class BatchesController extends \BaseController {
 	
         public function checkBatchExistBySeasonIdLocationId(){
             $inputs=Input::all();
+            // return $inputs;
             $startDate=new carbon();
             $season_data=Seasons::where('id','=',$inputs['season_id'])->get();
             $season_data=$season_data[0];
@@ -436,6 +437,7 @@ class BatchesController extends \BaseController {
             $batch_data=Batches::where('season_id','=',$inputs['season_id'])
                                ->where('location_id','=',$inputs['location_id'])
                                 ->where('start_date','=',$startDate->toDateString())
+                                ->where('status','=','active')
                                  //->where('preferred_time','=',$startTime24Hours)
                                  //->where('preferred_end_time','=',$endTime24Hours)
                     

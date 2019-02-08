@@ -247,7 +247,7 @@ class BatchSchedule extends \Eloquent {
         
         static function deleteBatchScheduleById($batchId){
             return BatchSchedule::where('batch_id','=',$batchId)
-                                  ->delete();
+                                  ->update(['status'=>'inactive']);
         }
 	
         static function getBatchDatesByBatchId($inputs){
