@@ -369,6 +369,7 @@ function fullEnrollmentReset(){
             $('#second_child_amountlabel').html((Math.round(finalAmount/10)*10).toFixed(2));
           <?php } ?>
         } else {
+          $('.second_child_hide').css("display","none");
           $('#second_child_discount').hide();
           $('#second_child_amountlabel').hide();
         }
@@ -397,6 +398,7 @@ function fullEnrollmentReset(){
           }
           $('#second_class_amountlabel').html((Math.round(finalAmount/10)*10).toFixed(2));
         }else{
+          $('.multiple_class_hide').css("display","none");
           $('#second_class_discount').hide();
           $('#second_class_amountlabel').hide();
         }
@@ -4732,7 +4734,7 @@ style="margin-top: 50px; z-index: 99999;">
                 </td>
               </tr>
               <?php if($discount_second_child_elligible){ ?>
-              <tr>
+              <tr class = "second_child_hide">
                 <td colspan="2" style="text-align: right; font-weight: bold"><div id="second_child_discount"><p>Sibling Consideration:0%</p></div></td>
                 <td><label style="font-weight: bold" id="second_child_amountlabel" name="second_child_amountlabel">-0</label>
                   <input style="font-weight: bold" type="hidden"
@@ -4746,7 +4748,7 @@ style="margin-top: 50px; z-index: 99999;">
               <?php } ?>
               <?php if($discount_second_class_elligible){ ?>
               
-              <tr>
+              <tr class = "multiple_class_hide">
                 <td colspan="2" style="text-align: right; font-weight: bold"><div id="second_class_discount"><p>Multi Classes:0%</p></div></td>
                 <td><label style="font-weight: bold" id="second_class_amountlabel" name="second_class_amountlabel">-0</label>
                   

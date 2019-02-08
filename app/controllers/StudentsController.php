@@ -3086,7 +3086,7 @@ public function enrollKid2(){
                         ->orderBy('created_at', 'ASC')
                         ->get();
     if (count($customer) > 1) {
-      $data = $customer[0]['id'];
+      $data = $customer[0]['student_id'];
     } else {
       $data = 0;
     }
