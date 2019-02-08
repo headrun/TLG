@@ -17,30 +17,33 @@
 <script src="{{url()}}/assets/js/pages/kendoui.min.js"></script>
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
 <script type="text/javascript">
+ var tax_config_fields = [];
+ var tax_value_percentage = [];
 
   $(document).on('click', '.franchiseeEdit', function() {
         var franchisee_id = '';
-        var tax_config_field_test = '';
         franchisee_id = $(this).parent().parent().find('.id').text();
         $.ajax({
             type: "POST",
             url: "{{URL::to('/quick/getDataForFranchisee')}}",
             data: {'franchisee_id':franchisee_id},
             dataType: 'json',
-            success: function(response){   
-              var fields;           
+            success: function(response){             
               if (response.status === 'success') {
                 $('#franchisee_id').val(franchisee_id);
                  $('#taxFieldDiv').empty();
                 string = '';
+                string = '<div class="uk-grid" data-uk-grid-margin>';
                 for (var i = 0 ; i < response.tax_config_field.length; i++) {
-                  string += '<div class="uk-grid" data-uk-grid-margin>'+'<label class="uk-width-medium-1-5" style="padding-top:7px; text-align:right;">'+response.tax_config_field[i]+'</label>' + '<div class="uk-width-medium-1-4">'  +'<div class="parsley-row form-group">'+'<input id = "taxPercent" value = "'+response.tax_config_percentage[i]+'"></input>' + '</div>' + '</div>' + '</div>';       
+                  string += '<label class="uk-width-medium-1-5" id = "labelname" style="padding-top:7px; text-align:right;">'+response.tax_config_field[i]+ ' :' +'</label>' + '<div class="uk-width-medium-1-4">'  +'<div class="parsley-row form-group">'+'<input class = "form-control" id = "taxPercent'+i+'" value = "'+response.tax_config_percentage[i]+'"></input>' + '</div>' + '</div>' ;       
                 }
-                 fields = response.tax_config_field
+                 string += '</div>';
+                 tax_value_percentage = response.tax_config_percentage;
+                 tax_config_fields = response.tax_config_field;
                 $('#taxFieldDiv').append(string);
 
 
-               // $('#taxFieldDiv').val(tax_config_field_test[i]);
+               // $('#taxFieldDiv').val(tax_config_fields[i]);
                 // var content = '';
                 /*if (franchisee_id == 11) {
                   content += '<div class="uk-grid" data-uk-grid-margin>' + 
@@ -96,6 +99,8 @@
     });
 
     $('#updateFranchisee').on('click', function () {
+      console.log(tax_config_fields);
+      console.log(tax_value_percentage);
         var franchisee_id = $('#franchisee_id').val();
         var franchisee_name = $('#franchiseeName').val();
         var franchiseAddress = $('#franchiseAddress').val();
@@ -115,16 +120,18 @@
         var gst_no = $('#gst_no').val();
         var annaul_membership = $('#annaul_membership').val();
         var lifetime_membership = $('#lifetime_membership').val();
-       /* for (var i = 0 ; i < 2; i++) {
-          var tax = $('#taxPercent').val();
-        }*/
         // var cgst = $('#taxPercent').val();
         // var sgst = $('#taxPercent').val();
         // var vat = $('#taxPercent').val();
-       for (var i = 0 ; i < 2; i++) { 
-        var taxTest= $('#taxPercent').val();
-      }
-      var tax = taxTest;
+        var tax_array = []
+        for (var i = 0 ; i < tax_config_fields.length; i++) {
+            tax_array[tax_config_fields[i]] = {
+               'field_name': tax_config_fields[i],
+               'value': $('#taxPercent'+i).val()
+              }
+        }
+        console.log(tax_array);
+        
 
         $.ajax({
           type: "POST",
@@ -152,8 +159,8 @@
              // 'cgst': cgst,
              // 'sgst': sgst,
              // 'vat': vat,
-             'tax': tax
-            },
+             'tax': tax_array
+            }, 
           dataType: 'json',
           success: function(response){
             if(response.status === "success"){
@@ -426,9 +433,7 @@
                               </div>
                               <hr>
                               <!-- <div id="forSriLanka"></div> -->
-                              <div>
-                                <label id = "taxFieldDiv">
-                                </label>
+                              <div id = "taxFieldDiv">
                                 <!-- <div class="uk-width-medium-1-5" id = "taxFieldDiv1">
                                   <div class="parsley-row form-group">
                                     {{Form::number('cgst',0,array('id'=>'cgst','min'=> 0,'class'=>'form-control','required'=>''))}}
