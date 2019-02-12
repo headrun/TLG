@@ -542,16 +542,26 @@ class StudentsController extends \BaseController {
                                   ->get(); 
     for ($i=0; $i < count($sendDetails); $i++) { 
       $temp = Batches::where('id', '=', $sendDetails[$i]['batch_id'])
-                      // ->where('status','=','active')
+                       ->where('status','=','active')
                        ->get();
-                        $timestamp = strtotime($temp[0]['start_date']);
+                       // print_r(count($temp));
+                       if(count($temp) > 0) {
+                         $timestamp = strtotime($temp[0]['start_date']);
                         $temp[0]['day']=date('l', $timestamp);
-                        if($temp[0]['lead_instructor']!=0){
-                            $temp2=User::find($temp[0]['lead_instructor']);
-                            $temp[0]['Leadinstructor']=$temp2->first_name.$temp2->last_name;
-                        }
+                            if($temp[0]['lead_instructor']!=0){
+                                $temp2=User::find($temp[0]['lead_instructor']);
+                                $temp[0]['Leadinstructor']=$temp2->first_name.$temp2->last_name;
+                            }
+
+                        // return $temp;
                         $name[]=$temp;
-    }
+                        // return $name;
+                       }
+                       else{
+                        $name = [];
+                       }
+                       
+    }   // die();
     if($name){
       return Response::json(array('status'=> "success", $name));
     }else{
