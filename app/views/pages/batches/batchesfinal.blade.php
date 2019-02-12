@@ -634,6 +634,33 @@ $('#savebatchedit').click(function(){
 
 
 function deletebatch(batch_id){
+	$.ajax({
+			type: "POST",
+			url: "{{URL::to('/quick/getBatchStudentsById')}}",
+                        data: {'batch_id':$('#deleteBatch_id').val(),},
+			dataType: 'json',
+			
+			success: function(response){
+                 $('#studentsNames').empty();
+               if (response.status === 'success') {
+               	students = '';
+               	students += '<p> These Kids are there in this batch </p>';
+               	 for (var i = 0 ; i < response.data.length; i++) {
+               	 students += '<ul><li>'+response.data[i]['student_name']+'</li></ul>';
+               }
+               $('#studentsNames').append(students);
+           }
+             
+
+             else{
+             	 $('#deleteBatch_id').val(batch_id);
+                 $('#deletebatch').modal('show');
+
+             }
+
+                     
+            }
+         });
     $('#deleteBatch_id').val(batch_id);
     $('#deletebatch').modal('show');
 }
@@ -1022,6 +1049,7 @@ $('#batch_delete').click(function(){
             
           <p>Do you really want to delete this Batch ?</p>
           <input type="hidden" id="deleteBatch_id" value="" />
+          <p id = "studentsNames"></p>
         </div>
         <div class="modal-footer deletepricefooter" id='deletepricefooter'>
           <center>

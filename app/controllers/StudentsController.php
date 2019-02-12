@@ -535,11 +535,15 @@ class StudentsController extends \BaseController {
   }
   public function getBatchNameByYear(){
     $inputs = Input::all();
-    $sendDetails = StudentClasses::select('batch_id')->where('enrollment_start_date', 'like', '%'.$inputs["year"].'%')
-                    ->where('student_id', '=', $inputs['studentId'])->distinct()->get();
-
+    $sendDetails = StudentClasses::select('batch_id')
+                                  ->where('enrollment_start_date', 'like', '%'.$inputs["year"].'%')
+                                  ->where('student_id', '=', $inputs['studentId'])
+                                  ->distinct()
+                                  ->get(); 
     for ($i=0; $i < count($sendDetails); $i++) { 
-      $temp = Batches::where('id', '=', $sendDetails[$i]['batch_id'])->get();
+      $temp = Batches::where('id', '=', $sendDetails[$i]['batch_id'])
+                      // ->where('status','=','active')
+                       ->get();
                         $timestamp = strtotime($temp[0]['start_date']);
                         $temp[0]['day']=date('l', $timestamp);
                         if($temp[0]['lead_instructor']!=0){

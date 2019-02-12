@@ -603,7 +603,31 @@ class BatchesController extends \BaseController {
             
             return Response::json(array('status'=>'failure'));
         }
-        
+
+        public function getBatchStudentsById(){
+            $inputs['batch_id']=Input::get('batch_id');
+
+            $delete_batch_students = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+                                                    ->where('batch_id','=',$inputs['batch_id'])
+                                                    ->get();
+                for ($i=0; $i < count($delete_batch_students) ; $i++) { 
+                $delete_batch_students_list= Students::where('franchisee_id', '=', Session::get('franchiseId'))->where('id','=',$delete_batch_students[$i]['student_id'])->select('student_name')->get();
+
+                $delete_batch_students_name[$i]['student_name'] = $delete_batch_students_list[0]['student_name']; 	
+             
+                	
+                }
+
+
+                if($delete_batch_students){
+                    return Response::json(array('status'=>'success','data'=>$delete_batch_students_name));
+                }
+                else{
+                    return Response::json(array('status'=>'failure',));
+                }
+            }
+            
+            
         
         public function CheckNoofStudentsinBatch(){
             $inputs=  Input::all();

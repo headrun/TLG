@@ -99,6 +99,7 @@ class Batches extends \Eloquent {
                         ->where('class_id', '=', $classId)
 						->where('franchisee_id', '=', Session::get('franchiseId'))
 						->where('end_date','>=',date('Y-m-d'))
+						->where('status','=','active')
 						->get();
 	}
 	
