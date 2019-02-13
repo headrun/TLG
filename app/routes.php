@@ -314,6 +314,7 @@ Route::group(array('prefix' => 'quick'), function() {
         Route::any('getBatchDetailsById','BatchesController@getBatchDetailsById');
         Route::any('editbatchByBatchId','BatchesController@editbatchByBatchId');
 	Route::any('deleteBatchById','BatchesController@deleteBatchById');
+    Route::any('getBatchStudentsById','BatchesController@getBatchStudentsById');
 	Route::any('CheckNoofStudentsinBatch','BatchesController@CheckNoofStudentsinBatch');	
 	Route::any('editBatchLimitByBatchId','BatchesController@editBatchLimitByBatchId');
         Route::any('deleteBatchLimitById','BatchesController@deleteBatchLimitById');

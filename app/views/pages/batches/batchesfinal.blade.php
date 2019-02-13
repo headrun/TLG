@@ -111,9 +111,10 @@ $(document).ready(function(){
   $.ajax({
 			type: "POST",
 			url: "{{URL::to('/quick/getBatchData')}}",
-                        data: {'session_id':$('#selectSeason').val()},
+            data: {'session_id':$('#selectSeason').val()},
 			dataType: 'json',
 			success: function(response){
+				// console.log(response);
                             if(response.status=='success'){
                                 $('#batchData').html('');
                              
@@ -144,12 +145,16 @@ $(document).ready(function(){
                                                 "<td>"+response.data[i]['count']+"/"+response.data[i]['batch_limit']+"</td>"+
                                                 
                                                 "<td>"+response.data[i]['created']+"</td>"+
-		                                "<td>"+
-		                                	"<a class='btn btn-info btn-xs' href='{{url()}}/batches/attendance/"+response.data[i]['id']+"' title='Summary'><i class='Small material-icons' style='font-size:20px;'>assignment</i></a> " +
-		                                        "<a class='btn btn-primary btn-xs' href='{{url()}}/batches/view/"+ response.data[i]['id'] +"' title='Attendance'><i class='Small material-icons' style='font-size:20px;'>snooze</i></a>"+
-		                                	"<a  id='editBatchbutton' class='btn btn-warning btn-xs' onclick='editbatch("+response.data[i]['id']+','+response.data[i]['location_id']+','+response.data[i]['lead_instructor']+")' title='Edit'> <i class='Small material-icons' style='font-size:20px;'>mode_edit</i></a>"+
-		                                
-                                                "</td>"+
+    "<td>"+
+    	"<a class='btn btn-info btn-xs' href='{{url()}}/batches/attendance/"+response.data[i]['id']+"' title='Summary'><i class='Small material-icons' style='font-size:20px;'>assignment</i></a> " +
+
+        "<a class='btn btn-primary btn-xs' href='{{url()}}/batches/view/"+ response.data[i]['id'] +"' title='Attendance'><i class='Small material-icons' style='font-size:20px;'>snooze</i></a>"+
+
+    	"<a  id='editBatchbutton' class='btn btn-warning btn-xs' onclick='editbatch("+response.data[i]['id']+','+response.data[i]['location_id']+','+response.data[i]['lead_instructor']+")' title='Edit'> <i class='Small material-icons' style='font-size:20px;'>mode_edit</i></a>"+
+    	
+        "<a id='deleteBatchbutton' class='btn btn-danger btn-xs' onclick='deletebatch("+response.data[i]['id']+")'title='Delete'> <i class='Small material-icons' style='font-size:20px;'>delete </i> </a>"+
+    
+    "</td>"+ 
 		                                
 		                      "</tr>";
                                      }else{
@@ -166,7 +171,7 @@ $(document).ready(function(){
 		                                	"<a class='btn btn-info btn-xs' href='{{url()}}/batches/attendance/"+response.data[i]['id']+"' title='Summary'><i class='Small material-icons' style='font-size:20px;'>assignment</i></a> " +
 		                                        "<a class='btn btn-primary btn-xs' href='{{url()}}/batches/view/"+ response.data[i]['id'] +"' title='Attendance'><i class='Small material-icons' style='font-size:20px;'>snooze</i></a>"+
 		                                	"<a  id='editBatchbutton' class='btn btn-warning btn-xs' onclick='editbatch("+response.data[i]['id']+','+response.data[i]['location_id']+','+response.data[i]['lead_instructor']+")' title='Edit'> <i class='Small material-icons' style='font-size:20px;'>mode_edit</i></a>"+
-                                                       //  "<a id='deleteBatchbutton' class='btn btn-danger btn-xs' onclick='deletebatch("+response.data[i]['id']+")'title='Delete'> <i class='Small material-icons' style='font-size:20px;'>delete </i> </a>"+
+                                                        "<a id='deleteBatchbutton' class='btn btn-danger btn-xs' onclick='deletebatch("+response.data[i]['id']+")'title='Delete'> <i class='Small material-icons' style='font-size:20px;'>delete </i> </a>"+
                                                 "</td>"+
 		                                
 		                      "</tr>";
@@ -195,7 +200,7 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function(response){
                             //console.log(response.status);
-                            console.log(response.data);
+                           // console.log(response.data);
                             $("#seasonLocation").val("");
 		  	$("#seasonLocation").empty();
                             //<select name="seasonLocation" id='seasonLocation' class = 'form-control input-sm md-input' style='padding:0px; font-weight:bold;color: #727272;' >
@@ -374,7 +379,7 @@ $(document.body).on('change','#selectSeason',function(){
 		                                	"<a class='btn btn-info btn-xs' href='{{url()}}/batches/attendance/"+response.data[i]['id']+"' title='Summary'><i class='Small material-icons' style='font-size:20px;'>assignment</i></a> " +
 		                                        "<a class='btn btn-primary btn-xs' href='{{url()}}/batches/view/"+ response.data[i]['id'] +"' title='Attendance'><i class='Small material-icons' style='font-size:20px;'>snooze</i></a>"+
 		                                	"<a  id='editBatchbutton' class='btn btn-warning btn-xs' onclick='editbatch("+response.data[i]['id']+','+response.data[i]['location_id']+','+response.data[i]['lead_instructor']+")' title='Edit'> <i class='Small material-icons' style='font-size:20px;'>mode_edit</i></a>"+
-                                                        "<a id='deleteBatchbutton' class='btn btn-danger btn-xs' onclick='deletebatch("+response.data[i]['id']+")'title='Delete'> <i class='Small material-icons' style='font-size:20px;'>delete </i> </a>"+
+                                                        // "<a id='deleteBatchbutton' class='btn btn-danger btn-xs' onclick='deletebatch("+response.data[i]['id']+")'title='Delete'> <i class='Small material-icons' style='font-size:20px;'>delete </i> </a>"+
                                                 "</td>"+
 		                                
 		                      "</tr>";
@@ -403,7 +408,7 @@ $(document.body).on('change','#selectSeason',function(){
 			dataType: 'json',
 			success: function(response){
                             //console.log(response.status);
-                            console.log(response.data);
+                            // console.log(response.data);
                             $("#seasonLocation").val("");
 		  	$("#seasonLocation").empty();
                             //<select name="seasonLocation" id='seasonLocation' class = 'form-control input-sm md-input' style='padding:0px; font-weight:bold;color: #727272;' >
@@ -628,6 +633,26 @@ $('#savebatchedit').click(function(){
 
 
 function deletebatch(batch_id){
+	// console.log(batch_id);
+	$.ajax({
+			type: "POST",
+			url: "{{URL::to('/quick/getBatchStudentsById')}}",
+            data: {'batch_id':batch_id},
+			dataType: 'json',
+			success: function(response){
+				// console.log(response);
+                 $('#studentsNames').empty();
+               if (response.status === 'success') {
+               	var students = '';
+               	students += '<p>' + response.data + ' enrolled kids and '+ response.nonEnrolled + ' non enrolled kids are there in this batch. </p>';
+               	/* for (var i = 0 ; i < response.data.length; i++) {
+               	  students += '<ul><li>'+response.data[i]['student_name']+'</li></ul>';
+               }*/
+               $('#studentsNames').append(students);
+               
+           }        
+            }
+         });
     $('#deleteBatch_id').val(batch_id);
     $('#deletebatch').modal('show');
 }
@@ -637,7 +662,7 @@ $('#batch_delete').click(function(){
     $.ajax({
 			type: "POST",
 			url: "{{URL::to('/quick/deleteBatchById')}}",
-                        data: {'batch_id':$('#deleteBatch_id').val(),},
+            data: {'batch_id':$('#deleteBatch_id').val(),},
 			dataType: 'json',
 			success: function(response){
                             //console.log(response);
@@ -889,9 +914,9 @@ $('#batch_delete').click(function(){
                                                         <a class="btn btn-info btn-xs" href="{{url()}}/batches/attendance/{{$batch->id}}" title="Summary" ><i class="Small material-icons" style="font-size:20px;">assignment</i></a>
 		                                        <a class="btn btn-success btn-xs" href="{{url()}}/batches/view/{{$batch->id}}" title="Attendance"><i class="Small material-icons" style="font-size:20px;">snooze</i></a>
                                                        
-                                                        <a id='editBatchbutton' class="btn btn-warning btn-xs" onclick="editbatch({{$batch->id}},{{$batch->location_id}},'{{$batch->lead_instructor}}')" title="Edit"> <i class="Small material-icons" style="font-size:20px;">mode_edit</i></a>
-                                                       <?php if($batch->count==0){ ?>
-                                                        <a id='deleteBatchbutton' class="btn btn-danger btn-xs" onclick="deletebatch({{$batch->id}})"> <i class="Small material-icons" style="font-size:20px;" title="Delete">delete</i></a>
+        <a id='editBatchbutton' class="btn btn-warning btn-xs" onclick="editbatch({{$batch->id}},{{$batch->location_id}},'{{$batch->lead_instructor}}')" title="Edit"> <i class="Small material-icons" style="font-size:20px;">mode_edit</i></a>
+       <?php if($batch->count==0){ ?>
+        <!-- <a id='deleteBatchbutton' class="btn btn-danger btn-xs" onclick="deletebatch({{$batch->id}})"> <i class="Small material-icons" style="font-size:20px;" title="Delete">delete</i></a> -->
                                                        
                                                        <?php }?> 
 		                                	
@@ -1013,9 +1038,10 @@ $('#batch_delete').click(function(){
             </div>
         </div>
         <div class="modal-body deletepricebody" id='deletepricebody'>
-            
+          <p id = "studentsNames"></p>  
           <p>Do you really want to delete this Batch ?</p>
           <input type="hidden" id="deleteBatch_id" value="" />
+          
         </div>
         <div class="modal-footer deletepricefooter" id='deletepricefooter'>
           <center>
