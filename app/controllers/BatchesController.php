@@ -606,11 +606,15 @@ class BatchesController extends \BaseController {
 
         public function getBatchStudentsById(){
             $inputs['batch_id']=Input::get('batch_id');
-
-            // return $inputs['batch_id'];
-
+            $today = new Carbon();
+           // return $inputs['batch_id'];
             $delete_batch_students = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
                                                     ->where('batch_id','=',$inputs['batch_id'])
+                                                    ->where('enrollment_end_date','>=',$today)
+                                                    ->count();
+            $delete_batch_students_nonEnrolled = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+                                                    ->where('batch_id','=',$inputs['batch_id'])
+                                                    ->where('enrollment_end_date','<',$today)
                                                     ->count();
                 /*for ($i=0; $i < count($delete_batch_students) ; $i++) { 
                 $delete_batch_students_list= Students::where('franchisee_id', '=', Session::get('franchiseId'))->where('id','=',$delete_batch_students[$i]['student_id'])->select('student_name')->get();
@@ -622,7 +626,7 @@ class BatchesController extends \BaseController {
                  
                 // return $delete_batch_students;
                 if($delete_batch_students > 0){
-                    return Response::json(array('status'=>'success','data'=>$delete_batch_students));
+                    return Response::json(array('status'=>'success','data'=>$delete_batch_students,'nonEnrolled'=>$delete_batch_students_nonEnrolled));
                 }
                 else{
                     return Response::json(array('status'=>'failure',));

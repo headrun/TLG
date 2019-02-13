@@ -114,7 +114,7 @@ $(document).ready(function(){
             data: {'session_id':$('#selectSeason').val()},
 			dataType: 'json',
 			success: function(response){
-				console.log(response);
+				// console.log(response);
                             if(response.status=='success'){
                                 $('#batchData').html('');
                              
@@ -200,7 +200,7 @@ $(document).ready(function(){
 			dataType: 'json',
 			success: function(response){
                             //console.log(response.status);
-                            console.log(response.data);
+                           // console.log(response.data);
                             $("#seasonLocation").val("");
 		  	$("#seasonLocation").empty();
                             //<select name="seasonLocation" id='seasonLocation' class = 'form-control input-sm md-input' style='padding:0px; font-weight:bold;color: #727272;' >
@@ -408,7 +408,7 @@ $(document.body).on('change','#selectSeason',function(){
 			dataType: 'json',
 			success: function(response){
                             //console.log(response.status);
-                            console.log(response.data);
+                            // console.log(response.data);
                             $("#seasonLocation").val("");
 		  	$("#seasonLocation").empty();
                             //<select name="seasonLocation" id='seasonLocation' class = 'form-control input-sm md-input' style='padding:0px; font-weight:bold;color: #727272;' >
@@ -633,18 +633,18 @@ $('#savebatchedit').click(function(){
 
 
 function deletebatch(batch_id){
-	console.log(batch_id);
+	// console.log(batch_id);
 	$.ajax({
 			type: "POST",
 			url: "{{URL::to('/quick/getBatchStudentsById')}}",
             data: {'batch_id':batch_id},
 			dataType: 'json',
 			success: function(response){
-				console.log(response);
+				// console.log(response);
                  $('#studentsNames').empty();
                if (response.status === 'success') {
                	var students = '';
-               	students += '<p>' + response.data + ' Kids are there in this batch </p>';
+               	students += '<p>' + response.data + ' enrolled kids and '+ response.nonEnrolled + ' non enrolled kids are there in this batch. </p>';
                	/* for (var i = 0 ; i < response.data.length; i++) {
                	  students += '<ul><li>'+response.data[i]['student_name']+'</li></ul>';
                }*/
