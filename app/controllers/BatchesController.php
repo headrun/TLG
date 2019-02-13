@@ -625,7 +625,7 @@ class BatchesController extends \BaseController {
                 }*/
                  
                 // return $delete_batch_students;
-                if($delete_batch_students > 0){
+                if($delete_batch_students > 0 || $delete_batch_students_nonEnrolled > 0){
                     return Response::json(array('status'=>'success','data'=>$delete_batch_students,'nonEnrolled'=>$delete_batch_students_nonEnrolled));
                 }
                 else{
