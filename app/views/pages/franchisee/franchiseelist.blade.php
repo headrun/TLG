@@ -123,9 +123,9 @@
         // var cgst = $('#taxPercent').val();
         // var sgst = $('#taxPercent').val();
         // var vat = $('#taxPercent').val();
-        var tax_array = []
+        var tax_array = {}
         for (var i = 0 ; i < tax_config_fields.length; i++) {
-            tax_array[tax_config_fields[i]] = {
+            tax_array[i] = {
                'field_name': tax_config_fields[i],
                'value': $('#taxPercent'+i).val()
               }

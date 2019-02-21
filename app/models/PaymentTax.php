@@ -31,13 +31,18 @@ class PaymentTax extends \Eloquent {
                                 'updated_by' => Session::get('userId')
                             ]);
                         } else {*/
+                             $sum = 0;
+                            for ($i=0; $i < count($inputs['tax']); $i++) {
+                                 $sum += $inputs['tax'][$i]['value'];
+                                }
                             $updateTax = PaymentTax::where('franchisee_id', '=', $inputs['franchisee_id'])
                             ->update([
-                                'tax_percentage' => $inputs['tax'] + $inputs['tax'],
+                                'tax_percentage' => $sum,
                                 'updated_at' => date("Y-m-d H:i:s"),
                                 'updated_by' => Session::get('userId')
                             ]);
                       //  }
+                        
         
 
         return $updateTax;

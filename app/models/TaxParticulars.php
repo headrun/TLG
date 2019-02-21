@@ -67,14 +67,18 @@ class TaxParticulars extends \Eloquent {
         }*/
 
          public static function updateTaxParicularNewFranchisee($inputs) {
+
+            for ($i=0; $i < count($inputs['tax']); $i++) { 
                 $tax = TaxParticulars::where('franchisee_id', '=', $inputs['franchisee_id'])
-                                     // ->where('tax_particular', '=', 'CGST')
+                                      ->where('tax_particular', '=', $inputs['tax'][$i]['field_name'])
                                      ->update([
-                                        'tax_percentage' => $inputs['tax'],
+                                        'tax_percentage' => $inputs['tax'][$i]['value'],
                                         'updated_at' => date('Y-m-d H:i:s'),
                                         'updated_by' => Session::get('userId')
                                      ]);
-                return $tax;
+            }
+               
+                 return $tax;
         }
         
 }
