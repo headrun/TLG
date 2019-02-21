@@ -409,6 +409,7 @@ class BatchesController extends \BaseController {
 	
         public function checkBatchExistBySeasonIdLocationId(){
             $inputs=Input::all();
+            // return $inputs;
             $startDate=new carbon();
             $season_data=Seasons::where('id','=',$inputs['season_id'])->get();
             $season_data=$season_data[0];
@@ -436,6 +437,7 @@ class BatchesController extends \BaseController {
             $batch_data=Batches::where('season_id','=',$inputs['season_id'])
                                ->where('location_id','=',$inputs['location_id'])
                                 ->where('start_date','=',$startDate->toDateString())
+                                ->where('status','=','active')
                                  //->where('preferred_time','=',$startTime24Hours)
                                  //->where('preferred_end_time','=',$endTime24Hours)
                     
@@ -601,7 +603,37 @@ class BatchesController extends \BaseController {
             
             return Response::json(array('status'=>'failure'));
         }
-        
+
+        public function getBatchStudentsById(){
+            $inputs['batch_id']=Input::get('batch_id');
+            $today = new Carbon();
+           // return $inputs['batch_id'];
+            $delete_batch_students = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+                                                    ->where('batch_id','=',$inputs['batch_id'])
+                                                    ->where('enrollment_end_date','>=',$today)
+                                                    ->count();
+            $delete_batch_students_nonEnrolled = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+                                                    ->where('batch_id','=',$inputs['batch_id'])
+                                                    ->where('enrollment_end_date','<',$today)
+                                                    ->count();
+                /*for ($i=0; $i < count($delete_batch_students) ; $i++) { 
+                $delete_batch_students_list= Students::where('franchisee_id', '=', Session::get('franchiseId'))->where('id','=',$delete_batch_students[$i]['student_id'])->select('student_name')->get();
+
+                $delete_batch_students_name[$i]['student_name'] = $delete_batch_students_list[0]['student_name']; 	
+             
+                	
+                }*/
+                 
+                // return $delete_batch_students;
+                if($delete_batch_students > 0 || $delete_batch_students_nonEnrolled > 0){
+                    return Response::json(array('status'=>'success','data'=>$delete_batch_students,'nonEnrolled'=>$delete_batch_students_nonEnrolled));
+                }
+                else{
+                    return Response::json(array('status'=>'failure',));
+                }
+            }
+            
+            
         
         public function CheckNoofStudentsinBatch(){
             $inputs=  Input::all();
