@@ -4,7 +4,23 @@ class Estimate extends \Eloquent {
 	protected $fillable = [];
 	protected $table = "estimate";
 
-	static function insertEstimateDetails($data){
+	static function insertEstimateDetails ($data){
+
+		$getHolidays = Holidays::where('franchisee_id','=', 11)
+		                        ->get();
+	    $endDate = '';
+		if(count($getHolidays)>0){
+			$count = 0;
+            for($i = 0; $i < count($getHolidays); $i++){
+                if($getHolidays[$i]['startdate']>=$data['enroll_start_date']){
+                   $count = $count + 7;
+                }
+            }
+            $endDate = date('Y-m-d', strtotime($data['enroll_end_date']. '+'.$count.'days'));
+		}else{
+		    $endDate = $data['enroll_end_date'];
+		}
+
 		$InsertEstimatedData = new Estimate();
 
 		$InsertEstimatedData->customer_id = $data['customer_id'];
@@ -17,7 +33,7 @@ class Estimate extends \Eloquent {
 		$InsertEstimatedData->batch_id = $data['batch_id'];
 		$InsertEstimatedData->class_id = $data['class_id'];
 		$InsertEstimatedData->enroll_start_date = $data['enroll_start_date'];
-		$InsertEstimatedData->enroll_end_date = $data['enroll_end_date'];
+		$InsertEstimatedData->enroll_end_date = $endDate;
 		$InsertEstimatedData->total_selected_classes = $data['total_selected_classes'];
 		$InsertEstimatedData->no_of_availbale_classes = $data['no_of_available_classes'];
 		$InsertEstimatedData->no_of_opted_classes = $data['no_of_opted_classes'];
