@@ -2941,30 +2941,53 @@ public function enrollKid2(){
   public function getAttendanceDetails() {
         $inputs=  Input::all();
 
+       
         $class_dates = StudentClasses::where('id', '=', $inputs['class_id'])
                                      ->select('id','student_id','enrollment_start_date','enrollment_end_date','batch_id','selected_sessions')
                                      ->get();
-              $batch_id = $class_dates[0]->batch_id;
-              $student_id = $class_dates[0]->student_id;
-            $student_classes_id = $class_dates[0]->id;
-        $attendance_date = [];               
+        $batch_id = $class_dates[0]->batch_id;
+        $student_id = $class_dates[0]->student_id;
+        $student_classes_id = $class_dates[0]->id;
+        $attendance_date = [];             
         $dates = $class_dates[0]['enrollment_start_date'];
         $increment['class_dates'] = date('Y-m-d', strtotime($dates));
-        for($i=0; $i < ($class_dates[0]['selected_sessions']); $i++) {
-          $attendance_date[] = $increment;
-          $increment['class_dates'] = date('Y-m-d', strtotime('+1 week', strtotime($dates)));
-          
-          $dates = $increment['class_dates'];
+
+        $getHolidays = Holidays::where('franchisee_id','=', Session::get('franchiseId'))
+                                ->get();
+        $weeksCount = 0;
+        $extendedDates = [];
+        $extendedDates[0]['class_dates'] = $dates;
+        $attendance_date[] = $dates;
+          for($i=1; $i < ($class_dates[0]['selected_sessions']); $i++) {
+            $increment['class_dates'] = date('Y-m-d', strtotime('+1 week', strtotime($dates)));
+              for($j = 0; $j < count($getHolidays); $j++){
+                $increment['is_active_day'] = '';
+                if($getHolidays[$j]['startdate'] == $increment['class_dates'] && $getHolidays[$j]['startdate']>=$class_dates[0]['enrollment_start_date'] && 
+                      date('l', strtotime($getHolidays[$j]['startdate'])) == date('l', strtotime($class_dates[0]['enrollment_start_date'])) && $getHolidays[$j]['startdate']<=$class_dates[0]['enrollment_end_date']){
+                  $weeksCount = $weeksCount + 1;
+                  $increment['is_active_day'] = 'Holiday';
+              }
+          }
+            $extendedDates[] = $increment;
+            $attendance_date[] = $increment;
+            $dates = $increment['class_dates'];
+        } 
+        for($i=0; $i<$weeksCount; $i++){
+          $extendDate = [];
+          $lastDate = count($attendance_date);
+          $extendDate = date('Y-m-d', strtotime('+1 week', strtotime($attendance_date[9]['class_dates'])));
+          $increment['class_dates'] = $extendDate;
+          $extendedDates[] = $increment; 
         }
-        // return $attendance_date;
+        
+        $attendance_date = $extendedDates;
         $present_dates=[];
-            $absent_dates=[];
-            $ea_dates=[];
-            $makeup=[];
+        $absent_dates=[];
+        $ea_dates=[];
+        $makeup=[];
 
         foreach ($attendance_date as $key => $value) {
-
-            $attendance = Attendance::where('student_classes_id', '=', $inputs['class_id'])
+          $attendance = Attendance::where('student_classes_id', '=', $inputs['class_id'])
                                   ->where('attendance_date', $value)
                                   ->select('student_classes_id','student_id','batch_id','status', 'makeup_class_given','attendance_date')
                                   ->get();
@@ -2999,8 +3022,6 @@ public function enrollKid2(){
                 }
                break;
               
-                
-
            }
           }
           else
@@ -3015,7 +3036,6 @@ public function enrollKid2(){
           $attendance['ea_dates'] = $ea_dates;
           $attendance['makeup'] = $makeup;
         }
-        //return $attendance;
         
         return Response::json(array('status'=>'success', 'data'=> $attendance_date , 'all_dates' => $attendance_date, 'batch_id' => $batch_id, 'student_id' => $student_id, 'student_classes_id' => $student_classes_id ) );
 

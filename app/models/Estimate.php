@@ -6,17 +6,22 @@ class Estimate extends \Eloquent {
 
 	static function insertEstimateDetails ($data){
 
-		$getHolidays = Holidays::where('franchisee_id','=', 11)
+		$getHolidays = Holidays::where('franchisee_id','=', Session::get('franchiseId'))
 		                        ->get();
 	    $endDate = '';
 		if(count($getHolidays)>0){
 			$count = 0;
             for($i = 0; $i < count($getHolidays); $i++){
-                if($getHolidays[$i]['startdate']>=$data['enroll_start_date']){
+                if($getHolidays[$i]['startdate']>=$data['enroll_start_date'] && 
+                	date('l', strtotime($getHolidays[$i]['startdate'])) == date('l', strtotime($data['enroll_start_date'])) && $getHolidays[$i]['startdate']<=$data['enroll_end_date']){
                    $count = $count + 7;
                 }
             }
             $endDate = date('Y-m-d', strtotime($data['enroll_end_date']. '+'.$count.'days'));
+            /*if($getHolidays[$i]['startdate'] == $endDate){
+            	$count = $count + 7; 
+            }
+            $endDate = date('Y-m-d', strtotime($data['enroll_end_date']. '+'.$count.'days'));*/
 		}else{
 		    $endDate = $data['enroll_end_date'];
 		}
