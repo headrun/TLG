@@ -18,13 +18,24 @@ class Estimate extends \Eloquent {
                 }
             }
             $endDate = date('Y-m-d', strtotime($data['enroll_end_date']. '+'.$count.'days'));
-            /*if($getHolidays[$i]['startdate'] == $endDate){
-            	$count = $count + 7; 
-            }
-            $endDate = date('Y-m-d', strtotime($data['enroll_end_date']. '+'.$count.'days'));*/
+            // $endDate = date('Y-m-d', strtotime($data['enroll_end_date']. '+'.$count.'days'));
 		}else{
 		    $endDate = $data['enroll_end_date'];
 		}
+		  // return  $endDate;
+		$count1 = 0;
+		for($i = 0; $i < count($getHolidays); $i++){
+			if($getHolidays[$i]['startdate'] > $data['enroll_end_date'] && date('l', strtotime($getHolidays[$i]['startdate'])) == date('l', strtotime($data['enroll_start_date'])) && $getHolidays[$i]['startdate'] <= $endDate) {
+            	// return 'ok';
+            	 $count1 = $count1 + 7; 
+            	  $endDate = date('Y-m-d', strtotime($endDate. '+'.$count1.'days'));
+            	  if($getHolidays[$i]['startdate'] == $endDate){
+            	  	$endDate = date('Y-m-d', strtotime($endDate. '+14 days'));
+            	  }
+            	  $endDate = date('Y-m-d', strtotime($endDate. '+'.$count1.'days'));
+            }
+        }
+       
 
 		$InsertEstimatedData = new Estimate();
 

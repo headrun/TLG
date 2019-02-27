@@ -1613,14 +1613,24 @@ else if(response.status == 'success'){
   $('#batch3Msg').html('<span class="uk-alert uk-alert-success">No Of Classes:'+(selectedNoOfClass-(firstselectedNoOfClass+secondselectedNoOfClass))+'&nbsp;<i class="fa fa-trash" style = "background: #e53935; padding: 3px" id = "deleteBtn3" aria-hidden="true"></i></span>');
   batch3ClassCost = response.classAmount;
   thirdselectedNoOfClass = (selectedNoOfClass-(firstselectedNoOfClass+secondselectedNoOfClass));
+  console.log(response.enrollment_end_date);
   $.ajax({
     type: "POST",
     url: "{{URL::to('/quick/insertEstimateDetails')}}",
-    data: {'customer_id':{{$student->customer_id}},'student_id':studentId,'season_id':$('#SeasonsCbx3').val(),
-    'batch_id':$('#batchCbx3').val(),'class_id':$('#eligibleClassesCbx3').val(),
-    'enroll_start_date':response.enrollment_start_date,'enroll_end_date':response.enrollment_end_date,
-    'total_selected_classes':selectedNoOfClass,'no_of_available_classes':response.classCount,
-    'no_of_opted_classes':thirdselectedNoOfClass,'batch_amount':response.classAmount,'estimate_master_no':estimate_master_no},
+    data: {
+      'customer_id':{{$student->customer_id}},
+      'student_id':studentId,
+      'season_id':$('#SeasonsCbx3').val(),
+      'batch_id':$('#batchCbx3').val(),
+      'class_id':$('#eligibleClassesCbx3').val(),
+      'enroll_start_date':response.enrollment_start_date,
+      'enroll_end_date':response.enrollment_end_date,
+      'total_selected_classes':selectedNoOfClass,
+      'no_of_available_classes':response.classCount,
+      'no_of_opted_classes':thirdselectedNoOfClass,
+      'batch_amount':response.classAmount,
+      'estimate_master_no':estimate_master_no
+    },
     dataType: 'json',
     success: function(response){
       console.log(response);
@@ -2027,7 +2037,13 @@ function getDatesForAttendance(class_id, batch_name, startDate, endDate) {
         $('.startDate').html('Start Date: '+startDate);
         $('.endDate').html('End Date: '+endDate);
         for(var i=0;i<response.data.length;i++){
-         if(response.data[i]['status'] != 'NMP'){
+          if(response.data[i]['is_active_day'] == 'Holiday'){
+            data+='<tr>';
+           data += '<td>'+response.data[i]['class_dates']+'</td>';
+           data += '<td><p>Holiday</p></td>';
+          }
+          else {
+            if(response.data[i]['status'] != 'NMP'){
            data+='<tr>';
            data += '<td>'+response.data[i]['class_dates']+'</td>';
            if(response.data[i]['status'] == 'P') {
@@ -2050,6 +2066,7 @@ function getDatesForAttendance(class_id, batch_name, startDate, endDate) {
          } else {
           data += '<td>-</td>';
         }
+
         
         '</tr>';
       }else{
@@ -2072,6 +2089,8 @@ function getDatesForAttendance(class_id, batch_name, startDate, endDate) {
           '</tr>';
         }
       }
+          }
+         
       
     }
     $("#attendanceTbody").append(data);
