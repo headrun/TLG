@@ -29,6 +29,26 @@ class UsersController extends \BaseController {
                 return Redirect::action('VaultController@logout');
             }
         }
+
+        public function kidsEndDates(){
+             if(Auth::check() && (Session::get('userType')=='ADMIN')){
+                $currentPage  =  "Madecorrections_LI";
+		$mainMenu     =  "EASY_CORRECTIONS_MENU_MAIN";
+		
+                $users_data= User::where('franchisee_id','=',Session::get('franchiseId'))->get();
+                
+                $viewData = array (
+					'users_data',
+					'currentPage',
+					'mainMenu',
+					 
+			);
+			return View::make ( 'pages.users.madecorrections', compact ( $viewData ) );
+            }else{
+                return Redirect::action('VaultController@logout');
+            }
+        }
+
         
         public function updatepassword(){
             if(Auth::check() && (Session::get('userType')=='ADMIN')){
@@ -53,6 +73,52 @@ class UsersController extends \BaseController {
 			}
 			return Response::json(array('status'=>'failure'));
 		}
+
+        public function updateEndDates() {
+        	if(Auth::check() && (Session::get('userType')=='ADMIN')) {
+        		$inputs=Input::all();
+        		$getHolidays = Holidays::where('franchisee_id','=', Session::get('franchiseId'))
+		                        ->get();
+	             for($i = 0; $i < count($getHolidays); $i++){
+	              	$studentClasses = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
+	                                               ->where('enrollment_end_date','>=',date('Y-m-d'))
+        		                                   ->whereDate('enrollment_start_date','<=',date('Y-m-d',strtotime($getHolidays[$i]['startdate'])))
+                                                   ->whereDate('enrollment_end_date','>=',date('Y-m-d',strtotime($getHolidays[$i]['startdate'])))
+        		                                   ->get();
+	             } 
+	             $toBeUpdateArray = [];
+	             $holidaysArray = [];
+	             $count = 0;
+	             for ($i=0; $i < count($getHolidays); $i++) { 
+	                for ($j=0; $j < count($studentClasses); $j++) { 
+	             	 $holiDay = date('l', strtotime($getHolidays[$i]['startdate']));
+	             	 $studentEnrollDay = date('l', strtotime($studentClasses[$j]['enrollment_start_date']));
+	             		if ($holiDay === $studentEnrollDay) {
+	             			$toBeUpdateArray[] = $studentClasses[$j];
+	             			$holidaysArray = $getHolidays;
+	             			/*$studentClasses[$i]['holiDayCount'] = $getHolidays;
+	             			array_push($toBeUpdateArray, $getHolidays);*/
+	             		} 
+	             	}
+	             	for ($k=0; $k < count($toBeUpdateArray); $k++) { 
+	             		$existedEndDate = date('l', strtotime($toBeUpdateArray[$k]['enrollment_end_date']));
+	             		$holiDay = date('l', strtotime($getHolidays[$i]['startdate']));
+	             		if($holiDay === $existedEndDate){
+	             			$count = $count + 1 ;
+                            if($count > 0){
+                            	$endDate = date('Y-m-d', strtotime($toBeUpdateArray[$k]['enrollment_end_date'].'+'.($count*7).'days'));
+                            }
+	             		}
+	             	}
+	             }
+        		return Response::json(array('status'=>'success'));
+        		
+        	}else{
+                return Response::json(array('status'=>'failure')); 
+            }
+        }
+
+
 	/**
 	 * Display a listing of the resource.
 	 *

@@ -53,6 +53,9 @@ Route::group(array('prefix'=>'settings'), function(){
         Route::any('/changepassword','UsersController@changepassword');
 });
 
+Route::group(array('prefix'=>'corrections'), function(){
+        Route::any('/EndDatesCorrections','UsersController@kidsEndDates');
+});
 
 
 Route::group(array('prefix' => 'dashboard'), function() {
@@ -257,6 +260,8 @@ Route::group(array('prefix' => 'quick'), function() {
 	Route::any('deleteCustomer',"CustomersController@deleteCustomer");
 	Route::any('deleteMembership',"CustomersController@deleteMembership");
 	Route::any('UpdateCustomerLogs', "CustomersController@UpdateCustomerLogs");
+    Route::any('updateEndDates', "UsersController@updateEndDates");
+
 	/**
 	 *  --------------------------------------------------------------------------------------------------------------------------------------
 	 * Students related Ajax calls
