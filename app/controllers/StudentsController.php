@@ -2968,8 +2968,8 @@ public function enrollKid2(){
           }
         }
         // return $holidayCount;
-          if($holidayCount == 1 ){
-          for($i=1; $i < ($class_dates[0]['selected_sessions']+1); $i++) {
+         // if($holidayCount == 1 ){
+          for($i=1; $i < ($class_dates[0]['selected_sessions']); $i++) {
             $increment['class_dates'] = date('Y-m-d', strtotime('+1 week', strtotime($dates)));
             $increment['is_active_day'] = '';
               for($j = 0; $j < count($getHolidays); $j++){
@@ -3000,9 +3000,9 @@ public function enrollKid2(){
             $extendedDates[] = $increment;
             $attendance_date = $extendedDates;
           }
-        }
-        else{
-          for($i=1; $i < ($class_dates[0]['selected_sessions']); $i++) {
+       // }
+        /*else{
+          for($i=1; $i < ($class_dates[0]['selected_sessions']+1); $i++) {
             $increment['class_dates'] = date('Y-m-d', strtotime('+1 week', strtotime($dates)));
                 $increment['is_active_day'] = '';
               for($j = 0; $j < count($getHolidays); $j++){
@@ -3026,7 +3026,7 @@ public function enrollKid2(){
             $extendedDates[] = $increment;
             $attendance_date = $extendedDates; 
           }
-        }
+        }*/
         $attendance_date = $extendedDates;
         $present_dates=[];
         $absent_dates=[];
