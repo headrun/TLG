@@ -1,4 +1,4 @@
-<?php
+ 	<?php
 
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Input;
@@ -74,19 +74,37 @@ class UsersController extends \BaseController {
 			return Response::json(array('status'=>'failure'));
 		}
 
+		public static function updateAlltheTablesWithTheseRecords ($finalData) {
+			 // return count($finalData);
+			// update student classes
+			// map with payments dues with that studengt class id ->$payment[0]['payment_no'];
+			// checck order
+			/*return $finalData['student_id'];
+			for ($i=0; $i <count($finalData) ; $i++) { 
+				$updateToStudentClasses = StudentClasses::where('franchisee_id','=', Session::get('franchiseId'))
+			                          ->where('student_id','=',$finalData[$i]['student_id'])
+			                          ->where('id','=',$finalData[$i]['student_classes_id'])
+			                          ->update(['enrollment_end_date'=>$finalData[$i]['enroll_last_date']]);
+			}
+			return $updateToStudentClasses;*/
+			
+		}
+
         public function updateEndDates() {
         	if(Auth::check() && (Session::get('userType')=='ADMIN')) {
         		$inputs=Input::all();
         		$getHolidays = Holidays::where('franchisee_id','=', Session::get('franchiseId'))
 		                        ->get();
+		                        
 	             for($i = 0; $i < count($getHolidays); $i++){
 	              	$studentClasses = StudentClasses::where('franchisee_id', '=', Session::get('franchiseId'))
 	                                               ->where('enrollment_end_date','>=',date('Y-m-d'))
         		                                   ->whereDate('enrollment_start_date','<=',date('Y-m-d',strtotime($getHolidays[$i]['startdate'])))
                                                    ->whereDate('enrollment_end_date','>=',date('Y-m-d',strtotime($getHolidays[$i]['startdate'])))
         		                                   ->get();
-	             } 
-	             $toBeUpdateArray = [];
+		             
+		         }
+		         $toBeUpdateArray = [];
 	             $holidaysArray = [];
 	             $count = 0;
 	             for ($i=0; $i < count($getHolidays); $i++) { 
@@ -94,25 +112,34 @@ class UsersController extends \BaseController {
 	             	 $holiDay = date('l', strtotime($getHolidays[$i]['startdate']));
 	             	 $studentEnrollDay = date('l', strtotime($studentClasses[$j]['enrollment_start_date']));
 	             		if ($holiDay === $studentEnrollDay) {
+	             			$studentClasses[$j]['holiDay'] = 1;
 	             			$toBeUpdateArray[] = $studentClasses[$j];
-	             			$holidaysArray = $getHolidays;
-	             			/*$studentClasses[$i]['holiDayCount'] = $getHolidays;
-	             			array_push($toBeUpdateArray, $getHolidays);*/
 	             		} 
 	             	}
-	             	for ($k=0; $k < count($toBeUpdateArray); $k++) { 
-	             		$existedEndDate = date('l', strtotime($toBeUpdateArray[$k]['enrollment_end_date']));
-	             		$holiDay = date('l', strtotime($getHolidays[$i]['startdate']));
-	             		if($holiDay === $existedEndDate){
-	             			$count = $count + 1 ;
-                            if($count > 0){
-                            	$endDate = date('Y-m-d', strtotime($toBeUpdateArray[$k]['enrollment_end_date'].'+'.($count*7).'days'));
-                            }
-	             		}
-	             	}
-	             }
+	             }	
+	            $updatedWeeksArray = [];
+
+
+	            for ($i=0; $i < count($toBeUpdateArray); $i++) { 
+	            	$addNoOfDays = $toBeUpdateArray[$i]['holiDay'] * 7;
+	            	if(array_key_exists($toBeUpdateArray[$i]['student_id'], $updatedWeeksArray)) {
+	            		$endDateUpdate = date('Y-m-d', strtotime($updatedWeeksArray[$toBeUpdateArray[$i]['student_id']]['enroll_last_date'].'+'.$addNoOfDays.' days'));
+	            		$student['student_id'] = $toBeUpdateArray[$i]['student_id'];
+	            		$student['enroll_last_date'] = $endDateUpdate;
+	            		$student['student_classes_id'] = $toBeUpdateArray[$i]['id'];
+	            		$updatedWeeksArray[$toBeUpdateArray[$i]['student_id']] = $student;
+	            	} else {
+	            		$endDateUpdate = date('Y-m-d', strtotime($toBeUpdateArray[$i]['enrollment_end_date'].'+'.$addNoOfDays.' days'));
+	            		$student['student_id'] = $toBeUpdateArray[$i]['student_id'];
+	            		$student['enroll_last_date'] = $endDateUpdate;
+	            		$student['student_classes_id'] = $toBeUpdateArray[$i]['id'];
+	            		$updatedWeeksArray[$toBeUpdateArray[$i]['student_id']] = $student;
+	            	}
+	            }  
+	            // return $updatedWeeksArray;	
+	            $update = self::updateAlltheTablesWithTheseRecords($updatedWeeksArray);
+	            // return $update;
         		return Response::json(array('status'=>'success'));
-        		
         	}else{
                 return Response::json(array('status'=>'failure')); 
             }
