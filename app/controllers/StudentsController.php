@@ -2955,20 +2955,17 @@ public function enrollKid2(){
         $getHolidays = Holidays::where('franchisee_id','=', Session::get('franchiseId'))
                                 ->get();
         $weeksCount = 0;
-        // $extendedCount = 0;
         $extendedDates = [];
         $extendedDates[0]['class_dates'] = $dates;
         $extendedDates[0]['is_active_day'] = '';
         $attendance_date[] = $dates;
         $holidayCount = 0;
-        for ($i=0; $i <count($getHolidays) ; $i++) { 
+       for ($i=0; $i <count($getHolidays) ; $i++) { 
           if($extendedDates[0]['class_dates'] == $getHolidays[$i]['startdate']){
             $extendedDates[0]['is_active_day'] = 'Holiday';
-            $holidayCount = $holidayCount + 1;
+            $weeksCount = $weeksCount + 1;
           }
         }
-        // return $holidayCount;
-         // if($holidayCount == 1 ){
           for($i=1; $i < ($class_dates[0]['selected_sessions']); $i++) {
             $increment['class_dates'] = date('Y-m-d', strtotime('+1 week', strtotime($dates)));
             $increment['is_active_day'] = '';
@@ -2985,49 +2982,30 @@ public function enrollKid2(){
           }
           for($i=0; $i<$weeksCount; $i++){
             $increment['is_active_day'] = '';
-            // $extendedCount = 0;
-            $extendDate = [];
-            $lastDate = count($attendance_date)-1;
-            $extendDate = date('Y-m-d', strtotime('+1 week', strtotime($attendance_date[$lastDate]['class_dates'])));
-            $increment['class_dates'] = $extendDate;
-            /*for ($i=0; $i <count($getHolidays) ; $i++) {
-              if($getHolidays[$i]['startdate'] == $increment['class_dates']){
-                $increment['is_active_day'] = 'Holiday';
-                // $extendDate =  date('Y-m-d', strtotime('+1 week', strtotime($attendance_date[$lastDate]['class_dates'])));
-              }
-            } */
-            $increment['class_dates'] = $extendDate;
-            $extendedDates[] = $increment;
-            $attendance_date = $extendedDates;
-          }
-       // }
-        /*else{
-          for($i=1; $i < ($class_dates[0]['selected_sessions']+1); $i++) {
-            $increment['class_dates'] = date('Y-m-d', strtotime('+1 week', strtotime($dates)));
-                $increment['is_active_day'] = '';
-              for($j = 0; $j < count($getHolidays); $j++){
-                if($getHolidays[$j]['startdate'] == $increment['class_dates'] && $getHolidays[$j]['startdate']>=$class_dates[0]['enrollment_start_date'] && 
-                      date('l', strtotime($getHolidays[$j]['startdate'])) == date('l', strtotime($class_dates[0]['enrollment_start_date'])) && $getHolidays[$j]['startdate']<=$class_dates[0]['enrollment_end_date']){
-                  $weeksCount = $weeksCount + 1;
-                  $increment['is_active_day'] = 'Holiday';
-                }
-              }
-              $extendedDates[] = $increment;
-              $attendance_date[] = $increment;
-              $dates = $increment['class_dates'];
-          }
-          // return $attendance_date;  
-          for($i=0; $i<$weeksCount; $i++){
-            $increment['is_active_day'] = '';
             $extendDate = [];
             $lastDate = count($attendance_date)-1;
             $extendDate = date('Y-m-d', strtotime('+1 week', strtotime($attendance_date[$lastDate]['class_dates'])));
             $increment['class_dates'] = $extendDate;
             $extendedDates[] = $increment;
-            $attendance_date = $extendedDates; 
+            $attendance_date[] = $increment; 
+            for ($j=0; $j <count($getHolidays); $j++) {
+              $lastDate = count($attendance_date)-1;
+              if($getHolidays[$j]['startdate'] == $attendance_date[$lastDate]['class_dates']){
+                $extendDate = date('Y-m-d', strtotime('+1 week', strtotime($attendance_date[$lastDate]['class_dates'])));
+                $increment['class_dates'] = $extendDate;
+                $extendedDates[] = $increment;
+                $attendance_date[] = $increment;
+              }
+            }
           }
-        }*/
-        $attendance_date = $extendedDates;
+          $attendance_date = $extendedDates;
+        for ($i=0; $i < count($attendance_date); $i++) { 
+          for ($j=0; $j < count($getHolidays) ; $j++) { 
+            if($getHolidays[$j]['startdate'] == $attendance_date[$i]['class_dates']){
+              $attendance_date[$i]['is_active_day'] = 'Holiday';
+            }
+          } 
+        }
         $present_dates=[];
         $absent_dates=[];
         $ea_dates=[];
