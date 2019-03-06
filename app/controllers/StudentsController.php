@@ -457,6 +457,9 @@ class StudentsController extends \BaseController {
   public function deleteBatchesEnrollForId () {
       if((Auth::check()) && (Session::get('userType')=='ADMIN') ){
         $inputs=Input::all();
+        $session_user_id = Session::all();
+        $getUserDetails = User::where('id', '=', $session_user_id['userId'])
+                                ->get();
         $payment_no = PaymentDues::where('student_class_id', '=', $inputs['student_class_id'])
                                   ->where('franchisee_id', '=', Session::get('franchiseId'))
                                   ->get();
@@ -477,12 +480,31 @@ class StudentsController extends \BaseController {
           $studentClassesDelete = StudentClasses::where('id', '=', $payment_no[0]['student_class_id'])
                                ->where('student_id', '=', $inputs['studentId'])
                                ->delete();
+          $insertIntoLogsTable = DB::table('deletedBatchLogs')
+                                   ->insert([
+                                      'student_id' => $inputs['studentId'],
+                                      'franchisee_id' => $getUserDetails[0]['franchisee_id'],
+                                      'batch_id' => $payment_no[0]['batch_id'],
+                                      'user_id' => $session_user_id['userId'],
+                                      'user_name' => $getUserDetails[0]['first_name'].' '.$getUserDetails[0]['last_name'],
+                                      'no_of_enrollments_deleted' => 'single',
+                                      'deleted_at' => date('Y-m-d')
+                                   ]);
         } else {
           $studentClassesDelete = StudentClasses::where('id', '=', $inputs['student_class_id'])
                                ->where('student_id', '=', $inputs['studentId'])
                                ->delete();
+          $insertIntoLogsTable = DB::table('deletedBatchLogs')
+                                   ->insert([
+                                      'student_id' => $inputs['studentId'],
+                                      'franchisee_id' => $getUserDetails[0]['franchisee_id'],
+                                      'user_id' => $session_user_id['userId'],
+                                      'user_name' => $getUserDetails[0]['first_name'].' '.$getUserDetails[0]['last_name'],
+                                      'no_of_enrollments_deleted' => 'single',
+                                      'deleted_at' => date('Y-m-d')
+                                   ]);
         }
-        if ($studentClassesDelete) {
+        if ($insertIntoLogsTable) {
           return Response::json(array('status'=>'success', 'data' => $inputs));
         } else {
           return Response::json(array('status'=>'failure'));
@@ -508,7 +530,20 @@ class StudentsController extends \BaseController {
                                 ->where('franchisee_id', '=', Session::get('franchiseId'))
                                 ->delete();
       $paymentsDelete = Attendance::where('student_id', '=', $inputs['studentId'])
-                                ->delete();                        
+                                ->delete();     
+
+      $session_user_id = Session::all();
+      $getUserDetails = User::where('id', '=', $session_user_id['userId'])
+                              ->get();
+      $insertIntoLogsTable = DB::table('deletedBatchLogs')
+                               ->insert([
+                                  'student_id' => $inputs['studentId'],
+                                  'franchisee_id' => $getUserDetails[0]['franchisee_id'],
+                                  'user_id' => $session_user_id['userId'],
+                                  'user_name' => $getUserDetails[0]['first_name'].' '.$getUserDetails[0]['last_name'],
+                                  'no_of_enrollments_deleted' => 'ALL',
+                                  'deleted_at' => date('Y-m-d H:s:i')
+                               ]);                   
 
       if ($paymentsDelete) {
         return Response::json(array('status'=>'success', 'data' => $inputs));
