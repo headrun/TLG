@@ -3006,6 +3006,14 @@ public function enrollKid2(){
             }
           } 
         }
+        $updateToStudentClasses = StudentClasses::where('franchisee_id','=', Session::get('franchiseId'))
+                                                 ->where('student_id','=',$student_id)
+                                                 ->where('id','=',$student_classes_id)
+                                                 ->update(['enrollment_end_date'=>$attendance_date[count($attendance_date)-1]['class_dates']]);
+          $updateToPaymentsDues = PaymentDues::where('franchisee_id','=', Session::get('franchiseId'))
+                                               ->where('student_id','=',$student_id)
+                                               ->where('student_class_id','=',$student_classes_id)
+                                               ->update(['end_order_date'=>$attendance_date[count($attendance_date)-1]['class_dates']]);
         $present_dates=[];
         $absent_dates=[];
         $ea_dates=[];

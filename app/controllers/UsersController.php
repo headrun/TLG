@@ -76,7 +76,7 @@ class UsersController extends \BaseController {
 
 		public static function updateAlltheTablesWithTheseRecords ($finalData) {
 			foreach ($finalData as $key => $value) {
-				$updateToStudentClasses = StudentClasses::where('franchisee_id','=', Session::get('franchiseId'))
+			/*	$updateToStudentClasses = StudentClasses::where('franchisee_id','=', Session::get('franchiseId'))
 			                          ->where('student_id','=',$value['student_id'])
 			                          ->where('id','=',$value['student_classes_id'])
 			                          ->update(['enrollment_end_date'=>$value['enroll_last_date']]);
@@ -86,8 +86,22 @@ class UsersController extends \BaseController {
 			                                         ->update(['end_order_date'=>$value['enroll_last_date']]);
 			    $updateInactiveToActive = Holidays::where('franchisee_id','=', Session::get('franchiseId'))
 			                                        ->where('status','=','active')
-			                                        ->update(['status' => 'inactive']);
+			                                        ->update(['status' => 'inactive']);*/
 			}	
+		}
+
+		public function checkValInArray ($values, $student_id, $batch_id, $student_classes_id) {
+			$found = [];
+			$found['status'] = false;
+			$found['key'] = 0;
+			foreach($values as $key => $value) {
+			    if ($value['student_id'] == $student_id && $value['batch_id'] == $batch_id && $value['student_classes_id'] == $student_classes_id) {
+			        $found['status'] = true;
+			        $found['key'] = $key;
+			        break;
+			    }
+			}
+			return $found;	
 		}
 
         public function updateEndDates() {
@@ -111,45 +125,47 @@ class UsersController extends \BaseController {
 	             			$studentClasses[$j]['holiDay'] = 1;
 	             			$toBeUpdateArray[] = $studentClasses[$j];
 	             		} 
-	             	}
+	             	} 
 	             }	
 	            $updatedWeeksArray = [];
 	            $extendDate = 0;
 	            for ($i=0; $i < count($toBeUpdateArray); $i++) { 
-	            	$addNoOfDays = $toBeUpdateArray[$i]['holiDay'] * 7;
-	            	if(array_key_exists($toBeUpdateArray[$i]['student_id'], $updatedWeeksArray)) {
-	            		$endDateUpdate = date('Y-m-d', strtotime($updatedWeeksArray[$toBeUpdateArray[$i]['student_id']]['enroll_last_date'].'+'.$addNoOfDays.' days'));
-	            		$student['student_id'] = $toBeUpdateArray[$i]['student_id'];
-	            		$student['student_classes_id'] = $toBeUpdateArray[$i]['id'];
-	            		$student['enroll_last_date'] = $endDateUpdate;
-	            		$extendDate = 0;
-	            		$updatedWeeksArray[$toBeUpdateArray[$i]['student_id']] = $student;
-	            		for ($j=0; $j < count($getHolidays); $j++) { 
-	            			if($endDateUpdate == $getHolidays[$j]['startdate']){
-	            				$extendDate = $extendDate + 7;
-	            				$endDateUpdate = date('Y-m-d', strtotime($updatedWeeksArray[$toBeUpdateArray[$i]['student_id']]['enroll_last_date'].'+7 days'));
-	            				$student['enroll_last_date'] = $endDateUpdate;
-	            		        $updatedWeeksArray[$toBeUpdateArray[$i]['student_id']] = $student;
-	            			} 
-	            		}
-	            		
-	            	} else {
-	            		$endDateUpdate = date('Y-m-d', strtotime($toBeUpdateArray[$i]['enrollment_end_date'].'+'.$addNoOfDays.' days'));
-	            		$student['student_id'] = $toBeUpdateArray[$i]['student_id'];
-	            		$student['student_classes_id'] = $toBeUpdateArray[$i]['id'];
-	            		$student['enroll_last_date'] = $endDateUpdate;
-	            		$extendDate = 0;
-	            		$updatedWeeksArray[$toBeUpdateArray[$i]['student_id']] = $student;
-	            		for ($j=0; $j < count($getHolidays); $j++) { 
-	            			if($endDateUpdate == $getHolidays[$j]['startdate']){
-	            				$extendDate = $extendDate + 7;
-	            				$endDateUpdate = date('Y-m-d', strtotime($toBeUpdateArray[$i]['enrollment_end_date'].'+7 days'));		
-	            		        $student['enroll_last_date'] = $endDateUpdate;
-	            		        $updatedWeeksArray[$toBeUpdateArray[$i]['student_id']] = $student;
-	            			} 
-	            		}
-	            	}
-	            }  	
+	            	for ($j=0; $j <count($getHolidays) ; $j++) { 
+	            		$addNoOfDays = $toBeUpdateArray[$i]['holiDay'] * 7;
+		            	$found = self::checkValInArray($updatedWeeksArray, $toBeUpdateArray[$i]['student_id'], $toBeUpdateArray[$i]['batch_id'], $toBeUpdateArray[$i]['student_classes_id']);
+		            	if ($found['status'] == true) {
+		            		$endDateUpdate = date('Y-m-d', strtotime($updatedWeeksArray[$found['key']]['enroll_last_date'].'+'.$addNoOfDays.' days'));
+		            		$student['student_id'] = $toBeUpdateArray[$i]['student_id'];
+		            		$student['student_classes_id'] = $toBeUpdateArray[$i]['id'];
+		            		$student['enroll_last_date'] = $endDateUpdate;
+		            		$student['batch_id'] = $toBeUpdateArray[$i]['batch_id'];
+		            		$updatedWeeksArray[] = $student;
+		            		for ($j=0; $j < count($getHolidays); $j++) { 
+		            			if($endDateUpdate == $getHolidays[$j]['startdate']){
+		            				$endDateUpdate = date('Y-m-d', strtotime($updatedWeeksArray[$found['key']]['enroll_last_date'].'+7 days'));
+		            				$student['enroll_last_date'] = $endDateUpdate;
+		            		        $updatedWeeksArray[] = $student;
+		            			} 
+		            		}
+		            	} else {
+		            		$endDateUpdate = date('Y-m-d', strtotime($toBeUpdateArray[$i]['enrollment_end_date'].'+'.$addNoOfDays.' days'));
+		            		$student['student_id'] = $toBeUpdateArray[$i]['student_id'];
+		            		$student['student_classes_id'] = $toBeUpdateArray[$i]['id'];
+		            		$student['enroll_last_date'] = $endDateUpdate;
+		            		$student['batch_id'] = $toBeUpdateArray[$i]['batch_id'];
+		            		$updatedWeeksArray[] = $student;
+		            		$countDaysForMatchedIds = 0;
+	 						for ($j=0; $j < count($getHolidays); $j++) {  
+	                           if($endDateUpdate == $getHolidays[$j]['startdate']){
+	                               $countDaysForMatchedIds = $countDaysForMatchedIds + 7;
+	                           }
+	                             $endDateUpdate = date('Y-m-d', strtotime($toBeUpdateArray[$i]['enrollment_end_date'].'+'.$countDaysForMatchedIds.' days'));
+	                               $student['enroll_last_date'] = $endDateUpdate;
+	                               $updatedWeeksArray[] = $student;
+	                        }
+		                } 
+	            	} 		           
+	            }  
 	            $update = self::updateAlltheTablesWithTheseRecords($updatedWeeksArray);
         		return Response::json(array('status'=>'success'));
         	}else{
