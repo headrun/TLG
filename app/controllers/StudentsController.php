@@ -2314,7 +2314,18 @@ public function enrollKid2(){
         
         public function createFollowup(){
             $inputs=Input::all();
-            if($inputs['followupType']=='COMPLAINTS'){
+            $remaindDate = date('Y-m-d', strtotime($inputs['remindDate']));
+            if(
+                   Comments::where('franchisee_id','=',Session::get('franchiseId'))
+                             ->where('customer_id','=',$inputs['customer_id'])
+                             ->where('student_id','=',$inputs['student_id'])
+                             ->where('reminder_date','=',$remaindDate)
+                             ->exists()
+            ){
+              return Response::json(array('status'=>'failure'));
+            }
+            else{
+              if($inputs['followupType']=='COMPLAINTS'){
                $createComplaint=Complaint::createComplaint($inputs);
                $input['complaint_id']=$createComplaint->id;
             }else if($inputs['followupType']=='RETENTION'){
@@ -2348,7 +2359,7 @@ public function enrollKid2(){
             }
             if(isset($createInquiry)){
                $input['customerId']=$inputs['customer_id'];
-               
+               $input['student_id']=$inputs['student_id'];
                $input['followupType']=$inputs['followupType'];
                $input['commentStatus']=$inputs['followupstatus'];
                $input['commentText']=$inputs['otherCommentTxtarea'];
@@ -2356,6 +2367,9 @@ public function enrollKid2(){
                $input['reminderDate']=$inputs['remindDate'];
                $comments_data=Comments::addComments($input);
             }
+            }
+
+            
             if($comments_data){
             return Response::json(array('status'=>'success'));
             }else{
