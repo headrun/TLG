@@ -2348,7 +2348,7 @@ public function enrollKid2(){
             }
             if(isset($createInquiry)){
                $input['customerId']=$inputs['customer_id'];
-               
+               $input['student_id']=$inputs['student_id'];
                $input['followupType']=$inputs['followupType'];
                $input['commentStatus']=$inputs['followupstatus'];
                $input['commentText']=$inputs['otherCommentTxtarea'];
